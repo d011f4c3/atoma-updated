@@ -13,18 +13,22 @@
   Task 0008 introduces the tray concept; Task 0009 refines it into the current
   black homepage with an unlinked Explore matcha cue, saved at `ca2b63d37b25` /
   `homepage-checkpoint-02`. Task 0010 explores the portfolio-inspired hero at
-  `/concept-03`. Active Task 0011 combines its grid/capsule header with the
-  saved split composition at `/concept-04`, adding periodic hover text resolves.
-  Preserve `/` as the current homepage. Keep both
-  checkpoints and the storefronts separate.
+  `/concept-03`. Task 0011 combines its grid/capsule header with the saved split
+  composition at `/concept-04`, adding periodic hover text resolves. Preserve
+  Concept 04 unchanged at `50a352cc4fa7` / `hero-concept-04`. Active Task 0012
+  refines `/` with curved linework only behind the right-side tray and a more
+  deliberate square header. Keep the left headline area clear, all saved
+  checkpoints intact, and the storefronts separate.
   Further sections, catalog integration, and release work remain separate tasks.
 - Read `docs/briefs/2026-09-28-client-direction.md` before design work. Label
   interpretations and illustrative content; do not present them as approved facts.
 - The client's words in both source documents are central. Preserve the owner's
   clarified clinical/laboratory/production-engineering direction and emphasis
   on animation, typography, visual appeal, and experience. Design only the scope
-  authorized by the current task. Task 0011 stays within the combined hero design:
-  no detail screen, fake navigation, custom motion toggle, or commerce action.
+  authorized by the current task. Task 0012 stays within the main homepage hero:
+  refine the square navigation styling and right-side image field, without
+  changing Concept 04. No detail screen, fake navigation, custom motion toggle,
+  or commerce action is authorized; Explore matcha remains unlinked.
   Keep native pointer visibility and system reduced-motion support.
 - Preserve the existing JMM and atoma-storefront repositories. This is a new
   presentation workspace, not a replacement inventory or commerce authority.

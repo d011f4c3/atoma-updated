@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ScrambleText } from "./scramble-text";
+import { SpecimenField } from "./specimen-field";
 import styles from "./specimen-hero.module.css";
 
 function Arrow() {
@@ -17,6 +18,7 @@ export function SpecimenHero() {
   const stageRef = useRef<HTMLDivElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
+  const [navReplay, setNavReplay] = useState({ matcha: 0, explore: 0 });
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -45,6 +47,8 @@ export function SpecimenHero() {
       setHovered(false);
       stage.style.removeProperty("--pointer-x");
       stage.style.removeProperty("--pointer-y");
+      stage.style.removeProperty("--field-x");
+      stage.style.removeProperty("--field-y");
     };
 
     const positionCue = () => {
@@ -63,6 +67,11 @@ export function SpecimenHero() {
       );
       stage.style.setProperty("--pointer-x", `${x}px`);
       stage.style.setProperty("--pointer-y", `${y}px`);
+      stage.style.setProperty("--field-x", `${(x / bounds.width - 0.5) * 8}px`);
+      stage.style.setProperty(
+        "--field-y",
+        `${(y / bounds.height - 0.5) * 6}px`,
+      );
     };
 
     const move = (event: PointerEvent) => {
@@ -103,15 +112,43 @@ export function SpecimenHero() {
     <main className={styles.hero} data-concept="02">
       <header className={styles.header}>
         <span className={styles.brand}>ATOMA</span>
-        <span className={styles.currentSection}>
+        <span
+          className={styles.currentSection}
+          onPointerEnter={() =>
+            setNavReplay((previous) => ({
+              ...previous,
+              matcha: previous.matcha + 1,
+            }))
+          }
+        >
           <span className={styles.navNumber} aria-hidden="true">
-            <ScrambleText text="01" delay={100} />
+            <ScrambleText
+              key={navReplay.matcha}
+              text="01"
+              delay={navReplay.matcha ? 0 : 100}
+            />
           </span>
-          <ScrambleText text="MATCHA" delay={180} />
+          <ScrambleText
+            key={navReplay.matcha}
+            text="MATCHA"
+            delay={navReplay.matcha ? 0 : 180}
+          />
         </span>
         {/* Destination styling only; the exploration route is a later task. */}
-        <span className={styles.headerExplore}>
-          <ScrambleText text="EXPLORE" delay={260} />
+        <span
+          className={styles.headerExplore}
+          onPointerEnter={() =>
+            setNavReplay((previous) => ({
+              ...previous,
+              explore: previous.explore + 1,
+            }))
+          }
+        >
+          <ScrambleText
+            key={navReplay.explore}
+            text="EXPLORE"
+            delay={navReplay.explore ? 0 : 260}
+          />
           <Arrow />
         </span>
       </header>
@@ -151,6 +188,11 @@ export function SpecimenHero() {
             className={styles.imageStage}
             data-hovered={hovered}
           >
+            <div className={styles.fieldWindow}>
+              <div className={styles.fieldDepth}>
+                <SpecimenField className={styles.field} />
+              </div>
+            </div>
             <div className={styles.tray}>
               <Image
                 src="/images/hero/matcha-tray-concept-02.webp"

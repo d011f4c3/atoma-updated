@@ -55,6 +55,16 @@ left-heading/right-tray layout with Concept 03’s grid and rounded navigation.
 The isolated `/concept-04` adds recurring brief text resolves while Explore
 matcha is hovered. All previous brand, scope, and integration boundaries remain.
 
+Latest owner direction, tracked in
+[Task 0012](../tasks/0012-homepage-grid-and-square-nav.md), preserves Concept 04
+unchanged and returns refinement work to the main homepage at `/`. Add the
+curved field only behind the right-side tray; keep the left headline area free
+of that grid. Retain the square header and refine its outlined treatments,
+corner accents, and hover character resolution. Explore matcha stays unlinked.
+The pre-refinement homepage is saved at `ca2b63d37b25` /
+`homepage-checkpoint-02`; Concept 04 is saved at `50a352cc4fa7` /
+`hero-concept-04`. Neither checkpoint is replaced by this experiment.
+
 ## Current authorization and source authority
 
 The current task is to read and process the supplied feedback, then establish a new local frontend repository. Work should proceed in small, reviewable pieces. This document does not authorize a complete storefront build, changes to the existing storefront, production connections, publication, or new commercial rules.
