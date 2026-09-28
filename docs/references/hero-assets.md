@@ -40,7 +40,7 @@ geometry, not a claim of laboratory testing or measured performance.
 
 ## Light background adaptation — Task 0004
 
-`public/images/hero/matcha-vessel-light-v3.webp` is the active vessel image,
+`public/images/hero/matcha-vessel-light-v3.webp` is the first-checkpoint vessel image,
 1536 × 1024 with genuine alpha transparency. One built-in ImageGen edit removed
 the baked-in black background and floor reflection from the v2 vessel. Original
 assets remain retained. Conversion uses WebP quality 90 and alpha quality 100.
@@ -54,6 +54,26 @@ image remains unchanged inside its circular aperture.
 
 The exact final prompt and generated output are recorded in
 [hero-light-image-prompt.json](hero-light-image-prompt.json).
+
+## Second concept tray — Tasks 0008/0009
+
+`public/images/hero/matcha-tray-concept-02.webp` is the current hero image:
+1536 × 1024, a shallow metal tray containing fine green matcha, with genuine
+alpha transparency. One built-in ImageGen call created this original image;
+there were no variants or retries. The inspected PNG was converted to WebP at
+quality 90, alpha quality 100, and effort 6.
+
+The entire tray and subtle straight powder sweep are visible, without text,
+props, people, or copied brand assets. The tray is wider and rotates in the
+opposite direction from the requested prompt; its powder is mildly granular.
+A faint alpha halo in the original margins was reviewed in the browser.
+The exact prompt, generated source, output path, and inspection notes are in
+[hero-concept-02-image.json](hero-concept-02-image.json).
+
+This is an illustrative material study, not a real SKU, approved packaging,
+or evidence of ATOMA's equipment or testing. Task 0009 reuses this image without
+a new generation. The macro image used in the initial second-concept detail
+view remains retained but is no longer part of the current hero.
 
 ## Typography
 
@@ -76,5 +96,7 @@ All motion is CSS transforms and opacity, with a small pointer-response handler.
 No animation/3D library, rendering service, tracking SDK, or new runtime
 dependency is added. Text and controls remain live HTML, not baked into imagery.
 There is no video download, autoplay audio, scroll hijacking, or custom cursor
-that hides the native pointer. Ambient motion can be paused; reduced-motion
-preferences suppress automatic motion and transitions.
+that hides the native pointer. The current tray concept removes the custom
+motion toggle at the owner's request. System reduced-motion preferences suppress
+automatic motion, transitions, and pointer tracking; the original checkpoint
+retains its historical pause control.

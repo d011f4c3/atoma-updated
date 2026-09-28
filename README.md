@@ -1,12 +1,17 @@
 # ATOMA storefront v3
 
 Separate local frontend repository for the third ATOMA pass. The current
-delivery is the **home hero only**: a clinical object/material study, live
-typography, controlled motion, and two connected views on an off-black surface.
-A top navigation and Index menu switch between Matcha and Material, with brief
-character-resolution effects. A compact “Matcha, by specification.” heading
-supports the product image. The two storefronts are separate: no link to the
-previous shop remains. No additional sections or commerce integration are present.
+concept is the **home hero only**: an overhead metal tray of matcha, an
+asymmetric composition, and “Carefully specified matcha.” in Fraktion type on
+a neutral black surface. Task 0009 refines this into a single view with restrained
+entrance motion, character resolution, and a pointer-responsive Explore matcha
+cue. That destination remains unlinked while the hero design is explored.
+There is no detail screen, custom motion toggle, or commerce integration;
+system reduced-motion preferences remain supported.
+
+The first hero is preserved at commit `e0608ee1b4d8` and tag
+`hero-checkpoint-01`. The second concept is developed on
+`codex/hero-concept-02`. Both remain separate from the previous storefront.
 
 ## Local development
 
@@ -47,6 +52,8 @@ If the shell does not switch Node automatically, use
 - [Dark navigation and text transitions](docs/tasks/0005-dark-navigation-and-text-resolve.md)
 - [Compact hero heading](docs/tasks/0006-compact-hero-heading.md)
 - [Saved hero checkpoint](docs/tasks/0007-hero-checkpoint.md) — `hero-checkpoint-01`
+- [Second hero prototype](docs/tasks/0008-second-hero-concept.md)
+- [Current exploration-cue refinement](docs/tasks/0009-exploration-hero-refinement.md)
 - [Hero imagery, prompts, and font provenance](docs/references/hero-assets.md)
 - [Frontend boundary and dependencies](docs/adr/0001-local-frontend-foundation.md)
 
@@ -54,18 +61,23 @@ The Instagram reels are essential branding references. Direct access failed;
 the subsequently supplied September 28 screen recording has been reviewed and
 included in the notes. The setup-only restriction applied to Task 0001; the
 owner's subsequent requests authorize the home hero and refinements in Tasks
-0002–0006.
+0002–0009.
 
 ## Repository boundary
 
-`src/app/` contains the App Router layout and home route. The bounded hero lives
-in `src/components/material-hero.tsx` and its CSS module. The top navigation,
-Index menu, vessel, and inspection button change the hero's perspective. Text
-resolution is isolated in `src/components/scramble-text.tsx`; it runs on arrival
-and hover/focus, and stops when paused or reduced motion is requested. Fraktion
+`src/app/` contains the App Router layout and home route. The current hero lives
+in `src/components/specimen-hero.tsx` and its CSS module. The original
+`material-hero` component remains preserved. The current Explore matcha cue is
+display text, not a link or button; its decorative reticle responds to a fine
+pointer while a stationary label remains readable. No navigation or data
+connection is implied by the header typography.
+
+Text resolution is isolated in `src/components/scramble-text.tsx`. Fraktion
 Sans and Mono remain the owner's authorized local trial. The viewport grid keeps
-controls in their own rows. `--product-gradient` preserves the original JMM
-blue-to-bone stops for future connected product pages; it is not used on the home.
+the hero within one screen. Motion defaults to on, with system reduced-motion
+support for both animations and pointer tracking. `--product-gradient` preserves
+the original JMM blue-to-bone stops for future connected product pages; it is not
+used on the home.
 
 The source notes stay under `docs/`, outside the public app. Original client
 attachments, legacy UI, environment files, and operational data were not copied

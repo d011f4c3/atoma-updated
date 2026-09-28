@@ -1,5 +1,5 @@
-import { MaterialHero } from "@/components/material-hero";
+import { SpecimenHero } from "@/components/specimen-hero";
 
 export default function HomePage() {
-  return <MaterialHero />;
+  return <SpecimenHero />;
 }

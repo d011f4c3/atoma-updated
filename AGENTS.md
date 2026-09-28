@@ -9,14 +9,19 @@
   Tasks 0003/0004 refined the hero and tested the original mineral gradient.
   Task 0005 returns the home to off-black, adds navigation/text resolution, and
   removes the old storefront handoff. Task 0006 adds a compact hero heading.
-  Keep the storefronts separate. Further
-  sections, a local catalog integration, and release work remain separate tasks.
+  Task 0007 preserves that first hero at `e0608ee1b4d8` / `hero-checkpoint-01`.
+  Task 0008 introduces the tray concept; the active task is Task 0009, refining
+  that concept into a single hero with a hover-responsive, unlinked Explore
+  matcha cue. Preserve the first checkpoint and keep the storefronts separate.
+  Further sections, catalog integration, and release work remain separate tasks.
 - Read `docs/briefs/2026-09-28-client-direction.md` before design work. Label
   interpretations and illustrative content; do not present them as approved facts.
 - The client's words in both source documents are central. Preserve the owner's
   clarified clinical/laboratory/production-engineering direction and emphasis
   on animation, typography, visual appeal, and experience. Design only the scope
-  authorized by the current task; Task 0006 adds only the modest hero text.
+  authorized by the current task. Task 0009 stays within the tray hero design:
+  no detail screen, fake navigation, custom motion toggle, or commerce action.
+  Keep native pointer visibility and system reduced-motion support.
 - Preserve the existing JMM and atoma-storefront repositories. This is a new
   presentation workspace, not a replacement inventory or commerce authority.
 - Keep accepted JMM technical contracts and ADR-0015/0016/0018 boundaries. If a

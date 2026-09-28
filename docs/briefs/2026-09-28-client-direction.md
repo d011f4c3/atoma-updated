@@ -21,6 +21,17 @@ and small labels use subtle Anduril-inspired character resolution. Keep this
 storefront separate from the prior storefront; its external shop link is removed.
 The tested blue-to-bone gradient is retained for future connected product pages.
 
+Current hero exploration: the first hero is preserved at `e0608ee1b4d8` /
+`hero-checkpoint-01`. Task 0008 established a second concept with an overhead
+matcha tray and the client phrase “Carefully specified matcha.” The owner
+preferred this direction. [Task 0009](../tasks/0009-exploration-hero-refinement.md)
+now refines that same hero: preserve the tray, typography, and composition;
+replace the alternate detail view with a hover-responsive Explore matcha cue;
+leave that future destination unlinked; and remove the custom motion toggle.
+The hero remains within one viewport, motion defaults to on, and system
+reduced-motion support remains. This is design exploration only, without a
+catalog connection, real navigation destination, or additional page.
+
 Owner clarification: the Instagram reels are essential branding references and
 visual appeal carries substantial weight. The additional 57.42-second recording
 has now been reviewed visually. The owner explicitly specifies a clinical,
@@ -28,6 +39,10 @@ laboratory-inspired, production-engineering character with heavy emphasis on
 animation, typography, and experience, and no human-focused first impression.
 The owner also explicitly limited this task to repository setup: do not design
 anything. This document records feedback, not a design proposal.
+
+Latest palette clarification: Task 0009 uses neutral black (`#000`) for the
+homepage, replacing the green-tinted off-black. Matcha supplies the green;
+interface framing and annotations use neutral tones.
 
 ## Current authorization and source authority
 

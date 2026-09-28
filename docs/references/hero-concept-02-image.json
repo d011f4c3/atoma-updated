@@ -1,0 +1,16 @@
+{
+  "mode": "built-in image_gen",
+  "generation_count": 1,
+  "variants_or_retries": 0,
+  "generated_at": "2026-09-28",
+  "output": "/Users/d0l1f4c3/.codex/generated_images/01a0e7cd-35e6-7532-9b8b-6ebd9cf5c47a/exec-6e8ead66-c50a-4555-a417-cf291cda1d9c.png",
+  "project_path": "public/images/hero/matcha-tray-concept-02.webp",
+  "prompt": "Use case: product-mockup\nAsset type: original premium CGI material/product cutout for the SECOND ATOMA homepage hero; one coherent image, no website UI.\nPrimary request: Create a photoreal, beautifully precise shallow rectangular machined/brushed stainless-steel specimen tray containing a level bed of extremely fine natural green matcha powder. Output a 1536x1024 landscape PNG with a genuinely transparent alpha background.\nScene/backdrop: Actual transparent empty background, not a checkerboard, white backdrop, floor, or rendered black background. Preserve alpha around the whole object. No floor drop shadow is needed; keep the object's own dimensional shading.\nSubject/materials: ONE tray only. A slender engineered silver rim, precise folded and gently rounded edges, shallow plate depth, not a high bowl or generic kitchen sheet pan. Inside, dry smooth velvety finely milled matcha, predominantly vivid natural dark matcha green, not clumps or gravel. The flat level powder surface has one very subtle shallow straight sweep mark.\nComposition/framing: Camera almost overhead, near orthographic, with only very slight bottom-edge depth visible. Long side horizontal. Rotate the tray plane approximately -12 degrees so the corners are deliberately diagonal. Entire tray visible and centered, occupying about 72% of the image width and 74% of the image height, generous clean transparent margins for later rotation and zoom.\nLighting/mood: Controlled soft cool studio strip lights reveal the metal precision, small restrained silver highlights, and soft powder texture. Premium impersonal clinical dark mood suitable on an off-black homepage; the object must remain vivid and legible.\nConstraints: No lid, floating parts, humans, plants, scenery, origin motifs, props, instruments, test claims, text, labels, numbers, branding, watermarks, packaging codes, extra trays, loose piles, liquids, or website UI. No deep pan. Actual transparent alpha, one coherent original asset.\n",
+  "inspection": [
+    "1536x1024 RGBA with actual transparency.",
+    "Entire shallow metal tray, green powder and subtle sweep mark visible. No text or props.",
+    "Tray fills about85% width and clockwise angle rather than the requested72% and counterclockwise angle. Fine texture is mildly granular.",
+    "Faint alpha halo in margins; source visually inspected before WebP conversion."
+  ],
+  "illustrative": true
+}
