@@ -15,19 +15,21 @@
   `homepage-checkpoint-02`. Task 0010 explores the portfolio-inspired hero at
   `/concept-03`. Task 0011 combines its grid/capsule header with the saved split
   composition at `/concept-04`, adding periodic hover text resolves. Preserve
-  Concept 04 unchanged at `50a352cc4fa7` / `hero-concept-04`. Active Task 0012
-  refines `/` with curved linework only behind the right-side tray and a more
-  deliberate square header. Keep the left headline area clear, all saved
-  checkpoints intact, and the storefronts separate.
+  Concept 04 unchanged at `50a352cc4fa7` / `hero-concept-04`. Task 0012 saves the
+  refined homepage at `f0f2fffee276` / `homepage-grid-checkpoint`. Active Task
+  0013 adds `/concept-05` and its `/light` comparison: original 3D material staging
+  inspired by Oro's motion and the client briefs, with an About dialog and
+  Matcha-first navigation. Preserve `/`, `/concept-03`, and `/concept-04`,
+  all saved checkpoints, and the separation between storefronts.
   Further sections, catalog integration, and release work remain separate tasks.
 - Read `docs/briefs/2026-09-28-client-direction.md` before design work. Label
   interpretations and illustrative content; do not present them as approved facts.
 - The client's words in both source documents are central. Preserve the owner's
   clarified clinical/laboratory/production-engineering direction and emphasis
   on animation, typography, visual appeal, and experience. Design only the scope
-  authorized by the current task. Task 0012 stays within the main homepage hero:
-  refine the square navigation styling and right-side image field, without
-  changing Concept 04. No detail screen, fake navigation, custom motion toggle,
+  authorized by the current task. Task 0013 is a separate comparison hero;
+  Oro's layout, assets, identity, and claims are not to be copied.
+  No product detail screen, fake navigation, custom motion toggle,
   or commerce action is authorized; Explore matcha remains unlinked.
   Keep native pointer visibility and system reduced-motion support.
 - Preserve the existing JMM and atoma-storefront repositories. This is a new

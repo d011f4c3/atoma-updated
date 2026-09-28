@@ -67,7 +67,20 @@ The pre-refinement homepage is saved at `ca2b63d37b25` /
 
 ## Current authorization and source authority
 
-The current task is to read and process the supplied feedback, then establish a new local frontend repository. Work should proceed in small, reviewable pieces. This document does not authorize a complete storefront build, changes to the existing storefront, production connections, publication, or new commercial rules.
+Task 0013 supersedes the prior active slice with an isolated final comparison
+at `/concept-05`. The owner prefers the homepage and Concept 03 and asks to
+draw inspiration from Oro's Instagram and animated hero without copying or
+being confined to its layout. Both original briefs were reread. The chosen
+interpretation is product as protagonist, a camera-led material reveal,
+controlled reflections, quiet typography, and one unlinked product entrance.
+The homepage remains saved at `f0f2fffee276` / `homepage-grid-checkpoint`.
+This adds no catalog facts or claims of ATOMA laboratory equipment.
+The owner's next refinement requests recognizable powder instead of a uniform
+green rectangle, real navigation, and a light version informed by the supplied
+Oro screenshots. The same task now includes `/concept-05/light`, a Matcha/About
+header, and a compact About dialog. Explore matcha remains unlinked.
+
+The original setup task was to read and process the supplied feedback, then establish a new local frontend repository. Later hero tasks are authorized above. Work should proceed in small, reviewable pieces. This document does not authorize a complete storefront build, changes to the older storefront, production connections, publication, or new commercial rules.
 
 The owner identifies the client's exact words in both documents as crucial and
 the primary basis of this analysis. The visual references and owner

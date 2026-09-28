@@ -1,21 +1,26 @@
 # ATOMA storefront v3
 
 Separate local frontend repository for the third ATOMA pass. The active
-experiment is the **home hero only** at [the main homepage](http://127.0.0.1:3100/):
-an overhead metal tray of matcha, a left-hand “Carefully specified matcha.”
-heading, and Fraktion Sans/Mono on neutral black. Task 0012 adds curved linework
-only inside the right-hand image stage and refines the square header with
-outlined treatments, corner accents, and hover character resolution. The left
-headline area stays clear of the grid.
+experiment is the **home hero only** at [Concept 05](http://127.0.0.1:3100/concept-05):
+an original real-time 3D tray of fine matcha on black, a controlled camera reveal,
+changing silver reflections, and thin Fraktion Sans/Mono. Oro's product staging
+and motion inform the experiment; the composition, geometry, and lighting are
+original. “Carefully specified matcha.” remains the concise client-led headline.
+The [main homepage](http://127.0.0.1:3100/) retains its split layout, scoped curved
+field, and square header for comparison.
+The [light version](http://127.0.0.1:3100/concept-05/light) uses a pale studio
+surface and dark typography. Both include Matcha/About navigation and a working
+About dialog. Footer appearance links switch between the two comparisons.
 
 Explore matcha remains unlinked while the hero design is explored. There is no
-detail screen, custom motion toggle, or commerce integration; system
+product detail screen, custom motion toggle, or commerce integration; system
 reduced-motion preferences remain supported. Current work is on
-`codex/homepage-grid-refinement`.
+`codex/hero-concept-05`.
 
 The first hero is preserved at `e0608ee1b4d8` / `hero-checkpoint-01`. The accepted
 black tray homepage before this refinement is saved at `ca2b63d37b25`, tag
 `homepage-checkpoint-02`, and branch `codex/homepage-current`.
+The refined homepage is saved at `f0f2fffee276` / `homepage-grid-checkpoint`.
 
 [Concept 03](http://127.0.0.1:3100/concept-03) remains available as a separate
 centered specimen in curved space, with rounded navigation styling and hover
@@ -70,14 +75,16 @@ If the shell does not switch Node automatically, use
 - [Portfolio-inspired concept](docs/tasks/0010-portfolio-inspired-hero.md)
 - [Combined Concept 04](docs/tasks/0011-combined-hero-concept.md)
 - [Main homepage grid and square header](docs/tasks/0012-homepage-grid-and-square-nav.md)
+- [Final material-motion comparison](docs/tasks/0013-material-motion-hero.md)
 - [Hero imagery, prompts, and font provenance](docs/references/hero-assets.md)
 - [Frontend boundary and dependencies](docs/adr/0001-local-frontend-foundation.md)
+- [Bounded 3D rendering experiment](docs/adr/0002-local-3d-hero-experiment.md)
 
 The Instagram reels are essential branding references. Direct access failed;
 the subsequently supplied September 28 screen recording has been reviewed and
 included in the notes. The setup-only restriction applied to Task 0001; the
 owner's subsequent requests authorize the home hero and refinements in Tasks
-0002–0012.
+0002–0013.
 
 ## Repository boundary
 
@@ -91,6 +98,14 @@ share the field and capsule header, while `/` retains its square header.
 display text, not a link or button; its decorative reticle responds to a fine
 pointer while a stationary label remains readable. No navigation or data
 connection is implied by the header typography.
+
+`precision-hero` serves `/concept-05`. Its dynamically imported Three.js scene
+uses procedural geometry, powder microtexture, and original studio reflection
+cards. It caps render resolution, suspends hidden-tab rendering, respects live
+system reduced motion, and disposes GPU resources on unmount. The previous tray
+image provides a local fallback when WebGL is unavailable or lost. Continuous
+subtle motion is retained at the owner's request; this experiment adds GPU work
+and a route-specific renderer chunk, documented in ADR 0002.
 
 Text resolution is isolated in `src/components/scramble-text.tsx`. Fraktion
 Sans and Mono remain the owner's authorized local trial. The viewport grid keeps

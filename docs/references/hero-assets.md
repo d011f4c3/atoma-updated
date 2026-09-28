@@ -92,7 +92,7 @@ called by the browser.
 
 ## Motion and layout
 
-All motion is CSS transforms and opacity, with a small pointer-response handler.
+Through Task 0012, motion is CSS transforms and opacity, with a small pointer-response handler.
 No animation/3D library, rendering service, tracking SDK, or new runtime
 dependency is added. Text and controls remain live HTML, not baked into imagery.
 There is no video download, autoplay audio, scroll hijacking, or custom cursor
@@ -109,3 +109,23 @@ linework as a presentational curved chamber. Neither its lines nor its view
 ordinal represent measured data or a scientific claim. The portfolio supplied
 by the owner informs spatial composition and the rounded header; no site code,
 project thumbnails, fonts, or branding assets were copied.
+
+## Material in motion — Task 0013
+
+Concept 05 introduces original code-native Three.js geometry: a shallow rounded
+metal tray, raised lip, and a shallow asymmetric powder bank with deterministic
+procedural grain. An organic perimeter, a swept depression, exposed metal, and
+sparse fine grains replace the initial uniform green rectangle. Original studio
+reflection cards produce the metal's highlights;
+no HDR, model, reference media, new image generation, or video is downloaded.
+The camera changes perspective during a four-second reveal and then moves
+subtly with ambient and bounded pointer response. Display text remains HTML.
+Dark and light versions use different reflection environments over their black
+and pale studio surfaces, including a dark reflection flag in the light version.
+
+The existing `matcha-tray-concept-02.webp` is reused as a local loading/failure
+fallback. It is an alternate illustration, not an exact still of the 3D model.
+Neither rendering is approved packaging or a SKU. The route-specific renderer
+dependency, motion preferences, visibility suspension, resolution cap, and
+resource lifecycle are recorded in ADR 0002 and Task 0013. Other concepts keep
+their existing CSS/image implementations.
