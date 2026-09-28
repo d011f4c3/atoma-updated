@@ -1,0 +1,11 @@
+packages:
+  - "."
+
+engineStrict: true
+saveExact: true
+
+# Dependencies do not require install lifecycle scripts for this foundation.
+# Native optional packages are distributed as prebuilt packages.
+allowBuilds:
+  sharp: false
+  unrs-resolver: false
