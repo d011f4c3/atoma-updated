@@ -13,6 +13,20 @@ The first hero is preserved at commit `e0608ee1b4d8` and tag
 `hero-checkpoint-01`. The second concept is developed on
 `codex/hero-concept-02`. Both remain separate from the previous storefront.
 
+The accepted black tray homepage is now saved at `ca2b63d37b25`, tag
+`homepage-checkpoint-02`, and branch `codex/homepage-current`. It stays at `/`.
+The final experiment at [concept 03](http://127.0.0.1:3100/concept-03) is developed
+separately on `codex/hero-concept-03`: a centered specimen in curved space,
+floating rounded navigation styling, and hover text resolution. Explore matcha
+stays unlinked. The ATOMA wordmark returns to the saved homepage.
+
+The latest exploration is [Concept 04](http://127.0.0.1:3100/concept-04), on
+`codex/hero-concept-04`. It combines the saved homepage's split composition with
+Concept 03's capsule header and curved field. Explore matcha remains unlinked;
+its 500 ms glyph resolve repeats every 2.8 seconds while hovered, with system
+reduced-motion and hidden-document suspension. `/` and `/concept-03` remain
+available for comparison.
+
 ## Local development
 
 Use Node **24.20.0** and pnpm **11.24.0**, pinned in this repository. If using the
@@ -54,6 +68,8 @@ If the shell does not switch Node automatically, use
 - [Saved hero checkpoint](docs/tasks/0007-hero-checkpoint.md) — `hero-checkpoint-01`
 - [Second hero prototype](docs/tasks/0008-second-hero-concept.md)
 - [Current exploration-cue refinement](docs/tasks/0009-exploration-hero-refinement.md)
+- [Portfolio-inspired concept](docs/tasks/0010-portfolio-inspired-hero.md)
+- [Combined Concept 04](docs/tasks/0011-combined-hero-concept.md)
 - [Hero imagery, prompts, and font provenance](docs/references/hero-assets.md)
 - [Frontend boundary and dependencies](docs/adr/0001-local-frontend-foundation.md)
 
@@ -61,13 +77,16 @@ The Instagram reels are essential branding references. Direct access failed;
 the subsequently supplied September 28 screen recording has been reviewed and
 included in the notes. The setup-only restriction applied to Task 0001; the
 owner's subsequent requests authorize the home hero and refinements in Tasks
-0002–0009.
+0002–0011.
 
 ## Repository boundary
 
 `src/app/` contains the App Router layout and home route. The current hero lives
 in `src/components/specimen-hero.tsx` and its CSS module. The original
-`material-hero` component remains preserved. The current Explore matcha cue is
+`material-hero` component remains preserved. `chamber-hero` and `specimen-field`
+serve the isolated `/concept-03` route; its field is original SVG geometry.
+`hybrid-hero` serves `/concept-04`, sharing the field and capsule header.
+`use-periodic-glitch` controls hover repetition without new dependencies. The current Explore matcha cue is
 display text, not a link or button; its decorative reticle responds to a fine
 pointer while a stationary label remains readable. No navigation or data
 connection is implied by the header typography.

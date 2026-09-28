@@ -44,6 +44,17 @@ Latest palette clarification: Task 0009 uses neutral black (`#000`) for the
 homepage, replacing the green-tinted off-black. Matcha supplies the green;
 interface framing and annotations use neutral tones.
 
+The black tray homepage is saved at `ca2b63d37b25` / `homepage-checkpoint-02`.
+Task 0010 adds a final concept only at `/concept-03`, drawing on the owner’s
+portfolio: floating rounded navigation, curved spatial linework, and the
+existing character-resolution effects with thin Fraktion Sans and Mono. The
+saved homepage remains at `/` and Explore matcha remains unlinked.
+
+The owner’s subsequent Task 0011 requests a fourth concept combining the saved
+left-heading/right-tray layout with Concept 03’s grid and rounded navigation.
+The isolated `/concept-04` adds recurring brief text resolves while Explore
+matcha is hovered. All previous brand, scope, and integration boundaries remain.
+
 ## Current authorization and source authority
 
 The current task is to read and process the supplied feedback, then establish a new local frontend repository. Work should proceed in small, reviewable pieces. This document does not authorize a complete storefront build, changes to the existing storefront, production connections, publication, or new commercial rules.

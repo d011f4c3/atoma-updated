@@ -100,3 +100,12 @@ that hides the native pointer. The current tray concept removes the custom
 motion toggle at the owner's request. System reduced-motion preferences suppress
 automatic motion, transitions, and pointer tracking; the original checkpoint
 retains its historical pause control.
+
+## Spatial chamber — Task 0010
+
+The final concept reuses `matcha-tray-concept-02.webp`; no new image generation
+or third-party imagery is added. `specimen-field.tsx` generates original SVG
+linework as a presentational curved chamber. Neither its lines nor its view
+ordinal represent measured data or a scientific claim. The portfolio supplied
+by the owner informs spatial composition and the rounded header; no site code,
+project thumbnails, fonts, or branding assets were copied.

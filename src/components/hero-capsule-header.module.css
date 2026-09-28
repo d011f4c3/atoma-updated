@@ -1,0 +1,115 @@
+.header {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  width: min(calc(100% - var(--gutter) * 2), 62rem);
+  min-height: 4.25rem;
+  align-items: center;
+  justify-self: center;
+  margin: 1.25rem 0 0;
+  padding: 0.5rem 0.625rem 0.5rem 1.75rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 78%);
+  backdrop-filter: blur(16px);
+  animation: header-in 1100ms 50ms both;
+}
+.brand {
+  justify-self: start;
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+.sectionLabel,
+.explore {
+  font-family: var(--font-fraktion-mono), monospace;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.045em;
+}
+.sectionLabel {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  background: #1c1c1c;
+}
+.sectionLabel > span:first-child {
+  font-size: 0.625rem;
+  color: var(--muted);
+}
+.explore {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-self: end;
+  color: var(--muted);
+  min-height: 2.75rem;
+  padding: 0 1.125rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.explore svg {
+  width: 1rem;
+  height: 1rem;
+  stroke: currentColor;
+  stroke-width: 1;
+}
+@keyframes header-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 900px) {
+  .header {
+    padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+  }
+}
+@media (max-width: 700px) {
+  .header {
+    min-height: 3.5rem;
+    margin-top: 1rem;
+    grid-template-columns: 1fr auto;
+  }
+  .brand {
+    font-size: 1.375rem;
+  }
+  .sectionLabel {
+    display: none;
+  }
+  .explore {
+    gap: 1rem;
+    font-size: 0.625rem;
+  }
+}
+@media (max-width: 700px) and (max-height: 650px) {
+  .header {
+    min-height: 3rem;
+    margin-top: 0.75rem;
+  }
+}
+@media (max-height: 500px) and (min-width: 540px) {
+  .header {
+    min-height: 2.75rem;
+    margin-top: 0.75rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .header {
+    animation: none;
+  }
+}
