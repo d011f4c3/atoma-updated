@@ -1,0 +1,134 @@
+.inspector {
+  --inspection-ink: var(--sheet-ink, #e5e8df);
+  --inspection-background: var(--sheet-surface, #0b0b0b);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.inspector[data-tone="light"] {
+  --inspection-ink: var(--sheet-ink, #293128);
+  --inspection-background: var(--sheet-surface, #edf0e9);
+}
+.target {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--inspection-ink);
+  cursor: crosshair;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.target:focus-visible {
+  outline: 1px solid var(--inspection-ink);
+  outline-offset: 5px;
+}
+.photograph {
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+.lens {
+  position: absolute;
+  top: var(--lens-y, 50%);
+  left: var(--lens-x, 50%);
+  display: block;
+  width: var(--lens-size, 8rem);
+  height: var(--lens-size, 8rem);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.94);
+  pointer-events: none;
+  transition:
+    opacity 170ms,
+    transform 170ms;
+}
+.target[data-active="true"] .lens {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.aperture {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--inspection-ink);
+  border-radius: 50%;
+  background-color: var(--inspection-background);
+  background-image: url("/images/hero/matcha-tray-concept-02.webp");
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  background-size: var(--sample-width, 0px) var(--sample-height, 0px);
+  background-position: var(--sample-x, 0px) var(--sample-y, 0px);
+  box-shadow:
+    0 0 0 5px rgb(0 0 0 / 10%),
+    0 0.65rem 1.5rem rgb(0 0 0 / 13%);
+}
+.topRegistration,
+.sideRegistration {
+  position: absolute;
+  background: var(--inspection-ink);
+}
+.topRegistration {
+  top: -5px;
+  left: calc(50% - 0.5px);
+  width: 1px;
+  height: 10px;
+}
+.sideRegistration {
+  top: calc(50% - 0.5px);
+  right: -5px;
+  width: 10px;
+  height: 1px;
+}
+.hint {
+  position: absolute;
+  right: 0;
+  bottom: var(--inspection-hint-bottom, 0);
+  display: flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-fraktion-mono), monospace;
+  font-size: 0.625rem;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0.72;
+}
+.hint > span {
+  width: 0.35rem;
+  height: 0.35rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+.target[data-active="true"] .hint > span {
+  background: currentColor;
+}
+.instructions {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .hint {
+    right: max(1rem, calc((100% - 100vw) / 2 + 1.25rem));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lens {
+    transition: none;
+  }
+}

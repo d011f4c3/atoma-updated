@@ -129,3 +129,16 @@ Neither rendering is approved packaging or a SKU. The route-specific renderer
 dependency, motion preferences, visibility suspension, resolution cap, and
 resource lifecycle are recorded in ADR 0002 and Task 0013. Other concepts keep
 their existing CSS/image implementations.
+
+## Final photographic experience — Task 0014
+
+Concept 06 reuses `matcha-tray-concept-02.webp` without editing or regenerating it.
+Both the visible tray and circular 2.5× inspection aperture use that same image;
+the sample under the aperture center remains aligned to the source point. This
+is digital magnification of the illustrative image, not additional measured
+detail or a scientific imaging claim. No macro substitution or new bitmap is used.
+
+The coordinated reveal, ambient light, and optical linework are original CSS/SVG.
+The two tones use identical geometry, and the native cursor remains visible.
+The user explicitly prefers the 2D tray over the saved 3D comparison. No new
+generation, external reference asset, service, or rendering dependency is added.

@@ -67,6 +67,14 @@ The pre-refinement homepage is saved at `ca2b63d37b25` /
 
 ## Current authorization and source authority
 
+Task 0014 authorizes the final independent concept in dark and light. The owner
+prefers the 2D tray and wants a web experience rather than a basic site. The
+hero therefore uses a staged photographic reveal and direct material inspection,
+with the existing image magnified at the pointer position, keyboard arrows, or
+touch drag. The headline stays thin, uppercase, and measured. This does not add
+product data, a separate detail screen, or commerce integration. Earlier concepts
+remain unchanged, including Concept 05 at `5dad6f3`.
+
 Task 0013 supersedes the prior active slice with an isolated final comparison
 at `/concept-05`. The owner prefers the homepage and Concept 03 and asks to
 draw inspiration from Oro's Instagram and animated hero without copying or

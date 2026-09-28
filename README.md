@@ -1,26 +1,29 @@
 # ATOMA storefront v3
 
 Separate local frontend repository for the third ATOMA pass. The active
-experiment is the **home hero only** at [Concept 05](http://127.0.0.1:3100/concept-05):
-an original real-time 3D tray of fine matcha on black, a controlled camera reveal,
-changing silver reflections, and thin Fraktion Sans/Mono. Oro's product staging
-and motion inform the experiment; the composition, geometry, and lighting are
-original. “Carefully specified matcha.” remains the concise client-led headline.
+experiment is the **home hero only** at [Concept 06](http://127.0.0.1:3100/concept-06):
+an immersive photographic stage using the owner's preferred 2D tray, coordinated
+image/type entrance, moving light, and a real pointer-responsive magnifier.
+The aperture enlarges the same image at 2.5×, with keyboard and touch equivalents.
+“Carefully specified matcha.” remains the client-led headline in thin Fraktion
+Sans, with Mono navigation and labels.
 The [main homepage](http://127.0.0.1:3100/) retains its split layout, scoped curved
 field, and square header for comparison.
-The [light version](http://127.0.0.1:3100/concept-05/light) uses a pale studio
+The [light version](http://127.0.0.1:3100/concept-06/light) uses a pale studio
 surface and dark typography. Both include Matcha/About navigation and a working
 About dialog. Footer appearance links switch between the two comparisons.
 
 Explore matcha remains unlinked while the hero design is explored. There is no
 product detail screen, custom motion toggle, or commerce integration; system
 reduced-motion preferences remain supported. Current work is on
-`codex/hero-concept-05`.
+`codex/hero-concept-06`.
 
 The first hero is preserved at `e0608ee1b4d8` / `hero-checkpoint-01`. The accepted
 black tray homepage before this refinement is saved at `ca2b63d37b25`, tag
 `homepage-checkpoint-02`, and branch `codex/homepage-current`.
 The refined homepage is saved at `f0f2fffee276` / `homepage-grid-checkpoint`.
+The 3D [Concept 05](http://127.0.0.1:3100/concept-05) and its
+[light version](http://127.0.0.1:3100/concept-05/light) are saved at `5dad6f3`.
 
 [Concept 03](http://127.0.0.1:3100/concept-03) remains available as a separate
 centered specimen in curved space, with rounded navigation styling and hover
@@ -76,6 +79,7 @@ If the shell does not switch Node automatically, use
 - [Combined Concept 04](docs/tasks/0011-combined-hero-concept.md)
 - [Main homepage grid and square header](docs/tasks/0012-homepage-grid-and-square-nav.md)
 - [Final material-motion comparison](docs/tasks/0013-material-motion-hero.md)
+- [Final photographic experience](docs/tasks/0014-final-photographic-hero.md)
 - [Hero imagery, prompts, and font provenance](docs/references/hero-assets.md)
 - [Frontend boundary and dependencies](docs/adr/0001-local-frontend-foundation.md)
 - [Bounded 3D rendering experiment](docs/adr/0002-local-3d-hero-experiment.md)
@@ -84,9 +88,16 @@ The Instagram reels are essential branding references. Direct access failed;
 the subsequently supplied September 28 screen recording has been reviewed and
 included in the notes. The setup-only restriction applied to Task 0001; the
 owner's subsequent requests authorize the home hero and refinements in Tasks
-0002–0013.
+0002–0014.
 
 ## Repository boundary
+
+`optical-hero` serves `/concept-06` and `/concept-06/light`, with `matcha-inspector`
+handling the aligned photographic aperture and `sheet-information` handling
+the About dialog. It adds no dependencies or WebGL work. The image is the prior
+generated concept asset, not a verified product photograph. CSS light/line motion
+stops when hidden and respects reduced motion; direct lens inspection remains
+available as a user-controlled action.
 
 `src/app/` contains the App Router layout and home route. The current hero lives
 in `src/components/specimen-hero.tsx` and its CSS module; the original SVG
