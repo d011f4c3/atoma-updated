@@ -1,8 +1,12 @@
 # ATOMA storefront v3
 
-Separate local frontend repository for the third ATOMA pass. This delivery is
-repository setup only: an unstyled boot page, tooling, and processed feedback.
-No storefront design or commerce integration has been implemented.
+Separate local frontend repository for the third ATOMA pass. The current
+delivery is the **home hero only**: a clinical object/material study, live
+typography, controlled motion, and two connected views on an off-black surface.
+A top navigation and Index menu switch between Matcha and Material, with brief
+character-resolution effects. A compact “Matcha, by specification.” heading
+supports the product image. The two storefronts are separate: no link to the
+previous shop remains. No additional sections or commerce integration are present.
 
 ## Local development
 
@@ -37,17 +41,35 @@ If the shell does not switch Node automatically, use
 - [Processed client direction](docs/briefs/2026-09-28-client-direction.md)
 - [Source register and recording review](docs/references/2026-09-28.md)
 - [Setup task and validation](docs/tasks/0001-feedback-and-frontend-foundation.md)
+- [Home hero task and validation](docs/tasks/0002-home-hero.md)
+- [Hero refinement and product entry](docs/tasks/0003-hero-refinement.md)
+- [Original light gradient and contrast](docs/tasks/0004-light-mineral-gradient.md)
+- [Dark navigation and text transitions](docs/tasks/0005-dark-navigation-and-text-resolve.md)
+- [Compact hero heading](docs/tasks/0006-compact-hero-heading.md)
+- [Saved hero checkpoint](docs/tasks/0007-hero-checkpoint.md) — `hero-checkpoint-01`
+- [Hero imagery, prompts, and font provenance](docs/references/hero-assets.md)
 - [Frontend boundary and dependencies](docs/adr/0001-local-frontend-foundation.md)
 
 The Instagram reels are essential branding references. Direct access failed;
 the subsequently supplied September 28 screen recording has been reviewed and
-included in the notes. The owner explicitly requested no design during this task.
+included in the notes. The setup-only restriction applied to Task 0001; the
+owner's subsequent requests authorize the home hero and refinements in Tasks
+0002–0006.
 
 ## Repository boundary
 
-`src/app/` contains only the App Router layout and a plain boot message. The
-source notes stay under `docs/`, outside the public app. Original attachments,
-legacy UI, environment files, and operational data were not copied into Git.
+`src/app/` contains the App Router layout and home route. The bounded hero lives
+in `src/components/material-hero.tsx` and its CSS module. The top navigation,
+Index menu, vessel, and inspection button change the hero's perspective. Text
+resolution is isolated in `src/components/scramble-text.tsx`; it runs on arrival
+and hover/focus, and stops when paused or reduced motion is requested. Fraktion
+Sans and Mono remain the owner's authorized local trial. The viewport grid keeps
+controls in their own rows. `--product-gradient` preserves the original JMM
+blue-to-bone stops for future connected product pages; it is not used on the home.
+
+The source notes stay under `docs/`, outside the public app. Original client
+attachments, legacy UI, environment files, and operational data were not copied
+into Git. Generated concept imagery and the trial fonts are served locally.
 
 The sibling JMM and prior atoma-storefront repositories remain unchanged.
 Accepted commerce, inventory, and data contracts remain authoritative for later

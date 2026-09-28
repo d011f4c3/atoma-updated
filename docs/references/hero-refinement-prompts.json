@@ -1,0 +1,44 @@
+{
+  "mode": "built-in image_gen image editing",
+  "generated_at": "2026-09-28",
+  "repository_modified": false,
+  "generation_count": 2,
+  "variants_or_retries": 0,
+  "assets": [
+    {
+      "key": "vessel",
+      "source": "/Users/d0l1f4c3/Projects/atoma-storefront-v3/public/images/hero/matcha-vessel.webp",
+      "output": "/Users/d0l1f4c3/.codex/generated_images/01a0e70d-e94f-7903-a7cd-4a48121ade82/exec-cfe4bcd2-99e3-44ae-8598-3678c8453ddf.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "prompt": "Use case: precise-object-edit.\nAsset type: conceptual CGI matcha product hero.\nInput image: the supplied image is the edit target.\nPrimary request: edit ONLY the green matcha powder surface inside the open silver vessel. Replace the bumpy and clumpy surface with ultra-fine sifted matcha, a softly rounded low smooth mound, with a refined calm satin-matte powder appearance. Retain minute natural powder particles as subtle microtexture; remove all gravel, rocks and large clumps. The powder must look dry and velvety, never shiny, wet, plastic, or liquid.\nConstraints: preserve the exact original matcha green hue, the entire silver vessel geometry and brushed metal texture, all rim and wall edges, the floating lid position and shape, framing, camera perspective, object scale and coordinates, the pure black background, studio lighting, shadows, and floor reflection. Change absolutely nothing outside the powder area. In particular the lid and vessel base must remain at precisely their existing pixel positions because the image is split into CSS clips at 34% of image height. The floating lid's lower edge must stay above that 34% horizontal line and the base's top rim below it, just as in the input.\nComposition/output: preserve the full original 1536 by 1024 landscape canvas and 3:2 aspect ratio. No crop, no zoom, no reframing. No text, branding, watermark, or props.",
+      "inspection_findings": [
+        "Large loose clumps around the mound and coarse bumps on its surface are removed. Powder appears finer, dry and matte.",
+        "The mound remains fairly conical and close to its original peak height, so the requested low softly rounded mound was only partially achieved.",
+        "Silver vessel, floating lid, black background and reflection preserve the original composition and visually align closely. Pixel-identical geometry was not independently verified.",
+        "The visible gap between the floating lid and vessel rim remains at the 34% image-height split.",
+        "No text, props, crop or framing change is visible."
+      ],
+      "project_path": "public/images/hero/matcha-vessel-v2.webp"
+    },
+    {
+      "key": "macro",
+      "source": "/Users/d0l1f4c3/Projects/atoma-storefront-v3/public/images/hero/matcha-macro.webp",
+      "output": "/Users/d0l1f4c3/.codex/generated_images/01a0e70d-e94f-7903-a7cd-4a48121ade82/exec-1c4b94f7-f2d6-4212-8d7d-00823bffddec.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "prompt": "Use case: precise-object-edit.\nAsset type: conceptual CGI matcha powder macro material study.\nInput image: the supplied image is the edit target.\nPrimary request: refine this matcha powder landscape by removing rocks, gritty clumps and coarse bumps. Make the powder extremely fine, sifted, velvety and visually smooth, with subtle natural microscopic dry powder texture. Soften the existing tall jagged left ridge into a gentler lower rounded ridge. Preserve the flowing curved channel, overall ridge and valley composition, perspective, framing, and selective focus.\nConstraints: preserve the existing controlled black-and-green lighting, black background, original matcha green palette, dramatic but restrained light falloff and composition. Keep an authentic matte dry powder material, with no shiny, waxy, wet or plastic appearance. No new objects, no props, no text, no branding, no watermark.\nComposition/output: preserve the full original 1536 by 1024 landscape canvas and 3:2 aspect ratio, with no crop or reframing.",
+      "inspection_findings": [
+        "Visible rocks and coarse irregular clumps are removed; dry fine microtexture remains.",
+        "Main ridge is softened and more rounded. The sweeping curved channel, black background, matcha-green palette and controlled lighting are preserved.",
+        "Material remains matte rather than shiny or plastic.",
+        "No text, props or framing change is visible."
+      ],
+      "project_path": "public/images/hero/matcha-macro-v2.webp"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "mode": "built-in image_gen image editing",
+  "generated_at": "2026-09-28",
+  "generation_count": 1,
+  "variants_or_retries": 0,
+  "source": "public/images/hero/matcha-vessel-v2.webp",
+  "output": "/Users/d0l1f4c3/.codex/generated_images/01a0e744-12ce-7aa2-bccf-3fbdf6870133/exec-0e41760e-b017-486d-8daf-d6aab78f74bf.png",
+  "project_path": "public/images/hero/matcha-vessel-light-v3.webp",
+  "width": 1536,
+  "height": 1024,
+  "has_alpha": true,
+  "prompt": "Use case: background-extraction\nAsset type: transparent PNG hero product cutout for an existing split animation\nInput image: the attached local image is the EDIT TARGET, not a style reference.\nPrimary request: edit this exact image by removing only its black background and the entire floor reflection below the vessel. Deliver genuine transparent alpha background, including the empty gap between the floating lid and the vessel. No visible backdrop, no floor, no cast ground shadow, no checkerboard pixels.\nComposition/framing: preserve EXACTLY the original 1536 x 1024 canvas and the existing product pixel positions, dimensions, scale, perspective, silhouettes, and spacing. Do not crop, reframe, zoom, shift, enlarge, rotate or recompose anything. The lid is centered around x768, occupies approximately x460-1076 and y111-343; keep the entire lid ABOVE y348 (34% canvas height). The vessel is centered around x768, occupies approximately x465-1071 and y352-793; keep the entire vessel BELOW y348. This empty horizontal separation is a strict functional invariant for the animation.\nSubject/material invariants: retain the exact silver cylindrical metal vessel, its green matcha mound, its floating metal lid, original brushed-metal geometry and texture, original smooth fine-powder texture, original metal highlights and dimensional shading. Preserve all genuine product dark metal shading; only background and floor reflection become transparent. Keep the exact lid position and shape. Do not redesign or relight the product.\nAvoid: black matte residue or black halos at cutout edges, painted checkerboard, opaque white background, new objects, props, text, logos, watermarks, floor reflection, cast ground shadow. Return one faithful transparent cutout, no variants.",
+  "inspection_findings": [
+    "Genuine RGBA transparency at 1536 x 1024; product alpha mainly 253/255 with fully transparent corners.",
+    "Visible lid bounds y112-343 and vessel y352-793 preserve the split at y348; split row maximum alpha 1/255.",
+    "Floor reflection removed; very faint 1/255 alpha residue extends outside the product bounds.",
+    "Composition stays close. Powder texture is slightly coarser and metal highlights stronger than source; extraction is not pixel-identical."
+  ]
+}

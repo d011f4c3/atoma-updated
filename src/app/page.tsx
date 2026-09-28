@@ -1,3 +1,5 @@
+import { MaterialHero } from "@/components/material-hero";
+
 export default function HomePage() {
-  return <main>Frontend repository initialized.</main>;
+  return <MaterialHero />;
 }

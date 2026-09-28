@@ -4,6 +4,23 @@ Date: 2026-09-28
 
 Status: source analysis for the third storefront pass; visual proposals are not approved designs.
 
+Subsequent scope update: after the setup and analysis were delivered, the owner
+authorized a home hero only. That implementation is tracked in
+`docs/tasks/0002-home-hero.md`. The setup-only statements below record the original
+analysis task; they do not negate the later explicit hero request.
+
+Further owner direction is tracked in `docs/tasks/0003-hero-refinement.md`:
+trial Fraktion Sans/Mono, a viewport-contained hero, smoother powder, cleaner
+inspection, restrained lab linework, removal of meta captions/wordplay, and a
+clear product entry ahead of optional exploration. The home hero remains the
+implementation boundary; a local catalog integration is a later slice.
+
+Current owner direction in `docs/tasks/0005-dark-navigation-and-text-resolve.md`
+returns the home to off-black and removes the large MATCHA heading. Navigation
+and small labels use subtle Anduril-inspired character resolution. Keep this
+storefront separate from the prior storefront; its external shop link is removed.
+The tested blue-to-bone gradient is retained for future connected product pages.
+
 Owner clarification: the Instagram reels are essential branding references and
 visual appeal carries substantial weight. The additional 57.42-second recording
 has now been reviewed visually. The owner explicitly specifies a clinical,
