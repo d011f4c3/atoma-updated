@@ -67,6 +67,12 @@ The pre-refinement homepage is saved at `ca2b63d37b25` /
 
 ## Current authorization and source authority
 
+Task 0015 follows the owner's selection of the homepage and Concept 03 as the
+strongest contenders. Add light versions of those exact layouts at `/light` and
+`/concept-03/light`. Use pale neutral surfaces with readable dark type/linework;
+preserve images, animation, pointer behavior, header geometry, and the original
+dark versions. This is a palette comparison, not another composition pass.
+
 Task 0014 authorizes the final independent concept in dark and light. The owner
 prefers the 2D tray and wants a web experience rather than a basic site. The
 hero therefore uses a staged photographic reveal and direct material inspection,

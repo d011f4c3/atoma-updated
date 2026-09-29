@@ -21,17 +21,21 @@
   inspired by Oro's motion and the client briefs, with an About dialog and
   Matcha-first navigation. Preserve `/`, `/concept-03`, and `/concept-04`,
   all saved checkpoints, and the separation between storefronts.
-  Concept 05 is saved at `5dad6f3`. Active Task 0014 adds only `/concept-06` and
+  Concept 05 is saved at `5dad6f3`. Task 0014 adds only `/concept-06` and
   `/concept-06/light`: an independent photographic hero from the client brief.
   The owner prefers the 2D tray. Preserve all earlier concepts unchanged.
+  Concept 06 is saved at `b052ee2`. Active Task 0015 adds light versions of the
+  two preferred contenders: `/light` and `/concept-03/light`. Preserve their
+  compositions/interactions and all original dark styling, including Concept 04's
+  shared capsule header. Only scoped light-palette changes are authorized.
   Further sections, catalog integration, and release work remain separate tasks.
 - Read `docs/briefs/2026-09-28-client-direction.md` before design work. Label
   interpretations and illustrative content; do not present them as approved facts.
 - The client's words in both source documents are central. Preserve the owner's
   clarified clinical/laboratory/production-engineering direction and emphasis
   on animation, typography, visual appeal, and experience. Design only the scope
-  authorized by the current task. Task 0014 is the final independent comparison
-  hero, based on the brief and industrial/laboratory direction, in dark and light.
+  authorized by the current task. Task 0015 makes light comparisons of the
+  homepage and Concept 03; it does not authorize another layout or interaction pass.
   No product detail screen, fake navigation, custom motion toggle,
   or commerce action is authorized; Explore matcha remains unlinked.
   Keep native pointer visibility and system reduced-motion support.

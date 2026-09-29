@@ -142,3 +142,11 @@ The coordinated reveal, ambient light, and optical linework are original CSS/SVG
 The two tones use identical geometry, and the native cursor remains visible.
 The user explicitly prefers the 2D tray over the saved 3D comparison. No new
 generation, external reference asset, service, or rendering dependency is added.
+
+## Preferred-hero light variants — Task 0015
+
+The homepage light and Concept 03 light reuse the existing transparent
+`matcha-tray-concept-02.webp`. No generation, image editing, or asset conversion
+is performed. Scoped CSS adjusts the substrate, type, grid, header surfaces,
+reticles, and hover-label contrast. The light homepage adds a faint CSS shadow
+beneath the tray; the photograph and original dark styling remain unchanged.

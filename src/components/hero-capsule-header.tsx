@@ -8,15 +8,17 @@ import styles from "./hero-capsule-header.module.css";
 
 export function HeroCapsuleHeader({
   repeatExplore = false,
+  tone = "dark",
 }: {
   repeatExplore?: boolean;
+  tone?: "dark" | "light";
 }) {
   const [replay, setReplay] = useState({ matcha: 0, explore: 0 });
   const [exploreHovered, setExploreHovered] = useState(false);
   const cycle = usePeriodicGlitch(repeatExplore && exploreHovered);
 
   return (
-    <header className={styles.header}>
+    <header className={styles.header} data-tone={tone}>
       <Link className={styles.brand} href="/" aria-label="ATOMA home">
         ATOMA
       </Link>

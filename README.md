@@ -1,22 +1,19 @@
 # ATOMA storefront v3
 
-Separate local frontend repository for the third ATOMA pass. The active
-experiment is the **home hero only** at [Concept 06](http://127.0.0.1:3100/concept-06):
-an immersive photographic stage using the owner's preferred 2D tray, coordinated
-image/type entrance, moving light, and a real pointer-responsive magnifier.
-The aperture enlarges the same image at 2.5×, with keyboard and touch equivalents.
-“Carefully specified matcha.” remains the client-led headline in thin Fraktion
-Sans, with Mono navigation and labels.
-The [main homepage](http://127.0.0.1:3100/) retains its split layout, scoped curved
-field, and square header for comparison.
-The [light version](http://127.0.0.1:3100/concept-06/light) uses a pale studio
-surface and dark typography. Both include Matcha/About navigation and a working
-About dialog. Footer appearance links switch between the two comparisons.
+Separate local frontend repository for the third ATOMA pass. The current work
+adds light versions of the owner's two preferred heroes:
+[homepage light](http://127.0.0.1:3100/light) and
+[Concept 03 light](http://127.0.0.1:3100/concept-03/light).
+Both use a pale studio surface with dark typography, registration lines, and
+readable hover labels. Their layouts, 2D tray, animation, and interactions remain
+the same. The [dark homepage](http://127.0.0.1:3100/) retains its split layout,
+scoped grid, and square header; [dark Concept 03](http://127.0.0.1:3100/concept-03)
+retains its full curved field and capsule header.
 
 Explore matcha remains unlinked while the hero design is explored. There is no
 product detail screen, custom motion toggle, or commerce integration; system
 reduced-motion preferences remain supported. Current work is on
-`codex/hero-concept-06`.
+`codex/light-home-and-concept-03`.
 
 The first hero is preserved at `e0608ee1b4d8` / `hero-checkpoint-01`. The accepted
 black tray homepage before this refinement is saved at `ca2b63d37b25`, tag
@@ -24,6 +21,8 @@ black tray homepage before this refinement is saved at `ca2b63d37b25`, tag
 The refined homepage is saved at `f0f2fffee276` / `homepage-grid-checkpoint`.
 The 3D [Concept 05](http://127.0.0.1:3100/concept-05) and its
 [light version](http://127.0.0.1:3100/concept-05/light) are saved at `5dad6f3`.
+The photographic [Concept 06](http://127.0.0.1:3100/concept-06) and its
+[light version](http://127.0.0.1:3100/concept-06/light) are saved at `b052ee2`.
 
 [Concept 03](http://127.0.0.1:3100/concept-03) remains available as a separate
 centered specimen in curved space, with rounded navigation styling and hover
@@ -80,6 +79,7 @@ If the shell does not switch Node automatically, use
 - [Main homepage grid and square header](docs/tasks/0012-homepage-grid-and-square-nav.md)
 - [Final material-motion comparison](docs/tasks/0013-material-motion-hero.md)
 - [Final photographic experience](docs/tasks/0014-final-photographic-hero.md)
+- [Light versions of the preferred heroes](docs/tasks/0015-light-homepage-and-concept-03.md)
 - [Hero imagery, prompts, and font provenance](docs/references/hero-assets.md)
 - [Frontend boundary and dependencies](docs/adr/0001-local-frontend-foundation.md)
 - [Bounded 3D rendering experiment](docs/adr/0002-local-3d-hero-experiment.md)
@@ -88,9 +88,13 @@ The Instagram reels are essential branding references. Direct access failed;
 the subsequently supplied September 28 screen recording has been reviewed and
 included in the notes. The setup-only restriction applied to Task 0001; the
 owner's subsequent requests authorize the home hero and refinements in Tasks
-0002–0014.
+0002–0015.
 
 ## Repository boundary
+
+`SpecimenHero` and `ChamberHero` accept an optional light tone for `/light` and
+`/concept-03/light`. Their default dark palette and interactions are unchanged.
+The shared capsule header also defaults to dark, preserving Concept 04.
 
 `optical-hero` serves `/concept-06` and `/concept-06/light`, with `matcha-inspector`
 handling the aligned photographic aperture and `sheet-information` handling

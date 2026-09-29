@@ -458,6 +458,63 @@
 .footerCross::after {
   transform: rotate(90deg);
 }
+.hero[data-tone="light"] {
+  --surface: #eef0ed;
+  --ink: #273029;
+  --paper: #273029;
+  --muted: #60695f;
+  --line: rgb(39 48 41 / 22%);
+  --accent: #485447;
+  color-scheme: light;
+}
+.hero[data-tone="light"] .currentSection,
+.hero[data-tone="light"] .headerExplore:hover {
+  background: #e3e7e1;
+}
+.hero[data-tone="light"] .headerExplore {
+  border-color: rgb(39 48 41 / 15%);
+}
+.hero[data-tone="light"] .headerExplore:hover {
+  border-color: var(--line);
+}
+.hero[data-tone="light"] .exploreLabel::after {
+  background: rgb(39 48 41 / 50%);
+}
+.hero[data-tone="light"] .introRegistration > span {
+  border-color: #687164;
+}
+.hero[data-tone="light"] .registrationLine {
+  background: rgb(39 48 41 / 14%);
+}
+.hero[data-tone="light"] .field {
+  color: #586653;
+}
+.hero[data-tone="light"] .trayImage {
+  filter: drop-shadow(0 0.75rem 1.25rem rgb(37 46 40 / 9%));
+}
+.hero[data-tone="light"] .frame > span {
+  border-color: #899183;
+}
+.hero[data-tone="light"] .imageStage[data-hovered="true"] .frame > span {
+  border-color: var(--ink);
+}
+.hero[data-tone="light"] .exposureLine {
+  background: rgb(39 48 41 / 45%);
+}
+.hero[data-tone="light"] .targetMark {
+  border-color: rgb(39 48 41 / 70%);
+}
+.hero[data-tone="light"] .targetLeader {
+  background: rgb(39 48 41 / 55%);
+}
+.hero[data-tone="light"] .targetLabel {
+  border-color: rgb(39 48 41 / 30%);
+  background: rgb(247 248 245 / 97%);
+  color: var(--ink);
+}
+.hero[data-tone="light"] .footerMark > span {
+  color: var(--muted);
+}
 @keyframes field-in {
   from {
     opacity: 0;

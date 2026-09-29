@@ -14,7 +14,7 @@ function Arrow() {
   );
 }
 
-export function SpecimenHero() {
+export function SpecimenHero({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
@@ -109,7 +109,7 @@ export function SpecimenHero() {
   }, []);
 
   return (
-    <main className={styles.hero} data-concept="02">
+    <main className={styles.hero} data-concept="02" data-tone={tone}>
       <header className={styles.header}>
         <span className={styles.brand}>ATOMA</span>
         <span

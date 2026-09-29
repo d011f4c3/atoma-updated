@@ -15,6 +15,12 @@
   backdrop-filter: blur(16px);
   animation: header-in 1100ms 50ms both;
 }
+.header[data-tone="light"] {
+  background: rgb(232 235 230 / 90%);
+}
+.header[data-tone="light"] .sectionLabel {
+  background: #dde2dc;
+}
 .brand {
   justify-self: start;
   display: flex;

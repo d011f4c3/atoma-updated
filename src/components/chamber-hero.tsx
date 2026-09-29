@@ -15,7 +15,7 @@ function Arrow() {
   );
 }
 
-export function ChamberHero() {
+export function ChamberHero({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const sceneRef = useRef<HTMLDivElement>(null);
   const subjectRef = useRef<HTMLDivElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
@@ -114,8 +114,8 @@ export function ChamberHero() {
   }, []);
 
   return (
-    <main className={styles.hero} data-concept="03">
-      <HeroCapsuleHeader />
+    <main className={styles.hero} data-concept="03" data-tone={tone}>
+      <HeroCapsuleHeader tone={tone} />
 
       <div ref={sceneRef} className={styles.scene} data-hovered={hovered}>
         <div className={styles.fieldWindow}>
