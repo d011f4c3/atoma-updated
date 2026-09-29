@@ -67,6 +67,17 @@ The pre-refinement homepage is saved at `ca2b63d37b25` /
 
 ## Current authorization and source authority
 
+Task 0016 supersedes the palette-only pass. Refine the homepage with a visible
+light/dark switcher, tighter right-aligned navigation, and more expressive
+choreography. Preserve the previous version at `b85f7af`. Rework Concept 03's
+rounded navigation and linework into a cohesive new Concept 06, leaving the
+actual Concept 03 intact and saving previous Concept 06 at `b052ee2`. Add an
+original Concept 07 with laboratory/production-engineering character, clean
+exploration, and a cool palette rather than bone. Local material-view controls
+are authorized; commerce and unverified product claims remain outside scope.
+The new Concept 07 imagery is a set of visual studies, not a factual account of
+ATOMA's equipment, approved packaging, or production sequence.
+
 Task 0015 follows the owner's selection of the homepage and Concept 03 as the
 strongest contenders. Add light versions of those exact layouts at `/light` and
 `/concept-03/light`. Use pale neutral surfaces with readable dark type/linework;

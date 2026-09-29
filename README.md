@@ -1,37 +1,46 @@
 # ATOMA storefront v3
 
-Separate local frontend repository for the third ATOMA pass. The current work
-adds light versions of the owner's two preferred heroes:
-[homepage light](http://127.0.0.1:3100/light) and
-[Concept 03 light](http://127.0.0.1:3100/concept-03/light).
-Both use a pale studio surface with dark typography, registration lines, and
-readable hover labels. Their layouts, 2D tray, animation, and interactions remain
-the same. The [dark homepage](http://127.0.0.1:3100/) retains its split layout,
-scoped grid, and square header; [dark Concept 03](http://127.0.0.1:3100/concept-03)
-retains its full curved field and capsule header.
+Separate local frontend repository for the third ATOMA pass. Task 0016 provides
+three comparisons grounded in the client brief:
 
-Explore matcha remains unlinked while the hero design is explored. There is no
-product detail screen, custom motion toggle, or commerce integration; system
-reduced-motion preferences remain supported. Current work is on
-`codex/light-home-and-concept-03`.
+- [Homepage](http://127.0.0.1:3100/) / [light](http://127.0.0.1:3100/light): the
+  preferred split composition with a visible appearance switcher, compact square
+  navigation at the right, a larger staggered type reveal, responsive lighting,
+  a slow reflection across the tray, and recurring hover text resolution.
+- [Concept 06](http://127.0.0.1:3100/concept-06) /
+  [light](http://127.0.0.1:3100/concept-06/light): an evolution of Concept 03 with
+  an elliptical chamber and circular controls in the hero. Overview and Texture
+  switch between the complete tray and a crop of its powder. Escape restores the
+  overview. The original Concept 03 routes remain unchanged.
+- [Concept 07](http://127.0.0.1:3100/concept-07): a cool silver-blue inspection
+  stage. Object, Powder, and Surface reveal the suspended vessel, tray, and macro
+  image with coordinated framing. The surface position slider and About dialog
+  work with keyboard and touch.
 
-The first hero is preserved at `e0608ee1b4d8` / `hero-checkpoint-01`. The accepted
-black tray homepage before this refinement is saved at `ca2b63d37b25`, tag
-`homepage-checkpoint-02`, and branch `codex/homepage-current`.
-The refined homepage is saved at `f0f2fffee276` / `homepage-grid-checkpoint`.
-The 3D [Concept 05](http://127.0.0.1:3100/concept-05) and its
-[light version](http://127.0.0.1:3100/concept-05/light) are saved at `5dad6f3`.
-The photographic [Concept 06](http://127.0.0.1:3100/concept-06) and its
-[light version](http://127.0.0.1:3100/concept-06/light) are saved at `b052ee2`.
+Explore matcha remains unlinked as a shop destination. The new controls explore
+local concept imagery only; there is no catalog, product-detail page, commerce
+integration, or custom motion-off mode. System reduced motion remains supported.
+Current branch: `codex/final-hero-comparisons`.
 
-[Concept 03](http://127.0.0.1:3100/concept-03) remains available as a separate
-centered specimen in curved space, with rounded navigation styling and hover
-text resolution. [Concept 04](http://127.0.0.1:3100/concept-04) combines that
-curved field and capsule header with the split composition. Its 500 ms glyph
-resolve repeats every 2.8 seconds while Explore matcha is hovered, with system
-reduced-motion and hidden-document suspension. Concept 04 is preserved unchanged
-at `50a352cc4fa7`, tag `hero-concept-04`, and branch `codex/hero-concept-04`.
-The ATOMA wordmark on the separate concepts returns to `/`.
+## Saved comparisons
+
+The preferred dark/light versions before this pass are committed at `b85f7af`
+on `codex/light-home-and-concept-03`. Previous Concept 06 is preserved at
+`b052ee2` on `codex/hero-concept-06`; only its routes are replaced by Task 0016.
+Its original `optical-hero` component remains in the repository.
+
+Other checkpoints remain intact:
+
+- `e0608ee1b4d8` / `hero-checkpoint-01`: first vessel hero.
+- `ca2b63d37b25` / `homepage-checkpoint-02`: accepted black tray homepage.
+- `f0f2fffee276` / `homepage-grid-checkpoint`: right-side grid refinement.
+- `50a352cc4fa7` / `hero-concept-04`: combined grid/split concept.
+- `5dad6f3`: Concept 05 with its 3D scene and light comparison.
+
+[Concept 03](http://127.0.0.1:3100/concept-03),
+[Concept 03 light](http://127.0.0.1:3100/concept-03/light),
+[Concept 04](http://127.0.0.1:3100/concept-04), and
+[Concept 05](http://127.0.0.1:3100/concept-05) remain available unchanged.
 
 ## Local development
 
@@ -80,6 +89,7 @@ If the shell does not switch Node automatically, use
 - [Final material-motion comparison](docs/tasks/0013-material-motion-hero.md)
 - [Final photographic experience](docs/tasks/0014-final-photographic-hero.md)
 - [Light versions of the preferred heroes](docs/tasks/0015-light-homepage-and-concept-03.md)
+- [Final hero comparisons](docs/tasks/0016-final-hero-comparisons.md)
 - [Hero imagery, prompts, and font provenance](docs/references/hero-assets.md)
 - [Frontend boundary and dependencies](docs/adr/0001-local-frontend-foundation.md)
 - [Bounded 3D rendering experiment](docs/adr/0002-local-3d-hero-experiment.md)
@@ -88,31 +98,27 @@ The Instagram reels are essential branding references. Direct access failed;
 the subsequently supplied September 28 screen recording has been reviewed and
 included in the notes. The setup-only restriction applied to Task 0001; the
 owner's subsequent requests authorize the home hero and refinements in Tasks
-0002–0015.
+0002–0016.
 
 ## Repository boundary
 
-`SpecimenHero` and `ChamberHero` accept an optional light tone for `/light` and
-`/concept-03/light`. Their default dark palette and interactions are unchanged.
-The shared capsule header also defaults to dark, preserving Concept 04.
+`SpecimenHero` serves `/` and `/light`. The right-hand image stage contains the
+original SVG `specimen-field`; the headline side stays clear. CSS, pointer
+lighting, and native link theme navigation are scoped to this component.
 
-`optical-hero` serves `/concept-06` and `/concept-06/light`, with `matcha-inspector`
-handling the aligned photographic aperture and `sheet-information` handling
-the About dialog. It adds no dependencies or WebGL work. The image is the prior
-generated concept asset, not a verified product photograph. CSS light/line motion
-stops when hidden and respects reduced motion; direct lens inspection remains
-available as a user-controlled action.
+`ChamberHero` serves the unchanged `/concept-03` routes; `HybridHero` serves
+`/concept-04`. Their shared capsule header and field remain unchanged.
+`OrbitalHero` now serves both `/concept-06` routes through separate components;
+its circular detail is a crop of the same illustrative tray image.
 
-`src/app/` contains the App Router layout and home route. The current hero lives
-in `src/components/specimen-hero.tsx` and its CSS module; the original SVG
-`specimen-field` is placed only within its right-side image stage. The original
-`material-hero` component remains preserved. `chamber-hero` serves the isolated
-`/concept-03` route. `hybrid-hero` serves `/concept-04`; those separate concepts
-share the field and capsule header, while `/` retains its square header.
-`use-periodic-glitch` controls hover repetition without new dependencies. The current Explore matcha cue is
-display text, not a link or button; its decorative reticle responds to a fine
-pointer while a stationary label remains readable. No navigation or data
-connection is implied by the header typography.
+`InspectionStageHero` serves `/concept-07`. It reuses the generated vessel, tray,
+and macro assets as separate visual studies, without asserting an actual
+production sequence, specific magnification, or approved packaging. Its local
+view controls and surface slider have no connection to product data. The shared
+`SheetInformation` provides the existing About dialog without modifications.
+
+The preserved `optical-hero` and `matcha-inspector` components remain available
+in source, but no longer serve Concept 06. No new dependency is added by Task 0016. All current assets are illustrative, not verified product photographs.
 
 `precision-hero` serves `/concept-05`. Its dynamically imported Three.js scene
 uses procedural geometry, powder microtexture, and original studio reflection

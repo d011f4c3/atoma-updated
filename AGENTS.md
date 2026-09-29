@@ -24,18 +24,22 @@
   Concept 05 is saved at `5dad6f3`. Task 0014 adds only `/concept-06` and
   `/concept-06/light`: an independent photographic hero from the client brief.
   The owner prefers the 2D tray. Preserve all earlier concepts unchanged.
-  Concept 06 is saved at `b052ee2`. Active Task 0015 adds light versions of the
+  Concept 06 is saved at `b052ee2`. Task 0015 adds light versions of the
   two preferred contenders: `/light` and `/concept-03/light`. Preserve their
   compositions/interactions and all original dark styling, including Concept 04's
   shared capsule header. Only scoped light-palette changes are authorized.
+  Active Task 0016 supersedes the palette-only limit: refine the homepage, replace
+  Concept 06 with an evolution of Concept 03, and add an original Concept 07.
+  Visible theme navigation and real local exploration controls are authorized.
+  Preserve actual Concept 03, Concept 04, and Concept 05 routes and shared styling.
   Further sections, catalog integration, and release work remain separate tasks.
 - Read `docs/briefs/2026-09-28-client-direction.md` before design work. Label
   interpretations and illustrative content; do not present them as approved facts.
 - The client's words in both source documents are central. Preserve the owner's
   clarified clinical/laboratory/production-engineering direction and emphasis
   on animation, typography, visual appeal, and experience. Design only the scope
-  authorized by the current task. Task 0015 makes light comparisons of the
-  homepage and Concept 03; it does not authorize another layout or interaction pass.
+  authorized by the current task. Task 0016 authorizes three visual/interaction
+  passes as specified in its task brief.
   No product detail screen, fake navigation, custom motion toggle,
   or commerce action is authorized; Explore matcha remains unlinked.
   Keep native pointer visibility and system reduced-motion support.

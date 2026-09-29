@@ -1,5 +1,5 @@
-import { OpticalHero } from "@/components/optical-hero";
+import { OrbitalHero } from "@/components/orbital-hero";
 
-export default function SpecimenSheetLightPage() {
-  return <OpticalHero tone="light" />;
+export default function OrbitalConceptLightPage() {
+  return <OrbitalHero tone="light" />;
 }

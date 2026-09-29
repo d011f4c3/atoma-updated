@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ScrambleText } from "./scramble-text";
 import { SpecimenField } from "./specimen-field";
+import { usePeriodicGlitch } from "./use-periodic-glitch";
 import styles from "./specimen-hero.module.css";
 
 function Arrow() {
@@ -18,7 +20,17 @@ export function SpecimenHero({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
+  const [labelHovered, setLabelHovered] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const hoverCycle = usePeriodicGlitch(hovered || labelHovered);
   const [navReplay, setNavReplay] = useState({ matcha: 0, explore: 0 });
+
+  useEffect(() => {
+    const synchronize = () => setVisible(!document.hidden);
+    synchronize();
+    document.addEventListener("visibilitychange", synchronize);
+    return () => document.removeEventListener("visibilitychange", synchronize);
+  }, []);
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -49,6 +61,8 @@ export function SpecimenHero({ tone = "dark" }: { tone?: "dark" | "light" }) {
       stage.style.removeProperty("--pointer-y");
       stage.style.removeProperty("--field-x");
       stage.style.removeProperty("--field-y");
+      stage.style.removeProperty("--light-x");
+      stage.style.removeProperty("--light-y");
     };
 
     const positionCue = () => {
@@ -67,6 +81,8 @@ export function SpecimenHero({ tone = "dark" }: { tone?: "dark" | "light" }) {
       );
       stage.style.setProperty("--pointer-x", `${x}px`);
       stage.style.setProperty("--pointer-y", `${y}px`);
+      stage.style.setProperty("--light-x", `${(x / bounds.width) * 100}%`);
+      stage.style.setProperty("--light-y", `${(y / bounds.height) * 100}%`);
       stage.style.setProperty("--field-x", `${(x / bounds.width - 0.5) * 8}px`);
       stage.style.setProperty(
         "--field-y",
@@ -109,48 +125,55 @@ export function SpecimenHero({ tone = "dark" }: { tone?: "dark" | "light" }) {
   }, []);
 
   return (
-    <main className={styles.hero} data-concept="02" data-tone={tone}>
+    <main
+      className={styles.hero}
+      data-concept="02"
+      data-tone={tone}
+      data-visible={visible}
+    >
       <header className={styles.header}>
         <span className={styles.brand}>ATOMA</span>
-        <span
-          className={styles.currentSection}
-          onPointerEnter={() =>
-            setNavReplay((previous) => ({
-              ...previous,
-              matcha: previous.matcha + 1,
-            }))
-          }
-        >
-          <span className={styles.navNumber} aria-hidden="true">
+        <div className={styles.headerActions}>
+          <span
+            className={styles.currentSection}
+            onPointerEnter={() =>
+              setNavReplay((previous) => ({
+                ...previous,
+                matcha: previous.matcha + 1,
+              }))
+            }
+          >
+            <span className={styles.navNumber} aria-hidden="true">
+              <ScrambleText
+                key={navReplay.matcha}
+                text="01"
+                delay={navReplay.matcha ? 0 : 100}
+              />
+            </span>
             <ScrambleText
               key={navReplay.matcha}
-              text="01"
-              delay={navReplay.matcha ? 0 : 100}
+              text="MATCHA"
+              delay={navReplay.matcha ? 0 : 180}
             />
           </span>
-          <ScrambleText
-            key={navReplay.matcha}
-            text="MATCHA"
-            delay={navReplay.matcha ? 0 : 180}
-          />
-        </span>
-        {/* Destination styling only; the exploration route is a later task. */}
-        <span
-          className={styles.headerExplore}
-          onPointerEnter={() =>
-            setNavReplay((previous) => ({
-              ...previous,
-              explore: previous.explore + 1,
-            }))
-          }
-        >
-          <ScrambleText
-            key={navReplay.explore}
-            text="EXPLORE"
-            delay={navReplay.explore ? 0 : 260}
-          />
-          <Arrow />
-        </span>
+          {/* Destination styling only; the exploration route is a later task. */}
+          <span
+            className={styles.headerExplore}
+            onPointerEnter={() =>
+              setNavReplay((previous) => ({
+                ...previous,
+                explore: previous.explore + 1,
+              }))
+            }
+          >
+            <ScrambleText
+              key={navReplay.explore}
+              text="EXPLORE"
+              delay={navReplay.explore ? 0 : 260}
+            />
+            <Arrow />
+          </span>
+        </div>
       </header>
 
       <section className={styles.composition} aria-label="Matcha">
@@ -160,12 +183,26 @@ export function SpecimenHero({ tone = "dark" }: { tone?: "dark" | "light" }) {
             <ScrambleText text="MATCHA" delay={260} />
           </div>
           <h1 className={styles.heading}>
-            <span>Carefully</span>
-            <span>specified</span>
-            <span>matcha.</span>
+            <span>
+              <span>Carefully</span>
+            </span>
+            <span>
+              <span>specified</span>
+            </span>
+            <span>
+              <span>matcha.</span>
+            </span>
           </h1>
-          <div className={styles.exploreLabel}>
-            <ScrambleText text="EXPLORE MATCHA" delay={380} />
+          <div
+            className={styles.exploreLabel}
+            onPointerEnter={() => setLabelHovered(true)}
+            onPointerLeave={() => setLabelHovered(false)}
+          >
+            <ScrambleText
+              key={labelHovered ? `label-${hoverCycle}` : "label-rest"}
+              text="EXPLORE MATCHA"
+              delay={labelHovered ? 0 : 380}
+            />
             <Arrow />
           </div>
           <div className={styles.introRegistration} aria-hidden="true">
@@ -192,7 +229,9 @@ export function SpecimenHero({ tone = "dark" }: { tone?: "dark" | "light" }) {
               <div className={styles.fieldDepth}>
                 <SpecimenField className={styles.field} />
               </div>
+              <div className={styles.orbitNode} />
             </div>
+            <div className={styles.stageLight} aria-hidden="true" />
             <div className={styles.tray}>
               <Image
                 src="/images/hero/matcha-tray-concept-02.webp"
@@ -204,6 +243,7 @@ export function SpecimenHero({ tone = "dark" }: { tone?: "dark" | "light" }) {
                 draggable={false}
               />
             </div>
+            <div className={styles.trayReflection} aria-hidden="true" />
             <div className={styles.frame} aria-hidden="true">
               <span />
               <span />
@@ -216,7 +256,7 @@ export function SpecimenHero({ tone = "dark" }: { tone?: "dark" | "light" }) {
               <span className={styles.targetLeader} />
               <span className={styles.targetLabel}>
                 <ScrambleText
-                  key={hovered ? "active" : "rest"}
+                  key={hovered ? `active-${hoverCycle}` : "rest"}
                   text="EXPLORE MATCHA"
                 />
                 <Arrow />
@@ -238,7 +278,24 @@ export function SpecimenHero({ tone = "dark" }: { tone?: "dark" | "light" }) {
         <span className={styles.footerMark} aria-hidden="true">
           ATOMA<span> / </span>MATCHA
         </span>
-        <span className={styles.footerCross} aria-hidden="true" />
+        <nav className={styles.themeSwitcher} aria-label="Appearance">
+          <Link
+            href="/"
+            aria-label="Dark mode"
+            aria-current={tone === "dark" ? "page" : undefined}
+          >
+            <span className={styles.darkIcon} aria-hidden="true" />
+            <ScrambleText text="DARK" interactive />
+          </Link>
+          <Link
+            href="/light"
+            aria-label="Light mode"
+            aria-current={tone === "light" ? "page" : undefined}
+          >
+            <span className={styles.lightIcon} aria-hidden="true" />
+            <ScrambleText text="LIGHT" interactive />
+          </Link>
+        </nav>
       </footer>
     </main>
   );

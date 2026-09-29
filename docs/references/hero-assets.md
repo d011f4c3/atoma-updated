@@ -150,3 +150,13 @@ The homepage light and Concept 03 light reuse the existing transparent
 is performed. Scoped CSS adjusts the substrate, type, grid, header surfaces,
 reticles, and hover-label contrast. The light homepage adds a faint CSS shadow
 beneath the tray; the photograph and original dark styling remain unchanged.
+
+## Task 0016 — Reuse for final comparisons
+
+No new bitmap or font assets were added. The homepage keeps the tray image with
+scoped CSS lighting and reflection. Concept 06 uses the same tray and an enlarged
+crop of its powder. Concept 07 uses the prior vessel, tray, and macro assets as
+three illustrative visual studies. The suspended lid is separated from its
+existing image through CSS clipping for motion; no verified packaging or
+production method is implied. The macro is a separate illustration, not an
+asserted magnification of the tray or vessel.

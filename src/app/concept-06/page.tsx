@@ -1,5 +1,5 @@
-import { OpticalHero } from "@/components/optical-hero";
+import { OrbitalHero } from "@/components/orbital-hero";
 
-export default function SpecimenSheetPage() {
-  return <OpticalHero />;
+export default function OrbitalConceptPage() {
+  return <OrbitalHero />;
 }
