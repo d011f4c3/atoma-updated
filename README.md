@@ -20,7 +20,9 @@ three comparisons grounded in the client brief:
 Explore matcha remains unlinked as a shop destination. The new controls explore
 local concept imagery only; there is no catalog, product-detail page, commerce
 integration, or custom motion-off mode. System reduced motion remains supported.
-Current branch: `codex/final-hero-comparisons`.
+Task 0017 applies Concept 07's silver-blue background to the homepage and
+Concept 06 light versions only. Dark versions retain their existing palette.
+Current branch: `codex/blue-light-heroes`.
 
 ## Saved comparisons
 
@@ -90,6 +92,7 @@ If the shell does not switch Node automatically, use
 - [Final photographic experience](docs/tasks/0014-final-photographic-hero.md)
 - [Light versions of the preferred heroes](docs/tasks/0015-light-homepage-and-concept-03.md)
 - [Final hero comparisons](docs/tasks/0016-final-hero-comparisons.md)
+- [Blue light heroes](docs/tasks/0017-blue-light-heroes.md)
 - [Hero imagery, prompts, and font provenance](docs/references/hero-assets.md)
 - [Frontend boundary and dependencies](docs/adr/0001-local-frontend-foundation.md)
 - [Bounded 3D rendering experiment](docs/adr/0002-local-3d-hero-experiment.md)

@@ -21,14 +21,17 @@
 }
 .hero[data-tone="light"] {
   color-scheme: light;
-  --surface: #eef1ef;
-  --ink: #29322d;
-  --muted: #616c64;
-  --line: rgb(41 50 45 / 20%);
-  --strong-line: rgb(41 50 45 / 36%);
-  --panel: rgb(226 232 228 / 88%);
-  --active: #2c382f;
-  --active-ink: #f0f3ed;
+  --surface: #c8d4dc;
+  --ink: #192d3c;
+  --muted: #435b6b;
+  --line: rgb(25 45 60 / 20%);
+  --strong-line: rgb(25 45 60 / 36%);
+  --panel: rgb(189 204 214 / 88%);
+  --active: #192d3c;
+  --active-ink: #e3edf4;
+}
+.hero[data-tone="light"] .lightSwatch {
+  background: #c8d4dc;
 }
 .header {
   position: relative;

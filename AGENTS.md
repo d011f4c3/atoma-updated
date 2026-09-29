@@ -28,10 +28,12 @@
   two preferred contenders: `/light` and `/concept-03/light`. Preserve their
   compositions/interactions and all original dark styling, including Concept 04's
   shared capsule header. Only scoped light-palette changes are authorized.
-  Active Task 0016 supersedes the palette-only limit: refine the homepage, replace
+  Task 0016 supersedes the palette-only limit: refine the homepage, replace
   Concept 06 with an evolution of Concept 03, and add an original Concept 07.
   Visible theme navigation and real local exploration controls are authorized.
   Preserve actual Concept 03, Concept 04, and Concept 05 routes and shared styling.
+  Active Task 0017 applies Concept 07's blue palette to `/light` and
+  `/concept-06/light` only. Preserve all dark versions and existing interactions.
   Further sections, catalog integration, and release work remain separate tasks.
 - Read `docs/briefs/2026-09-28-client-direction.md` before design work. Label
   interpretations and illustrative content; do not present them as approved facts.
