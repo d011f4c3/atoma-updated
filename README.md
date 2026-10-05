@@ -1,5 +1,19 @@
 # ATOMA updated
 
+## Hosted release — Task 0103
+
+The current storefront is published from `main` to
+[atoma-updated.vercel.app](https://atoma-updated.vercel.app).
+Vercel uses Node 24 and pnpm 11.24.0, with installation and build commands
+recorded in `vercel.json`. Run `pnpm validate` before publishing changes.
+
+Configure `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_PRIVATE_TOKEN` and
+`JMM_CART_SESSION_SECRET` as server-side environment variables. Production and
+preview use independent 32-byte, base64-encoded cart-session secrets. Tokens and
+session secrets are sensitive Vercel variables; `.env.local` remains ignored.
+`.env.example` lists the required keys without credentials. Checkout remains
+disabled under the existing commerce gate.
+
 ## Social preview — Task 0096
 
 The project is named `atoma-updated`; its intended Vercel URL is

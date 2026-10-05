@@ -38,5 +38,7 @@ were observed in the browser. Touch Shop selection executes immediately,
 scrambles the entire label, and settles by 1,100ms. Synthetic touch drag
 cancellation and reduced-motion checks leave the label unchanged. Desktop and
 mobile labels retain static accessible names and measured layout. The tap
-lifecycle harness, scheduler checks, and repository gate passed before the final
-2,800ms cadence refinement; the release gate rechecks that final source.
+lifecycle harness, scheduler checks, and final repository gate pass (70 tests).
+The final cadence was observed at 2,792ms and 2,806ms between passes in the live
+browser. Visibility, reduced motion and exploration pause the nested glyphs;
+the existing entrance wrappers remain mounted throughout playback.
