@@ -116,6 +116,7 @@ export function ScrambleText({
     const motionPreference = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     );
+    const mobile = window.matchMedia("(max-width: 760px)");
     // The entire native control owns the interaction, including the padding
     // around a label and the radio input that receives its keyboard focus.
     const target = interactive
@@ -194,7 +195,8 @@ export function ScrambleText({
       if (!canAnimate() || running || !glyphs.length) return;
       running = true;
       tapRunning = tapped;
-      const playbackDuration = tapped ? tapDuration : duration;
+      const playbackDuration =
+        tapped || mobile.matches ? tapDuration : duration;
 
       function animate() {
         delayTimer = undefined;

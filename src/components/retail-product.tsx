@@ -69,7 +69,7 @@ export function RetailProduct({ handle }: { handle: string }) {
       data-tone={tone}
       data-storefront-theme={tone}
     >
-      <HomeHeader tone={tone} activePage="shop" />
+      <HomeHeader persistentTheme tone={tone} activePage="shop" />
       <div className={styles.content}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
           <Link href={collectionHref}>Shop</Link>

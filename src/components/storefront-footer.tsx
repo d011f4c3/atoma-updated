@@ -4,6 +4,7 @@ import { useCart } from "./cart-drawer";
 import { SiteFooter } from "./site-footer";
 import { usePageScroll } from "./smooth-scroll";
 import { useStorefrontTheme } from "./storefront-theme-provider";
+import { ThemeSwitcher } from "./theme-switcher";
 
 export function StorefrontFooter({ year }: { year: number }) {
   const { tone } = useStorefrontTheme();
@@ -24,6 +25,7 @@ export function StorefrontFooter({ year }: { year: number }) {
       tone={tone}
       year={year}
       onBackToTop={backToTop}
+      themeControl={<ThemeSwitcher label="Dark mode in footer" />}
     />
   );
 }

@@ -55,6 +55,9 @@
 .responsiveSummary {
   display: none;
 }
+.mobileTheme {
+  display: none;
+}
 .navigation,
 .dialogHeader,
 .close {
@@ -818,6 +821,17 @@
   }
   .responsiveMenu:not([open]) .responsivePanel {
     display: none;
+  }
+  .mobileTheme {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.125rem;
+    padding: 0.5rem 0.75rem 0;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
   }
   .header .responsivePanel .control {
     min-width: 0;

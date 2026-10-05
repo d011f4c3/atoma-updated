@@ -11,7 +11,7 @@ export function OriginsPage() {
   const { tone } = useStorefrontTheme();
   return (
     <main className={styles.page} data-tone={tone} data-storefront-theme={tone}>
-      <HomeHeader tone={tone} activePage="origins" />
+      <HomeHeader persistentTheme tone={tone} activePage="origins" />
       <OriginsContent tone={tone} />
       <footer className={styles.footer}>
         <Link href="/">

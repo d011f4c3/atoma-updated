@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { CartButton } from "./cart-drawer";
 import { AboutContent } from "./about-content";
 import { ScrambleText } from "./scramble-text";
+import { ThemeSwitcher } from "./theme-switcher";
 import { useOrigins } from "./origins-provider";
 import { useDialogDismiss, useDialogScrollLock } from "./use-dialog-dismiss";
 import styles from "./home-header.module.css";
@@ -31,6 +32,7 @@ export type HomeHeaderProps = {
   activePage?: "shop" | "origins";
   navigationVariant?: NavigationVariant;
   onOverview?: () => void;
+  persistentTheme?: boolean;
 };
 
 export function HomeHeader({
@@ -40,6 +42,7 @@ export function HomeHeader({
   activePage,
   navigationVariant = "default",
   onOverview,
+  persistentTheme = false,
 }: HomeHeaderProps) {
   const id = useId();
   const { openOrigins } = useOrigins();
@@ -326,7 +329,12 @@ export function HomeHeader({
             open={hasResponsiveMenu || undefined}
             data-navigation-index
             onBlur={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget as Node))
+              // Safari can blur the summary to no focused element during a
+              // tap. Keep the destination visible until its click arrives.
+              if (
+                event.relatedTarget instanceof Node &&
+                !event.currentTarget.contains(event.relatedTarget)
+              )
                 closeIndex();
             }}
           >
@@ -367,6 +375,12 @@ export function HomeHeader({
                 </div>
               )}
               {mainLinks}
+              {hasResponsiveMenu && persistentTheme && (
+                <div className={styles.mobileTheme}>
+                  <span>Appearance</span>
+                  <ThemeSwitcher label="Dark mode in menu" />
+                </div>
+              )}
             </div>
           </details>
         ) : (

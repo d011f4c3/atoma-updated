@@ -27,7 +27,7 @@ export function Shop() {
 
   return (
     <main className={styles.shop} data-tone={tone} data-storefront-theme={tone}>
-      <HomeHeader tone={tone} activePage="shop" />
+      <HomeHeader persistentTheme tone={tone} activePage="shop" />
       <div className={styles.content}>
         <header className={styles.intro}>
           <div>

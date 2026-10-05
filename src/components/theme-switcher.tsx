@@ -8,7 +8,7 @@ const subscribe = () => () => {};
 const clientReady = () => true;
 const serverReady = () => false;
 
-export function ThemeSwitcher() {
+export function ThemeSwitcher({ label = "Dark mode" }: { label?: string }) {
   const { tone, setTone } = useStorefrontTheme();
   const ready = useSyncExternalStore(subscribe, clientReady, serverReady);
   const dark = tone === "dark";
@@ -18,7 +18,7 @@ export function ThemeSwitcher() {
       className={styles.switcher}
       type="button"
       role="switch"
-      aria-label="Dark mode"
+      aria-label={label}
       aria-checked={dark}
       title={dark ? "Switch to light mode" : "Switch to dark mode"}
       disabled={!ready}

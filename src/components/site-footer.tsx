@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { Ref } from "react";
+import type { ReactNode, Ref } from "react";
 import { useCart } from "./cart-drawer";
 import { useOrigins } from "./origins-provider";
 import styles from "./site-footer.module.css";
@@ -15,12 +15,14 @@ export function SiteFooter({
   year,
   onBackToTop,
   footerRef,
+  themeControl,
 }: {
   direction: FooterDirection;
   tone: "light" | "dark";
   year: number;
   onBackToTop: () => void;
   footerRef?: Ref<HTMLElement>;
+  themeControl?: ReactNode;
 }) {
   const { busy } = useCart();
   const { openOrigins } = useOrigins();
@@ -131,7 +133,14 @@ export function SiteFooter({
       <div className={styles.base}>
         <span>© {year} ATOMA</span>
         {direction !== "directory" && utilityLinks}
-        <span>Matcha</span>
+        {themeControl ? (
+          <div className={styles.appearance}>
+            <span>Appearance</span>
+            {themeControl}
+          </div>
+        ) : (
+          <span>Matcha</span>
+        )}
       </div>
     </footer>
   );

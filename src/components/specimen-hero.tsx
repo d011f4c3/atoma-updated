@@ -484,6 +484,7 @@ export function SpecimenHero({
         onFocusCapture={() => setOpened(true)}
       >
         <HomeHeader
+          persistentTheme={persistentTheme}
           tone={tone}
           onExplore={openSelection}
           onOverview={closeSelection}

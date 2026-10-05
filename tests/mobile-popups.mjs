@@ -332,6 +332,23 @@ try {
         const mobile = width <= 760;
         const header = page.locator('main[data-concept="01"] > header').first();
         const menu = header.locator("[data-nav-summary]");
+        const openMobileMenu = async () => {
+          if (!mobile) return;
+          await menu.click();
+          // Safari may report no focus destination while a finger tap moves
+          // from the summary to a menu action. Its click must remain reachable.
+          await menu.evaluate((element) => {
+            element.focus();
+            element.blur();
+          });
+          assert.equal(
+            await header
+              .locator("[data-navigation-index]")
+              .evaluate((element) => element.open),
+            true,
+            "A null-destination blur must not hide the pending menu action",
+          );
+        };
         const aboutTrigger = header.getByRole("button", {
           name: "About ATOMA",
           exact: true,
@@ -356,7 +373,7 @@ try {
           name: `${label}-about`,
           view: "builder",
           open: async () => {
-            if (mobile) await menu.click();
+            await openMobileMenu();
             await aboutTrigger.click();
           },
           dialog: () =>
@@ -396,7 +413,7 @@ try {
           name: `${label}-origins-menu`,
           view: "builder",
           open: async () => {
-            if (mobile) await menu.click();
+            await openMobileMenu();
             await originsTrigger.click();
           },
           dialog: () => page.locator("[data-origins-dialog][open]"),

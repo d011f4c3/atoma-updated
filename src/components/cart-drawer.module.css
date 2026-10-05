@@ -500,6 +500,9 @@
 }
 
 @media (max-width: 760px) {
+  .dialog[data-input-modality="pointer"] .close:focus {
+    outline: none;
+  }
   .dialog {
     inset: 0;
     width: min(32rem, calc(100vw - 2rem));

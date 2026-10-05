@@ -1060,14 +1060,18 @@
   .products[data-variant="slides"]
     .product[data-code-placement="register"]
     .displayIndex {
-    right: 0.4375rem;
+    right: auto;
     bottom: 0.375rem;
+    left: 50%;
+    padding-left: 0.625rem;
+    transform: translateX(-50%);
   }
 
   .products[data-variant="slides"]
     .product[data-code-placement="register"]
     .displayIndex::after {
-    right: calc(100% + 0.1875rem);
+    right: auto;
+    left: 0;
     width: 0.4375rem;
   }
 
