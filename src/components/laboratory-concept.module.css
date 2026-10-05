@@ -1,0 +1,608 @@
+.page {
+  --surface: #dfe4e1;
+  --ink: #26312f;
+  --muted: #55635f;
+  --line: rgb(38 49 47 / 23%);
+  --accent: #26312f;
+  --radius-button: 2px;
+  --radius-control: 2px;
+  --gutter: clamp(20px, 3.5vw, 64px);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: 88px minmax(0, 1fr) auto 44px;
+  min-height: 700px;
+  height: 100svh;
+  background: var(--surface);
+  color: var(--ink);
+  color-scheme: light;
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+.page a {
+  color: inherit;
+  text-decoration: none;
+}
+.page button {
+  font-family: inherit;
+}
+.page :is(a, button, select, summary):focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+.skip {
+  position: fixed;
+  z-index: 20;
+  top: 16px;
+  left: 16px;
+  padding: 16px;
+  background: var(--surface);
+  transform: translateY(-200%);
+}
+.skip:focus {
+  transform: none;
+}
+.photograph {
+  position: absolute;
+  z-index: -2;
+  inset: 0 0 90px;
+  mask-image: linear-gradient(#000 calc(100% - 40px), transparent);
+  transition: opacity 450ms;
+}
+.heroImage {
+  object-fit: cover;
+}
+.page[data-material="true"] .photograph {
+  opacity: 0;
+  visibility: hidden;
+}
+.page::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgb(222 230 226 / 36%), transparent 42%),
+    linear-gradient(0deg, rgb(211 222 218 / 80%), transparent 27%);
+}
+.page[data-material="true"]::before {
+  background: radial-gradient(
+    ellipse at 31% 48%,
+    #f1f2eb 0%,
+    #e5e9e3 36%,
+    #c1d0cc 100%
+  );
+}
+.header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 32px;
+  margin: 0 var(--gutter);
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  display: flex;
+  align-items: flex-start;
+  justify-self: start;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.1em;
+}
+.brand span {
+  margin: 3px 0 0 10px;
+  font-size: 9px;
+  letter-spacing: 0;
+}
+.navigation {
+  display: flex;
+  gap: 28px;
+  align-self: stretch;
+}
+.navigation button {
+  position: relative;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 1px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+.navigation button[aria-pressed="true"] {
+  color: var(--ink);
+}
+.navigation button::after {
+  content: "";
+  position: absolute;
+  bottom: 20px;
+  height: 1px;
+  left: 0;
+  right: 0;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms;
+}
+.navigation button[aria-pressed="true"]::after,
+.navigation button:hover::after {
+  transform: scaleX(1);
+}
+.header .cart {
+  justify-self: end;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  border-radius: 1px;
+  background: transparent;
+  box-shadow: none;
+  font-size: 11px;
+}
+.workspace {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr);
+  min-height: 0;
+  margin: 0 var(--gutter);
+}
+.meta {
+  position: absolute;
+  top: 22px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+.pane {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 48px 0 20px clamp(24px, 4.5vw, 80px);
+  outline: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.pane > [hidden] {
+  display: none;
+}
+.page[data-view="experience"] .pane {
+  grid-column: 1;
+  padding-left: 0;
+  width: 340px;
+  max-width: 100%;
+  overflow: visible;
+}
+.introduction h1 {
+  max-width: 11ch;
+  margin: 20px 0 18px;
+  font-size: clamp(34px, 3.6vw, 56px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.065em;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: 0.025em;
+}
+.cross {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 10px;
+  height: 10px;
+}
+.cross::before,
+.cross::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+}
+.cross::after {
+  transform: rotate(90deg);
+}
+.introCopy {
+  margin: 0 0 28px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.entry,
+.secondary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 2px;
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+}
+.entry {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  transition:
+    padding 200ms,
+    background 200ms;
+}
+.entry:hover:not(:disabled) {
+  padding-inline: 12px;
+  background: rgb(239 244 239 / 40%);
+}
+.entry > span:last-child {
+  font-size: 20px;
+}
+.secondary {
+  color: var(--muted);
+  font-size: 10px;
+}
+.materialStage {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  margin: 60px 0 24px;
+}
+.materialCaption,
+.materialStage figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 10px;
+}
+.materialCaption > span:last-child,
+.materialStage figcaption {
+  color: var(--muted);
+}
+.powder {
+  position: relative;
+  flex: 1;
+  min-height: 240px;
+  margin: 8px 0;
+}
+.powder > div {
+  position: absolute;
+  inset: 0;
+  filter: drop-shadow(18px 24px 16px rgb(42 57 51 / 16%));
+}
+.powder img {
+  object-fit: cover;
+  mask-size: cover;
+}
+.page[data-material="true"][data-view="experience"] .materialStage {
+  grid-column: 2;
+}
+.page[data-view="experience"] .materialCaption {
+  justify-content: flex-end;
+}
+.page[data-view="experience"] .materialCaption > span:first-child {
+  display: none;
+}
+.page[data-view="experience"] .materialStage figcaption {
+  justify-content: flex-end;
+}
+.page[data-view="experience"] .materialStage figcaption > span:first-child {
+  display: none;
+}
+.state {
+  margin-top: 20px;
+  font-size: 12px;
+}
+.state button {
+  min-height: 44px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.selector {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 32px;
+  margin: 0 var(--gutter);
+  border-top: 1px solid var(--line);
+  outline: none;
+}
+.selectorLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-right: 24px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.products {
+  display: flex;
+  min-width: 0;
+  gap: 24px;
+}
+.products button {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 14px;
+  min-height: 88px;
+  padding: 14px 0;
+  border: 0;
+  border-radius: 1px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.products button::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 250ms;
+}
+.products button[aria-pressed="true"]::after,
+.products button:hover::after {
+  transform: scaleX(1);
+}
+.number {
+  align-self: flex-start;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 9px;
+}
+.productCopy {
+  display: grid;
+  gap: 5px;
+}
+.productCopy strong {
+  font-size: 12px;
+  font-weight: 400;
+}
+.productCopy small {
+  color: var(--muted);
+  font-size: 9px;
+}
+.selectionMark {
+  margin-left: auto;
+  font-size: 8px;
+}
+.page button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 0 var(--gutter);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 8px;
+  letter-spacing: 0.03em;
+}
+@media (max-width: 1100px) and (min-width: 701px) {
+  .header {
+    gap: 20px;
+  }
+  .navigation {
+    gap: 20px;
+  }
+  .workspace {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 1fr);
+  }
+  .pane {
+    padding-left: 24px;
+  }
+  .selector {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .selectorLabel {
+    display: none;
+  }
+  .products button {
+    min-height: 84px;
+  }
+}
+@media (max-width: 700px), (max-width: 1000px) and (orientation: portrait) {
+  .page {
+    grid-template-rows: 110px minmax(min-content, 1fr) auto 34px;
+    min-height: 700px;
+  }
+  .photograph {
+    bottom: 180px;
+  }
+  .header {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 58px 52px;
+    gap: 0;
+  }
+  .brand {
+    font-size: 24px;
+  }
+  .navigation {
+    grid-row: 2;
+    grid-column: 1/-1;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .navigation button {
+    font-size: 11px;
+  }
+  .navigation button::after {
+    bottom: 8px;
+  }
+  .header .cart {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 10px;
+  }
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  .meta {
+    top: 16px;
+    font-size: 8px;
+  }
+  .pane {
+    grid-column: 1;
+    width: 100%;
+    max-height: none;
+    padding: 16px 0;
+    overflow: visible;
+    align-self: center;
+  }
+  .page:not([data-view="experience"]) .meta {
+    display: none;
+  }
+  .page[data-view="experience"] .pane {
+    align-self: end;
+    width: 100%;
+    padding: 20px 0 24px;
+  }
+  .introduction h1 {
+    max-width: none;
+    margin: 12px 0;
+    font-size: clamp(28px, 8vw, 38px);
+  }
+  .introduction .eyebrow {
+    display: none;
+  }
+  .introCopy {
+    font-size: 11px;
+    margin-bottom: 18px;
+  }
+  .entry {
+    min-height: 48px;
+  }
+  .secondary {
+    min-height: 40px;
+    font-size: 10px;
+  }
+  .materialStage {
+    display: none;
+  }
+  .page[data-material="true"][data-view="experience"] .workspace {
+    grid-template-rows: minmax(160px, 1fr) auto;
+  }
+  .page[data-material="true"][data-view="experience"] .materialStage {
+    display: flex;
+    grid-column: 1;
+    grid-row: 1;
+    margin: 35px 0 0;
+  }
+  .page[data-material="true"][data-view="experience"] .pane {
+    grid-row: 2;
+    padding-top: 10px;
+  }
+  .materialCaption,
+  .materialStage figcaption {
+    display: none;
+  }
+  .powder {
+    min-height: 160px;
+    margin: 0;
+  }
+  .powder img {
+    object-fit: contain;
+    mask-size: contain;
+  }
+  .selector {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .selectorLabel {
+    display: none;
+  }
+  .products {
+    gap: 14px;
+  }
+  .products button {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-content: center;
+    gap: 7px;
+    min-height: 94px;
+    padding: 12px 0;
+  }
+  .number {
+    margin: 0;
+    font-size: 8px;
+  }
+  .selectionMark {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  .productCopy {
+    grid-column: 1/-1;
+    gap: 0;
+  }
+  .productCopy strong {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .productCopy small {
+    display: none;
+  }
+  .footer {
+    font-size: 7px;
+  }
+  .footer > span:nth-child(2) {
+    display: none;
+  }
+  .page::before {
+    background: linear-gradient(0deg, rgb(211 222 218 / 90%), transparent 56%);
+  }
+}
+@media (max-width: 380px) {
+  .products {
+    gap: 10px;
+  }
+  .productCopy strong {
+    font-size: 10px;
+  }
+  .navigation button {
+    font-size: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}

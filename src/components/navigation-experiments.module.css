@@ -1,0 +1,780 @@
+/* These studies share the native disclosure and real navigation destinations. */
+header.experiment[data-navigation-variant] {
+  --experiment-paper: var(--dialog-surface, #171a18);
+  --experiment-rule: var(--line, rgb(241 239 232 / 19%));
+  --experiment-shadow: 0 1rem 2rem rgb(0 0 0 / 13%);
+}
+header.experiment[data-tone="light"] {
+  --experiment-shadow: -0.5rem 1rem 2rem rgb(37 45 39 / 12%);
+}
+header.experiment[data-navigation-variant]
+  :global([data-navigation-index-panel])
+  :global([data-nav-action]) {
+  min-width: 0;
+  min-height: 2.75rem;
+  border-radius: 0;
+  color: inherit;
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-align: left;
+  text-decoration: none;
+}
+header.experiment[data-navigation-variant] :global([data-nav-index]) {
+  display: block;
+  color: var(--muted, #a5a5a1);
+  font-size: 0.5625rem;
+  font-variant-numeric: tabular-nums;
+}
+header.experiment[data-navigation-variant] :global([data-nav-description]) {
+  color: var(--muted, #a5a5a1);
+  font-size: 0.625rem;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+
+/* Edge: a narrow spine stays out of the composition; its directory slides in. */
+header.experiment[data-navigation-variant="edge"] {
+  position: static;
+  animation: none;
+}
+header.experiment[data-navigation-variant="edge"]
+  :global([data-navigation-index]) {
+  position: absolute;
+  z-index: 8;
+  top: clamp(8rem, 34%, 19rem);
+  left: 0;
+  width: 2.75rem;
+  height: 7rem;
+}
+header.experiment[data-navigation-variant="edge"] :global([data-nav-summary]) {
+  position: relative;
+  z-index: 1;
+  width: 2.75rem;
+  height: 7rem;
+  min-height: 7rem;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border: 1px solid var(--experiment-rule);
+  border-right: 0;
+  background: var(--experiment-paper);
+  font-size: 0.625rem;
+  letter-spacing: 0.09em;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+header.experiment[data-navigation-variant="edge"]
+  :global([data-nav-summary]):focus-visible {
+  outline-offset: -4px;
+}
+header.experiment[data-navigation-variant="edge"]
+  :global([data-navigation-index-panel]) {
+  top: 50%;
+  right: auto;
+  left: 100%;
+  width: min(23rem, calc(100vw - 4rem));
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--experiment-rule);
+  border-left: 0;
+  background: var(--experiment-paper);
+  box-shadow: var(--experiment-shadow);
+  transform: translateY(-50%);
+}
+header.experiment[data-navigation-variant="edge"]
+  :global([data-navigation-index-panel])
+  :global([data-nav-action]) {
+  display: grid;
+  min-height: 5rem;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  justify-content: start;
+  justify-items: start;
+  gap: 1rem;
+  padding: 1rem 0;
+  border: 0;
+  background: none;
+  transition: padding-left 240ms;
+}
+header.experiment[data-navigation-variant="edge"]
+  :global([data-nav-action])
+  + :global([data-nav-action]) {
+  border-top: 1px solid var(--experiment-rule);
+}
+header.experiment[data-navigation-variant="edge"]
+  :global([data-navigation-index-panel])
+  :global([data-nav-action]):hover {
+  padding-left: 0.5rem;
+}
+header.experiment[data-navigation-variant="edge"]
+  :global([data-navigation-index][open])
+  :global([data-navigation-index-panel]) {
+  animation: edge-open 340ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Stack: the central paper tab releases three independent destination cards. */
+header.experiment[data-navigation-variant="stack"]
+  :global([data-navigation-index]),
+header.experiment[data-navigation-variant="shutter"]
+  :global([data-navigation-index]) {
+  position: static;
+}
+header.experiment[data-navigation-variant="stack"] :global([data-nav-summary]),
+header.experiment[data-navigation-variant="shutter"]
+  :global([data-nav-summary]) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5.5rem;
+  min-height: 2.75rem;
+  padding: 0.5rem;
+  font-size: 0.625rem;
+  transform: translate(-50%, -50%);
+}
+header.experiment[data-navigation-variant="stack"] :global([data-nav-summary]) {
+  z-index: 1;
+  border: 1px solid var(--experiment-rule);
+  background: var(--experiment-paper);
+  isolation: isolate;
+}
+header.experiment[data-navigation-variant="stack"]
+  :global([data-nav-summary])::before,
+header.experiment[data-navigation-variant="stack"]
+  :global([data-nav-summary])::after {
+  position: absolute;
+  z-index: -1;
+  inset: -1px;
+  border: 1px solid var(--experiment-rule);
+  background: var(--experiment-paper);
+  content: "";
+  pointer-events: none;
+  transition: transform 320ms;
+}
+header.experiment[data-navigation-variant="stack"]
+  :global([data-nav-summary])::before {
+  transform: translate(-0.2rem, 0.2rem) rotate(-5deg);
+}
+header.experiment[data-navigation-variant="stack"]
+  :global([data-nav-summary])::after {
+  z-index: -2;
+  transform: translate(0.2rem, 0.3rem) rotate(5deg);
+}
+header.experiment[data-navigation-variant="stack"]
+  :global([data-navigation-index][open])
+  :global([data-nav-summary])::before,
+header.experiment[data-navigation-variant="stack"]
+  :global([data-navigation-index][open])
+  :global([data-nav-summary])::after {
+  transform: translate(0, 0) rotate(0);
+}
+header.experiment[data-navigation-variant="stack"]
+  :global([data-navigation-index-panel]) {
+  top: calc(100% + 1rem);
+  right: auto;
+  left: 50%;
+  display: grid;
+  width: min(44rem, calc(100% - 2rem));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  perspective: 60rem;
+  transform: translateX(-50%);
+}
+header.experiment[data-navigation-variant="stack"]
+  :global([data-navigation-index-panel])
+  :global([data-nav-action]) {
+  --card-angle: 0deg;
+  --card-y: 0.75rem;
+  --card-from-x: 0%;
+  --card-delay: 35ms;
+  display: grid;
+  min-height: 13rem;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  align-items: start;
+  justify-items: start;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--experiment-rule);
+  background: var(--experiment-paper);
+  box-shadow: var(--experiment-shadow);
+  font-size: 0.875rem;
+  transform: translateY(var(--card-y)) rotate(var(--card-angle));
+  transform-origin: 50% 0;
+  transition: transform 260ms;
+}
+header.experiment[data-navigation-variant="stack"]
+  :global([data-navigation-index-panel])
+  :global([data-nav-action="matcha"]) {
+  --card-angle: -5deg;
+  --card-y: 0rem;
+  --card-from-x: 105%;
+  --card-delay: 0ms;
+}
+header.experiment[data-navigation-variant="stack"]
+  :global([data-navigation-index-panel])
+  :global([data-nav-action="about"]) {
+  --card-angle: 5deg;
+  --card-y: 0rem;
+  --card-from-x: -105%;
+  --card-delay: 70ms;
+}
+header.experiment[data-navigation-variant="stack"] :global([data-nav-index]) {
+  width: 100%;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--experiment-rule);
+}
+header.experiment[data-navigation-variant="stack"]
+  :global([data-nav-description]) {
+  width: 100%;
+  grid-column: 1;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--experiment-rule);
+}
+header.experiment[data-navigation-variant="stack"]
+  :global([data-navigation-index][open])
+  :global([data-nav-action]) {
+  animation: stack-open 330ms var(--card-delay) cubic-bezier(0.2, 0.8, 0.2, 1)
+    backwards;
+}
+header.experiment[data-navigation-variant="stack"]
+  :global([data-navigation-index-panel])
+  :global([data-nav-action]):hover {
+  transform: translateY(calc(var(--card-y) - 0.375rem)) rotate(0deg);
+}
+
+/* Shutter: a single center seam opens a broad, shallow three-column panel. */
+header.experiment[data-navigation-variant="shutter"]
+  :global([data-nav-summary]) {
+  border-top: 1px solid var(--experiment-rule);
+  border-bottom: 1px solid var(--experiment-rule);
+}
+header.experiment[data-navigation-variant="shutter"]
+  :global([data-navigation-index-panel]) {
+  top: calc(100% - 0.125rem);
+  right: 0;
+  left: 0;
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 1.25rem 0;
+  border: 0;
+  border-block: 1px solid var(--experiment-rule);
+  background: var(--experiment-paper);
+  box-shadow: var(--experiment-shadow);
+}
+header.experiment[data-navigation-variant="shutter"]
+  :global([data-navigation-index-panel])
+  :global([data-nav-action]) {
+  display: grid;
+  min-height: 9rem;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  align-items: start;
+  justify-items: start;
+  gap: 1rem;
+  padding: 0.5rem clamp(1rem, 3vw, 3rem);
+  border: 0;
+  background: none;
+  font-size: 0.875rem;
+  transition: padding-left 260ms;
+}
+header.experiment[data-navigation-variant="shutter"]
+  :global([data-nav-action])
+  + :global([data-nav-action]) {
+  border-left: 1px solid var(--experiment-rule);
+}
+header.experiment[data-navigation-variant="shutter"]
+  :global([data-nav-description]) {
+  grid-column: 1;
+}
+header.experiment[data-navigation-variant="shutter"]
+  :global([data-navigation-index-panel])
+  :global([data-nav-action]):hover {
+  padding-left: clamp(1.25rem, 3.4vw, 3.5rem);
+}
+header.experiment[data-navigation-variant="shutter"]
+  :global([data-navigation-index][open])
+  :global([data-navigation-index-panel]) {
+  animation: shutter-open 380ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes edge-open {
+  from {
+    opacity: 0;
+    transform: translate(-1.5rem, -50%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+}
+@keyframes stack-open {
+  from {
+    opacity: 0;
+    transform: translate(var(--card-from-x), -0.75rem) rotate(0deg)
+      rotateX(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, var(--card-y)) rotate(var(--card-angle))
+      rotateX(0deg);
+  }
+}
+@keyframes shutter-open {
+  from {
+    opacity: 0.4;
+    clip-path: inset(0 50%);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+
+/* Frame: the page edges become the navigation, without an Index disclosure. */
+header.experiment[data-navigation-variant="frame"] {
+  position: static;
+  animation: none;
+}
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-controls])
+  :global([data-nav-action]) {
+  position: absolute;
+  z-index: 6;
+  display: flex;
+  width: 6.5rem;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0.5rem;
+  border: 0;
+  background: none;
+  font-size: 0.6875rem;
+  text-decoration: none;
+}
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-action="matcha"]) {
+  top: calc(var(--header-height, 4.5rem) / 2);
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-action="about"]) {
+  bottom: 1rem;
+  left: var(--gutter, 1.25rem);
+}
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-action="shop"]) {
+  right: var(--gutter, 1.25rem);
+  bottom: 1rem;
+}
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-action])::before,
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-action])::after {
+  position: absolute;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-color: var(--experiment-rule);
+  border-style: solid;
+  content: "";
+  pointer-events: none;
+  transition:
+    width 240ms,
+    border-color 240ms;
+}
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-action])::before {
+  top: 0;
+  left: 0;
+  border-width: 1px 0 0 1px;
+}
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-action])::after {
+  right: 0;
+  bottom: 0;
+  border-width: 0 1px 1px 0;
+}
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-action]):hover::before,
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-action]):hover::after,
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-action]):focus-visible::before,
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-action]):focus-visible::after {
+  width: 1rem;
+  border-color: currentColor;
+}
+header.experiment[data-navigation-variant="frame"]
+  :global([data-nav-controls])::after {
+  position: absolute;
+  right: calc(var(--gutter, 1.25rem) + 7.5rem);
+  bottom: 2.375rem;
+  left: calc(var(--gutter, 1.25rem) + 7.5rem);
+  height: 1px;
+  background: var(--experiment-rule);
+  content: "";
+  pointer-events: none;
+}
+
+/* Track: a clear header rail, with one indicator following actual interaction. */
+header.experiment[data-navigation-variant="track"] {
+  --track-center: 2.25rem;
+}
+header.experiment[data-navigation-variant="track"] :global([data-nav-brand]) {
+  position: absolute;
+  top: var(--track-center);
+  left: 0;
+  transform: translateY(-50%);
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-nav-controls])
+  > button:last-child {
+  position: absolute;
+  top: var(--track-center);
+  right: 0;
+  transform: translateY(-50%);
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-navigation-index]) {
+  position: static;
+}
+header.experiment[data-navigation-variant="track"] :global([data-nav-summary]) {
+  position: absolute;
+  top: var(--track-center);
+  left: 50%;
+  width: 5.5rem;
+  min-height: 2.75rem;
+  padding: 0.5rem;
+  font-size: 0.625rem;
+  transform: translate(-50%, -50%);
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-nav-summary])::before,
+header.experiment[data-navigation-variant="track"]
+  :global([data-nav-summary])::after {
+  position: absolute;
+  top: 50%;
+  width: 0.375rem;
+  height: 0.375rem;
+  border: 1px solid var(--experiment-rule);
+  content: "";
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-nav-summary])::before {
+  left: 0;
+  border-right: 0;
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-nav-summary])::after {
+  right: 0;
+  border-left: 0;
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-navigation-index-panel]) {
+  --track-stop: 0%;
+  --track-opacity: 0;
+  top: 4rem;
+  right: auto;
+  left: 50%;
+  display: grid;
+  width: min(36rem, 100%);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--experiment-rule);
+  background: none;
+  box-shadow: none;
+  transform: translateX(-50%);
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-navigation-index-panel])
+  :global([data-nav-action]) {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border: 0;
+  background: none;
+  font-size: 0.6875rem;
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-navigation-index-panel])::before {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 0.25rem;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--experiment-rule) 0 1px,
+    transparent 1px calc(100% / 12)
+  );
+  content: "";
+  pointer-events: none;
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-navigation-index-panel])::after {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: calc(100% / 3);
+  height: 2px;
+  background: currentColor;
+  content: "";
+  opacity: var(--track-opacity);
+  pointer-events: none;
+  transform: translateX(var(--track-stop));
+  transition:
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 180ms;
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-navigation-index-panel]):has(
+    :global([data-nav-action]):is(:hover, :focus-visible)
+  ) {
+  --track-opacity: 1;
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-navigation-index-panel]):has(
+    :global([data-nav-action="shop"]):is(:hover, :focus-visible)
+  ) {
+  --track-stop: 100%;
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-navigation-index-panel]):has(
+    :global([data-nav-action="about"]):is(:hover, :focus-visible)
+  ) {
+  --track-stop: 200%;
+}
+header.experiment[data-navigation-variant="track"]
+  :global([data-navigation-index][open])
+  :global([data-navigation-index-panel]) {
+  animation: shutter-open 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (max-width: 760px) {
+  header.experiment[data-navigation-variant="track"] {
+    --track-center: 1.875rem;
+  }
+  header.experiment[data-navigation-variant="frame"]
+    :global([data-nav-controls])
+    :global([data-nav-action]) {
+    font-size: 0.625rem;
+  }
+  header.experiment[data-navigation-variant="track"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action]) {
+    gap: 0.5rem;
+    font-size: 0.625rem;
+  }
+}
+
+@media (max-width: 600px) {
+  header.experiment[data-navigation-variant="edge"]
+    :global([data-navigation-index-panel]) {
+    padding-inline: 1rem;
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-navigation-index-panel]) {
+    top: calc(100% + 0.5rem);
+    width: min(18rem, calc(100% - 1.5rem));
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action]) {
+    --card-y: 0rem;
+    --card-from-x: 0%;
+    min-height: 7rem;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: center;
+    gap: 0.5rem 0.75rem;
+    padding: 1rem;
+    font-size: 0.75rem;
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action="matcha"]) {
+    --card-angle: -3deg;
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action="shop"]) {
+    --card-angle: 1deg;
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action="about"]) {
+    --card-angle: -1deg;
+  }
+  header.experiment[data-navigation-variant="stack"] :global([data-nav-index]) {
+    grid-row: 1 / 3;
+    padding: 0.125rem 0 0;
+    border: 0;
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-nav-description]) {
+    grid-column: 2;
+    padding-top: 0.5rem;
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-navigation-index-panel]) {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0.5rem 1rem;
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action]) {
+    min-height: 4.75rem;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: center;
+    gap: 0.375rem 0.75rem;
+    padding: 0.75rem 0;
+    font-size: 0.75rem;
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-nav-action])
+    + :global([data-nav-action]) {
+    border: 0;
+    border-top: 1px solid var(--experiment-rule);
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-nav-index]) {
+    grid-row: 1 / 3;
+    padding-top: 0.125rem;
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-nav-description]) {
+    grid-column: 2;
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action]):hover {
+    padding-left: 0.25rem;
+  }
+}
+
+@media (max-height: 500px) {
+  header.experiment[data-navigation-variant="edge"]
+    :global([data-navigation-index]) {
+    top: 6rem;
+    height: 6rem;
+  }
+  header.experiment[data-navigation-variant="edge"]
+    :global([data-nav-summary]) {
+    height: 6rem;
+    min-height: 6rem;
+  }
+  header.experiment[data-navigation-variant="edge"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action]) {
+    min-height: 3rem;
+    padding-block: 0.625rem;
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-navigation-index-panel]) {
+    top: calc(100% + 0.5rem);
+    width: min(42rem, calc(100% - 1rem));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action]) {
+    --card-y: 0.25rem;
+    min-height: 8.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    align-content: normal;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    font-size: 0.6875rem;
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action="matcha"]) {
+    --card-angle: -3deg;
+    --card-y: 0rem;
+    --card-from-x: 105%;
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action="shop"]) {
+    --card-angle: 0deg;
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action="about"]) {
+    --card-angle: 3deg;
+    --card-y: 0rem;
+    --card-from-x: -105%;
+  }
+  header.experiment[data-navigation-variant="stack"] :global([data-nav-index]) {
+    grid-row: auto;
+    padding: 0 0 0.5rem;
+    border-bottom: 1px solid var(--experiment-rule);
+  }
+  header.experiment[data-navigation-variant="stack"]
+    :global([data-nav-description]) {
+    grid-column: 1;
+    padding-top: 0.5rem;
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-navigation-index-panel]) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 0.5rem 0;
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action]) {
+    min-height: 7rem;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    align-content: normal;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.6875rem;
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-nav-action])
+    + :global([data-nav-action]) {
+    border: 0;
+    border-left: 1px solid var(--experiment-rule);
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-nav-index]) {
+    grid-row: auto;
+    padding: 0;
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-nav-description]) {
+    grid-column: 1;
+  }
+  header.experiment[data-navigation-variant="shutter"]
+    :global([data-navigation-index-panel])
+    :global([data-nav-action]):hover {
+    padding-left: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experiment,
+  .experiment *,
+  .experiment *::before,
+  .experiment *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

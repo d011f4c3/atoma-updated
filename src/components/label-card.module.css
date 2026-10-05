@@ -1,0 +1,755 @@
+.root {
+  --label-x: 0px;
+  --label-y: 0px;
+  --label-rx: -4deg;
+  --label-ry: 6deg;
+  --label-rz: -2deg;
+  --shadow-x: -5px;
+  --light-x: 28%;
+  --light-y: 18%;
+  width: 100%;
+  position: relative;
+  perspective: 1000px;
+  container-type: inline-size;
+  opacity: 1;
+  transition: opacity 180ms;
+}
+.root[data-visible="false"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.object {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: translate3d(var(--label-x), var(--label-y), 0)
+    rotateX(var(--label-rx)) rotateY(var(--label-ry)) rotateZ(var(--label-rz));
+  will-change: transform;
+}
+.card {
+  position: relative;
+  aspect-ratio: 0.78;
+  transform-style: preserve-3d;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.root[data-dragging="true"] .card {
+  cursor: grabbing;
+}
+.front,
+.back {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  backface-visibility: hidden;
+}
+.front {
+  padding: 8.5%;
+  transform: translateZ(1.5px);
+  color: #24302a;
+  background:
+    radial-gradient(
+      ellipse at var(--light-x) var(--light-y),
+      #ffffff8a,
+      transparent 75%
+    ),
+    linear-gradient(116deg, #edf0eb, #e0e5dd);
+  box-shadow:
+    inset 0 0 0 0.75px #fff9,
+    inset -1px -1px 2px #87958b26;
+  font-family: var(--font-atoma-mono), monospace;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.2;
+  background-image:
+    radial-gradient(#56665b1c 0.45px, transparent 0.65px),
+    radial-gradient(#fff8 0.4px, transparent 0.6px);
+  background-size:
+    3px 4px,
+    5px 3px;
+  background-position:
+    0 0,
+    1px 2px;
+}
+.back {
+  display: grid;
+  place-items: center;
+  transform: rotateY(180deg) translateZ(1.5px);
+  background: #dce2d8;
+  color: #6c7b71;
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 4cqw;
+  letter-spacing: 0.15em;
+}
+.edgeTop,
+.edgeBottom,
+.edgeLeft,
+.edgeRight {
+  position: absolute;
+  background: repeating-linear-gradient(#bec8bd 0 0.6px, #dce3d8 0.7px 1.3px);
+  pointer-events: none;
+}
+.edgeTop,
+.edgeBottom {
+  left: 0;
+  width: 100%;
+  height: 3px;
+  transform: rotateX(90deg);
+}
+.edgeTop {
+  top: -1.5px;
+}
+.edgeBottom {
+  bottom: -1.5px;
+}
+.edgeLeft,
+.edgeRight {
+  top: 0;
+  height: 100%;
+  width: 3px;
+  transform: rotateY(90deg);
+}
+.edgeLeft {
+  left: -1.5px;
+}
+.edgeRight {
+  right: -1.5px;
+}
+.shadow {
+  position: absolute;
+  inset: 4% 2% 0;
+  border-radius: 6px;
+  transform: translate3d(var(--shadow-x), 15px, -22px);
+  background: #000;
+  opacity: 0.26;
+  filter: blur(17px);
+  pointer-events: none;
+}
+.root[data-tone="light"] {
+  --light-x: 76%;
+  --light-y: 12%;
+}
+.root[data-tone="light"] .front {
+  color: #293228;
+  background:
+    radial-gradient(
+      ellipse at var(--light-x) var(--light-y),
+      #ffffffa3,
+      transparent 72%
+    ),
+    linear-gradient(235deg, #f7f7f2 8%, #eaece5 75%, #dcdfd8);
+  box-shadow:
+    inset -0.8px 0.8px 0.5px #ffffffe6,
+    inset 0.8px -1px 1px #66705e40;
+}
+.root[data-tone="light"] .card::before {
+  content: "";
+  position: absolute;
+  inset: 1% 0.5% 0;
+  border-radius: 2px;
+  transform: translate3d(-2px, 4px, -2px);
+  background: #142e2c;
+  opacity: 0.34;
+  filter: blur(2.5px);
+  pointer-events: none;
+}
+.root[data-tone="light"] .shadow {
+  inset: 2% 1% 0;
+  transform: translate3d(
+    calc(var(--shadow-x) - clamp(12px, 8cqw, 24px)),
+    clamp(18px, 11cqw, 32px),
+    -22px
+  );
+  background: #203b3b;
+  opacity: 0.44;
+  filter: blur(clamp(10px, 7cqw, 22px));
+}
+.root[data-tone="light"] .back {
+  background: #dce2d4;
+  color: #626c5b;
+}
+.root[data-tone="light"] .brand {
+  color: #57604f;
+}
+.root[data-tone="dark"] .front {
+  color: #2b2d2c;
+  background:
+    radial-gradient(
+      ellipse at var(--light-x) var(--light-y),
+      #ffffff8a,
+      transparent 75%
+    ),
+    linear-gradient(116deg, #efefec, #dededb);
+  box-shadow:
+    inset 0 0 0 0.75px #fff9,
+    inset -1px -1px 2px #8c908d26;
+}
+.root[data-tone="dark"] .front::after {
+  background-image:
+    radial-gradient(#5b5d5c1c 0.45px, transparent 0.65px),
+    radial-gradient(#fff8 0.4px, transparent 0.6px);
+}
+.root[data-tone="dark"] .back {
+  background: #d9dad7;
+  color: #646865;
+}
+.root[data-tone="dark"] :is(.edgeTop, .edgeBottom, .edgeLeft, .edgeRight) {
+  background: repeating-linear-gradient(#c1c3c0 0 0.6px, #dfe1dd 0.7px 1.3px);
+}
+.root[data-tone="dark"] .brand {
+  color: #565e5a;
+}
+.root[data-tone="dark"] .fields .application {
+  color: #525a56;
+}
+.root[data-tone="dark"] :is(.selection, .order, .reference) {
+  border-top-color: rgb(43 45 44 / 25%);
+}
+.root[data-tone="dark"] .referenceEdit:hover {
+  background: rgb(43 45 44 / 4%);
+}
+.root[data-tone="dark"] .controls {
+  color: var(--night-muted);
+}
+.root[data-tone="dark"] .controls button:hover {
+  color: var(--night-ink);
+}
+.root[data-tone="dark"] .card:focus-visible .front {
+  outline-color: var(--night-ink);
+}
+.card:focus-visible:not([data-pointer-focus]) .front {
+  outline: 1px solid #cad6bf;
+  outline-offset: 5px;
+}
+.root[data-tone="light"] .card:focus-visible .front {
+  outline-color: #303b29;
+}
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.brand {
+  color: #516366;
+  font-size: clamp(0.5625rem, 3cqw, 0.625rem);
+  letter-spacing: 0.06em;
+}
+.heading {
+  font-weight: 500;
+  margin: 2.5cqw 0 0.8cqw;
+  font-size: clamp(1rem, 8cqw, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+}
+.descriptor {
+  font-size: clamp(0.5rem, 2.8cqw, 0.625rem);
+  line-height: 1.5;
+  letter-spacing: 0.015em;
+}
+.fields {
+  margin: 7cqw 0 0;
+}
+.fields dt {
+  margin: 0;
+  font-size: clamp(0.5625rem, 3cqw, 0.625rem);
+  line-height: 1.3;
+  letter-spacing: 0.055em;
+}
+.fields dd {
+  margin: 2.5cqw 0 0;
+  font-size: clamp(0.625rem, 4cqw, 0.8125rem);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.selection,
+.order,
+.reference {
+  border-top: 1px solid #3a4d414d;
+  padding-top: 5cqw;
+}
+.selection {
+  padding-bottom: 6cqw;
+}
+.fields .name {
+  font-size: clamp(0.625rem, 4.3cqw, 0.875rem);
+}
+.fields .application {
+  margin-top: 1.4cqw;
+  color: #4b564b;
+  font-size: clamp(0.5625rem, 3.3cqw, 0.6875rem);
+}
+.order {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5cqw;
+  padding-bottom: 6cqw;
+}
+.order > div:last-child {
+  text-align: right;
+}
+.fields .quantity {
+  font-size: clamp(0.875rem, 5.5cqw, 1.125rem);
+  line-height: 1.05;
+}
+.fields .annotation {
+  font-family: var(--font-antro-vectra), cursive;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+.reference dd {
+  font-family: var(--font-antro-vectra), cursive;
+  font-size: clamp(1rem, 8cqw, 1.875rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.3;
+  white-space: pre-wrap;
+}
+.reference dd[data-reference-length="long"] {
+  font-size: clamp(0.875rem, 5.8cqw, 1.375rem);
+}
+.referenceEdit {
+  display: block;
+  width: 100%;
+  padding: 0.1em 0;
+  border: 0;
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  text-align: left;
+  cursor: text;
+  touch-action: manipulation;
+}
+.referenceEdit:hover {
+  background: #2932280a;
+}
+.referenceEdit:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+}
+.reference .printed {
+  display: block;
+  animation: write-ink 240ms ease-out var(--ink-delay, 0ms) both;
+}
+.ink {
+  display: block;
+}
+.printed {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.glyph {
+  animation: write-ink 110ms ease-out
+    calc(var(--ink-delay, 0ms) + var(--glyph-delay, 0ms)) both;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.45rem;
+  color: #c1c5bc;
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: clamp(0.5rem, 3cqw, 0.625rem);
+  line-height: 1.3;
+}
+.controls p {
+  margin: 0;
+}
+.controls button {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  min-height: 2.75rem;
+  padding: 0 0.2em;
+  border: 0;
+  border-radius: var(--radius-button);
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.controls button:hover {
+  color: #fff;
+}
+.root[data-tone="light"] .controls {
+  color: #1a2b24;
+}
+.root[data-tone="light"] .controls button:hover {
+  color: #202a1c;
+}
+.controls button:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+}
+.accessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A printed specimen sheet, kept separate from the Concept 02 order label. */
+.root[data-specifications="true"] .card {
+  aspect-ratio: 0.65;
+}
+.root[data-specifications="true"] .front {
+  padding: 7%;
+}
+.root[data-specifications="true"] .header {
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2cqw;
+}
+.root[data-specifications="true"] .descriptor {
+  font-size: clamp(0.5rem, 3cqw, 0.5625rem);
+}
+.root[data-specifications="true"] .fields {
+  margin-top: 5cqw;
+}
+.root[data-specifications="true"] .selection {
+  padding: 0 0 4cqw;
+  border: 0;
+}
+.root[data-specifications="true"] .name {
+  margin: 0;
+  font-size: clamp(0.875rem, 6cqw, 1.125rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+.root[data-specifications="true"] .application {
+  margin-top: 1.5cqw;
+  font-size: clamp(0.5625rem, 3.4cqw, 0.625rem);
+}
+.specifications {
+  padding: 3.5cqw 0;
+  border-top: 1px solid rgb(43 45 44 / 25%);
+}
+.specifications > dd {
+  margin-top: 2cqw;
+}
+.profile {
+  margin: 0;
+}
+.profile > div {
+  display: grid;
+  grid-template-columns: 6.5em minmax(0, 1fr);
+  align-items: baseline;
+  gap: 2cqw;
+  padding: 0.8cqw 0;
+  font-size: clamp(0.5625rem, 3.5cqw, 0.6875rem);
+}
+.profile dt,
+.profile dd {
+  margin: 0;
+  font-size: inherit;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+.profile dt {
+  color: #535b55;
+}
+.profile dd {
+  overflow-wrap: normal;
+}
+.profile .printed {
+  overflow-wrap: normal;
+}
+.root[data-specifications="true"] .order {
+  padding: 3.5cqw 0;
+  gap: 3cqw;
+}
+.root[data-specifications="true"] .order > div {
+  display: flex;
+  align-items: baseline;
+  gap: 2cqw;
+}
+.root[data-specifications="true"] .order dd {
+  margin: 0;
+  font-size: clamp(0.625rem, 4cqw, 0.75rem);
+  line-height: 1.4;
+}
+.root[data-specifications="true"] .reference {
+  padding-top: 3.5cqw;
+}
+.root[data-specifications="true"] .reference dd {
+  margin-top: 1cqw;
+  font-size: clamp(1rem, 6.5cqw, 1.5rem);
+  line-height: 1.2;
+}
+.root[data-specifications="true"] .reference dd[data-reference-length="long"] {
+  font-size: clamp(0.875rem, 5.2cqw, 1.125rem);
+}
+@container (max-width: 140px) {
+  .front {
+    padding: 8%;
+  }
+  .brand {
+    font-size: 8px;
+    line-height: 1;
+  }
+  .heading {
+    font-weight: 500;
+    margin: 2px 0 0;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .descriptor {
+    display: none;
+  }
+  .fields {
+    margin-top: 3px;
+  }
+  .fields dt {
+    font-size: 8px;
+    line-height: 1.1;
+    letter-spacing: 0;
+  }
+  .fields dd,
+  .fields .name {
+    margin-top: 2px;
+    font-size: 8px;
+    line-height: 1.2;
+  }
+  .selection,
+  .order,
+  .reference {
+    padding-top: 4px;
+  }
+  .selection,
+  .order {
+    padding-bottom: 4px;
+  }
+  .fields .application {
+    margin: 0;
+    height: 0;
+  }
+  .application .printed {
+    display: none;
+  }
+  .fields .quantity {
+    font-size: 11px;
+    line-height: 1;
+  }
+  .reference dd,
+  .reference dd[data-reference-length="long"] {
+    font-size: 12px;
+    line-height: 1.05;
+  }
+  .controls {
+    justify-content: flex-end;
+    margin-top: 3px;
+  }
+  .controls p {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .controls button {
+    min-height: 44px;
+    min-width: 44px;
+    justify-content: center;
+    font-size: 0;
+  }
+  .controls button > span[aria-hidden="true"] {
+    font-size: 12px;
+  }
+}
+@keyframes write-ink {
+  from {
+    opacity: 0;
+    filter: blur(0.8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+:global([data-embedded="true"])
+  :is(.descriptor, .fields dt, .application, .controls p, .controls button) {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+:global(
+    [data-embedded="true"]:is(
+      [data-mode="builder"],
+      [data-mode="standard"],
+      [data-mode="specifications"],
+      [data-mode="origins"]
+    )
+  )
+  :is(.name, .profile dd) {
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+  .glyph,
+  .reference .printed {
+    animation: none;
+  }
+}
+
+/* Direct print reuses the paper's field hierarchy without a second surface. */
+.root.inkOnly {
+  --ink-type-scale: 0.82;
+  perspective: none;
+}
+.root.inkOnly .card {
+  aspect-ratio: auto;
+  transform-style: flat;
+  cursor: default;
+  touch-action: auto;
+  user-select: text;
+}
+.root.inkOnly[data-tone] .card::before,
+.root.inkOnly .front::after {
+  display: none;
+}
+.root.inkOnly[data-tone] .front {
+  position: relative;
+  inset: auto;
+  padding: 0;
+  border-radius: 0;
+  transform: none;
+  backface-visibility: visible;
+  background: none;
+  box-shadow: none;
+  color: #171b18;
+}
+.root.inkOnly[data-tone] :is(.brand, .fields .application, .profile dt) {
+  color: inherit;
+}
+.root.inkOnly[data-tone] :is(.selection, .specifications, .order, .reference) {
+  border-top-color: #171b1866;
+}
+.root.inkOnly[data-tone] .referenceEdit:hover {
+  background: #171b180d;
+}
+
+/* Ink scales as one printed composition; paper keeps its reading-size floors. */
+.root.inkOnly[data-tone] .brand {
+  font-size: calc(3.9cqw * var(--ink-type-scale));
+  line-height: 1.4;
+}
+.root.inkOnly[data-tone] .heading {
+  margin: 2.5cqw 0 0.8cqw;
+  font-size: calc(8cqw * var(--ink-type-scale));
+  line-height: 1.2;
+}
+.root.inkOnly[data-tone] .descriptor {
+  display: block;
+  font-size: calc(3.3cqw * var(--ink-type-scale));
+  line-height: 1.4;
+}
+.root.inkOnly[data-tone] .fields {
+  margin-top: 5cqw;
+}
+.root.inkOnly[data-tone] .fields dt {
+  font-size: calc(4cqw * var(--ink-type-scale));
+  line-height: 1.3;
+}
+.root.inkOnly[data-tone] .fields dd {
+  margin-top: 2cqw;
+  font-size: calc(4.6cqw * var(--ink-type-scale));
+  line-height: 1.35;
+}
+.root.inkOnly[data-tone] .selection,
+.root.inkOnly[data-tone] .order {
+  padding-top: 4cqw;
+  padding-bottom: 4cqw;
+}
+.root.inkOnly[data-tone] .fields .name {
+  font-size: calc(5.2cqw * var(--ink-type-scale));
+  line-height: 1.3;
+}
+.root.inkOnly[data-tone] .fields .application {
+  height: auto;
+  margin-top: 1.5cqw;
+  font-size: calc(3.8cqw * var(--ink-type-scale));
+  line-height: 1.35;
+}
+.root.inkOnly[data-tone] .application .printed {
+  display: block;
+}
+.root.inkOnly[data-tone] .fields .quantity {
+  font-size: calc(6cqw * var(--ink-type-scale));
+  line-height: 1.1;
+}
+.root.inkOnly[data-tone] .reference {
+  padding-top: 3cqw;
+}
+.root.inkOnly[data-tone] .reference dd {
+  margin-top: 1cqw;
+  font-size: calc(8cqw * var(--ink-type-scale));
+  line-height: 1.2;
+}
+.root.inkOnly[data-tone] .reference dd[data-reference-length="long"] {
+  font-size: calc(7.5cqw * var(--ink-type-scale));
+}
+.root.inkOnly[data-specifications="true"] .fields {
+  margin-top: 4cqw;
+}
+.root.inkOnly[data-specifications="true"] .selection {
+  padding: 0 0 3cqw;
+}
+.root.inkOnly[data-specifications="true"] .fields .name {
+  margin: 0;
+  font-size: calc(6.5cqw * var(--ink-type-scale));
+  line-height: 1.2;
+}
+.root.inkOnly[data-specifications="true"] .specifications {
+  padding: 3cqw 0;
+}
+.root.inkOnly[data-specifications="true"] .specifications > dd {
+  margin-top: 2cqw;
+}
+.root.inkOnly[data-specifications="true"] .profile > div {
+  gap: 1.5cqw;
+  padding: 0.8cqw 0;
+  font-size: calc(4.4cqw * var(--ink-type-scale));
+}
+.root.inkOnly[data-specifications="true"] .profile :is(dt, dd) {
+  margin: 0;
+  font-size: inherit;
+  line-height: 1.35;
+}
+.root.inkOnly[data-specifications="true"] .order {
+  padding: 3cqw 0;
+}
+.root.inkOnly[data-specifications="true"] .order dd {
+  margin: 0;
+  font-size: calc(4.6cqw * var(--ink-type-scale));
+  line-height: 1.3;
+}
+.root.inkOnly[data-tone] .order .annotation {
+  margin: -1cqw 0 0;
+  font-size: 9cqw;
+  line-height: 1;
+}

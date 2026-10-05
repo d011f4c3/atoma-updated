@@ -1,0 +1,116 @@
+.root {
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  color: var(--ink);
+  font-family: var(--font-atoma-mono), monospace;
+  text-transform: uppercase;
+}
+.introduction {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: end;
+  padding: 0.75rem 0 2.5rem;
+}
+.heading {
+  margin: 0;
+  font-size: clamp(1.625rem, 3vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+}
+.lead {
+  max-width: 36ch;
+  margin: 0 0 0.125rem;
+  color: var(--ink);
+  font-size: 0.75rem;
+  line-height: 1.85;
+  letter-spacing: 0.015em;
+  text-wrap: pretty;
+}
+.entries {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+.entry {
+  min-width: 0;
+  padding: 1.25rem 1.25rem 0 0;
+}
+.entry + .entry {
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--line);
+}
+.entry:last-child {
+  padding-right: 0;
+}
+.entryHeading {
+  display: grid;
+  gap: 1.375rem;
+  margin-bottom: 0.75rem;
+}
+.number {
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.entryHeading h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+.entry p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  text-wrap: pretty;
+}
+@media (max-width: 600px) {
+  .introduction {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 0.25rem 0 1.75rem;
+  }
+  .lead {
+    max-width: 42ch;
+  }
+  .entries {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .entry,
+  .entry + .entry {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1rem 0;
+    border-left: 0;
+  }
+  .entry + .entry {
+    border-top: 1px solid var(--line);
+  }
+  .entry:last-child {
+    padding-bottom: 0;
+  }
+  .entryHeading {
+    align-content: start;
+    gap: 0.5rem;
+    margin: 0;
+  }
+}
+@media (max-width: 360px) {
+  .entry,
+  .entry + .entry {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.625rem;
+  }
+  .entryHeading {
+    display: flex;
+    align-items: baseline;
+    gap: 0.625rem;
+  }
+}

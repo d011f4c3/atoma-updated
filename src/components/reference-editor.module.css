@@ -1,0 +1,162 @@
+.editor {
+  min-width: 0;
+  padding: 1.25rem 0 1.5rem;
+  color: var(--ink);
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+.editor h2 {
+  margin: 0;
+  font-size: clamp(1.25rem, 1.7vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  text-transform: none;
+}
+
+.introduction {
+  max-width: 40ch;
+  margin: 0.875rem 0 2.25rem;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.8;
+}
+
+.field {
+  min-width: 0;
+}
+
+.fieldHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+}
+
+.counter {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 0.625rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 4.75rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control, 6px);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  color: var(--ink);
+  font-family: var(--font-antro-vectra, cursive);
+  font-size: 2rem;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.8;
+  letter-spacing: 0;
+  text-transform: none;
+  scroll-margin-block: 1.25rem;
+}
+
+.input::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.note {
+  margin: 0.875rem 0 0;
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 1.7;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+  margin-top: 2rem;
+}
+
+.actions button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2.875rem;
+  min-width: 0;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button, 6px);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+
+.actions .done {
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+  font-weight: 500;
+}
+
+.actions button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
+}
+
+.actions button:disabled {
+  color: var(--muted);
+  opacity: 0.5;
+  cursor: default;
+}
+
+.input:focus-visible,
+.actions button:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+
+:global([data-tone="light"]) .input,
+:global([data-tone="light"]) .actions button {
+  border-color: var(--line);
+  background: transparent;
+}
+
+:global([data-tone="light"]) .actions button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+@media (max-width: 760px) {
+  .editor {
+    padding-top: 0.75rem;
+  }
+
+  .introduction {
+    margin-bottom: 1.75rem;
+  }
+
+  .actions {
+    margin-top: 1.5rem;
+  }
+}
+
+:global([data-embedded="true"])
+  :is(.introduction, .fieldHeading label, .note, .actions button) {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .actions button {
+    transition: none;
+  }
+}

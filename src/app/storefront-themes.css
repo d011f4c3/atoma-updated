@@ -1,0 +1,166 @@
+/* Approved storefront palettes. Explicit page markers keep historical concepts
+   independent and let sibling cart/Origins dialogs follow the active theme. */
+body:has([data-storefront-theme="light"]) {
+  --color-surface: #f1f5ef;
+  --color-raised: #f8faf6;
+  --color-ink: #263b34;
+  --color-muted: #53675e;
+  --color-line: rgb(38 59 52 / 20%);
+  --color-background:
+    radial-gradient(
+      ellipse 56% 70% at 87% 70%,
+      #b7cebb 0%,
+      #d6e4d5 38%,
+      transparent 76%
+    ),
+    radial-gradient(ellipse 70% 50% at 45% 100%, #dfebe3, transparent 80%),
+    linear-gradient(125deg, #fcfdfb 12%, #f2f6f0 62%, #e2ecdf);
+  --color-selection:
+    radial-gradient(ellipse 62% 90% at 12% 70%, #cadfce, transparent 82%),
+    linear-gradient(110deg, #e7efe6, #f9fbf7 70%);
+  --color-panel: linear-gradient(145deg, #fcfdfb, #e8f0e7);
+  color-scheme: light;
+}
+
+body:has([data-storefront-theme="dark"]) {
+  --color-surface: #080b11;
+  --color-raised: #121923;
+  --color-ink: #e9eef2;
+  --color-muted: #b2bdc9;
+  --color-line: rgb(187 204 220 / 19%);
+  --color-background:
+    radial-gradient(
+      ellipse 80% 28% at 72% 105%,
+      rgb(144 170 186 / 48%),
+      transparent 85%
+    ),
+    linear-gradient(
+      180deg,
+      #080b11 0%,
+      #090d14 46%,
+      #101822 66%,
+      #263747 84%,
+      #4b6273 100%
+    );
+  --color-selection:
+    linear-gradient(90deg, transparent 28%, #080b11e6 60%, #080b11 78%),
+    radial-gradient(
+      ellipse 70% 32% at 20% 105%,
+      rgb(104 133 153 / 38%),
+      transparent 85%
+    ),
+    linear-gradient(180deg, #080b11 40%, #101923 70%, #304556 100%);
+  --color-panel: linear-gradient(160deg, #17212d, #0a1019);
+  color-scheme: dark;
+}
+
+body:has([data-storefront-theme]) {
+  --surface: var(--color-surface);
+  --color-disabled: color-mix(
+    in srgb,
+    var(--color-muted) 65%,
+    var(--color-raised)
+  );
+  --color-hover: color-mix(in srgb, var(--color-ink) 7%, transparent);
+  --lab-surface: var(--color-surface);
+  --lab-ink: var(--color-ink);
+  --lab-muted: var(--color-muted);
+  --lab-line: var(--color-line);
+  --lab-background: var(--color-background);
+  --lab-selection-background: var(--color-selection);
+  --night-surface: var(--color-surface);
+  --night-raised: var(--color-raised);
+  --night-ink: var(--color-ink);
+  --night-muted: var(--color-muted);
+  --night-line: var(--color-line);
+  --night-control: color-mix(in srgb, var(--color-ink) 5%, transparent);
+  --night-control-hover: color-mix(in srgb, var(--color-ink) 10%, transparent);
+  --night-background: var(--color-background);
+  --night-selection-background: var(--color-selection);
+  --night-panel-background: var(--color-panel);
+  --accent: var(--color-ink);
+  background: var(--color-surface);
+}
+
+body:has([data-storefront-theme]) main[data-tone] {
+  background-color: var(--color-surface);
+}
+
+body:has([data-storefront-theme][data-tone]) [data-brand-part="target-label"] {
+  border-color: var(--color-line);
+  background: var(--color-raised);
+  color: var(--color-ink);
+}
+
+body:has([data-storefront-theme][data-tone]) [data-brand-part="frame"] > span {
+  border-color: var(--color-muted);
+}
+
+body:has([data-storefront-theme][data-tone]) [data-brand-part="field"] svg {
+  color: var(--color-muted);
+}
+
+body:has([data-storefront-theme="dark"]) [data-brand-part="viewer-footer"],
+body:has([data-storefront-theme="dark"]) [data-brand-part="hero-footer"] {
+  --muted: var(--color-ink);
+  color: var(--color-ink);
+}
+
+/* Shared dialogs live beside the page and follow its active palette. */
+body:has([data-storefront-theme][data-tone]) dialog {
+  --cart-ink: var(--color-ink);
+  --cart-muted: var(--color-muted);
+  --cart-line: var(--color-line);
+  --cart-surface: var(--color-raised);
+  --cart-disabled: color-mix(
+    in srgb,
+    var(--color-muted) 65%,
+    var(--color-raised)
+  );
+  --cart-hover: color-mix(in srgb, var(--color-ink) 7%, transparent);
+  border-color: var(--color-line);
+  background: var(--color-panel);
+  color: var(--color-ink);
+}
+
+body:has([data-storefront-theme]) [data-origins-content] {
+  --origin-surface: var(--color-surface);
+  --origin-ink: var(--color-ink);
+  --origin-muted: var(--color-muted);
+  --origin-line: var(--color-line);
+  --origin-control: color-mix(in srgb, var(--color-ink) 5%, transparent);
+}
+
+body:has([data-storefront-theme]) [data-origins-directory] {
+  --directory-surface: var(--color-surface);
+  --directory-ink: var(--color-ink);
+  --directory-muted: var(--color-muted);
+  --directory-line: var(--color-line);
+  --directory-control: color-mix(in srgb, var(--color-ink) 5%, transparent);
+}
+
+@media (max-width: 760px) {
+  body:has([data-storefront-theme="dark"]) {
+    --color-background:
+      radial-gradient(
+        ellipse 100% 14% at 50% 48%,
+        rgb(107 136 157 / 42%),
+        transparent 90%
+      ),
+      linear-gradient(
+        180deg,
+        #080b11 16%,
+        #101822 33%,
+        #263747 49%,
+        #101822 62%,
+        #080b11 78%
+      );
+    --color-selection:
+      radial-gradient(
+        ellipse 110% 20% at 50% 36%,
+        rgb(66 89 110 / 45%),
+        transparent 85%
+      ),
+      linear-gradient(#080b11, #080b11);
+  }
+}

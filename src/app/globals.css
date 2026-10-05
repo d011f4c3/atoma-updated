@@ -5,8 +5,53 @@
   --muted: #a5ada1;
   --line: rgb(229 232 223 / 19%);
   --accent: #c1d4a0;
+  --radius-button: 6px;
+  --radius-control: 6px;
   --surface: #10120f;
   --product-ink: #181916;
+  --night-surface: #101213;
+  --night-raised: #171a1b;
+  --night-ink: #e9eae6;
+  --night-muted: #a2a7a5;
+  --night-line: rgb(234 238 235 / 13%);
+  --night-control: rgb(231 236 235 / 4%);
+  --night-control-hover: rgb(231 236 235 / 8%);
+  --night-background:
+    radial-gradient(
+      ellipse 95% 95% at 78% 20%,
+      rgb(123 134 139 / 9%),
+      transparent 68%
+    ),
+    linear-gradient(135deg, #16191a 0%, #101213 48%, #0b0d0e 100%);
+  --night-selection-background:
+    radial-gradient(
+      ellipse 90% 110% at 18% 40%,
+      rgb(127 139 142 / 6%),
+      transparent 74%
+    ),
+    var(--night-background);
+  --night-panel-background: linear-gradient(145deg, #1a1d1e, #121516);
+  --lab-surface: #e9eae3;
+  --lab-ink: #252d27;
+  --lab-muted: #455044;
+  --lab-line: rgb(37 45 39 / 22%);
+  --lab-background:
+    radial-gradient(
+      ellipse at 72% -8%,
+      #fffff9 0%,
+      #f4f4ecb3 30%,
+      transparent 62%
+    ),
+    radial-gradient(ellipse at 100% 40%, #e9ede5b3, transparent 68%),
+    linear-gradient(175deg, #ecebe5 0%, #c9d0cc 32%, #90a39f 65%, #465e5d 100%);
+  --lab-selection-background:
+    radial-gradient(
+      ellipse 110% 76% at 50% 35%,
+      rgb(240 241 233 / 83%) 30%,
+      rgb(240 241 233 / 55%) 64%,
+      transparent 100%
+    ),
+    var(--lab-background);
   --product-gradient: linear-gradient(
     180deg,
     #aab4ba 0%,

@@ -1,0 +1,270 @@
+.button {
+  --button-ink: var(--surface, #171a18);
+  --button-surface: var(--ink, #e8e8df);
+  --button-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  overflow: hidden;
+  padding: 0.625rem 0.625rem 0.625rem 1.125rem;
+  border: 1px solid var(--button-surface);
+  border-radius: var(--radius-button);
+  background: var(--button-surface);
+  color: var(--button-ink);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--button-ink) 12%, transparent),
+    0 3px 8px rgb(0 0 0 / 8%);
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform 300ms var(--button-ease),
+    box-shadow 300ms var(--button-ease),
+    border-color 200ms;
+}
+
+.surface {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+    color-mix(in srgb, var(--button-ink) 16%, transparent),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 350ms;
+}
+
+.label {
+  min-width: 0;
+  transition: transform 400ms var(--button-ease);
+}
+
+.action {
+  position: relative;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, currentColor 32%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--button-ink) 5%, transparent);
+  transition:
+    background 300ms,
+    color 300ms,
+    border-color 300ms;
+}
+
+.plus,
+.arrow {
+  grid-area: 1 / 1;
+  transition:
+    transform 450ms var(--button-ease),
+    opacity 250ms;
+}
+
+.plus {
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.arrow {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  opacity: 0;
+  transform: translateX(-130%);
+}
+
+.track {
+  position: absolute;
+  right: 0.375rem;
+  bottom: 0;
+  left: 0.375rem;
+  height: 2px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.track::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--button-ink) 55%, transparent) 50%,
+    transparent
+  );
+  content: "";
+  transform: translateX(-100%);
+  animation: ready-scan 5s 900ms infinite;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--button-surface);
+  outline-offset: 4px;
+}
+
+.button:focus-visible:not(:disabled) .surface {
+  opacity: 1;
+}
+
+.button:focus-visible:not(:disabled) .action {
+  background: var(--button-ink);
+  color: var(--button-surface);
+  border-color: var(--button-ink);
+}
+
+.button:focus-visible:not(:disabled) .plus {
+  opacity: 0;
+  transform: translateX(130%);
+}
+
+.button:focus-visible:not(:disabled) .arrow {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--button-ink) 15%, transparent),
+      0 6px 16px rgb(0 0 0 / 16%);
+  }
+  .button:hover:not(:disabled) .surface {
+    opacity: 1;
+  }
+  .button:hover:not(:disabled) .label {
+    transform: translateX(0.25rem);
+  }
+  .button:hover:not(:disabled) .action {
+    background: var(--button-ink);
+    color: var(--button-surface);
+    border-color: var(--button-ink);
+  }
+  .button:hover:not(:disabled) .plus {
+    opacity: 0;
+    transform: translateX(130%);
+  }
+  .button:hover:not(:disabled) .arrow {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: inset 0 2px 6px rgb(0 0 0 / 16%);
+}
+
+.button:disabled {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.button:disabled .track,
+.button:disabled .surface {
+  display: none;
+}
+
+.button[data-pending="true"] {
+  border-color: var(--button-surface);
+  background: var(--button-surface);
+  color: var(--button-ink);
+  cursor: progress;
+}
+
+.button[data-pending="true"] .track {
+  display: block;
+}
+
+.button[data-pending="true"] .track::after {
+  animation: pending-scan 1.3s ease-in-out infinite;
+}
+
+.spinner {
+  display: none;
+  position: absolute;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+}
+
+.button[data-pending="true"] .spinner {
+  display: block;
+  animation: spin 800ms linear infinite;
+}
+
+.button[data-pending="true"] .plus,
+.button[data-pending="true"] .arrow {
+  opacity: 0;
+}
+
+@keyframes ready-scan {
+  0%,
+  65% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes pending-scan {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 380px) {
+  .button {
+    gap: 0.625rem;
+    padding-left: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .button *,
+  .button *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .button:hover:not(:disabled),
+  .button:active:not(:disabled),
+  .button:hover:not(:disabled) .label {
+    transform: none;
+  }
+}

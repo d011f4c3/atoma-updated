@@ -67,6 +67,44 @@ The pre-refinement homepage is saved at `ca2b63d37b25` /
 
 ## Current authorization and source authority
 
+Task 0023 refines the current flow with smaller monospaced typography. The
+owner finds the large light sans-serif treatment too generically modern. The owner’s latest follow-up requests a different typeface; use locally hosted
+IBM Plex Mono across headings, selection and supporting copy,
+with controlled type sizes, precise spacing and a clear reading hierarchy.
+
+The light-theme references call for a photographic chalk-to-mineral gradient,
+neutral controls and directional shadows. Keep the final grey-green palette muted,
+with dark-ink bottom captions and lighter top navigation buttons. The final
+navigation correction uses a faint shadow with 15% white in light mode and
+the existing 5% white fill in dark mode.
+Preserve the continuous background and existing lighting, without a separate image halo.
+
+Task 0022 adds the owner's latest visual direction: matcha meets precision
+engineering, laboratory and science. The main flow keeps the powder and builds
+a movable label card as selections are made. Cool neutral materials, ruled
+typography and controlled animation express this direction; the label's content
+comes from the existing selection rather than invented scientific measurements.
+
+Task 0019 now authorizes in-place selection, a functional headless cart and an
+original `/concept-02`. The owner confirms the current test products were created
+for this frontend; do not send users to a separate Shopify Online Store. Product
+choices must visibly change the experience. The visual bar is luxury, detached,
+production-engineering and laboratory-influenced, while minimal and recognizably
+matcha. A sculptural metal vessel replaces the rejected foil-pouch exploration.
+Both source RTFs were reread in full again after this clarification. Product,
+information and selection remain ahead of origin, people and process. Earlier
+scope statements below are historical and do not restrict this authorized task.
+
+Task 0018 refines the preferred homepage, with Concept 05's actual filled
+Matcha/About controls, subtle text appearance links, and purposeful linework.
+The owner rejects extra framing and surface-inspection interactions: the hero
+should guide visitors toward real products and Shopify-backed selection.
+The original split composition is retained. Both original RTF documents were
+reread in full; the product-first journey is documented in
+[Home to catalog](../design/home-to-catalog.md). The existing read-only Shopify
+adapter works, but current published records are explicitly development fixtures.
+No fabricated range, new commerce integration, or older-storefront link is added.
+
 Task 0016 supersedes the palette-only pass. Refine the homepage with a visible
 light/dark switcher, tighter right-aligned navigation, and more expressive
 choreography. Preserve the previous version at `b85f7af`. Rework Concept 03's

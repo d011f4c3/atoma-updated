@@ -1,0 +1,221 @@
+.root {
+  min-width: 0;
+  margin-top: 0.75rem;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.75;
+}
+
+.trigger {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(
+    --night-control,
+    color-mix(in srgb, var(--ink) 4%, transparent)
+  );
+  font-size: 0.75rem;
+  line-height: 1.5;
+  list-style: none;
+  cursor: pointer;
+  transition:
+    background 180ms,
+    border-color 180ms;
+}
+
+.trigger::-webkit-details-marker {
+  display: none;
+}
+
+.trigger:hover {
+  background: var(
+    --night-control-hover,
+    color-mix(in srgb, var(--ink) 8%, transparent)
+  );
+}
+
+.trigger:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.root[data-tone="light"] .trigger {
+  border-color: var(--line);
+  background: transparent;
+}
+
+.root[data-tone="light"] .trigger:hover {
+  border-color: color-mix(in srgb, var(--ink) 50%, transparent);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+
+.plus {
+  flex: none;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 180ms;
+}
+
+.root[open] .plus {
+  transform: rotate(45deg);
+}
+
+.body {
+  padding: 1.25rem 0.25rem 0.5rem;
+}
+
+.section + .section {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.section h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+}
+
+.section p {
+  max-width: 56ch;
+  margin: 0;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+.section .application {
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+}
+
+.formats {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.formats li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.375rem 1rem;
+}
+
+.formats li + li {
+  margin-top: 0.875rem;
+}
+
+.formatIdentity {
+  display: grid;
+  min-width: 0;
+  gap: 0.125rem;
+  overflow-wrap: anywhere;
+}
+
+.options,
+.availability {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.facts {
+  display: grid;
+  margin: 0;
+  gap: 0.875rem;
+}
+
+.facts > div {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 28%) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.facts dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.facts + p {
+  margin-top: 1rem;
+}
+
+.root[data-presentation="inline"] {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  font-size: var(--tab-body-size, 0.75rem);
+  line-height: 1.8;
+}
+
+.root[data-presentation="inline"] .body {
+  padding: 1.125rem 0 0;
+}
+
+.root[data-presentation="inline"] .section + .section {
+  margin-top: 1.125rem;
+  padding-top: 1.125rem;
+}
+
+.root[data-presentation="inline"] .section h3 {
+  margin-bottom: 0.625rem;
+  font-size: var(--tab-label-size, 0.6875rem);
+}
+
+.root[data-presentation="inline"] .options,
+.root[data-presentation="inline"] .availability,
+.root[data-presentation="inline"] .facts dt {
+  font-size: var(--tab-label-size, 0.6875rem);
+}
+
+.root[data-presentation="inline"] .section p {
+  max-width: 60ch;
+}
+
+/* Keep published identifiers and physical units literal inside uppercase views. */
+.formats,
+.facts dd {
+  text-transform: none;
+}
+
+@media (max-width: 760px) {
+  .body {
+    padding-inline: 0;
+  }
+
+  .facts > div {
+    grid-template-columns: 1fr;
+    gap: 0.125rem;
+  }
+}
+
+.trigger,
+.section h3,
+.section .application,
+.availability,
+.facts dt {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger,
+  .plus {
+    transition: none;
+  }
+}

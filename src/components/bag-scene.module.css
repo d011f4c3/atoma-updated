@@ -1,0 +1,226 @@
+.scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  isolation: isolate;
+  container-type: size;
+  background: transparent;
+}
+
+.canvasLayer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+
+.canvasLayer canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fallbackImage {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 400ms ease;
+}
+
+.fallback {
+  object-fit: contain;
+  mask-mode: alpha;
+  mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  transform: scale(1.18);
+  user-select: none;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.fallback[data-masked="true"] {
+  opacity: 1;
+}
+
+.photographicFallback {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 350ms ease;
+}
+
+.photographicPackage {
+  position: absolute;
+  width: min(100%, calc(100cqh * 2 / 3));
+  aspect-ratio: 2 / 3;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 70%;
+}
+
+.photographicPackage[data-visible="false"] {
+  visibility: hidden;
+}
+
+.photographicPackage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 350ms ease;
+}
+
+.photographicPackage canvas[data-pose="1"] {
+  opacity: 0;
+}
+
+.photographicFallback[data-open="true"]
+  .photographicPackage[data-index="0"]
+  canvas[data-pose="0"] {
+  opacity: 0;
+}
+
+.photographicFallback[data-open="true"]
+  .photographicPackage[data-index="0"]
+  canvas[data-pose="1"] {
+  opacity: 1;
+}
+
+.photographicPackage[data-index="0"] {
+  z-index: 3;
+}
+
+.photographicPackage[data-index="1"] {
+  z-index: 2;
+  transform: translate(-20%, -54%) scale(0.88) rotate(2deg);
+}
+
+.photographicPackage[data-index="2"] {
+  z-index: 1;
+  transform: translate(-84%, -56%) scale(0.88) rotate(-2deg);
+}
+
+.scene[data-renderer="fallback"][data-stage="vessel"][data-product-ready="true"]
+  .photographicFallback {
+  opacity: 1;
+}
+
+.scene[data-renderer="fallback"][data-stage="vessel"][data-product-ready="true"]
+  .fallbackImage {
+  opacity: 0;
+}
+
+.scene[data-inspecting-label="true"] .photographicPackage {
+  width: min(150%, calc(145cqh * 2 / 3));
+  top: 45%;
+}
+
+.fallbackDetails {
+  position: absolute;
+  top: 50%;
+  left: 18%;
+  right: 18%;
+  transform: translateY(-50%);
+  padding: clamp(0.5rem, 1.25vw, 1rem);
+  border: 1px solid #182b3830;
+  background: #f1f3ef;
+  color: #182b38;
+  font-family: var(--font-fraktion-mono), monospace;
+  font-size: clamp(0.55rem, 0.85vw, 0.75rem);
+  line-height: 1.2;
+}
+
+.scene[data-tone="dark"] .fallbackDetails {
+  border-color: #e8e9e52c;
+  background: #171918;
+  color: #e8e9e5;
+}
+
+.scene[data-tone="dark"] .fallbackDetails dl > div {
+  border-color: #e8e9e52c;
+}
+
+.scene[data-photograph-failed="true"] .fallbackImage {
+  visibility: hidden;
+}
+
+.scene[data-photograph-failed="true"] .fallbackDetails {
+  left: 18%;
+  right: 18%;
+}
+
+.fallbackDetails > span {
+  display: block;
+  font-size: 0.9em;
+}
+
+.fallbackDetails > strong {
+  display: block;
+  margin: 0.3rem 0 0.4rem;
+  font-family: var(--font-fraktion-sans), sans-serif;
+  font-size: clamp(1rem, 1.8vw, 1.65rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.fallbackDetails dl {
+  margin: 0;
+}
+
+.fallbackDetails dl > div {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 0.35rem;
+  padding-top: 0.3rem;
+  margin-top: 0.3rem;
+  border-top: 1px solid #182b3828;
+}
+
+.fallbackDetails dt,
+.fallbackDetails dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.fallbackDetails dt {
+  font-size: 0.78em;
+}
+
+.fallbackDetails dl > div:last-child {
+  grid-template-columns: 1fr;
+  gap: 0.2rem;
+}
+
+.scene[data-renderer="webgl"] .canvasLayer {
+  opacity: 1;
+}
+
+.scene[data-renderer="webgl"] .fallbackImage {
+  opacity: 0;
+}
+
+@media (max-width: 760px) {
+  .scene[data-inspecting-label="true"] .photographicPackage {
+    width: min(240%, calc(290cqh * 2 / 3));
+    top: -6%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvasLayer,
+  .fallbackImage,
+  .fallback,
+  .photographicFallback,
+  .photographicPackage canvas {
+    transition: none;
+  }
+}

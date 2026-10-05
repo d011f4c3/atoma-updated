@@ -1,0 +1,199 @@
+.identity[data-display-index] {
+  position: relative;
+  min-width: 0;
+}
+
+.mark {
+  display: block;
+  color: var(--muted);
+  font-size: 0.625rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The first three treatments retain the earlier Overview study. */
+.identity[data-display-index][data-code-placement="eyebrow"] {
+  display: block;
+}
+
+.identity[data-display-index][data-code-placement="eyebrow"] .mark {
+  margin-bottom: 0.5rem;
+}
+
+.identity[data-display-index][data-code-placement="corner"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: 1rem;
+}
+
+.identity[data-display-index][data-code-placement="corner"] > h2 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.identity[data-display-index][data-code-placement="corner"] .mark {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.identity[data-display-index][data-code-placement="corner"] > p {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.identity[data-display-index][data-code-placement="footline"] {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.identity[data-display-index][data-code-placement="footline"] .mark {
+  order: 1;
+  margin-top: 0.625rem;
+  padding-top: 0.375rem;
+  border-top: 1px solid var(--line);
+  text-align: right;
+}
+
+/* Caption integrates the reference into the supporting application line. */
+.identity[data-display-index][data-code-placement="caption"] {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  justify-content: start;
+  gap: 0 0.75rem;
+}
+
+.identity[data-display-index][data-code-placement="caption"] > h2 {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+.identity[data-display-index][data-code-placement="caption"] > p {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.identity[data-display-index][data-code-placement="caption"] .mark {
+  grid-column: 2;
+  grid-row: 2;
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--line);
+}
+
+/* An edge annotation reserves its own space; it never covers the title. */
+.identity[data-display-index][data-code-placement="edge"] {
+  display: block;
+  min-height: 3.375rem;
+  padding-right: 1.75rem;
+}
+
+.identity[data-display-index][data-code-placement="edge"] .mark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-left: 0.4375rem;
+  border-left: 1px solid var(--line);
+  font-size: 0.5625rem;
+  writing-mode: vertical-rl;
+}
+
+/* Registration detail uses linework only, without invented measurement data. */
+.identity[data-display-index][data-code-placement="register"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0 1rem;
+}
+
+.identity[data-display-index][data-code-placement="register"] > h2 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.identity[data-display-index][data-code-placement="register"] > p {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.identity[data-display-index][data-code-placement="register"] .mark {
+  position: relative;
+  display: flex;
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: center;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--ink);
+}
+
+.identity[data-display-index][data-code-placement="register"] .mark::before {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  flex: none;
+  margin-right: 0.5rem;
+  border: 1px solid var(--muted);
+  transform: rotate(45deg);
+  content: "";
+}
+
+.identity[data-display-index][data-code-placement="register"] .mark::after {
+  position: absolute;
+  top: 50%;
+  left: 0.625rem;
+  width: 0.5rem;
+  border-top: 1px solid var(--muted);
+  content: "";
+}
+
+/* A short, open-ended specimen label below the identity. */
+.identity[data-display-index][data-code-placement="tag"] {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.identity[data-display-index][data-code-placement="tag"] .mark {
+  position: relative;
+  order: 1;
+  align-self: flex-start;
+  margin-top: 0.625rem;
+  padding: 0.25rem 0.75rem 0.25rem 0.5rem;
+  border-block: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  color: var(--ink);
+}
+
+.identity[data-display-index][data-code-placement="tag"] .mark::after {
+  position: absolute;
+  top: -1px;
+  right: -0.3125rem;
+  bottom: -1px;
+  width: 0.625rem;
+  border-right: 1px solid var(--line);
+  transform: skewX(-20deg);
+  content: "";
+}
+
+@media (max-width: 760px) {
+  .identity[data-display-index][data-code-placement="corner"],
+  .identity[data-display-index][data-code-placement="register"] {
+    column-gap: 0.625rem;
+  }
+}

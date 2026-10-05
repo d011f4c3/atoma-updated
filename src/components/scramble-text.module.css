@@ -8,6 +8,17 @@
   display: inline;
 }
 
+.root[data-wrap="true"] {
+  display: inline;
+  white-space: normal;
+}
+
+.word {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: baseline;
+}
+
 .slot {
   position: relative;
   display: inline-block;
@@ -32,4 +43,13 @@
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+/* Keep the comparison's quieter typography steady during material motion. */
+:global([data-brand-direction]:not([data-brand-direction="current"])) .measure {
+  visibility: visible;
+}
+
+:global([data-brand-direction]:not([data-brand-direction="current"])) .glyph {
+  visibility: hidden;
 }

@@ -1,0 +1,545 @@
+.trigger {
+  display: inline-flex;
+  min-height: 2.875rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-radius: var(--radius-button, 6px);
+  background: var(--nav-surface, rgb(255 255 255 / 5%));
+  box-shadow: var(--nav-shadow, none);
+  color: inherit;
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 180ms;
+}
+
+.trigger:hover {
+  border-color: currentColor;
+}
+
+.triggerCount {
+  font-size: 0.625rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.65;
+}
+
+.dialog {
+  --cart-ink: var(--night-ink);
+  --cart-muted: var(--night-muted);
+  --cart-line: var(--night-line);
+  --cart-surface: var(--night-raised);
+  --cart-disabled: color-mix(
+    in srgb,
+    var(--night-muted) 65%,
+    var(--night-raised)
+  );
+  --cart-hover: color-mix(in srgb, var(--night-ink) 7%, transparent);
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(32rem, 100%);
+  height: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 0;
+  border-left: 1px solid var(--cart-line);
+  border-radius: 0;
+  background: var(--night-panel-background);
+  color: var(--cart-ink);
+  color-scheme: dark;
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.6;
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 60%);
+  backdrop-filter: blur(8px);
+}
+
+/* The shared cart lives beside the page, so follow its current main directly.
+   Attribute changes and client navigation update even an already-open drawer. */
+:global(body:has(main[data-tone="light"]:not([hidden]))) .dialog {
+  --cart-ink: var(--color-ink, #252d27);
+  --cart-muted: var(--color-muted, #586155);
+  --cart-line: var(--color-line, rgb(37 45 39 / 22%));
+  --cart-surface: var(--color-raised, #e7e9df);
+  --cart-disabled: var(--color-disabled, #899184);
+  --cart-hover: var(--color-hover, rgb(37 45 39 / 7%));
+  background: var(
+    --color-panel,
+    radial-gradient(ellipse at 15% 0%, #f5f6ef, transparent 65%)
+      var(--cart-surface)
+  );
+  color-scheme: light;
+}
+
+:global(body:has(main[data-tone="light"]:not([hidden]))) .dialog::backdrop {
+  background: rgb(37 45 39 / 24%);
+  backdrop-filter: blur(5px);
+}
+
+.dialog[open] {
+  animation: drawer-in 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.shell {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  padding: 0 clamp(1.25rem, 4vw, 2.25rem);
+}
+
+.topline,
+.eyebrow,
+.lineIndex,
+.format,
+.price,
+.stepper,
+.remove,
+.footer,
+.continue,
+.retry {
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.625rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.035em;
+}
+
+.topline {
+  display: flex;
+  min-height: 5.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--cart-line);
+}
+
+.topline > span {
+  color: var(--cart-muted);
+}
+
+.close {
+  display: flex;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-button, 6px);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.close > span[aria-hidden="true"] {
+  font-family: inherit;
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+
+.intro {
+  padding: 1.75rem 0 1.5rem;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 1rem;
+  color: var(--cart-muted);
+}
+
+.eyebrow::after {
+  width: 0.3125rem;
+  height: 0.3125rem;
+  border: 1px solid currentColor;
+  content: "";
+}
+
+.intro h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.content {
+  flex: 1;
+  padding-bottom: 2rem;
+}
+
+.lines {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 1.375rem minmax(0, 1fr);
+  gap: 0.875rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--cart-line);
+}
+
+.lineIndex {
+  padding-top: 0.125rem;
+  color: var(--cart-muted);
+  font-size: 0.625rem;
+}
+
+.lineHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.lineHeader h3 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.price {
+  flex-shrink: 0;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.format {
+  margin: 0.625rem 0 0;
+  color: var(--cart-muted);
+  font-size: 0.625rem;
+  text-transform: none;
+}
+
+.lineControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.125rem;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--cart-line);
+  border-radius: var(--radius-button, 6px);
+}
+
+.stepper button {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-button, 6px);
+  background: transparent;
+  color: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 180ms;
+}
+
+.stepper button:hover:not(:disabled) {
+  background: var(--cart-hover);
+}
+
+.stepper output {
+  min-width: 1.875rem;
+  font-size: 0.8125rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.stepper button:disabled,
+.remove:disabled {
+  color: var(--cart-disabled);
+  cursor: default;
+}
+
+.remove {
+  min-height: 2.75rem;
+  padding: 0 0.125rem;
+  border: 0;
+  border-radius: var(--radius-button, 6px);
+  background: transparent;
+  color: var(--cart-muted);
+  font-size: 0.625rem;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  cursor: pointer;
+}
+
+.remove:hover:not(:disabled) {
+  color: var(--cart-ink);
+}
+
+.message {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--cart-line);
+  color: var(--cart-muted);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+
+.message p {
+  margin: 0;
+}
+
+.retry {
+  display: flex;
+  width: fit-content;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-button, 6px);
+  background: transparent;
+  color: var(--cart-ink);
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.retry:disabled {
+  color: var(--cart-disabled);
+  cursor: wait;
+}
+
+.empty {
+  display: grid;
+  min-height: 13rem;
+  align-content: center;
+  justify-items: start;
+  gap: 1.125rem;
+  border-top: 1px solid var(--cart-line);
+  color: var(--cart-muted);
+}
+
+.empty p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding: 1.375rem 0 max(1.25rem, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--cart-line);
+  background: var(--cart-surface);
+  box-shadow: 0 -1rem 1rem var(--cart-surface);
+}
+
+.total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.total strong {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.checkoutNote {
+  margin: 0 0 1.375rem;
+  color: var(--cart-muted);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0;
+}
+
+.checkout {
+  display: flex;
+  width: 100%;
+  min-height: 3.375rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--cart-ink);
+  border-radius: var(--radius-button, 6px);
+  background: var(--cart-ink);
+  color: var(--cart-surface);
+  font: inherit;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 180ms,
+    color 180ms;
+}
+
+.checkout > span[aria-hidden="true"] {
+  font-size: 1rem;
+}
+
+.checkout:hover:not(:disabled) {
+  background: transparent;
+  color: var(--cart-ink);
+}
+
+.checkout:disabled {
+  border-color: var(--cart-line);
+  background: transparent;
+  color: var(--cart-muted);
+  cursor: default;
+}
+
+.continue {
+  font-size: 0.6875rem;
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin: 0.625rem auto 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-button, 6px);
+  background: transparent;
+  color: var(--cart-muted);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.continue:hover {
+  color: var(--cart-ink);
+}
+
+.topline,
+.eyebrow,
+.remove,
+.retry,
+.empty p,
+.total > span,
+.checkoutNote,
+.checkout,
+.continue {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dialog button:focus-visible,
+.trigger:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 700px) {
+  .message,
+  .empty p,
+  .checkoutNote {
+    font-size: 0.8125rem;
+  }
+  .trigger {
+    min-height: 2.75rem;
+    gap: 0.625rem;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.6875rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .dialog {
+    inset: 0;
+    width: min(32rem, calc(100vw - 2rem));
+    height: 82svh;
+    height: 82dvh;
+    max-height: 82svh;
+    max-height: 82dvh;
+    margin: auto;
+    border: 1px solid var(--cart-line);
+    border-radius: 8px;
+    box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 32%);
+    scrollbar-width: thin;
+  }
+  .topline {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    min-height: 4rem;
+    background: var(--cart-surface);
+  }
+}
+
+@media (max-height: 650px) {
+  .topline {
+    min-height: 4rem;
+  }
+  .intro {
+    padding: 1.5rem 0;
+  }
+  .intro h2 {
+    font-size: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog,
+  .dialog[open],
+  .dialog *,
+  .trigger {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,195 @@
+.study {
+  display: grid;
+  height: 100dvh;
+  min-width: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-atoma-mono), monospace;
+  font-weight: 400;
+}
+
+.toolbar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  min-height: 3.5rem;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.3125rem clamp(1.25rem, 3.3vw, 4rem);
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-surface);
+}
+
+.toolbar h1,
+.description {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.description {
+  color: var(--color-muted);
+}
+
+.palettes {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.palettes button,
+.home {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-muted);
+  font: inherit;
+  font-size: 0.6875rem;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 180ms,
+    color 180ms;
+}
+
+.palettes button[aria-pressed="true"] {
+  border-color: var(--color-line);
+  background: color-mix(in srgb, var(--color-ink) 6%, transparent);
+  color: var(--color-ink);
+}
+
+.palettes button:hover:not(:disabled),
+.home:hover {
+  background: color-mix(in srgb, var(--color-ink) 9%, transparent);
+  color: var(--color-ink);
+}
+
+.palettes button:focus-visible,
+.home:focus-visible {
+  outline: 1px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.palettes button:disabled,
+.home[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: wait;
+}
+
+.swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex: none;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 25%, transparent);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff, #b7cebb);
+}
+
+.swatch[data-swatch="blue-hour"] {
+  background: linear-gradient(180deg, #080b11 35%, #4b6273);
+}
+
+.number {
+  opacity: 0.65;
+  font-size: 0.5625rem;
+}
+
+.home {
+  margin-left: auto;
+  font-size: 0.625rem;
+}
+
+.preview {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+
+.preview > :global(main[data-concept="01"]) {
+  height: 100%;
+  min-height: 0;
+  background-color: var(--color-surface);
+}
+
+/* One palette control, with the original storefront composition below it. */
+.study :global([data-brand-part="theme-switcher"]) {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .description {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .toolbar {
+    gap: 0.5rem;
+  }
+
+  .toolbar h1 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .number,
+  .homeLabel {
+    display: none;
+  }
+
+  .palettes button {
+    padding-inline: 0.625rem;
+  }
+
+  .home {
+    min-width: 2.75rem;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .preview > :global(main[data-concept="01"][data-exploring="true"]) {
+    height: auto;
+  }
+}
+
+@media (max-height: 620px) {
+  .study {
+    height: auto;
+    min-height: 100dvh;
+    grid-template-rows: auto 1fr;
+  }
+
+  .preview {
+    overflow: visible;
+  }
+
+  .preview > :global(main[data-concept="01"]) {
+    height: auto;
+    min-height: calc(100dvh - 3.5rem);
+    grid-template-rows: var(--header-height) minmax(min-content, 1fr) auto;
+    overflow: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palettes button,
+  .home {
+    transition: none;
+  }
+}

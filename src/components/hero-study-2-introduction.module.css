@@ -1,0 +1,474 @@
+.root {
+  display: contents;
+}
+
+.group {
+  grid-row: 2;
+  align-self: center;
+  min-width: 0;
+  width: 100%;
+  padding: 1.5rem 0 2.5rem;
+}
+
+.root .statement {
+  position: relative;
+  padding: 0;
+}
+
+.copy {
+  position: relative;
+  min-width: 0;
+  color: var(--ink);
+  animation: settle 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-atoma-mono), monospace;
+  font-weight: 400;
+}
+
+.heading > span,
+.attributes > span {
+  display: block;
+}
+
+.attributes,
+.application {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  line-height: 1.8;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.application {
+  max-width: 28ch;
+}
+
+.root[data-direction] button.action {
+  width: 100%;
+  min-height: 3.25rem;
+  margin: 1.75rem 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+  transition:
+    background 180ms,
+    color 180ms;
+}
+
+.root[data-direction] button.action:hover {
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+.root[data-direction] button.action svg {
+  transition: transform 240ms ease;
+}
+
+.root[data-direction] button.action:hover svg {
+  transform: translate(3px, -3px);
+}
+
+/* Display: the sentence carries the page, with a small two-column caption. */
+.root[data-direction="display"] .heading {
+  font-size: clamp(2.125rem, 4.4vw, 4.25rem);
+  line-height: 1.04;
+  letter-spacing: -0.075em;
+}
+
+.root[data-direction="display"] .heading > span:last-child {
+  padding-left: 0.75ch;
+}
+
+.root[data-direction="display"] .supporting {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.root[data-direction="display"] .attributes {
+  color: var(--ink);
+}
+
+.root[data-direction="display"] button.action svg {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+
+/* Cadence: each line shares a baseline with one of the three attributes. */
+.root[data-direction="cadence"] .copy {
+  --row-height: clamp(3.5rem, 5.7vw, 5.125rem);
+}
+
+.root[data-direction="cadence"] .heading {
+  width: calc(100% - 5.5rem);
+  font-size: clamp(1.375rem, 2.55vw, 2.5rem);
+  line-height: 1;
+  letter-spacing: -0.065em;
+  text-transform: uppercase;
+}
+
+.root[data-direction="cadence"] .heading > span {
+  display: flex;
+  align-items: center;
+  height: var(--row-height);
+}
+
+.root[data-direction="cadence"] .copy::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(3 * var(--row-height));
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--line) 0 1px,
+    transparent 1px var(--row-height)
+  );
+  border-bottom: 1px solid var(--line);
+  content: "";
+  pointer-events: none;
+}
+
+.root[data-direction="cadence"] .attributes {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  grid-auto-rows: var(--row-height);
+  align-items: center;
+  font-size: 0.5625rem;
+  text-align: right;
+}
+
+.root[data-direction="cadence"] .application {
+  margin-top: 1.25rem;
+}
+
+.root[data-direction="cadence"] button.action {
+  padding-inline: 1rem;
+  background: var(--ink);
+  color: var(--surface);
+}
+
+.root[data-direction="cadence"] button.action:hover {
+  background: color-mix(in srgb, var(--ink) 88%, var(--surface));
+}
+
+/* Proof: the introductory sentence is a caption to the material qualities. */
+.root[data-direction="proof"] .heading {
+  font-size: 0.6875rem;
+  line-height: 1.8;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.root[data-direction="proof"] .supporting {
+  margin-top: 1.75rem;
+}
+
+.root[data-direction="proof"] .attributes {
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--muted);
+  color: var(--ink);
+  font-size: clamp(1.375rem, 2.8vw, 2.75rem);
+  line-height: 1.25;
+  letter-spacing: -0.065em;
+  text-transform: none;
+}
+
+.root[data-direction="proof"] .application {
+  margin: 1.75rem 0 0 1.25rem;
+}
+
+.root[data-direction="proof"] button.action {
+  width: calc(100% - 1.25rem);
+  margin-left: 1.25rem;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1000px) and (min-width: 761px) {
+  .attributes,
+  .application {
+    font-size: 0.625rem;
+  }
+
+  .root[data-direction="display"] .supporting {
+    gap: 0.75rem;
+    grid-template-columns: 1fr 1.1fr;
+  }
+
+  .root[data-direction="cadence"] .attributes {
+    font-size: 0.5rem;
+    letter-spacing: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .root[data-direction="display"] .heading {
+    font-size: clamp(1.625rem, 6.5vw, 2.25rem);
+    line-height: 1.08;
+  }
+
+  .root[data-direction="display"] .heading > span {
+    display: inline;
+  }
+
+  .root[data-direction="display"] .heading > span:last-child {
+    display: block;
+    padding: 0;
+  }
+
+  .root[data-direction="display"] .supporting {
+    gap: 1rem;
+    grid-template-columns: 1fr 1.35fr;
+    margin-top: 0.75rem;
+    padding-top: 0.625rem;
+  }
+
+  .attributes,
+  .application {
+    font-size: 0.625rem;
+    line-height: 1.6;
+  }
+
+  .root[data-direction="cadence"] .copy {
+    --row-height: 2.125rem;
+  }
+
+  .root[data-direction="cadence"] .heading {
+    font-size: 1.375rem;
+  }
+
+  .root[data-direction="cadence"] .application {
+    max-width: none;
+    margin-top: 0.625rem;
+  }
+
+  .root[data-direction="proof"] .heading {
+    font-size: 0.5625rem;
+    line-height: 1.6;
+  }
+
+  .root[data-direction="proof"] .heading > span {
+    display: inline;
+  }
+
+  .root[data-direction="proof"] .supporting {
+    margin-top: 0.625rem;
+  }
+
+  .root[data-direction="proof"] .attributes {
+    padding-left: 0.75rem;
+    font-size: clamp(1.375rem, 5.5vw, 1.75rem);
+    line-height: 1.15;
+  }
+
+  .root[data-direction="proof"] .application {
+    max-width: none;
+    margin: 0.625rem 0 0 0.75rem;
+  }
+
+  .root[data-direction] button.action {
+    width: 100%;
+    margin-left: 0;
+    padding-inline: 1rem;
+  }
+
+  .root[data-direction="display"] button.action {
+    border: 1px solid var(--line);
+  }
+
+  .root[data-direction="display"] button.action svg {
+    width: 1.125rem;
+    height: 1.125rem;
+    padding: 0;
+    border: 0;
+  }
+
+  .root[data-direction="proof"] button.action {
+    border-block: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 760px) and (min-height: 501px) {
+  .group {
+    display: contents;
+  }
+
+  .root .statement {
+    padding: 1.75rem 0 1.25rem;
+  }
+
+  .copy {
+    position: absolute;
+    inset: 1.75rem 0 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .root[data-direction="cadence"] .copy {
+    justify-content: flex-start;
+  }
+
+  .root[data-direction] button.action {
+    grid-row: 3;
+    margin: 0 0 1.25rem;
+  }
+}
+
+@media (max-width: 760px) and (min-height: 501px) and (max-height: 720px) {
+  .root .statement {
+    padding-block: 1.125rem 1rem;
+  }
+
+  .copy {
+    inset-block: 1.125rem 1rem;
+  }
+
+  .root[data-direction="display"] .heading {
+    font-size: 1.5rem;
+  }
+
+  .root[data-direction="display"] .supporting {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .root[data-direction="cadence"] .copy {
+    --row-height: 1.875rem;
+  }
+
+  .root[data-direction="proof"] .attributes {
+    font-size: 1.25rem;
+  }
+
+  .root[data-direction] button.action {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-height: 500px) and (min-width: 540px) {
+  .group {
+    padding: 0;
+  }
+
+  .root[data-direction="display"] .heading {
+    font-size: clamp(1.25rem, 3vw, 1.625rem);
+    line-height: 1.08;
+  }
+
+  .root[data-direction="display"] .heading > span {
+    display: inline;
+    padding: 0;
+  }
+
+  .root[data-direction="display"] .heading > span:last-child {
+    display: block;
+  }
+
+  .root[data-direction="display"] .supporting {
+    display: block;
+    margin-top: 0.5rem;
+    padding-top: 0.375rem;
+  }
+
+  .root[data-direction="display"] .attributes > span {
+    display: inline;
+  }
+
+  .attributes,
+  .application {
+    font-size: 0.5625rem;
+    line-height: 1.6;
+  }
+
+  .root[data-direction="cadence"] .copy {
+    --row-height: 1.75rem;
+  }
+
+  .root[data-direction="cadence"] .heading {
+    width: calc(100% - 4rem);
+    font-size: 1rem;
+  }
+
+  .root[data-direction="cadence"] .attributes {
+    font-size: 0.5rem;
+  }
+
+  .root[data-direction="cadence"] .application {
+    margin-top: 0.375rem;
+  }
+
+  .root[data-direction="proof"] .heading {
+    font-size: 0.5rem;
+    line-height: 1.6;
+  }
+
+  .root[data-direction="proof"] .heading > span {
+    display: inline;
+  }
+
+  .root[data-direction="proof"] .supporting {
+    margin-top: 0.5rem;
+  }
+
+  .root[data-direction="proof"] .attributes {
+    padding-left: 0.625rem;
+    font-size: 1.0625rem;
+    line-height: 1.1;
+  }
+
+  .root[data-direction="proof"] .application {
+    margin: 0.5rem 0 0 0.625rem;
+  }
+
+  .root[data-direction] button.action {
+    width: 100%;
+    min-height: 2.75rem;
+    margin: 0.625rem 0 0;
+    padding-inline: 0.625rem;
+    font-size: 0.625rem;
+  }
+
+  .root[data-direction="display"] button.action svg {
+    width: 1rem;
+    height: 1rem;
+    padding: 0;
+    border: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copy {
+    animation: none;
+  }
+
+  .root[data-direction] button.action,
+  .root[data-direction] button.action svg {
+    transition: none;
+  }
+}

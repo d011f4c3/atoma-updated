@@ -1,0 +1,481 @@
+.root {
+  --origin-surface: #181a18;
+  --origin-ink: #e6e9e5;
+  --origin-muted: #a3aaa6;
+  --origin-line: rgb(230 233 229 / 17%);
+  --origin-control: rgb(230 233 229 / 5%);
+  --origin-gutter: clamp(1.25rem, 4vw, 4rem);
+  --origin-navigation-height: 4.5rem;
+  min-width: 0;
+  background: var(--origin-surface);
+  color: var(--origin-ink);
+  color-scheme: dark;
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.8;
+  font-variant-numeric: tabular-nums;
+}
+
+.root[data-tone="light"] {
+  --origin-surface: #f0f1e9;
+  --origin-ink: #27302a;
+  --origin-muted: #586158;
+  --origin-line: rgb(39 48 42 / 22%);
+  --origin-control: transparent;
+  color-scheme: light;
+}
+
+.root h1:focus,
+.root h2:focus,
+.chapter:focus {
+  outline: none;
+}
+
+.root button,
+.root a {
+  color: inherit;
+  font-family: inherit;
+}
+
+.root a {
+  text-decoration: none;
+}
+
+.root button:focus-visible,
+.root a:focus-visible {
+  outline: 1px solid var(--origin-ink);
+  outline-offset: 4px;
+}
+
+.navigation {
+  display: flex;
+  position: sticky;
+  z-index: 4;
+  top: 0;
+  min-height: var(--origin-navigation-height);
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem var(--origin-gutter);
+  border-bottom: 1px solid var(--origin-line);
+  background: var(--origin-surface);
+}
+
+.back,
+.indexButton {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 2.75rem;
+  max-width: 49%;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.back {
+  background: var(--origin-control);
+}
+
+.back > span {
+  flex: none;
+  font-size: 1rem;
+}
+
+.indexButton {
+  padding-inline: 0.25rem;
+  background: transparent;
+  text-align: right;
+}
+
+.indexButton:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.375rem;
+}
+
+.back:hover,
+.action:hover,
+.related a:hover {
+  background: color-mix(in srgb, var(--origin-ink) 8%, transparent);
+}
+
+.root[data-tone="light"] .back,
+.root[data-tone="light"] .action,
+.root[data-tone="light"] .related a {
+  border-color: var(--origin-line);
+}
+
+.journalLabel,
+.eyebrow {
+  color: var(--origin-muted);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
+.journalLabel {
+  text-align: right;
+}
+
+.eyebrow {
+  margin: 0 0 0.625rem;
+}
+
+.reader {
+  min-width: 0;
+  max-width: 94rem;
+  margin-inline: auto;
+  padding: clamp(1.5rem, 3vw, 3rem) var(--origin-gutter) 3rem;
+}
+
+.articleHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem 2rem;
+  margin-bottom: 1.75rem;
+}
+
+.articleHeading > div {
+  min-width: 0;
+}
+
+.articleHeading h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.25vw, 2rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.dek {
+  max-width: 48ch;
+  margin: 0.75rem 0 0;
+  color: var(--origin-muted);
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+
+.chapters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 48%;
+  max-width: 29rem;
+  flex: none;
+  gap: 0.5rem;
+}
+
+.chapters button {
+  display: flex;
+  min-width: 0;
+  min-height: 2.75rem;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--origin-control);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.root[data-tone="light"] .chapters button {
+  border-color: var(--origin-line);
+}
+
+.chapters button:hover {
+  background: color-mix(in srgb, var(--origin-ink) 8%, transparent);
+}
+
+.chapterNumber {
+  color: var(--origin-muted);
+  font-size: 0.6875rem;
+}
+
+.chapterNumber:empty {
+  display: none;
+}
+
+.sequence {
+  display: grid;
+  gap: clamp(2rem, 4vw, 4rem);
+}
+
+.chapter {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  min-width: 0;
+  scroll-margin-top: calc(var(--origin-navigation-height) + 1.25rem);
+}
+
+.chapter + .chapter {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--origin-line);
+}
+
+.chapter[data-format="portrait"] {
+  grid-template-columns: minmax(0, 31rem) minmax(0, 1fr);
+}
+
+.chapter[data-format="portrait"] .chapterFigure {
+  width: min(100%, calc((100svh - 10rem) * 0.75));
+}
+
+.chapter[data-format="text"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.chapterFigure,
+.photograph {
+  min-width: 0;
+  margin: 0;
+}
+
+.photograph {
+  margin-bottom: 2rem;
+}
+
+.readerImage,
+.chapterImage {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--origin-control);
+}
+
+.readerImage {
+  aspect-ratio: 3 / 2;
+}
+
+.chapterImage {
+  aspect-ratio: 3 / 4;
+}
+
+.readerImage img,
+.chapterImage img {
+  object-fit: contain;
+}
+
+.caption {
+  min-width: 0;
+  max-width: 40ch;
+  padding-block: 0.5rem;
+}
+
+.caption h2 {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.prose {
+  margin: 0 0 0.875rem;
+  color: var(--origin-muted);
+  font-size: 0.8125rem;
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+.prose:last-child {
+  margin-bottom: 0;
+}
+
+.imageCaption,
+.photograph figcaption {
+  margin: 1.25rem 0 0;
+  color: var(--origin-muted);
+  font-size: 0.6875rem;
+  line-height: 1.7;
+}
+
+.photograph figcaption {
+  margin-top: 0.75rem;
+}
+
+.connections {
+  margin-top: clamp(2rem, 4vw, 4rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--origin-line);
+}
+
+.connections h2 {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.related {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.related a {
+  display: flex;
+  min-width: 0;
+  min-height: 3.5rem;
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--origin-control);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.relatedName {
+  display: grid;
+  min-width: 0;
+  gap: 0.375rem;
+}
+
+.availability {
+  color: var(--origin-muted);
+  font-size: 0.6875rem;
+}
+
+.action {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--origin-control);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+}
+
+.placeLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.back,
+.indexButton,
+.journalLabel,
+.eyebrow,
+.dek,
+.chapters button,
+.caption h2,
+.imageCaption,
+.photograph figcaption,
+.connections h2,
+.availability,
+.action,
+.prose[role="status"] {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1000px) {
+  .articleHeading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .chapters {
+    width: 100%;
+    max-width: 30rem;
+  }
+
+  .chapter,
+  .chapter[data-format="portrait"] {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .root {
+    --origin-gutter: 1rem;
+    --origin-navigation-height: 4rem;
+  }
+
+  .navigation {
+    padding-block: 0.5rem;
+  }
+
+  .back,
+  .indexButton {
+    gap: 0.5rem;
+    padding-inline: 0.5rem;
+    font-size: 0.6875rem;
+  }
+
+  .journalLabel {
+    max-width: 12ch;
+    font-size: 0.6875rem;
+  }
+
+  .reader {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+  }
+
+  .articleHeading {
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .chapters {
+    max-width: none;
+    gap: 0.375rem;
+  }
+
+  .chapters button {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.6875rem;
+  }
+
+  .chapter,
+  .chapter[data-format="portrait"] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .chapter[data-format="portrait"] .chapterFigure {
+    width: min(100%, 26rem);
+  }
+
+  .caption {
+    max-width: 54ch;
+    padding: 0;
+  }
+
+  .imageCaption {
+    margin-top: 0.75rem;
+  }
+
+  .related {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

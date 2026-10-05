@@ -1,0 +1,301 @@
+.study {
+  --study-surface: var(--lab-surface);
+  --study-ink: var(--lab-ink);
+  --study-muted: var(--lab-muted);
+  --study-line: var(--lab-line);
+  --study-hover: color-mix(in srgb, var(--study-ink) 5%, transparent);
+  display: grid;
+  min-width: 0;
+  height: 100dvh;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: var(--study-surface);
+  color: var(--study-ink);
+  color-scheme: light;
+  font-family: var(--font-atoma-mono), monospace;
+  font-weight: 400;
+}
+
+.study[data-tone="dark"] {
+  --study-surface: var(--night-surface);
+  --study-ink: var(--night-ink);
+  --study-muted: var(--night-muted);
+  --study-line: var(--night-line);
+  color-scheme: dark;
+}
+
+.toolbar {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  min-height: 3.5rem;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.3125rem clamp(1.25rem, 3.3vw, 4rem);
+  border-bottom: 1px solid var(--study-line);
+  background: var(--study-surface);
+}
+
+.toolbar h1 {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.035em;
+  white-space: nowrap;
+}
+
+.field {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.field > label {
+  color: var(--study-muted);
+  font-size: 0.625rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.field select,
+.notes summary,
+.home {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--study-muted);
+  font: inherit;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 180ms,
+    color 180ms,
+    border-color 180ms;
+}
+
+.field select {
+  width: min(100%, 14rem);
+  min-width: 0;
+  text-align: left;
+  border-color: var(--study-line);
+  background: var(--study-hover);
+  color: var(--study-ink);
+}
+
+.field select:hover:not(:disabled),
+.notes summary:hover,
+.home:hover {
+  background: var(--study-hover);
+  color: var(--study-ink);
+}
+
+.field select:focus-visible,
+.notes summary:focus-visible,
+.home:focus-visible {
+  outline: 1px solid var(--study-ink);
+  outline-offset: 2px;
+}
+
+.field select:disabled {
+  opacity: 0.45;
+  cursor: wait;
+}
+
+.home[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: wait;
+}
+
+.notes {
+  position: relative;
+}
+
+.notes summary {
+  gap: 0.625rem;
+  list-style: none;
+}
+
+.notes summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosureMark {
+  font-size: 0.875rem;
+  line-height: 1;
+  transition: transform 180ms;
+}
+
+.notes[open] .disclosureMark {
+  transform: rotate(45deg);
+}
+
+.notePanel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: min(22rem, calc(100vw - 2.5rem));
+  max-height: calc(100dvh - 5rem);
+  overflow: auto;
+  padding: 1.25rem;
+  border: 1px solid var(--study-line);
+  border-radius: 6px;
+  background: var(--study-surface);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 12%);
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+
+.notePanel p {
+  margin: 0;
+}
+
+.notePanel .noteTitle {
+  margin-bottom: 0.625rem;
+  color: var(--study-muted);
+  font-size: 0.625rem;
+}
+
+.notePanel .fixedChoice {
+  margin-top: 1rem;
+  color: var(--study-muted);
+  font-size: 0.6875rem;
+}
+
+.home {
+  gap: 0.625rem;
+  padding-inline: 0.25rem;
+  font-size: 0.625rem;
+}
+
+.compactLabel {
+  display: none;
+}
+
+.preview {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--study-line) transparent;
+}
+
+.preview > :global(main[data-concept="01"]) {
+  height: 100%;
+  min-height: 0;
+}
+
+.preview > :global(main[data-concept="01"][data-exploring="true"]) {
+  min-height: 0;
+}
+
+@media (max-width: 1050px) {
+  .toolbar {
+    gap: 0.75rem;
+  }
+
+  .field {
+    gap: 0.5rem;
+  }
+
+  .field select {
+    padding-inline: 0.5rem;
+  }
+
+  .fullLabel {
+    display: none;
+  }
+
+  .compactLabel {
+    display: inline;
+  }
+}
+
+@media (max-width: 760px) {
+  .toolbar {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 0.5rem;
+  }
+
+  .toolbar h1,
+  .field label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .field select {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem;
+    font-size: 0.6875rem;
+  }
+
+  .notes {
+    position: static;
+  }
+
+  .notes summary,
+  .home {
+    padding-inline: 0.25rem;
+    gap: 0.375rem;
+    font-size: 0.625rem;
+  }
+
+  .notePanel {
+    top: calc(100% + 0.5rem);
+    right: 1.25rem;
+  }
+
+  .fullLabel {
+    display: none;
+  }
+
+  .compactLabel {
+    display: inline;
+  }
+
+  .preview > :global(main[data-concept="01"][data-exploring="true"]) {
+    height: auto;
+  }
+}
+
+@media (max-height: 620px) {
+  .study {
+    height: auto;
+    min-height: 100dvh;
+    grid-template-rows: auto 1fr;
+  }
+
+  .preview {
+    overflow: visible;
+  }
+
+  .preview > :global(main[data-concept="01"]) {
+    height: auto;
+    min-height: calc(100dvh - 3.5rem);
+    grid-template-rows: var(--header-height) minmax(min-content, 1fr) auto;
+    overflow: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field select,
+  .notes summary,
+  .home,
+  .disclosureMark {
+    transition: none;
+  }
+}

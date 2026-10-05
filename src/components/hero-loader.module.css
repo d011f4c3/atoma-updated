@@ -1,0 +1,94 @@
+.loader {
+  display: grid;
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  place-items: center;
+  padding: 1.5rem;
+  overflow: hidden;
+  background: var(--color-background, #f1f5ef);
+  color: var(--color-ink, #263b34);
+  font-family: var(--font-atoma-mono), monospace;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  opacity: 1;
+  transition: opacity 220ms ease-out;
+  animation: fail-open 0s 8s forwards;
+}
+
+/* Keep the page reachable even if the client script never initializes. */
+@keyframes fail-open {
+  to {
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+.loader[data-tone="light"] {
+  color-scheme: light;
+}
+
+.loader[data-tone="dark"] {
+  color-scheme: dark;
+}
+
+.loader[data-state="leaving"] {
+  opacity: 0;
+}
+
+.register {
+  display: grid;
+  width: min(100%, 12rem);
+}
+
+.progress {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.rail {
+  position: relative;
+  height: 5px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-line, rgb(38 59 52 / 20%)) 0 1px,
+    transparent 1px 8px
+  );
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    currentColor 0 1px,
+    transparent 1px 8px
+  );
+  transition: clip-path 100ms linear;
+}
+
+.readout {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+}
+
+.status {
+  color: var(--color-muted, #53675e);
+}
+
+.percentage {
+  min-width: 4ch;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader,
+  .fill {
+    transition: none;
+  }
+}

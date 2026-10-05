@@ -1,0 +1,119 @@
+.scene {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  isolation: isolate;
+  container-type: size;
+  opacity: 1;
+  transition: opacity 240ms ease;
+}
+
+.scene[data-visible="false"] {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.object {
+  position: relative;
+  width: min(94cqw, 62.6667cqh);
+  aspect-ratio: 2 / 3;
+  flex-shrink: 0;
+  isolation: isolate;
+  transform: rotate(-2deg);
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scene[data-expanded="true"] .object {
+  transform: rotate(0deg) scale(1.035);
+}
+
+.photograph {
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(-9px 18px 16px #0004);
+  user-select: none;
+  pointer-events: none;
+}
+
+.scene[data-tone="light"] .photograph {
+  filter: drop-shadow(-10px 20px 18px #24352d33);
+}
+
+.scene[data-image-failed="true"] .photograph {
+  visibility: hidden;
+}
+
+.ink {
+  position: absolute;
+  z-index: 1;
+  top: 33%;
+  right: 19%;
+  left: 19%;
+  mix-blend-mode: multiply;
+  transform: rotate(0.1deg);
+  transform-origin: center top;
+}
+
+.scene[data-interactive="false"] .ink {
+  pointer-events: none;
+}
+
+/* The entrance uses the same quiet record as Shop, with more bare foil. */
+.scene[data-appearance="hero"] .ink {
+  top: 37%;
+  right: 22%;
+  left: 22%;
+  text-transform: uppercase;
+}
+
+.scene[data-appearance="hero"] .ink [data-label-ink="format"] {
+  text-transform: none;
+}
+
+/* Keep the printed record settled when the hero or its handoff mounts. */
+.scene[data-appearance="hero"] .ink [data-label-ink],
+.scene[data-appearance="hero"] .ink [data-label-ink] > span {
+  animation: none;
+}
+
+.fallbackBag {
+  position: absolute;
+  inset: 5% 7% 3%;
+  border: 1px solid #e3e4e0;
+  border-radius: 3% 3% 6% 5%;
+  background: linear-gradient(
+    97deg,
+    #a6a8a5 0%,
+    #f1f1eb 9%,
+    #bfc2bb 15%,
+    #d9dcd4 40%,
+    #e8e9e4 60%,
+    #b3b8b0 84%,
+    #f1f2ed 93%,
+    #969d93 100%
+  );
+  box-shadow: -7px 15px 20px #0003;
+}
+
+.fallbackBag::before {
+  position: absolute;
+  top: 8%;
+  right: 2%;
+  left: 2%;
+  height: 1.5%;
+  border-top: 1px solid #7c8679;
+  border-bottom: 1px solid #fff9;
+  content: "";
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .object {
+    transition: none;
+  }
+}

@@ -1,0 +1,2160 @@
+.experience {
+  --surface: var(--lab-surface);
+  --ink: var(--lab-ink);
+  --paper: var(--lab-ink);
+  --muted: var(--lab-muted);
+  --line: var(--lab-line);
+  --accent: var(--lab-ink);
+  --background: var(--lab-selection-background);
+  --gutter: clamp(1.25rem, 3.3vw, 4rem);
+  --header-height: 5.5rem;
+  min-width: 0;
+  min-height: 100dvh;
+  background: var(--background);
+  background-color: var(--surface);
+  background-attachment: fixed;
+  color: var(--ink);
+  color-scheme: light;
+  overflow: clip;
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+.experience[data-tone="dark"] {
+  --surface: var(--night-surface);
+  --ink: var(--night-ink);
+  --paper: var(--night-ink);
+  --muted: var(--night-muted);
+  --line: var(--night-line);
+  --accent: var(--night-ink);
+  --background: var(--night-selection-background);
+  color-scheme: dark;
+}
+.experience[data-embedded="true"] {
+  --tab-heading-size: 0.875rem;
+  --tab-place-heading-size: 1.125rem;
+  --tab-heading-leading: 1.4;
+  --tab-heading-tracking: -0.025em;
+  --tab-body-size: 0.6875rem;
+  --tab-label-size: 0.625rem;
+  --radius-button: 6px;
+  --radius-control: 6px;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+.experience[data-embedded="true"] .workspace {
+  min-height: 0;
+  height: 100%;
+  margin: 0;
+}
+.experience[data-embedded="true"] .stageArea {
+  min-height: 0;
+}
+.experience[data-embedded="true"][data-mode="standard"] .powderLayer {
+  transform: scale(0.84);
+}
+.experience[data-embedded="true"] .controlArea {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  min-height: 0;
+}
+.experience[data-embedded="true"] .modeHeader {
+  flex: none;
+}
+.experience[data-embedded="true"] .modeSwitch {
+  gap: 1.5rem;
+}
+.experience[data-embedded="true"] .controlScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+  scrollbar-gutter: stable;
+  padding: 3px 0.5rem 0.5rem 3px;
+  scroll-padding-block: 0.5rem;
+}
+.workspace {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 56% 44%;
+  min-height: calc(100dvh - var(--header-height) - 3.5rem);
+  margin: 0 var(--gutter);
+  border-top: 1px solid var(--line);
+}
+.stageArea {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-right: clamp(1.5rem, 4vw, 4rem);
+}
+.stageHeading,
+.objectCaption,
+.eyebrow,
+.modeSwitch,
+.steps,
+.choiceIndex,
+.applicationChoices small,
+.formats,
+.quantityBuilder span,
+.optionalActions,
+.labelBuilder,
+.purchaseFacts small,
+.primary,
+.footer,
+.enter,
+.direct {
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.045em;
+}
+.stageHeading {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.5rem 0;
+  color: var(--muted);
+}
+.object {
+  position: relative;
+  height: clamp(23rem, 65dvh, 50rem);
+  min-height: 0;
+  flex: 1;
+}
+.experience[data-packaging="label"] .object {
+  transition: height 650ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.powderLayer {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  transition:
+    transform 850ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 500ms;
+}
+.experience[data-label-visible="true"] .powderLayer {
+  transform: translateX(-21%) scale(0.76);
+}
+.cardDock {
+  position: absolute;
+  z-index: 2;
+  width: clamp(14rem, 18vw, 17rem);
+  right: 3%;
+  top: 50%;
+  transform: translateY(-50%);
+  perspective: 1100px;
+  visibility: hidden;
+  transition:
+    width 650ms cubic-bezier(0.22, 1, 0.36, 1),
+    right 650ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.experience[data-label-visible="true"] .cardDock {
+  visibility: visible;
+}
+.experience[data-label-expanded="true"] .cardDock {
+  width: clamp(17rem, 22vw, 20rem);
+  right: 4%;
+}
+.experience[data-label-expanded="true"] .powderLayer {
+  transform: translateX(-25%) scale(0.64);
+  opacity: 0.76;
+}
+@media (min-width: 761px) {
+  .experience[data-embedded="true"] .cardDock {
+    width: clamp(14rem, 16vw, 15rem);
+  }
+  .experience[data-embedded="true"][data-label-expanded="true"] .cardDock {
+    width: clamp(17rem, 20vw, 18rem);
+  }
+}
+.labelCaption {
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+}
+.objectCaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.5rem;
+  border-top: 1px solid var(--line);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.objectCaption button {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+.objectCaption button > span[aria-hidden="true"] {
+  font-size: 1.15rem;
+}
+.entry {
+  align-self: center;
+  padding: 3rem 0 3rem 2rem;
+}
+.entry[hidden] {
+  display: none;
+}
+.eyebrow {
+  color: var(--muted);
+  font-size: 0.625rem;
+}
+.entry h1 {
+  margin: 2rem 0 1.5rem;
+  font-size: clamp(1.25rem, 1.8vw, 1.625rem);
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+.entry > p {
+  max-width: 44ch;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  line-height: 1.8;
+  text-wrap: pretty;
+}
+.enter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  width: min(100%, 20rem);
+  min-height: 3.5rem;
+  padding: 0;
+  margin-top: 2.5rem;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  border-radius: var(--radius-button);
+  background: none;
+  cursor: pointer;
+}
+.enter > span[aria-hidden="true"] {
+  font-size: 1.6rem;
+}
+.direct {
+  min-height: 2.75rem;
+  padding: 0;
+  margin-top: 0.75rem;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+  letter-spacing: 0;
+}
+.direct > span[aria-hidden="true"] {
+  margin-left: 0.5rem;
+}
+.controlArea {
+  position: relative;
+  isolation: isolate;
+  align-self: center;
+  min-width: 0;
+  padding: 1rem 0 1.25rem clamp(1.5rem, 3.4vw, 3.5rem);
+  border-left: 1px solid var(--line);
+}
+.experience[data-tone="light"] .objectCaption,
+.experience[data-tone="light"] > .footer {
+  color: var(--lab-ink);
+  border-color: var(--lab-line);
+}
+.modeHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1.5rem;
+}
+.modeSwitch {
+  display: flex;
+  gap: 1.5rem;
+}
+.modeSwitch button {
+  position: relative;
+  min-height: 3rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-button);
+  background: none;
+  font: inherit;
+  font-size: 0.6875rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+.modeSwitch button[aria-pressed="true"] {
+  font-weight: 500;
+  color: var(--ink);
+}
+.modeSwitch button[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: currentColor;
+}
+.modeSwitch button:disabled,
+.steps button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.close {
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+.steps {
+  display: flex;
+  gap: 2rem;
+  margin: 0 0 1rem;
+}
+.steps button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  color: var(--muted);
+}
+.stepNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  font-size: 0.5625rem;
+}
+.steps [aria-current="step"] {
+  color: var(--ink);
+}
+.steps [aria-current="step"] .stepNumber {
+  background: var(--ink);
+  color: var(--surface);
+  border-color: var(--ink);
+}
+.builderBody > h2,
+.standard > h2 {
+  margin: 0 0 0.875rem;
+  font-size: clamp(0.9375rem, 1.2vw, 1.125rem);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+.builderBody > h2:focus,
+.standard > h2:focus {
+  outline: none;
+}
+.standard > h2 {
+  margin-bottom: 1.4rem;
+}
+.guidance {
+  margin: 0 0 1.75rem;
+  max-width: 44ch;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.applicationChoices {
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  border: 0;
+}
+.applicationChoices legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.applicationChoices label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 4.1rem;
+  padding: 0.7rem 0.875rem;
+  margin-bottom: 0.375rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  cursor: pointer;
+  transition: background 250ms;
+}
+.applicationChoices label:hover,
+.applicationChoices label[data-selected="true"] {
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
+}
+.experience[data-tone="light"] .applicationChoices label {
+  border-color: var(--line);
+  background: transparent;
+}
+.experience[data-tone="dark"] .applicationChoices label {
+  background: var(--night-control);
+}
+.experience[data-tone="dark"] .applicationChoices label:hover,
+.experience[data-tone="dark"] .applicationChoices label[data-selected="true"] {
+  background: var(--night-control-hover);
+}
+.experience[data-tone="light"] .applicationChoices label:hover,
+.experience[data-tone="light"] .applicationChoices label[data-selected="true"] {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+.applicationChoices input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.applicationChoices label:has(input:focus-visible) {
+  outline: 1px solid var(--ink);
+  outline-offset: 2px;
+}
+.choiceIndex {
+  font-size: 0.625rem;
+  color: var(--muted);
+}
+.applicationChoices label > span:nth-of-type(2) {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.applicationChoices strong {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+.applicationChoices small {
+  display: block;
+  margin-top: 0.375rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+}
+.choiceMark {
+  font-size: 0.7rem;
+}
+.materialNote {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0 1rem;
+}
+.materialNote > p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.primary {
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-button);
+  background: var(--ink);
+  color: var(--surface);
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.primary > span[aria-hidden="true"] {
+  font-size: 1.2rem;
+}
+.primary:disabled {
+  background: none;
+  border-color: var(--line);
+  color: var(--muted);
+  cursor: default;
+}
+.formats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0;
+  margin: 0 0 1rem;
+  border: 0;
+}
+.formats legend {
+  float: left;
+  margin-right: 1.5rem;
+  color: var(--muted);
+}
+.formats > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.formats button {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+.formats button[aria-pressed="true"] {
+  border-color: var(--ink);
+}
+.formats button small {
+  display: block;
+}
+.quantityBuilder {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 8rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.quantityBuilder > button {
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.quantityBuilder > button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.quantityBuilder > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+.quantityBuilder output {
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+.quantityBuilder span {
+  color: var(--muted);
+  font-size: 0.625rem;
+}
+.optionalActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0 1rem;
+}
+.optionalActions > button {
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.optionalActions > button > small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.5625rem;
+  text-align: right;
+}
+.referenceAction {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.75rem;
+  margin: 0.75rem 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+}
+.referenceAction small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+}
+.referenceAction:hover {
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
+}
+.experience[data-tone="light"] .referenceAction {
+  border-color: var(--line);
+  background: transparent;
+}
+.experience[data-tone="light"] .referenceAction:hover {
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+.purchase {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+.purchaseFacts {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.purchaseFacts > span {
+  font-size: 0.8125rem;
+}
+.purchaseFacts small {
+  display: block;
+  font-size: 0.625rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+.purchaseFacts strong {
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.015em;
+}
+.purchase > p {
+  font-size: 0.8125rem;
+}
+.state {
+  min-height: 15rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  color: var(--muted);
+}
+.state button {
+  min-height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  background: none;
+  cursor: pointer;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 3.5rem;
+  margin: 0 var(--gutter);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.5625rem;
+}
+.footer a {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: inherit;
+  text-decoration: none;
+}
+.mobileMaterialControls,
+.mobileBuilderHeading,
+.mobileMatchaPresentation {
+  display: none;
+}
+.objectCaption button,
+.direct,
+.close,
+.steps button,
+.optionalActions > button,
+.state button {
+  border-radius: var(--radius-button);
+}
+@media (min-width: 761px) and (max-height: 800px) {
+  .experience[data-embedded="true"] .cardDock {
+    max-width: max(14rem, calc((100dvh - 14rem) * 0.58));
+  }
+  .modeHeader {
+    margin-bottom: 1rem;
+  }
+  .steps {
+    margin-bottom: 0.5rem;
+  }
+  .guidance {
+    margin-bottom: 0.85rem;
+  }
+  .applicationChoices label {
+    min-height: 3.75rem;
+  }
+}
+@media (max-width: 1050px) and (min-width: 761px) {
+  .workspace {
+    grid-template-columns: 50% 50%;
+  }
+  .stageArea {
+    padding-right: 1.5rem;
+  }
+  .controlArea {
+    padding-left: 1.5rem;
+  }
+  .modeSwitch {
+    gap: 0.375rem;
+  }
+  .materialNote {
+    display: block;
+    padding-bottom: 0.5rem;
+  }
+}
+@media (max-width: 760px) {
+  .experience {
+    --gutter: 1.25rem;
+    --header-height: 4.25rem;
+  }
+  .workspace {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .stageArea {
+    padding: 0;
+  }
+  .stageHeading {
+    padding: 1rem 0;
+    font-size: 0.625rem;
+  }
+  .object {
+    flex: none;
+    height: 20rem;
+  }
+  .objectCaption {
+    font-size: 0.625rem;
+    min-height: 2.75rem;
+  }
+  .entry {
+    width: 100%;
+    padding: 2rem 0;
+  }
+  .entry h1 {
+    font-size: 1.375rem;
+    margin: 1.5rem 0;
+  }
+  .entry > p {
+    font-size: 0.8125rem;
+  }
+  .enter {
+    width: 100%;
+    margin-top: 2rem;
+  }
+  .experience[data-exploring="true"] .stageArea {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--surface);
+  }
+  .experience[data-editing-reference="true"] .stageArea {
+    position: relative;
+  }
+  .experience[data-tone="light"][data-exploring="true"] .stageArea {
+    background: var(--lab-selection-background);
+    background-color: var(--lab-surface);
+    background-attachment: fixed;
+  }
+  .experience[data-tone="dark"][data-exploring="true"] .stageArea {
+    background: var(--night-selection-background);
+    background-color: var(--night-surface);
+    background-attachment: fixed;
+  }
+  .experience[data-tone="light"] .objectCaption {
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  .experience[data-exploring="true"] .stageHeading {
+    display: none;
+  }
+  .experience[data-exploring="true"] .object {
+    height: clamp(7.5rem, 19dvh, 10rem);
+  }
+  .experience[data-packaging="label"][data-exploring="true"] .object {
+    height: clamp(10.5rem, 21dvh, 12rem);
+  }
+  .experience[data-packaging="label"][data-label-expanded="true"] .object {
+    height: 22.5rem;
+  }
+  .cardDock {
+    width: 7rem;
+    right: 8%;
+  }
+  .experience[data-label-visible="true"] .powderLayer {
+    transform: translateX(-23%) scale(0.9);
+  }
+  .experience[data-label-expanded="true"] .cardDock {
+    width: min(80%, 15rem);
+    right: 1rem;
+  }
+  .experience[data-label-expanded="true"] .powderLayer {
+    transform: translateX(-38%) scale(0.62);
+  }
+  .controlArea {
+    align-self: stretch;
+    padding: 0.5rem 0 1.5rem;
+    border: 0;
+  }
+  .modeHeader {
+    margin-bottom: 1rem;
+  }
+  .modeSwitch {
+    gap: 0.375rem;
+    min-width: 0;
+  }
+  .modeSwitch button {
+    font-size: 0.6875rem;
+  }
+  .steps {
+    gap: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .builderBody > h2,
+  .standard > h2 {
+    font-size: 0.9375rem;
+  }
+  .standard > h2 {
+    margin: 0.25rem 0 1rem;
+  }
+  .guidance {
+    margin-bottom: 1rem;
+    font-size: 0.8125rem;
+  }
+  .applicationChoices label {
+    min-height: 3.6rem;
+    padding: 0.6rem 0.75rem;
+  }
+  .applicationChoices strong {
+    font-size: 0.8125rem;
+  }
+  .applicationChoices small {
+    font-size: 0.625rem;
+  }
+  .materialNote {
+    display: block;
+    padding: 0.75rem 0 0.5rem;
+  }
+  .materialNote > p {
+    font-size: 0.8125rem;
+  }
+  .quantityBuilder {
+    min-height: 7rem;
+  }
+  .optionalActions {
+    padding: 0.25rem 0 0.5rem;
+  }
+  .purchase {
+    padding-top: 0.75rem;
+  }
+  .purchaseFacts {
+    margin-bottom: 0.75rem;
+  }
+  .purchaseFacts strong {
+    font-size: 1rem;
+  }
+  .experience[data-exploring="true"] .footer {
+    display: none;
+  }
+}
+@media (max-width: 380px) {
+  .modeHeader,
+  .modeSwitch {
+    gap: 0.375rem;
+  }
+  .modeSwitch button {
+    font-size: 0.625rem;
+    letter-spacing: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .experience *,
+  .experience *::before,
+  .experience *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 540px) {
+  .experience {
+    --header-height: 6.75rem;
+  }
+}
+
+/* The embedded shop has its own type and purchase hierarchy. */
+.experience[data-embedded="true"] .modeHeader {
+  min-height: 3.25rem;
+  margin-bottom: 1.5rem;
+}
+.experience[data-embedded="true"] .modeSwitch button,
+.experience[data-embedded="true"] .steps button {
+  font-size: 0.75rem;
+  letter-spacing: 0;
+}
+.experience[data-embedded="true"] .stepNumber {
+  font-size: 0.625rem;
+}
+.experience[data-embedded="true"] .builderBody > h2 {
+  margin-bottom: 0.75rem;
+  font-size: clamp(1.5rem, 2vw, 1.75rem);
+  line-height: 1.3;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.experience[data-embedded="true"] .guidance,
+.experience[data-embedded="true"] .materialNote > p {
+  font-size: 0.75rem;
+  line-height: 1.8;
+  letter-spacing: 0;
+}
+.experience[data-embedded="true"] .guidance {
+  margin-bottom: 1.5rem;
+}
+.experience[data-embedded="true"] .applicationChoices {
+  display: grid;
+  gap: 0.5rem;
+}
+.experience[data-embedded="true"] .applicationChoices label {
+  gap: 1rem;
+  min-height: 4.5rem;
+  margin: 0;
+  padding: 0.875rem 1rem;
+}
+.experience[data-embedded="true"] .applicationChoices strong {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+}
+.experience[data-embedded="true"] .applicationChoices small {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.experience[data-embedded="true"] .materialNote {
+  gap: 1.5rem;
+  padding: 1rem 0 1.25rem;
+}
+.experience[data-embedded="true"] .materialNote > button,
+.experience[data-embedded="true"] .optionalActions > button {
+  font-size: 0.75rem;
+  letter-spacing: 0;
+}
+.experience[data-embedded="true"] .primary {
+  min-height: 3.5rem;
+  padding: 0.875rem 1rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.015em;
+}
+.experience[data-embedded="true"] .formats {
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+}
+.experience[data-embedded="true"] .formats legend {
+  margin-right: 1.25rem;
+  font-size: 0.6875rem;
+}
+.experience[data-embedded="true"] .formats button {
+  min-height: 2.75rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+.experience[data-embedded="true"] .formats button small {
+  margin-top: 0.125rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+}
+.experience[data-embedded="true"][data-tone="dark"] .formats button,
+.experience[data-embedded="true"][data-tone="dark"] .quantityBuilder > button {
+  border-color: transparent;
+  background: var(--night-control);
+}
+.experience[data-embedded="true"][data-tone="dark"]
+  .formats
+  button[aria-pressed="true"],
+.experience[data-embedded="true"][data-tone="dark"] .formats button:hover,
+.experience[data-embedded="true"][data-tone="dark"]
+  .quantityBuilder
+  > button:hover:not(:disabled) {
+  background: var(--night-control-hover);
+}
+.experience[data-embedded="true"][data-tone="light"]
+  .formats
+  button[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+.experience[data-embedded="true"] .quantityBuilder {
+  min-height: 5.75rem;
+  gap: 1rem;
+}
+.experience[data-embedded="true"] .quantityBuilder > button {
+  flex: 0 0 2.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: 1.25rem;
+}
+.experience[data-embedded="true"] .quantityBuilder > div {
+  min-width: 0;
+  gap: 0.375rem;
+}
+.experience[data-embedded="true"] .quantityBuilder output {
+  font-size: 1.75rem;
+}
+.experience[data-embedded="true"] .quantityBuilder span {
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-align: center;
+}
+.experience[data-embedded="true"] .optionalActions {
+  padding: 0.5rem 0;
+}
+.experience[data-embedded="true"] .purchase {
+  margin-top: 0.75rem;
+  padding-top: 1.25rem;
+}
+.experience[data-embedded="true"] .purchase > fieldset {
+  margin: 0 0 1.25rem;
+}
+.experience[data-embedded="true"] .purchase > fieldset legend {
+  margin-bottom: 0.625rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.015em;
+}
+.experience[data-embedded="true"] .purchase > fieldset label {
+  min-height: 3.25rem;
+  font-size: 0.75rem;
+}
+.experience[data-embedded="true"] .purchase > fieldset small {
+  font-size: 0.625rem;
+}
+.experience[data-embedded="true"] .purchaseFacts {
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 0.875rem;
+}
+.experience[data-embedded="true"] .purchaseFacts > span {
+  min-width: 0;
+  font-size: 0.75rem;
+}
+.experience[data-embedded="true"] .purchaseFacts small {
+  font-size: 0.6875rem;
+  line-height: 1.6;
+}
+.experience[data-embedded="true"] .purchaseFacts strong {
+  flex-shrink: 0;
+  font-size: 1.375rem;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+}
+.experience[data-embedded="true"] .purchase > button {
+  min-height: 3.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.015em;
+}
+.experience[data-embedded="true"] .purchase > p,
+.experience[data-embedded="true"] .state {
+  font-size: 0.75rem;
+  line-height: 1.8;
+  text-transform: uppercase;
+}
+.experience[data-embedded="true"] .state button {
+  padding: 0.625rem 1rem;
+  font: inherit;
+}
+
+@media (min-width: 761px) and (max-height: 820px) {
+  .experience[data-embedded="true"][data-mode="builder"][data-step="1"] .steps {
+    margin-bottom: 0.25rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-step="1"]
+    .builderBody
+    > h2 {
+    margin-bottom: 0.25rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-step="1"]
+    .guidance {
+    margin-bottom: 0.75rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-step="1"]
+    .formats {
+    margin-bottom: 0.75rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-step="1"]
+    .quantityBuilder {
+    min-height: 4rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-step="1"]
+    .optionalActions {
+    padding-block: 0;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-step="1"]
+    .purchase {
+    margin-top: 0;
+    padding-top: 0.75rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-step="1"]
+    .purchase
+    > fieldset {
+    margin-bottom: 0.75rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-step="1"]
+    .purchase
+    > fieldset
+    legend {
+    margin-bottom: 0.375rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-step="1"]
+    .purchase
+    > fieldset
+    label {
+    min-height: 2.75rem;
+    padding-block: 0.25rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-step="1"]
+    .purchaseFacts {
+    margin-bottom: 0.625rem;
+  }
+}
+
+@media (min-width: 761px) {
+  .experience[data-embedded="true"] .referenceAction {
+    display: none;
+  }
+}
+
+/* One continuous phone flow; the study layouts above stay independent. */
+@media (max-width: 760px) {
+  .experience[data-embedded="true"] {
+    --header-height: 4rem;
+    height: auto;
+    overflow: visible;
+  }
+  .experience[data-embedded="true"] .workspace {
+    min-height: 0;
+    height: auto;
+    gap: 0;
+    border-top: 0;
+  }
+  .experience[data-embedded="true"] .controlArea {
+    display: contents;
+  }
+  .experience[data-embedded="true"] .modeHeader {
+    order: 0;
+    min-height: 3.75rem;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.5rem 0;
+  }
+  .experience[data-embedded="true"] .modeSwitch {
+    flex: 1;
+    gap: 0.5rem;
+  }
+  .experience[data-embedded="true"] .modeSwitch button {
+    flex: 1;
+    min-height: 2.75rem;
+    padding: 0.625rem 1rem;
+    border: 1px solid transparent;
+    background: var(--night-control);
+  }
+  .experience[data-embedded="true"] .modeSwitch button[aria-pressed="true"] {
+    background: var(--night-control-hover);
+  }
+  .experience[data-embedded="true"] .modeSwitch button::after {
+    display: none;
+  }
+  .experience[data-embedded="true"][data-tone="light"] .modeSwitch button {
+    border-color: var(--line);
+    background: transparent;
+  }
+  .experience[data-embedded="true"][data-tone="light"]
+    .modeSwitch
+    button[aria-pressed="true"] {
+    border-color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+  }
+  .experience[data-embedded="true"][data-exploring="true"] .stageArea {
+    order: 1;
+    position: relative;
+    z-index: auto;
+    padding: 0;
+    background: transparent;
+    background-attachment: scroll;
+  }
+  .experience[data-embedded="true"] .stageHeading,
+  .experience[data-embedded="true"] .steps,
+  .experience[data-embedded="true"] .builderBody > .primary,
+  .experience[data-embedded="true"] .referenceAction,
+  .experience[data-embedded="true"] .cardDock,
+  .experience[data-embedded="true"] .objectCaption,
+  .experience[data-embedded="true"] .controlScroll > form,
+  .experience[data-embedded="true"] .optionalActions {
+    display: none;
+  }
+  .experience[data-embedded="true"][data-packaging="label"] .object {
+    height: clamp(15rem, 62vw, 18rem);
+    transition: none;
+  }
+  .experience[data-embedded="true"][data-packaging="label"] .powderLayer {
+    transform: scale(0.92);
+    opacity: 1;
+  }
+  .experience[data-embedded="true"][data-material-browsing="true"] .object {
+    height: clamp(15rem, 63vw, 18rem);
+    margin-top: 1.5rem;
+    overflow: hidden;
+    touch-action: pan-y;
+  }
+  .experience[data-embedded="true"][data-material-browsing="true"][data-entry-settled="true"]
+    .powderLayer {
+    transform: rotate(-80deg) scale(1.15);
+  }
+  .experience[data-embedded="true"] .controlScroll {
+    order: 2;
+    flex: none;
+    width: 100%;
+    padding: 1.25rem 0 2rem;
+    border-top: 1px solid var(--line);
+    overflow: visible;
+    scrollbar-gutter: auto;
+    scroll-margin-block: 1rem;
+  }
+  .experience[data-embedded="true"] .builderBody {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(9rem, 1.15fr);
+    column-gap: 1rem;
+  }
+  .experience[data-embedded="true"] .builderBody > h2,
+  .experience[data-embedded="true"] .mobileMatchaPresentation,
+  .experience[data-embedded="true"] .materialNote,
+  .experience[data-embedded="true"] .applicationChoices,
+  .experience[data-embedded="true"] .guidance,
+  .experience[data-embedded="true"] .state,
+  .experience[data-embedded="true"] .purchase {
+    grid-column: 1 / -1;
+  }
+  .experience[data-embedded="true"] .builderBody > h2 {
+    margin: 0 0 0.625rem;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    scroll-margin-block: 1rem;
+  }
+  .experience[data-embedded="true"] .mobileBuilderHeading {
+    display: block;
+  }
+  .experience[data-embedded="true"] .mobileMatchaPresentation {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.375rem 1rem;
+  }
+  .experience[data-embedded="true"] .materialPurpose {
+    margin: 0;
+    color: var(--muted);
+    font-family: var(--font-antro-vectra), cursive;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    letter-spacing: 0;
+  }
+  .experience[data-embedded="true"] .materialDescription {
+    display: none;
+  }
+  .experience[data-embedded="true"] .materialAvailability {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.6875rem;
+    line-height: 1.6;
+  }
+  .experience[data-embedded="true"] .applicationChoices label {
+    gap: 0.75rem;
+    padding: 0.875rem;
+  }
+  .experience[data-embedded="true"] .materialNote {
+    display: grid;
+    gap: 0.375rem;
+    padding: 0.25rem 0 0.875rem;
+  }
+  .experience[data-embedded="true"][data-material-browsing="true"]
+    .defaultBuilderHeading,
+  .experience[data-embedded="true"][data-material-browsing="true"] .guidance,
+  .experience[data-embedded="true"][data-material-browsing="true"]
+    .applicationChoices,
+  .experience[data-embedded="true"][data-material-browsing="true"]
+    .materialNote
+    > p {
+    display: none;
+  }
+  .experience[data-embedded="true"] .formats {
+    display: block;
+    grid-column: 1;
+    align-self: center;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .experience[data-embedded="true"] .formats legend {
+    float: none;
+    margin: 0 0 0.5rem;
+  }
+  .experience[data-embedded="true"] .formats > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+  .experience[data-embedded="true"] .formats button {
+    padding: 0.5rem 0.625rem;
+  }
+  .experience[data-embedded="true"] .quantityBuilder {
+    grid-column: 2;
+    min-height: 4.5rem;
+    margin: 0;
+    padding: 0;
+    gap: 0.25rem;
+    border: 0;
+  }
+  .experience[data-embedded="true"] .quantityBuilder output {
+    font-size: 1.375rem;
+  }
+  .experience[data-embedded="true"] .quantityBuilder span {
+    font-size: 0.625rem;
+    overflow-wrap: anywhere;
+  }
+  .experience[data-embedded="true"] .purchase {
+    margin-top: 1.25rem;
+    padding: 1.25rem 0 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
+  }
+  .experience[data-embedded="true"] .purchaseFacts {
+    gap: 0.75rem;
+  }
+  .experience[data-embedded="true"] .state {
+    min-height: 12rem;
+  }
+  .experience[data-embedded="true"] .mobileMaterialControls {
+    display: block;
+    padding-bottom: 1rem;
+  }
+  .experience[data-embedded="true"] .materialNavigation {
+    display: grid;
+    position: absolute;
+    inset: 0.5rem 0 auto;
+    grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+  }
+  .experience[data-embedded="true"] .materialNavigation > span {
+    color: var(--muted);
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+  .experience[data-embedded="true"] .materialNavigation button,
+  .experience[data-embedded="true"] .materialGrades button {
+    min-width: 0;
+    min-height: 2.75rem;
+    padding: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-button);
+    background: var(--night-control);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .experience[data-embedded="true"] .materialNavigation button {
+    font-size: 1.25rem;
+  }
+  .experience[data-embedded="true"] .materialGrades {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  .experience[data-embedded="true"] .materialGrades button {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+  }
+  .experience[data-embedded="true"]
+    .materialGrades
+    button[aria-pressed="true"] {
+    background: var(--night-control-hover);
+    font-weight: 500;
+    box-shadow: inset 0 -1px var(--ink);
+  }
+  .experience[data-embedded="true"][data-tone="light"]
+    .materialNavigation
+    button,
+  .experience[data-embedded="true"][data-tone="light"] .materialGrades button {
+    border-color: var(--line);
+    background: transparent;
+  }
+  .experience[data-embedded="true"][data-tone="light"]
+    .materialGrades
+    button[aria-pressed="true"] {
+    border-color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+    box-shadow: none;
+  }
+  .experience[data-embedded="true"] .materialNavigation button:disabled,
+  .experience[data-embedded="true"] .materialGrades button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .experience[data-embedded="true"] .materialNavigation button:focus-visible,
+  .experience[data-embedded="true"] .materialGrades button:focus-visible {
+    outline: 1px solid var(--ink);
+    outline-offset: 3px;
+  }
+  .experience[data-embedded="true"] .materialAnnouncement {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Product choice is primary; the quiet row beneath changes its reading view. */
+.homepageControls {
+  flex: none;
+  min-width: 0;
+  margin-bottom: 1.5rem;
+}
+.typeChoices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.875rem;
+}
+.typeChoice {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  min-width: 0;
+  min-height: 4rem;
+  gap: 0.625rem;
+  padding: 0.8125rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button, 6px);
+  background: var(--night-control);
+  color: var(--muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 180ms,
+    border-color 180ms,
+    color 180ms;
+}
+.typeChoice[aria-pressed="true"] {
+  background: var(--night-control-hover);
+  color: var(--ink);
+}
+.typeIndex {
+  color: var(--muted);
+  font-size: 0.5625rem;
+  font-variant-numeric: tabular-nums;
+}
+.typeName {
+  min-width: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+}
+.typeName small {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+.typeChoice[aria-pressed="true"] .typeName {
+  font-weight: 500;
+}
+.experience[data-tone="light"] .typeChoice {
+  border-color: var(--line);
+  background: transparent;
+}
+.experience[data-tone="light"] .typeChoice[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+.typeChoice:hover:not(:disabled) {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.typeChoice:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.typeChoice:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 3px;
+}
+.experience[data-embedded="true"] .homepageControls .modeHeader {
+  min-height: 2.75rem;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+}
+.experience[data-embedded="true"][data-section-selector-variant="tabs"]
+  .homepageControls
+  .modeHeader {
+  border-bottom: 0;
+}
+.experience[data-embedded="true"] .modeSwitch {
+  flex: 1;
+  min-width: 0;
+  gap: clamp(0.625rem, 1.25vw, 1.25rem);
+}
+.experience[data-embedded="true"] .modeSwitch button {
+  flex: none;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.125rem;
+  border: 0;
+  border-radius: var(--radius-button, 6px);
+  background: transparent;
+  font-size: 0.6875rem;
+  letter-spacing: 0;
+  white-space: nowrap;
+  transition:
+    background 180ms,
+    color 180ms;
+}
+.experience[data-embedded="true"] .modeSwitch button[aria-pressed="true"] {
+  background: transparent;
+}
+.experience[data-embedded="true"]
+  .modeSwitch
+  button[aria-pressed="true"]::after {
+  display: block;
+  bottom: -1px;
+  right: 0.125rem;
+  left: 0.125rem;
+  height: 1px;
+}
+.experience[data-embedded="true"][data-tone="light"] .modeSwitch button,
+.experience[data-embedded="true"][data-tone="light"]
+  .modeSwitch
+  button[aria-pressed="true"] {
+  border-color: transparent;
+  background: transparent;
+}
+.experience[data-embedded="true"] .modeSwitch button:hover:not(:disabled),
+.experience[data-embedded="true"] .modeSwitch button:focus-visible {
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  color: var(--ink);
+}
+.experience[data-embedded="true"] .modeSwitch button:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 2px;
+}
+
+@media (min-width: 761px) {
+  .experience[data-embedded="true"]:is(
+      [data-mode="overview"],
+      [data-mode="specifications"],
+      [data-mode="origins"]
+    )
+    .powderLayer {
+    transform: scale(0.84);
+  }
+}
+@media (min-width: 761px) and (max-width: 1000px) {
+  .typeChoice {
+    gap: 0.375rem;
+    padding-inline: 0.5rem;
+  }
+  .typeName {
+    font-size: 0.75rem;
+  }
+  .typeName small {
+    font-size: 0.5625rem;
+  }
+  .experience[data-embedded="true"] .modeSwitch {
+    gap: 0.375rem;
+  }
+}
+@media (min-width: 761px) and (max-height: 800px) {
+  .homepageControls {
+    margin-bottom: 0.875rem;
+  }
+  .typeChoices {
+    margin-bottom: 0.375rem;
+  }
+  .typeChoice {
+    min-height: 3.5rem;
+    padding-block: 0.625rem;
+  }
+  .experience[data-embedded="true"] .controlArea {
+    padding-top: 0.75rem;
+    padding-bottom: 0.375rem;
+  }
+}
+@media (max-width: 760px) {
+  .homepageControls {
+    order: 0;
+    margin: 0;
+    padding-top: 0.625rem;
+  }
+  .typeChoices {
+    gap: 0.375rem;
+    margin-bottom: 0.375rem;
+  }
+  .typeChoice {
+    align-items: center;
+    min-height: 2.75rem;
+    gap: 0.375rem;
+    padding: 0.625rem;
+  }
+  .typeName {
+    font-size: 0.75rem;
+  }
+  .typeName small {
+    display: none;
+  }
+  .experience[data-embedded="true"] .modeSwitch {
+    justify-content: space-between;
+    gap: 0.25rem;
+  }
+  .experience[data-embedded="true"]:is(
+      [data-mode="specifications"],
+      [data-mode="origins"]
+    )
+    .stageArea {
+    display: none;
+  }
+  .experience[data-embedded="true"]:is(
+      [data-mode="specifications"],
+      [data-mode="origins"]
+    )
+    .controlScroll {
+    padding: 1rem 0 0.625rem;
+    border-top: 0;
+  }
+}
+@media (max-width: 380px) {
+  .typeChoice {
+    gap: 0.25rem;
+    padding-inline: 0.4375rem;
+  }
+  .typeName {
+    font-size: 0.6875rem;
+  }
+  .typeIndex {
+    font-size: 0.5rem;
+  }
+  .experience[data-embedded="true"] .homepageControls .modeHeader {
+    gap: 0.25rem;
+  }
+  .experience[data-embedded="true"] .modeSwitch {
+    gap: 0.125rem;
+  }
+  .experience[data-embedded="true"] .modeSwitch button {
+    font-size: 0.625rem;
+  }
+}
+/* Shop studies keep a small material view above the purchase controls on phones. */
+@media (max-width: 760px) {
+  .experience[data-embedded="true"][data-mode="builder"]:is(
+      [data-shop-preview-variant="sheet"],
+      [data-shop-preview-variant="counter"],
+      [data-shop-preview-variant="card"],
+      [data-shop-preview-variant="refined"],
+      [data-shop-preview-variant="line"],
+      [data-shop-preview-variant="split"],
+      [data-shop-preview-variant="ledger"],
+      [data-shop-preview-variant="open"],
+      [data-shop-preview-variant="list"],
+      [data-shop-preview-variant="price"]
+    )
+    .object {
+    height: 4.5rem;
+    flex: none;
+    margin-top: 0;
+  }
+  .experience[data-embedded="true"][data-mode="builder"]:is(
+      [data-shop-preview-variant="sheet"],
+      [data-shop-preview-variant="counter"],
+      [data-shop-preview-variant="card"],
+      [data-shop-preview-variant="refined"],
+      [data-shop-preview-variant="line"],
+      [data-shop-preview-variant="split"],
+      [data-shop-preview-variant="ledger"],
+      [data-shop-preview-variant="open"],
+      [data-shop-preview-variant="list"],
+      [data-shop-preview-variant="price"]
+    )
+    .powderLayer {
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    width: 10rem;
+    height: 10rem;
+    transform: translate(-50%, -50%) rotate(-80deg) scale(0.9);
+  }
+  .experience[data-embedded="true"][data-mode="builder"]:is(
+      [data-shop-preview-variant="sheet"],
+      [data-shop-preview-variant="counter"],
+      [data-shop-preview-variant="card"],
+      [data-shop-preview-variant="refined"],
+      [data-shop-preview-variant="line"],
+      [data-shop-preview-variant="split"],
+      [data-shop-preview-variant="ledger"],
+      [data-shop-preview-variant="open"],
+      [data-shop-preview-variant="list"],
+      [data-shop-preview-variant="price"]
+    )
+    .mobileMaterialControls {
+    display: none;
+  }
+  .experience[data-embedded="true"][data-mode="builder"]:is(
+      [data-shop-preview-variant="sheet"],
+      [data-shop-preview-variant="counter"],
+      [data-shop-preview-variant="card"],
+      [data-shop-preview-variant="refined"],
+      [data-shop-preview-variant="line"],
+      [data-shop-preview-variant="split"],
+      [data-shop-preview-variant="ledger"],
+      [data-shop-preview-variant="open"],
+      [data-shop-preview-variant="list"],
+      [data-shop-preview-variant="price"]
+    )
+    .controlScroll {
+    padding-top: 0.875rem;
+    padding-bottom: 1rem;
+  }
+}
+
+/* The placement study gives product choice its own place above the material. */
+.stageSelectors {
+  min-width: 0;
+}
+.stageSelectors > :global([data-visual-product-selectors]) {
+  margin-bottom: 0;
+}
+@media (min-width: 761px) {
+  .experience[data-selector-placement="left"] .workspace {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .experience[data-selector-placement="left"] .stageSelectors {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 1rem clamp(1.5rem, 4vw, 4rem) 1.5rem 0;
+  }
+  .experience[data-selector-placement="left"] .stageArea {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .experience[data-selector-placement="left"] .stageHeading {
+    display: none;
+  }
+  .experience[data-selector-placement="left"] .object {
+    container: left-material-stage / size;
+  }
+  .experience[data-selector-placement="left"] .cardDock,
+  .experience[data-selector-placement="left"][data-label-expanded="true"]
+    .cardDock {
+    width: clamp(12.6rem, 14.4vw, 13.5rem);
+  }
+  .experience[data-selector-placement="left"] .controlArea {
+    grid-column: 2;
+    grid-row: 1 / -1;
+  }
+}
+@container left-material-stage (max-height: 440px) {
+  .cardDock {
+    transform: translateY(-50%) scale(0.85);
+  }
+}
+@container left-material-stage (max-height: 360px) {
+  .cardDock {
+    transform: translateY(-50%) scale(0.7);
+  }
+}
+@container left-material-stage (max-height: 300px) {
+  .cardDock {
+    transform: translateY(-50%) scale(0.56);
+  }
+}
+@container left-material-stage (max-height: 240px) {
+  .cardDock {
+    transform: translateY(-50%) scale(0.44);
+  }
+}
+@media (min-width: 761px) and (max-width: 1050px) {
+  .experience[data-selector-placement="left"] .stageSelectors {
+    padding-right: 1.5rem;
+  }
+}
+@media (min-width: 761px) and (max-height: 800px) {
+  .experience[data-selector-placement="left"] .stageSelectors {
+    padding-top: 0.75rem;
+  }
+}
+@media (max-width: 760px) {
+  .experience[data-selector-placement="left"] .stageSelectors {
+    order: -1;
+    flex: none;
+    padding: 0.625rem 0 1rem;
+  }
+  .experience[data-selector-placement="left"] .homepageControls {
+    padding-top: 0;
+  }
+}
+
+/* Keep supporting labels distinct from headings, format values and references. */
+.experience[data-embedded="true"]
+  :is(
+    .stageHeading,
+    .objectCaption,
+    .labelCaption,
+    .modeSwitch button,
+    .steps button,
+    .typeName,
+    .typeName small,
+    .guidance,
+    .applicationChoices small,
+    .materialNote > p,
+    .materialNote > button,
+    .optionalActions > button,
+    .primary,
+    .formats legend,
+    .formats button small,
+    .referenceAction,
+    .purchase > fieldset legend,
+    .purchaseFacts small,
+    .purchase > button,
+    .state button,
+    .materialAvailability,
+    .materialNavigation > span
+  ) {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typeChoice,
+  .experience[data-embedded="true"] .modeSwitch button {
+    transition: none;
+  }
+}
+
+/* The Current refined study keeps the original controls and their sequence. */
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .builderBody
+  > h2 {
+  margin: 0 0 0.375rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: var(--tab-heading-leading, 1.4);
+  letter-spacing: var(--tab-heading-tracking, 0.01em);
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .guidance {
+  margin: 0 0 1rem;
+  max-width: none;
+  font-size: var(--tab-body-size, 0.75rem);
+  line-height: 1.6;
+  letter-spacing: 0.025em;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .formats {
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: var(--tab-body-size, 0.75rem);
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .formats
+  legend {
+  margin-right: 1rem;
+  font-size: var(--tab-label-size, 0.6875rem);
+  line-height: 1.5;
+  letter-spacing: 0.07em;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .formats
+  button {
+  padding: 0.375rem 0.75rem;
+  font-size: var(--tab-body-size, 0.75rem);
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .quantityBuilder {
+  min-height: 4.75rem;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .quantityBuilder
+  output {
+  font-size: var(--tab-heading-size, 1.125rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .quantityBuilder
+  span {
+  font-size: var(--tab-label-size, 0.6875rem);
+  line-height: 1.5;
+  letter-spacing: 0.035em;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .optionalActions {
+  padding: 0.125rem 0;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .optionalActions
+  > button {
+  font-size: var(--tab-label-size, 0.6875rem);
+  letter-spacing: 0.04em;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .purchase {
+  margin-top: 0;
+  padding-top: 0.75rem;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .purchase
+  > fieldset {
+  margin-bottom: 0.75rem;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .purchase
+  > fieldset
+  legend {
+  margin-bottom: 0.375rem;
+  font-size: var(--tab-label-size, 0.6875rem);
+  line-height: 1.5;
+  letter-spacing: 0.07em;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .purchase
+  > fieldset
+  label {
+  min-height: 2.75rem;
+  padding: 0.375rem 0.625rem;
+  font-size: var(--tab-body-size, 0.75rem);
+  line-height: 1.5;
+  letter-spacing: 0.025em;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .purchase
+  > fieldset
+  small {
+  font-size: var(--tab-label-size, 0.6875rem);
+  line-height: 1.4;
+  letter-spacing: 0.015em;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .purchaseFacts {
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .purchaseFacts
+  > span {
+  font-size: var(--tab-body-size, 0.75rem);
+  line-height: 1.5;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .purchaseFacts
+  small {
+  margin-top: 0.125rem;
+  font-size: var(--tab-label-size, 0.6875rem);
+  line-height: 1.5;
+  letter-spacing: 0.025em;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .purchaseFacts
+  strong {
+  font-size: var(--tab-heading-size, 1.125rem);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+}
+.experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+  .purchase
+  > button {
+  min-height: 3rem;
+  font-size: var(--tab-body-size, 0.75rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+@media (max-width: 760px) {
+  .experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+    .builderBody {
+    column-gap: 0.75rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+    .formats {
+    margin-bottom: 0;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+    .formats
+    legend {
+    margin: 0 0 0.375rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+    .formats
+    button {
+    padding-inline: 0.625rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+    .quantityBuilder {
+    min-height: 4.25rem;
+  }
+  .experience[data-embedded="true"][data-mode="builder"][data-shop-preview-variant="refined"]
+    .purchase {
+    margin-top: 0.375rem;
+  }
+}
+
+/* Keep both materials mounted; only their composition changes for Shop. */
+.silverBagLayer {
+  position: absolute;
+  inset: 0 0 0 40%;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(1rem, 0, 0) scale(0.98);
+  pointer-events: none;
+  transition:
+    opacity 300ms ease,
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 300ms;
+}
+.experience[data-bag-visible="true"] .silverBagLayer {
+  opacity: 1;
+  visibility: visible;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    opacity 360ms ease 80ms,
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
+}
+.silverPowderLayer {
+  position: absolute;
+  inset: 0;
+  transform: translate(0, 0) rotate(0deg) scale(0.84);
+  transform-origin: center;
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.experience[data-bag-visible="true"] .silverPowderLayer {
+  transform: translate(-25%, 1%) rotate(0deg) scale(0.82);
+}
+.experience[data-material-object="silver-bag"] .object {
+  overflow: visible;
+}
+@media (max-width: 760px) {
+  .experience[data-embedded="true"][data-material-object="silver-bag"]
+    .stageArea {
+    display: flex;
+  }
+  .experience[data-embedded="true"][data-material-object="silver-bag"] .object {
+    height: clamp(15rem, 63vw, 18rem);
+    flex: none;
+    margin: 1rem 0 0;
+    transition:
+      height 520ms cubic-bezier(0.22, 1, 0.36, 1),
+      margin 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .experience[data-embedded="true"][data-material-object="silver-bag"][data-mode="builder"][data-shop-preview-variant="refined"]
+    .object {
+    height: clamp(13.25rem, 55vw, 13.75rem);
+    flex: none;
+    margin: 0.25rem 0 0;
+  }
+  .experience[data-embedded="true"][data-material-object="silver-bag"]
+    .objectCaption {
+    display: flex;
+    min-height: 44px;
+    gap: 12px;
+    padding-block: 0.5rem;
+    transition:
+      min-height 520ms cubic-bezier(0.22, 1, 0.36, 1),
+      padding 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .experience[data-embedded="true"][data-material-object="silver-bag"][data-mode="builder"]
+    .objectCaption {
+    min-height: 24px;
+    padding-block: 0.125rem;
+  }
+  .experience[data-material-object="silver-bag"] .silverBagLayer {
+    inset: -3% -1% -3% 38%;
+  }
+  .experience[data-material-object="silver-bag"] .silverPowderLayer {
+    transform: translate(0, 0) rotate(-80deg) scale(1.15);
+  }
+  .experience[data-material-object="silver-bag"][data-bag-visible="true"]
+    .silverPowderLayer {
+    transform: translate(-22.5%, 0.5%) rotate(0deg) scale(0.85);
+  }
+  /* Panorama uses the phone's information space as in the Origins study.
+     Keep the material mounted so returning to Overview or Shop is continuous. */
+  .experience[data-embedded="true"][data-mode="origins"][data-origin-preview-variant="panorama"]
+    .stageArea {
+    display: none;
+  }
+}

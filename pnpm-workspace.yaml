@@ -9,3 +9,6 @@ saveExact: true
 allowBuilds:
   sharp: false
   unrs-resolver: false
+
+overrides:
+  "@jmm/domain-contracts": file:vendor/jmm-domain-contracts-0.0.0.tgz

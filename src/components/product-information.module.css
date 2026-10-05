@@ -1,0 +1,260 @@
+.trigger,
+.header,
+.eyebrow,
+.preparation summary {
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.035em;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.trigger {
+  display: inline-flex;
+  min-height: 2.75rem;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-button, 6px);
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.trigger > span[aria-hidden="true"] {
+  font-size: 1rem;
+}
+.dialog {
+  --panel-gutter: clamp(1.25rem, 4vw, 3rem);
+  --material-font-size: 0.75rem;
+  --material-label-size: 0.625rem;
+  --material-reading-width: 56ch;
+  --material-reading-color: var(--ink);
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(48rem, 100%);
+  max-width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 0;
+  border-left: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.8;
+  scroll-padding-top: 6.5rem;
+}
+.dialog::backdrop {
+  background: rgb(0 0 0 / 30%);
+}
+.dialog[open] {
+  animation: reveal 300ms ease-out both;
+}
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem var(--panel-gutter);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+}
+:global([data-tone="dark"]) .dialog {
+  --surface: var(--night-raised);
+  --ink: var(--night-ink);
+  --muted: var(--night-muted);
+  --line: var(--night-line);
+  background: var(--night-panel-background);
+}
+:global([data-tone="dark"]) .dialog::backdrop {
+  background: rgb(0 0 0 / 60%);
+  backdrop-filter: blur(8px);
+}
+:global([data-tone="dark"]) .header {
+  background: var(--night-raised);
+}
+.header button {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-button, 6px);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.header button > span[aria-hidden="true"] {
+  font-size: 1.125rem;
+}
+.body {
+  padding: 2rem var(--panel-gutter) max(3rem, env(safe-area-inset-bottom));
+}
+.eyebrow {
+  color: var(--muted);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+}
+.body h2 {
+  margin: 0.625rem 0 1rem;
+  font-size: 1.125rem;
+  line-height: 1.35;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  text-transform: uppercase;
+}
+.introduction {
+  margin: 0 0 2rem;
+  max-width: 56ch;
+  text-wrap: pretty;
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+.preparation {
+  margin-top: 2rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.preparation summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3.5rem;
+  gap: 1.25rem;
+  padding-block: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius-button, 6px);
+  cursor: pointer;
+  list-style: none;
+}
+.preparation summary::-webkit-details-marker {
+  display: none;
+}
+.preparation summary > span[aria-hidden="true"] {
+  font-size: 1rem;
+}
+.preparation[open] summary > span[aria-hidden="true"] {
+  transform: rotate(45deg);
+}
+.preparationBody {
+  padding: 0.25rem 0 2.5rem;
+}
+.preparationBody p,
+.preparationBody li {
+  max-width: 56ch;
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.preparationBody section {
+  margin-top: 1.5rem;
+}
+.preparationBody h3 {
+  max-width: 48ch;
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.035em;
+}
+.preparationBody ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+.preparationBody li {
+  padding-left: 0.375rem;
+}
+.preparationBody li + li {
+  margin-top: 0.75rem;
+}
+.preparationBody .selectionNote {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.6875rem;
+}
+.dialog :is(button, summary):focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateX(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 760px) {
+  .dialog {
+    inset: 0;
+    width: min(42rem, calc(100vw - 2rem));
+    height: 82svh;
+    height: 82dvh;
+    max-height: 82svh;
+    max-height: 82dvh;
+    margin: auto;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 32%);
+    scrollbar-width: thin;
+  }
+}
+@media (max-width: 520px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    padding: 0.875rem var(--panel-gutter);
+    font-size: 0.625rem;
+  }
+  .header button {
+    gap: 0.75rem;
+  }
+}
+:global([data-embedded="true"])
+  :is(
+    .trigger,
+    .header > span,
+    .header button,
+    .eyebrow,
+    .preparation summary
+  ) {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+:global([data-embedded="true"])
+  :is(
+    .introduction,
+    .preparationBody p,
+    .preparationBody li,
+    .preparationBody h3
+  ) {
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog[open] {
+    animation: none;
+  }
+}
