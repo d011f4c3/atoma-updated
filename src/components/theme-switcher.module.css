@@ -1,3 +1,33 @@
+.controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 0 0 auto;
+}
+
+.language {
+  max-width: 6.5rem;
+  min-height: 2.75rem;
+  padding: 0.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button, 6px);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  cursor: pointer;
+}
+
+.language option {
+  color: var(--color-ink);
+  background: var(--color-surface);
+}
+
+.language:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+}
+
 .switcher {
   display: inline-flex;
   min-width: 3.5rem;

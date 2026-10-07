@@ -6,6 +6,7 @@ import type { CatalogProduct } from "@/lib/catalog-types";
 import { getOriginPreview } from "@/lib/origin-preview";
 import { useCart } from "./cart-drawer";
 import { useOrigins } from "./origins-provider";
+import { useStorefrontLocale } from "./storefront-locale-provider";
 import styles from "./origin-preview.module.css";
 
 export type OriginPreviewVariant =
@@ -23,6 +24,9 @@ const placeKind: Record<string, string> = {
   region: "Region",
   locality: "Locality",
   field: "Field",
+  designation: "Designation",
+  growing: "Growing place",
+  processing: "Processing",
 };
 
 export function OriginPreview({
@@ -31,10 +35,12 @@ export function OriginPreview({
   variant,
   onShop,
 }: OriginPreviewProps) {
+  const { locale, t } = useStorefrontLocale();
   const id = useId();
   const { busy } = useCart();
   const { openOrigins } = useOrigins();
-  const preview = getOriginPreview(product);
+  const preview = getOriginPreview(product, undefined, undefined, locale);
+  const records = [...preview.places, ...preview.designations];
 
   return (
     <section
@@ -47,24 +53,25 @@ export function OriginPreview({
         <h2 id={`${id}-product`} tabIndex={-1} data-homepage-product-name>
           {preview.name}
         </h2>
-        <span>Origin</span>
+        <span>{t("Origin")}</span>
       </header>
 
-      {preview.places.length ? (
+      {records.length ? (
         <div className={styles.places}>
-          {preview.places.map((place) => {
-            const parents = place.path
-              .slice(0, -1)
-              .reverse()
-              .map((ancestor) => ancestor.name)
-              .join(", ");
+          {records.map((place) => {
+            const parents = place.parents;
             const photograph = place.photograph;
 
             return (
               <article
                 key={place.id}
                 className={styles.place}
-                data-origin-place={place.id}
+                data-origin-place={
+                  place.kind === "place" ? place.id : undefined
+                }
+                data-origin-designation={
+                  place.kind === "designation" ? place.id : undefined
+                }
                 data-has-photo={Boolean(photograph)}
                 aria-labelledby={`${id}-${place.id}`}
               >
@@ -96,19 +103,19 @@ export function OriginPreview({
                   <div className={styles.facts}>
                     <header className={styles.location}>
                       <div>
-                        <p className={styles.label}>Grown in</p>
+                        <p className={styles.label}>{place.roleLabel}</p>
                         <h3 id={`${id}-${place.id}`}>{place.name}</h3>
                       </div>
                       {parents && <p className={styles.parents}>{parents}</p>}
                     </header>
                     <ol
                       className={styles.hierarchy}
-                      aria-label="Geographic hierarchy"
+                      aria-label={place.hierarchyLabel}
                     >
                       {place.path.map((ancestor, index) => (
                         <li key={`${ancestor.kind}-${ancestor.name}-${index}`}>
                           <span className={styles.kind}>
-                            {placeKind[ancestor.kind] ?? ancestor.kind}
+                            {t(placeKind[ancestor.kind] ?? ancestor.kind)}
                           </span>
                           <span className={styles.placeName}>
                             {ancestor.name}
@@ -129,12 +136,15 @@ export function OriginPreview({
                     onClick={() =>
                       openOrigins({
                         tone,
-                        placeId: place.id,
-                        returnLabel: `Return to ${preview.name}`,
+                        placeId: place.linkPlaceId,
+                        returnProduct: {
+                          title: product.title,
+                          handle: product.handle,
+                        },
                       })
                     }
                   >
-                    About {place.name}
+                    {place.aboutLabel}
                     <span aria-hidden="true"> ↗</span>
                   </button>
                 </p>
@@ -147,16 +157,19 @@ export function OriginPreview({
                     onClick={() =>
                       openOrigins({
                         tone,
-                        placeId: place.id,
-                        returnLabel: `Return to ${preview.name}`,
+                        placeId: place.linkPlaceId,
+                        returnProduct: {
+                          title: product.title,
+                          handle: product.handle,
+                        },
                       })
                     }
                   >
-                    <span>Explore the growing region</span>
+                    <span>{place.exploreLabel}</span>
                     <span aria-hidden="true">↗</span>
                   </button>
                   <button type="button" disabled={busy} onClick={onShop}>
-                    <span>Shop this matcha</span>
+                    <span>{t("Shop this matcha")}</span>
                     <span aria-hidden="true">→</span>
                   </button>
                 </div>
@@ -166,21 +179,27 @@ export function OriginPreview({
         </div>
       ) : (
         <div className={styles.empty}>
-          <h3>Product origin</h3>
-          <p>Origin details are not yet available for this matcha.</p>
+          <h3>{t("Product origin")}</h3>
+          <p>{t("Origin details are not yet available for this matcha.")}</p>
           <div className={styles.actions}>
             <button
               type="button"
               disabled={busy}
               onClick={() =>
-                openOrigins({ tone, returnLabel: `Return to ${preview.name}` })
+                openOrigins({
+                  tone,
+                  returnProduct: {
+                    title: product.title,
+                    handle: product.handle,
+                  },
+                })
               }
             >
-              <span>Browse origins</span>
+              <span>{t("Browse origins")}</span>
               <span aria-hidden="true">↗</span>
             </button>
             <button type="button" disabled={busy} onClick={onShop}>
-              <span>Shop this matcha</span>
+              <span>{t("Shop this matcha")}</span>
               <span aria-hidden="true">→</span>
             </button>
           </div>

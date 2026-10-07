@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import type { RefObject } from "react";
 import { ScrambleText } from "./scramble-text";
 import { usePeriodicGlitch } from "./use-periodic-glitch";
@@ -20,6 +22,7 @@ type HeroStudyIntroductionProps = {
 };
 
 const attributes = ["Flavour.", "Texture.", "Performance."];
+const heroGlitchPlayback = { durationMs: 800, mobileDurationMs: 1200 };
 
 export function HeroStudyIntroduction({
   direction,
@@ -27,8 +30,10 @@ export function HeroStudyIntroduction({
   onExplore,
   exploreRef,
 }: HeroStudyIntroductionProps) {
+  const { t } = useStorefrontLocale();
   const heroGlitchCycle = usePeriodicGlitch(
     direction === "specimen" && !exploring,
+    { intervalMs: 4200, mobileIntervalMs: 7000 },
   );
   if (
     direction !== "specimen" &&
@@ -52,7 +57,7 @@ export function HeroStudyIntroduction({
     >
       <p className={styles.eyebrow}>
         <span aria-hidden="true" />
-        MATCHA
+        {t("MATCHA")}
       </p>
 
       <div className={styles.statement}>
@@ -61,16 +66,18 @@ export function HeroStudyIntroduction({
             <>
               <span>
                 <ScrambleText
-                  text="A closer look"
+                  text={t("A closer look")}
                   key={heroGlitchCycle}
+                  {...heroGlitchPlayback}
                   visibleOnly
                   paused={exploring}
                 />
               </span>{" "}
               <span>
                 <ScrambleText
-                  text="at matcha."
+                  text={t("at matcha.")}
                   key={heroGlitchCycle}
+                  {...heroGlitchPlayback}
                   visibleOnly
                   paused={exploring}
                 />
@@ -78,7 +85,8 @@ export function HeroStudyIntroduction({
             </>
           ) : (
             <>
-              <span>A closer</span> <span>look at</span> <span>matcha.</span>
+              <span>{t("A closer")}</span> <span>{t("look at")}</span>{" "}
+              <span>{t("matcha.")}</span>
             </>
           )}
         </h1>
@@ -88,21 +96,23 @@ export function HeroStudyIntroduction({
             <span key={attribute}>
               {direction === "specimen" ? (
                 <ScrambleText
-                  text={attribute}
+                  text={t(attribute)}
                   key={heroGlitchCycle}
+                  {...heroGlitchPlayback}
                   visibleOnly
                   paused={exploring}
                 />
               ) : (
-                attribute
+                t(attribute)
               )}
             </span>
           ))}
         </p>
         <p className={styles.application}>
           <ScrambleText
-            text="Matcha selected for a specific application."
+            text={t("Matcha selected for a specific application.")}
             key={heroGlitchCycle}
+            {...(direction === "specimen" ? heroGlitchPlayback : {})}
             periodic={direction !== "specimen"}
             visibleOnly={direction === "specimen"}
             paused={exploring}
@@ -120,7 +130,7 @@ export function HeroStudyIntroduction({
         onClick={onExplore}
       >
         <ScrambleText
-          text="EXPLORE MATCHA"
+          text={t("EXPLORE MATCHA")}
           interactive
           animateOnMount={false}
           paused={exploring}

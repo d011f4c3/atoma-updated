@@ -399,6 +399,45 @@ async function assertPreview(page, layout, name) {
   return preview;
 }
 
+async function assertDesignationPreview(page, layout, name) {
+  const preview = page.locator(`[data-origin-preview="${layout}"]`);
+  await preview.waitFor();
+  assert.equal(
+    await preview.locator("[data-homepage-product-name]").textContent(),
+    `${name} Matcha`,
+  );
+  const designation = preview.locator('[data-origin-designation="uji-tea"]');
+  await designation.waitFor();
+  assert.equal(
+    await designation
+      .getByRole("heading", { name: "Uji City", exact: true })
+      .isVisible(),
+    true,
+  );
+  assert.match(await designation.textContent(), /tea designation/i);
+  assert.doesNotMatch(await designation.textContent(), /Grown in|Processed in/);
+  assert.equal(
+    await preview.locator("[data-origin-place]").count(),
+    0,
+    "The contextual place path does not create a product growing-place record",
+  );
+  const photograph = preview.locator("figure img");
+  assert.equal(await photograph.count(), 1);
+  assert.match(await preview.locator("figcaption").textContent(), /Kyoto/);
+  assert.deepEqual(
+    await designation
+      .getByRole("list", {
+        name: "Geographic hierarchy",
+        exact: true,
+      })
+      .locator("li")
+      .allTextContents(),
+    ["CountryJapan", "RegionKyoto", "LocalityUji City"],
+  );
+  await assertNoOverflow(page);
+  return preview;
+}
+
 const cases = [1366, 320].map((width) => [
   `origins study ${width}: inline evidence, layouts and order continuity`,
   async (browser) => {
@@ -438,11 +477,11 @@ const cases = [1366, 320].map((width) => [
         "tabs",
       );
       await assertStorefront(page);
-      await assertPreview(page, "panorama", "Culinary");
-      for (const name of ["Ceremonial", "Barista"]) {
-        await selectProduct(page, name);
-        await assertPreview(page, "panorama", name);
-      }
+      await assertDesignationPreview(page, "panorama", "Culinary");
+      await selectProduct(page, "Barista");
+      await assertDesignationPreview(page, "panorama", "Barista");
+      await selectProduct(page, "Ceremonial");
+      await assertPreview(page, "panorama", "Ceremonial");
       await page
         .locator('[data-origin-preview="panorama"]')
         .getByRole("button", { name: "Shop this matcha", exact: true })
@@ -453,7 +492,7 @@ const cases = [1366, 320].map((width) => [
         .click();
       const quantity = page.getByLabel("Quantity", { exact: true });
       assert.equal(Number(await quantity.textContent()), 2);
-      await selectView(page, "Origins");
+      await selectView(page, "Origin");
       const reads = state.catalogReads;
       await page.locator("[data-renderer]").waitFor({ state: "attached" });
       await page.evaluate(() => {
@@ -475,7 +514,7 @@ const cases = [1366, 320].map((width) => [
           assert.equal(new URL(page.url()).pathname, "/origins-study");
           assert.equal(await experience.getAttribute("data-mode"), "origins");
           assert.equal(await layout.inputValue(), style);
-          await assertPreview(page, style, "Barista");
+          await assertPreview(page, style, "Ceremonial");
           await capture(page, `${width}-${style}-${tone}`);
           await selectView(page, "Shop");
           assert.equal(
@@ -483,7 +522,7 @@ const cases = [1366, 320].map((width) => [
             2,
             "Layout, view and theme changes must preserve the order quantity",
           );
-          await selectView(page, "Origins");
+          await selectView(page, "Origin");
         }
       }
       assert.equal(state.catalogReads, reads);
@@ -517,7 +556,10 @@ const cases = [1366, 320].map((width) => [
       await assertGrowerPlaceholder(dialog);
       assert.match(new URL(page.url()).hash, /origins/);
       await dialog
-        .getByRole("button", { name: "Return to Barista Matcha", exact: true })
+        .getByRole("button", {
+          name: "Return to Ceremonial Matcha",
+          exact: true,
+        })
         .click();
       await dialog.waitFor({ state: "hidden" });
       await eventually(
@@ -528,12 +570,12 @@ const cases = [1366, 320].map((width) => [
         await trigger.evaluate((element) => element === document.activeElement),
         true,
       );
-      await assertPreview(page, "record", "Barista");
+      await assertPreview(page, "record", "Ceremonial");
       await selectView(page, "Shop");
       assert.equal(Number(await quantity.textContent()), 2);
       await layout.selectOption("current");
       assert.equal(Number(await quantity.textContent()), 2);
-      await selectView(page, "Origins");
+      await selectView(page, "Origin");
       assert.equal(await page.locator("[data-origin-preview]").count(), 0);
       assert.match(
         await page
@@ -541,6 +583,21 @@ const cases = [1366, 320].map((width) => [
           .textContent(),
         /Wazuka/,
       );
+      for (const name of ["Culinary", "Barista"]) {
+        await selectProduct(page, name);
+        for (const style of layouts) {
+          await layout.selectOption(style);
+          await assertDesignationPreview(page, style, name);
+        }
+        await layout.selectOption("current");
+        const current = page.locator('[data-homepage-view-panel="origins"]');
+        assert.match(await current.textContent(), /UJI/);
+        assert.match(await current.textContent(), /Tea designation/);
+        assert.doesNotMatch(
+          await current.textContent(),
+          /Grown in|Processed in|Wazuka/,
+        );
+      }
       assert.deepEqual(state.writes, []);
       assert.deepEqual(state.errors, []);
     } catch (error) {
@@ -577,13 +634,15 @@ cases.push([
           /Origin details are not yet available for this matcha/,
         );
         assert.equal(
-          await preview.locator("[data-origin-place], img").count(),
+          await preview
+            .locator("[data-origin-place], [data-origin-designation], img")
+            .count(),
           0,
           "A familiar product title cannot invent an origin or attach a regional photograph",
         );
         assert.doesNotMatch(
           await preview.textContent(),
-          /Wazuka|Kyoto|Grown in/,
+          /Wazuka|Kyoto|Grown in|UJI|Tea designation/,
         );
         assert.equal(
           await preview
@@ -611,7 +670,7 @@ cases.push([
         await experience.getAttribute("data-section-selector-variant"),
         "tabs",
       );
-      await selectView(page, "Origins");
+      await selectView(page, "Origin");
       await page.locator('[data-origin-preview="split"]').waitFor();
       assert.deepEqual(state.writes, []);
       assert.deepEqual(state.errors, []);
@@ -658,7 +717,7 @@ cases.push([
             .count(),
           0,
         );
-        await selectProduct(page, "Barista");
+        await selectProduct(page, "Ceremonial");
         await selectView(page, "Shop");
         await page
           .getByRole("button", { name: "Increase quantity", exact: true })
@@ -669,14 +728,14 @@ cases.push([
           window.__adoptedOriginsScene =
             document.querySelector("[data-renderer]");
         });
-        await selectView(page, "Origins");
-        await assertPreview(page, "panorama", "Barista");
+        await selectView(page, "Origin");
+        await assertPreview(page, "panorama", "Ceremonial");
         await capture(page, `adopted-${width}-${tone}`);
         const otherTone = tone === "dark" ? "light" : "dark";
         await setStorefrontTone(page, otherTone);
         assert.equal(new URL(page.url()).pathname, "/");
         assert.equal(await experience.getAttribute("data-mode"), "origins");
-        const preview = await assertPreview(page, "panorama", "Barista");
+        const preview = await assertPreview(page, "panorama", "Ceremonial");
         const trigger = preview.getByRole("button", {
           name: "About Wazuka",
           exact: true,
@@ -703,7 +762,7 @@ cases.push([
         await assertGrowerPlaceholder(dialog);
         await dialog
           .getByRole("button", {
-            name: "Return to Barista Matcha",
+            name: "Return to Ceremonial Matcha",
             exact: true,
           })
           .click();
@@ -725,7 +784,7 @@ cases.push([
           "left",
           "Returning from Origins must preserve the homepage placement",
         );
-        await assertPreview(page, "panorama", "Barista");
+        await assertPreview(page, "panorama", "Ceremonial");
         assert.equal(
           await page.evaluate(
             () =>

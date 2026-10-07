@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import { useId, useRef, useState } from "react";
 import { ScrambleText } from "./scramble-text";
 import styles from "./sheet-information.module.css";
@@ -9,6 +11,7 @@ export function SheetInformation({
 }: {
   tone?: "dark" | "light";
 }) {
+  const { t } = useStorefrontLocale();
   const id = useId();
   const dialogId = `${id}-information`;
   const headingId = `${id}-title`;
@@ -37,7 +40,7 @@ export function SheetInformation({
         aria-expanded={open}
         onClick={openInformation}
       >
-        <ScrambleText text="ABOUT ATOMA" interactive />
+        <ScrambleText text={t("ABOUT ATOMA")} interactive />
         <span className={styles.plus} aria-hidden="true" />
       </button>
 
@@ -73,22 +76,25 @@ export function SheetInformation({
       >
         <div className={styles.sheet}>
           <div className={styles.sheetHeader}>
-            <span>ABOUT ATOMA</span>
+            <span>{t("ABOUT ATOMA")}</span>
             <span className={styles.registration} aria-hidden="true" />
           </div>
           <div className={styles.body}>
             <h2 id={headingId}>
-              A closer look
+              {t("A closer look")}
               <br />
-              at matcha.
+              {t("at matcha.")}
             </h2>
             <div className={styles.copy}>
               <p>
-                An interface for understanding, selecting, and buying matcha.
+                {t(
+                  "An interface for understanding, selecting, and buying matcha.",
+                )}
               </p>
               <p>
-                From the product to its origin, the focus is on what makes each
-                matcha distinct.
+                {t(
+                  "From the product to its origin, the focus is on what makes each matcha distinct.",
+                )}
               </p>
             </div>
           </div>
@@ -99,7 +105,7 @@ export function SheetInformation({
               className={styles.close}
               onClick={() => dialogRef.current?.close()}
             >
-              <ScrambleText text="CLOSE" interactive />
+              <ScrambleText text={t("CLOSE")} interactive />
               <span aria-hidden="true">×</span>
             </button>
           </div>

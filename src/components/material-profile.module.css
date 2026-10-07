@@ -4,7 +4,9 @@
   min-width: 0;
   color: var(--ink, #252621);
   font-family: var(--font-atoma-mono), monospace;
-  font-size: var(--material-font-size, 0.875rem);
+  font-size: calc(
+    var(--material-font-size, 0.875rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   font-variant-numeric: tabular-nums;
   line-height: 1.7;
@@ -28,7 +30,9 @@
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--line, rgb(37 38 33 / 20%));
   color: var(--muted, #64645d);
-  font-size: var(--material-label-size, 0.625rem);
+  font-size: calc(
+    var(--material-label-size, 0.625rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.6;
   letter-spacing: 0.05em;
 }
@@ -84,7 +88,9 @@
 
 .label {
   color: var(--muted, #64645d);
-  font-size: var(--material-label-size, 0.625rem);
+  font-size: calc(
+    var(--material-label-size, 0.625rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.5;
   letter-spacing: 0.055em;
   text-transform: uppercase;
@@ -92,7 +98,9 @@
 
 .value {
   max-width: 100%;
-  font-size: var(--material-font-size, 0.875rem);
+  font-size: calc(
+    var(--material-font-size, 0.875rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.6;
   letter-spacing: 0;
   overflow-wrap: anywhere;
@@ -114,7 +122,9 @@
   margin: 0;
   padding: 1.5rem 0 0;
   color: var(--material-reading-color, var(--muted, #64645d));
-  font-size: var(--material-font-size, 0.875rem);
+  font-size: calc(
+    var(--material-font-size, 0.875rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.85;
   text-wrap: pretty;
 }
@@ -122,7 +132,9 @@
 .explanationLabel {
   padding-top: 0.2rem;
   color: var(--ink, #252621);
-  font-size: var(--material-label-size, 0.6875rem);
+  font-size: calc(
+    var(--material-label-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.6;
   letter-spacing: 0.025em;
 }
@@ -162,6 +174,9 @@
 
 :global([data-embedded="true"]) :is(.value, .explanation) {
   text-transform: uppercase;
+}
+.explanation > span:not(.explanationLabel) {
+  text-transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

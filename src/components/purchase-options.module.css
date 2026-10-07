@@ -9,7 +9,7 @@
   margin: 0 0 0.625rem;
   padding: 0;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -33,7 +33,7 @@
   border-radius: var(--radius-button);
   color: var(--ink);
   font-family: var(--font-atoma-mono), monospace;
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -63,12 +63,12 @@
 .choice small {
   display: block;
   margin-top: 0.125rem;
-  font-size: 0.5625rem;
+  font-size: calc(0.5625rem + var(--locale-font-increment, 0px));
 }
 
 .mark {
   flex: none;
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 
 :global([data-tone="dark"]) .choice {

@@ -1,0 +1,41 @@
+.preview {
+  display: grid;
+  gap: 1rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.button {
+  min-height: 2.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-line, var(--line));
+  border-radius: var(--radius-button, 6px);
+  background: var(--color-hover, transparent);
+  color: inherit;
+  font: inherit;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.status {
+  max-width: 65ch;
+  margin: 0;
+  color: inherit;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  text-transform: none;
+}

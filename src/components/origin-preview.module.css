@@ -2,7 +2,9 @@
   min-width: 0;
   color: var(--ink, var(--night-ink));
   font-family: var(--font-atoma-mono), monospace;
-  font-size: var(--tab-body-size, 0.6875rem);
+  font-size: calc(
+    var(--tab-body-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   line-height: 1.55;
   container-type: inline-size;
@@ -20,7 +22,9 @@
 }
 .product h2 {
   margin: 0;
-  font-size: var(--tab-heading-size, 0.875rem);
+  font-size: calc(
+    var(--tab-heading-size, 0.875rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   line-height: var(--tab-heading-leading, 1.4);
   letter-spacing: var(--tab-heading-tracking, -0.025em);
@@ -30,7 +34,9 @@
 }
 .product > span {
   color: var(--muted);
-  font-size: var(--tab-label-size, 0.625rem);
+  font-size: calc(
+    var(--tab-label-size, 0.625rem) + var(--locale-font-increment, 0px)
+  );
 }
 .places {
   display: grid;
@@ -68,7 +74,9 @@
   display: block;
   margin-top: 0.375rem;
   color: var(--muted);
-  font-size: var(--tab-label-size, 0.625rem);
+  font-size: calc(
+    var(--tab-label-size, 0.625rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.5;
 }
 .caption > span:first-child {
@@ -78,7 +86,9 @@
 .observation {
   display: block;
   margin-top: 0.1875rem;
-  font-size: var(--tab-body-size, 0.6875rem);
+  font-size: calc(
+    var(--tab-body-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
 }
 .facts {
   min-width: 0;
@@ -92,12 +102,16 @@
 .label {
   margin: 0 0 0.0625rem;
   color: var(--muted);
-  font-size: var(--tab-label-size, 0.625rem);
+  font-size: calc(
+    var(--tab-label-size, 0.625rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.4;
 }
 .location h3 {
   margin: 0;
-  font-size: var(--tab-heading-size, 1rem);
+  font-size: calc(
+    var(--tab-heading-size, 1rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   line-height: 1.35;
   letter-spacing: -0.025em;
@@ -106,7 +120,7 @@
   max-width: 60%;
   margin: 0 0 0.125rem;
   color: var(--muted);
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
 }
 .hierarchy {
   display: grid;
@@ -125,7 +139,9 @@
 }
 .kind {
   color: var(--muted);
-  font-size: var(--tab-label-size, 0.625rem);
+  font-size: calc(
+    var(--tab-label-size, 0.625rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.4;
 }
 .placeName {
@@ -133,7 +149,9 @@
 }
 .context {
   margin: 0.75rem 0;
-  font-size: var(--tab-body-size, 0.6875rem);
+  font-size: calc(
+    var(--tab-body-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.6;
 }
 .regionLink {
@@ -142,7 +160,9 @@
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: var(--tab-label-size, 0.625rem);
+  font-size: calc(
+    var(--tab-label-size, 0.625rem) + var(--locale-font-increment, 0px)
+  );
   text-decoration: underline;
   text-underline-offset: 0.2em;
   cursor: pointer;
@@ -174,7 +194,9 @@
   background: transparent;
   color: inherit;
   font: inherit;
-  font-size: var(--tab-body-size, 0.6875rem);
+  font-size: calc(
+    var(--tab-body-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.4;
   text-align: left;
   cursor: pointer;
@@ -206,6 +228,11 @@
 .regionLink {
   text-transform: uppercase;
   letter-spacing: 0.025em;
+}
+.context,
+.observation,
+.empty > p {
+  text-transform: none;
 }
 .root[data-origin-preview="split"] .visual {
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
@@ -275,12 +302,12 @@
   order: 1;
 }
 .root[data-origin-preview="index"] .placeName {
-  font-size: 0.875rem;
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
   line-height: 1.4;
   letter-spacing: -0.025em;
 }
 .root[data-origin-preview="index"] .hierarchy li:last-child .placeName {
-  font-size: 1rem;
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
 }
 .place[data-has-photo="false"] .visual {
   grid-template-columns: minmax(0, 1fr);
@@ -291,7 +318,9 @@
 }
 .empty h3 {
   margin: 0;
-  font-size: var(--tab-heading-size, 0.8125rem);
+  font-size: calc(
+    var(--tab-heading-size, 0.8125rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
 }
 .empty > p {
@@ -367,7 +396,10 @@
 .root:is([data-origin-preview="panorama"], [data-origin-preview="record"])
   .location
   h3 {
-  font-size: var(--tab-place-heading-size, clamp(1.5rem, 4.8cqi, 1.875rem));
+  font-size: calc(
+    var(--tab-place-heading-size, clamp(1.5rem, 4.8cqi, 1.875rem)) +
+      var(--locale-font-increment, 0px)
+  );
   letter-spacing: -0.045em;
   line-height: 1.15;
 }
@@ -512,14 +544,18 @@
   .root:is([data-origin-preview="panorama"], [data-origin-preview="record"])
     .location
     h3 {
-    font-size: var(--tab-place-heading-size, 1.5rem);
+    font-size: calc(
+      var(--tab-place-heading-size, 1.5rem) + var(--locale-font-increment, 0px)
+    );
   }
   .root[data-origin-preview="panorama"] .visual {
     gap: 0.5rem;
   }
   .root:is([data-origin-preview="panorama"], [data-origin-preview="record"])
     .context {
-    font-size: var(--tab-body-size, 0.625rem);
+    font-size: calc(
+      var(--tab-body-size, 0.625rem) + var(--locale-font-increment, 0px)
+    );
     line-height: 1.65;
   }
   .root:is([data-origin-preview="panorama"], [data-origin-preview="record"])

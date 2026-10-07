@@ -93,61 +93,48 @@ function graph() {
 const ids = (records) => records.map((record) => record.id);
 const handles = (records) => records.map((record) => record.handle);
 
-test("owner-confirmed launch origins connect exactly three matcha to Wazuka and roll up to Kyoto and Japan", () => {
+test("current feedback keeps only Ceremonial grown in Wazuka and separates Uji City", () => {
   assert.deepEqual(validateOriginsGraph(ORIGINS_GRAPH), []);
-  assert.deepEqual(ids(ORIGINS_GRAPH.places), ["japan", "kyoto", "wazuka"]);
   assert.deepEqual(ids(getPlacePath("wazuka")), ["japan", "kyoto", "wazuka"]);
-  assert.equal(
-    ORIGINS_GRAPH.places.find((place) => place.id === "wazuka").kind,
-    "locality",
-  );
-  assert.deepEqual(
-    ORIGINS_GRAPH.provenance.map((link) => ({
-      subject: link.subject,
-      role: link.role,
-      placeId: link.placeId,
-      publication: link.publication,
-    })),
-    ["sample-culinary", "sample-barista", "sample-tea-service"].map((id) => ({
-      subject: { kind: "material", id },
-      role: "grown",
-      placeId: "wazuka",
-      publication: "published",
-    })),
-  );
-  for (const link of ORIGINS_GRAPH.provenance) {
-    assert.match(link.evidence, /Owner confirmation, 2026-10-01/);
-    assert.match(link.evidence, /Wazuka, Kyoto/);
-  }
+  assert.deepEqual(ids(getPlacePath("uji-city")), [
+    "japan",
+    "kyoto",
+    "uji-city",
+  ]);
+  assert.deepEqual(ids(getPlaceDescendants("kyoto")), ["wazuka", "uji-city"]);
+  assert.deepEqual(getPlaceDescendants("uji-city"), []);
   assert.deepEqual(ORIGINS_GRAPH.lots, []);
-  assert.deepEqual(
-    ORIGINS_GRAPH.products.map((link) => link.productHandle),
-    [
-      "jmm-storefront-test-matcha",
-      "test-only-japanese-barista-matcha-powder-for-lattes-1-kg",
-      "test-only-japanese-premium-matcha-powder-for-tea-service-1-kg",
-    ],
-  );
   const catalog = ORIGINS_GRAPH.products.map((link) =>
     product(link.productHandle),
   );
-  assert.deepEqual(getMatchasForPlace("japan", catalog), catalog);
-  assert.deepEqual(getMatchasForPlace("kyoto", catalog), catalog);
-  assert.deepEqual(getMatchasForPlace("wazuka", catalog), catalog);
-  assert.deepEqual(ids(getPlaceDescendants("kyoto")), ["wazuka"]);
-  assert.deepEqual(getPlaceDescendants("wazuka"), []);
-  assert.deepEqual(getPlacesForMatcha("another-kyoto-matcha"), []);
-  for (const item of catalog) {
+  const ceremonial = catalog[2];
+  for (const placeId of ["wazuka", "kyoto", "japan"])
+    assert.deepEqual(getMatchasForPlace(placeId, catalog), [ceremonial]);
+  assert.deepEqual(getMatchasForPlace("uji-city", catalog), []);
+  assert.deepEqual(getMatchasForPlace("uji-tea", catalog), []);
+  assert.deepEqual(getPlacePath("uji-tea"), []);
+  assert.deepEqual(
+    ORIGINS_GRAPH.provenance.map(({ subject, role, placeId }) => ({
+      subject,
+      role,
+      placeId,
+    })),
+    [
+      {
+        subject: { kind: "material", id: "sample-tea-service" },
+        role: "grown",
+        placeId: "wazuka",
+      },
+    ],
+  );
+  assert.match(ORIGINS_GRAPH.provenance[0].evidence, /2026-10-06/);
+  for (const item of catalog.slice(0, 2)) {
     assert.equal(getMatchaTypesForProduct(item.handle).length, 1);
-    assert.deepEqual(ids(getPlacesForMatcha(item.handle)), ["wazuka"]);
-    assert.deepEqual(
-      getProductPlaceRecords(item.handle).map((record) => [
-        record.role,
-        record.place.id,
-      ]),
-      [["grown", "wazuka"]],
-    );
+    assert.deepEqual(getPlacesForMatcha(item.handle), []);
+    assert.deepEqual(getProductPlaceRecords(item.handle), []);
   }
+  assert.deepEqual(ids(getPlacesForMatcha(ceremonial.handle)), ["wazuka"]);
+  assert.deepEqual(getPlacesForMatcha("another-kyoto-matcha"), []);
 });
 
 test("published paths and descendants follow the hierarchy and exclude the input itself", () => {

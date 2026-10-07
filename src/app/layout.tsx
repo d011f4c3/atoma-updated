@@ -6,6 +6,9 @@ import { CartProvider } from "@/components/cart-drawer";
 import { OriginsProvider } from "@/components/origins-provider";
 import { SmoothScrollProvider } from "@/components/smooth-scroll";
 import { StorefrontThemeProvider } from "@/components/storefront-theme-provider";
+import { StorefrontLocaleProvider } from "@/components/storefront-locale-provider";
+import { readStorefrontLocale } from "@/lib/i18n/server";
+import { localizedMetadata } from "@/lib/i18n/metadata";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 import "./storefront-themes.css";
@@ -63,18 +66,18 @@ const antroVectra = localFont({
   adjustFontFallback: false,
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://atoma-updated.vercel.app"),
-  title: "ATOMA — Matcha",
-  description:
-    "Matcha, clearly defined. A selection organised by profile, format and application, with precise specifications to guide your choice.",
-  openGraph: {
-    type: "website",
-    siteName: "ATOMA",
-  },
-  twitter: { card: "summary_large_image" },
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    metadataBase: new URL("https://atoma-updated.vercel.app"),
+    ...localizedMetadata("home", await readStorefrontLocale()),
+    openGraph: {
+      type: "website",
+      siteName: "ATOMA",
+    },
+    twitter: { card: "summary_large_image" },
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -83,19 +86,22 @@ export default async function RootLayout({
 }) {
   const preference = (await cookies()).get("atoma-theme")?.value;
   const initialTone = preference === "dark" ? "dark" : "light";
+  const initialLocale = await readStorefrontLocale();
   return (
     <html
-      lang="en"
+      lang={initialLocale}
       className={`${fraktionSans.variable} ${fraktionMono.variable} ${atomaMono.variable} ${antroVectra.variable}`}
     >
       <body>
-        <SmoothScrollProvider>
-          <StorefrontThemeProvider initialTone={initialTone}>
-            <CartProvider>
-              <OriginsProvider>{children}</OriginsProvider>
-            </CartProvider>
-          </StorefrontThemeProvider>
-        </SmoothScrollProvider>
+        <StorefrontLocaleProvider initialLocale={initialLocale}>
+          <SmoothScrollProvider>
+            <StorefrontThemeProvider initialTone={initialTone}>
+              <CartProvider>
+                <OriginsProvider>{children}</OriginsProvider>
+              </CartProvider>
+            </StorefrontThemeProvider>
+          </SmoothScrollProvider>
+        </StorefrontLocaleProvider>
       </body>
     </html>
   );

@@ -1,4 +1,6 @@
-import { productName } from "./product-name";
+import { getProductKey, type ProductKey } from "./product-codes.ts";
+import { productName } from "./product-name.ts";
+import { translate, type Locale } from "./i18n/index.ts";
 
 export type ProductContent = {
   name: string;
@@ -29,6 +31,13 @@ type ProductIdentity = {
 };
 
 type ApplicationContent = Omit<ProductContent, "name">;
+type ApplicationKey = "cafés & baking" | "lattes" | "tea service";
+
+const productApplications: Record<ProductKey, ApplicationKey> = {
+  culinary: "cafés & baking",
+  barista: "lattes",
+  ceremonial: "tea service",
+};
 
 /**
  * Editable sample editorial content, authorized by the owner on 2026-09-29.
@@ -39,7 +48,7 @@ type ApplicationContent = Omit<ProductContent, "name">;
  * Origin, people, certificates and processing claims need their own evidence;
  * none is created by the visual prototype or inferred from a grade name.
  */
-const applicationContent: Record<string, ApplicationContent> = {
+const applicationContent: Record<ApplicationKey, ApplicationContent> = {
   "cafés & baking": {
     application: "Cafés & Baking",
     purpose: "Part of the recipe.",
@@ -360,21 +369,67 @@ function publishedApplication(title: string): string | null {
   return match?.[1]?.trim() || null;
 }
 
-/** Resolve the literal application before the display title is shortened. */
-export function getProductContent(
+/** Known products keep their content when upstream catalog titles change. */
+function getEnglishProductContent(
   product: ProductIdentity | undefined,
 ): ProductContent {
+  const productKey = product ? getProductKey(product.handle) : undefined;
+  if (product && productKey) {
+    return {
+      ...applicationContent[productApplications[productKey]],
+      name: productName(product.title, product.handle),
+    };
+  }
+
+  // Historical study and bag-label fixtures still supply a literal application.
   const application = product ? publishedApplication(product.title) : null;
   const key = application?.normalize("NFKC").toLocaleLowerCase("en");
-  const content = key ? applicationContent[key] : undefined;
+  const content =
+    key && Object.hasOwn(applicationContent, key)
+      ? applicationContent[key as ApplicationKey]
+      : undefined;
 
   return {
     ...(content ?? generalContent),
-    name: product ? productName(product.title) : "Your matcha",
+    name: product ? productName(product.title, product.handle) : "Your matcha",
     // Unknown literal applications stay intact and receive neutral guidance.
     // A grade alone never creates an intended use or product-performance claim.
     ...(application && !content
       ? { application, labelUse: application.toUpperCase() }
       : {}),
+  };
+}
+
+/** Translate editorial copy only; assets, section IDs and product identity stay stable. */
+export function getProductContent(
+  product: ProductIdentity | undefined,
+  locale: Locale = "en",
+): ProductContent {
+  const content = getEnglishProductContent(product);
+  if (locale === "en") return content;
+  const t = (source: string) => translate(locale, source);
+  return {
+    ...content,
+    name: t(content.name),
+    application: t(content.application),
+    purpose: t(content.purpose),
+    summary: t(content.summary),
+    lookFor: content.lookFor.map(t),
+    preparation: t(content.preparation),
+    selectionNote: t(content.selectionNote),
+    originNote: content.originNote ? t(content.originNote) : null,
+    sections: content.sections.map((section) => ({
+      ...section,
+      title: t(section.title),
+      body: t(section.body),
+    })),
+    labelUse: t(content.labelUse),
+    materialProfile: content.materialProfile.map((property) => ({
+      label: t(property.label),
+      value: t(property.value),
+      explanation: t(property.explanation),
+    })),
+    materialSummary: t(content.materialSummary),
+    materialImageAlt: t(content.materialImageAlt),
   };
 }

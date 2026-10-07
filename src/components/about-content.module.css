@@ -13,7 +13,9 @@
 }
 .heading {
   margin: 0;
-  font-size: clamp(1.625rem, 3vw, 2.25rem);
+  font-size: calc(
+    clamp(1.625rem, 3vw, 2.25rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   line-height: 1.25;
   letter-spacing: -0.04em;
@@ -22,7 +24,7 @@
   max-width: 36ch;
   margin: 0 0 0.125rem;
   color: var(--ink);
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   line-height: 1.85;
   letter-spacing: 0.015em;
   text-wrap: pretty;
@@ -50,14 +52,14 @@
 }
 .number {
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .entryHeading h3 {
   margin: 0;
   color: var(--ink);
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
   font-weight: 400;
   letter-spacing: 0.06em;
@@ -65,10 +67,14 @@
 .entry p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   line-height: 1.8;
   letter-spacing: 0.01em;
   text-wrap: pretty;
+}
+.lead,
+.entry p {
+  text-transform: none;
 }
 @media (max-width: 600px) {
   .introduction {

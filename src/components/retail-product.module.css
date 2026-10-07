@@ -16,7 +16,7 @@
   color: var(--ink);
   color-scheme: dark;
   font-family: var(--font-atoma-mono), monospace;
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   font-variant-numeric: tabular-nums;
   line-height: 1.7;
@@ -48,7 +48,7 @@
   min-height: 3.5rem;
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 .breadcrumb a {
   display: inline-flex;
@@ -108,7 +108,7 @@
   gap: 1rem;
   padding: 1rem 0;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 .productBody {
   min-width: 0;
@@ -120,13 +120,15 @@
 .sectionLabel {
   margin: 0 0 0.75rem;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 .identity h1 {
   margin: 0;
-  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+  font-size: calc(
+    clamp(1.5rem, 2.4vw, 2.25rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   letter-spacing: -0.045em;
   line-height: 1.2;
@@ -137,7 +139,7 @@
   gap: 0.375rem;
   margin: 0.625rem 0 0;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 .availability > span {
   width: 4px;
@@ -151,16 +153,16 @@
 }
 .purpose {
   margin: 0.875rem 0 0;
-  font-size: 0.8125rem;
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
 }
 .unitPrice {
   margin: 0.875rem 0 1.25rem;
-  font-size: 1.125rem;
+  font-size: calc(1.125rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
 }
 .unitPrice span {
   color: var(--muted);
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
 }
 .materialSummary {
   max-width: 45em;
@@ -177,7 +179,7 @@
   margin-bottom: 0.625rem;
   padding: 0;
   color: var(--muted);
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
 }
 .formats > div {
   display: flex;
@@ -206,11 +208,11 @@
   flex-direction: column;
   gap: 0.125rem;
   padding: 0.5rem 1rem;
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
 }
 .formats button small {
   color: var(--muted);
-  font-size: 0.5625rem;
+  font-size: calc(0.5625rem + var(--locale-font-increment, 0px));
 }
 .formats button[aria-pressed="true"] {
   border-color: var(--ink);
@@ -238,7 +240,7 @@
   display: block;
   margin-bottom: 0.5rem;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 .stepper {
   display: flex;
@@ -248,12 +250,12 @@
 .stepper button {
   width: 2.75rem;
   padding: 0;
-  font-size: 1rem;
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
 }
 .stepper output {
   min-width: 3rem;
   text-align: center;
-  font-size: 0.875rem;
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
 }
 .total {
   text-align: right;
@@ -261,14 +263,14 @@
 .total strong {
   display: block;
   min-height: 2.75rem;
-  font-size: 1.25rem;
+  font-size: calc(1.25rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   line-height: 2.2;
 }
 .quantityNote {
   margin: 0.5rem 0;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 .purchaseOptions {
   margin: 1.125rem 0;
@@ -282,7 +284,7 @@
   justify-content: space-between;
   gap: 0.75rem;
   list-style: none;
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   cursor: pointer;
 }
 .purchaseOptions > summary::-webkit-details-marker {
@@ -300,7 +302,7 @@
 }
 .overview h2 {
   margin: 0 0 1rem;
-  font-size: 1.125rem;
+  font-size: calc(1.125rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   letter-spacing: -0.025em;
 }
@@ -321,13 +323,13 @@
 }
 .related h2 {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: calc(1.125rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   letter-spacing: -0.025em;
 }
 .related header > a {
   padding-block: 0.75rem;
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   text-decoration: none;
 }
 .relatedGrid {
@@ -360,7 +362,7 @@
   display: block;
   margin-top: 0.25rem;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 .footer {
   display: flex;
@@ -371,7 +373,7 @@
   padding: 1rem 0;
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 .footer nav {
   display: flex;
@@ -402,7 +404,7 @@
 }
 .state h1 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: calc(1.5rem + var(--locale-font-increment, 0px));
   font-weight: 400;
 }
 .state p {
@@ -444,6 +446,11 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+.purpose,
+.quantityNote,
+.state p {
+  text-transform: none;
+}
 @media (min-width: 761px) and (max-height: 800px) {
   .page {
     --header-height: 4.5rem;
@@ -482,7 +489,7 @@
 @media (max-width: 760px) {
   .page {
     --header-height: 4rem;
-    font-size: 0.75rem;
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   }
   .breadcrumb {
     min-height: 3rem;
@@ -503,10 +510,12 @@
   }
   .gallery figcaption {
     padding: 0.75rem 0;
-    font-size: 0.5625rem;
+    font-size: calc(0.5625rem + var(--locale-font-increment, 0px));
   }
   .identity h1 {
-    font-size: clamp(1.5rem, 6vw, 1.875rem);
+    font-size: calc(
+      clamp(1.5rem, 6vw, 1.875rem) + var(--locale-font-increment, 0px)
+    );
   }
   .purchase {
     padding-bottom: 2rem;
@@ -524,7 +533,7 @@
   }
   .related h2 {
     max-width: 12em;
-    font-size: 1rem;
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
   }
   .relatedGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -537,10 +546,10 @@
   .relatedText {
     align-items: flex-start;
     gap: 0.25rem;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   }
   .relatedText small {
-    font-size: 0.5625rem;
+    font-size: calc(0.5625rem + var(--locale-font-increment, 0px));
   }
 }
 @media (prefers-reduced-motion: reduce) {

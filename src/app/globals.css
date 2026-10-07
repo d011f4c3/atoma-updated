@@ -1,4 +1,5 @@
 :root {
+  --locale-font-increment: 0px;
   color-scheme: dark;
   --paper: #f1efe8;
   --ink: #e5e8df;
@@ -71,7 +72,15 @@
   box-sizing: border-box;
 }
 
+/* Increase only text in Chinese/Japanese. Keep the root rem size unchanged
+   so spacing, image dimensions and the English layout retain their geometry. */
+:root:lang(zh),
+:root:lang(ja) {
+  --locale-font-increment: 1px;
+}
+
 body {
+  font-size: calc(1rem + var(--locale-font-increment));
   margin: 0;
 }
 

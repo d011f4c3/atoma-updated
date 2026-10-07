@@ -1,4 +1,6 @@
 import type { CatalogProduct } from "./catalog-types";
+import { productCodeReferences } from "./product-codes.ts";
+import { translate, type Locale } from "./i18n/index.ts";
 
 export type ProductFact = Readonly<{
   value: string;
@@ -21,6 +23,9 @@ export type ProductFactRecord = Readonly<{
 
 export type ProductFactRecords = Readonly<Record<string, ProductFactRecord>>;
 
+// Presentation placeholders are never published supplier facts or commerce data.
+const provisionalFields = ["ingredients", "storage", "shelfLife"] as const;
+
 const factLabels = {
   productCode: "Product code",
   ingredients: "Ingredients",
@@ -33,9 +38,6 @@ const factLabels = {
   certifications: "Certifications",
   evidence: "Supporting evidence",
 } satisfies Record<keyof ProductFactRecord, string>;
-
-/** No reviewed product-specific factual records are published yet. */
-export const productFactRecords: ProductFactRecords = Object.freeze({});
 
 const emptyRecord: ProductFactRecord = Object.freeze({
   productCode: null,
@@ -50,10 +52,30 @@ const emptyRecord: ProductFactRecord = Object.freeze({
   evidence: null,
 });
 
+/** Publish only the approved code; other product facts still need evidence. */
+export const productFactRecords: ProductFactRecords = Object.freeze(
+  Object.fromEntries(
+    productCodeReferences.flatMap((reference) =>
+      [reference.catalogHandle, ...reference.studyAliases].map((handle) => [
+        handle,
+        Object.freeze({
+          ...emptyRecord,
+          productCode: Object.freeze({
+            value: reference.code,
+            source: reference.source,
+            status: "published" as const,
+          }),
+        }),
+      ]),
+    ),
+  ),
+);
+
 /** Exact product handles only: grade names and sample profiles are not evidence. */
 export function getProductFacts(
   handle: string,
   records: ProductFactRecords = productFactRecords,
+  locale: Locale = "en",
 ) {
   const record = Object.hasOwn(records, handle)
     ? (records[handle] ?? emptyRecord)
@@ -63,7 +85,7 @@ export function getProductFacts(
     label: string;
     value: string;
   }[] = [];
-  const unpublished: string[] = [];
+  const unpublished: (keyof ProductFactRecord)[] = [];
 
   for (const key of Object.keys(factLabels) as (keyof ProductFactRecord)[]) {
     const fact = record[key];
@@ -72,28 +94,31 @@ export function getProductFacts(
       fact.value.trim() &&
       fact.source.trim()
     ) {
-      published.push({ key, label: factLabels[key], value: fact.value.trim() });
+      published.push({
+        key,
+        label: translate(locale, factLabels[key]),
+        value: fact.value.trim(),
+      });
     } else {
-      unpublished.push(factLabels[key].toLocaleLowerCase("en"));
+      unpublished.push(key);
     }
   }
 
-  const last = unpublished.at(-1);
-  const missing =
-    unpublished.length > 1
-      ? `${unpublished.slice(0, -1).join(", ")} and ${last}`
-      : last;
-  const verb =
-    unpublished.length === 1 &&
-    last !== "ingredients" &&
-    last !== "certifications"
-      ? "has"
-      : "have";
-
   return {
     published,
-    unpublishedNote: missing
-      ? `${missing[0]?.toLocaleUpperCase("en")}${missing.slice(1)} ${verb} not yet been published for this matcha.`
+    placeholders: provisionalFields
+      .filter((key) => unpublished.includes(key))
+      .map((key) => ({
+        key,
+        label: translate(locale, factLabels[key]),
+        value: translate(locale, "To be confirmed"),
+        status: "provisional" as const,
+      })),
+    unpublishedNote: unpublished.length
+      ? translate(
+          locale,
+          "Further product details are awaiting supplier confirmation.",
+        )
       : null,
   };
 }

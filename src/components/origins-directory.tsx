@@ -6,20 +6,24 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { CatalogProduct } from "@/lib/catalog-types";
 import {
   FIELD_ENTRIES,
+  getFieldEntryPhotograph,
   getFieldEntriesForPlace,
   type FieldEntry,
 } from "@/lib/origins-content";
 import {
   ORIGINS_GRAPH,
-  getMatchasForPlace,
+  getDirectoryMatchasForPlace,
   getMatchaTypesForProduct,
   getPlaceDescendants,
   getPlacePath,
   getPlacesForMatcha,
+  getTeaDesignations,
+  getProductDesignations,
   type Place,
 } from "@/lib/origins-model";
 import { getProductContent } from "@/lib/product-content";
 import { productName } from "@/lib/product-name";
+import { useStorefrontLocale } from "./storefront-locale-provider";
 import { ShopMaterialImage } from "./shop-material-image";
 import styles from "./origins-directory.module.css";
 
@@ -59,10 +63,6 @@ const INITIAL_BROWSE_STATE: BrowseState = {
   visibleChildCount: PAGE_SIZE,
 };
 
-function countLabel(count: number, singular: string, plural = `${singular}s`) {
-  return `${count} ${count === 1 ? singular : plural}`;
-}
-
 function countryForPlace(place: Place) {
   return getPlacePath(place.id).find((part) => part.kind === "country");
 }
@@ -72,15 +72,15 @@ function searchable(value: string) {
 }
 
 function photographForPlace(place: Place) {
-  return (
+  const entry =
     getFieldEntriesForPlace(place.id)[0] ??
     getPlacePath(place.id)
       .slice(0, -1)
       .reverse()
       .flatMap((ancestor) =>
         FIELD_ENTRIES.filter((entry) => entry.placeIds.includes(ancestor.id)),
-      )[0]
-  );
+      )[0];
+  return entry ? getFieldEntryPhotograph(entry, place.id) : undefined;
 }
 
 export function OriginsDirectory({
@@ -94,6 +94,9 @@ export function OriginsDirectory({
   onRetry,
   onExplore,
 }: OriginsDirectoryProps) {
+  const { locale, t } = useStorefrontLocale();
+  const countLabel = (count: number, singular: string) =>
+    t(count === 1 ? `{count} ${singular}` : `{count} ${singular}s`, { count });
   const id = useId();
   const root = useRef<HTMLElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -122,12 +125,19 @@ export function OriginsDirectory({
     (place) => getPlacePath(place.id).length > 0,
   );
   const place = publishedPlaces.find((item) => item.id === placeId);
+  // A city's editorial context can introduce a tea designation. Its associated
+  // products remain separate from the city's documented growing relationships.
+  const designation = getTeaDesignations().find(
+    (item) => item.contextPlaceId === place?.id,
+  );
   const countries = publishedPlaces
     .filter((item) => item.kind === "country")
     .sort((a, b) => a.name.localeCompare(b.name));
   const search = searchable(query.trim());
   const matchesSearch = (entry: FieldEntry) =>
-    searchable(`${entry.region} ${entry.title} ${entry.dek}`).includes(search);
+    searchable(
+      `${entry.region} ${entry.title} ${entry.dek} ${t(entry.region)} ${t(entry.title)} ${t(entry.dek)}`,
+    ).includes(search);
   const places = publishedPlaces
     .filter(
       (item) => item.kind !== "country" || !getPlaceDescendants(item.id).length,
@@ -144,18 +154,18 @@ export function OriginsDirectory({
         !search ||
         searchable(
           `${getPlacePath(item.id)
-            .map((part) => part.name)
-            .join(" ")} ${item.description}`,
+            .flatMap((part) => [part.name, t(part.name)])
+            .join(" ")} ${item.description} ${t(item.description)}`,
         ).includes(search) ||
         getFieldEntriesForPlace(item.id).some(matchesSearch),
     )
     .sort((a, b) =>
       getPlacePath(a.id)
-        .map((part) => part.name)
+        .map((part) => t(part.name))
         .join(" / ")
         .localeCompare(
           getPlacePath(b.id)
-            .map((part) => part.name)
+            .map((part) => t(part.name))
             .join(" / "),
         ),
     );
@@ -198,7 +208,14 @@ export function OriginsDirectory({
     ? FIELD_ENTRIES.filter((entry) => entry.placeIds.includes(contextPlace.id))
     : placeEntries;
   const featuredEntry = entries[0];
-  const matchas = place ? getMatchasForPlace(place.id, products) : [];
+  const featuredPhotograph = featuredEntry
+    ? getFieldEntryPhotograph(featuredEntry, place?.id)
+    : undefined;
+  const matchas = place ? getDirectoryMatchasForPlace(place.id, products) : [];
+  const matchasForType = (typeId: string) =>
+    place
+      ? getDirectoryMatchasForPlace(place.id, products, ORIGINS_GRAPH, typeId)
+      : [];
   const types = ORIGINS_GRAPH.types.filter(
     (type) =>
       place &&
@@ -207,18 +224,16 @@ export function OriginsDirectory({
           (item) => item.id === type.id,
         ),
       ) &&
-      getMatchasForPlace(place.id, products, ORIGINS_GRAPH, type.id).length > 0,
+      matchasForType(type.id).length > 0,
   );
   const selectedTypeId = types.some((type) => type.id === typeId) ? typeId : "";
   const filteredMatchas =
-    place && selectedTypeId
-      ? getMatchasForPlace(place.id, products, ORIGINS_GRAPH, selectedTypeId)
-      : matchas;
+    place && selectedTypeId ? matchasForType(selectedTypeId) : matchas;
 
   const growerPlaceholder = (
     <div className={styles.growerPlaceholder} data-grower-placeholder>
-      <h3>Grower information</h3>
-      <p>Grower details are not currently shared.</p>
+      <h3>{t("Grower information")}</h3>
+      <p>{t("Grower details are not currently shared.")}</p>
     </div>
   );
 
@@ -313,7 +328,7 @@ export function OriginsDirectory({
 
   function placeRow(item: Place) {
     const photograph = photographForPlace(item);
-    const matchaCount = getMatchasForPlace(item.id, products).length;
+    const matchaCount = getDirectoryMatchasForPlace(item.id, products).length;
     const parentPath = getPlacePath(item.id).slice(0, -1);
     const subplaces = getPlaceDescendants(item.id).filter(
       (child) => child.parentId === item.id,
@@ -333,22 +348,22 @@ export function OriginsDirectory({
         >
           {photograph && <Thumbnail entry={photograph} />}
           <span className={styles.rowBody}>
-            <span className={styles.placeName}>{item.name}</span>
+            <span className={styles.placeName}>{t(item.name)}</span>
             <span className={styles.path}>
               {parentPath.length
-                ? parentPath.map((part) => part.name).join(" / ")
-                : item.kind}
+                ? parentPath.map((part) => t(part.name)).join(" / ")
+                : t(item.kind)}
             </span>
           </span>
           <span className={styles.placeSummary}>
             <span className={styles.placeCount}>
               {loading
-                ? "Loading matchas…"
+                ? t("Loading matchas…")
                 : catalogUnavailable
-                  ? "Matchas temporarily unavailable"
+                  ? t("Matchas temporarily unavailable")
                   : matchaCount
                     ? countLabel(matchaCount, "matcha")
-                    : "Explore this place"}
+                    : t("Explore this place")}
             </span>
           </span>
           <span className={styles.arrow} aria-hidden="true">
@@ -357,20 +372,23 @@ export function OriginsDirectory({
         </button>
         {!search && subplaces.length > 0 && (
           <div className={styles.branchChildren}>
-            <span className={styles.label}>Within {item.name}</span>
+            <span className={styles.label}>
+              {t("Within {place}", { place: t(item.name) })}
+            </span>
             {subplaces.slice(0, 3).map((child) => (
               <button
                 key={child.id}
                 type="button"
                 onClick={() => onPlaceChange(child.id)}
               >
-                {child.name}
+                {t(child.name)}
                 <span aria-hidden="true">↗</span>
               </button>
             ))}
             {subplaces.length > 3 && (
               <button type="button" onClick={() => onPlaceChange(item.id)}>
-                All {subplaces.length} places<span aria-hidden="true">↗</span>
+                {t("All {count} places", { count: subplaces.length })}
+                <span aria-hidden="true">↗</span>
               </button>
             )}
           </div>
@@ -392,21 +410,21 @@ export function OriginsDirectory({
           <header className={`${styles.heading} ${styles.directoryHeading}`}>
             <div>
               <h1 ref={heading} id={`${id}-title`} tabIndex={-1}>
-                Growing places
+                {t("Growing places")}
               </h1>
             </div>
             <p className={styles.introduction}>
-              Explore the regions and places behind our matcha.
+              {t("Explore the regions and places behind our matcha.")}
             </p>
           </header>
           <div
             className={styles.searchBar}
             role="search"
-            aria-label="Growing places"
+            aria-label={t("Growing places")}
           >
             <div className={styles.search}>
               <label className={styles.label} htmlFor={`${id}-search`}>
-                Find a place
+                {t("Find a place")}
               </label>
               <div className={styles.searchField}>
                 <svg
@@ -423,7 +441,7 @@ export function OriginsDirectory({
                   ref={searchInput}
                   id={`${id}-search`}
                   type="search"
-                  placeholder="Search places…"
+                  placeholder={t("Search places…")}
                   value={query}
                   onChange={(event) => {
                     updateBrowse({
@@ -438,7 +456,7 @@ export function OriginsDirectory({
                   <button
                     type="button"
                     className={styles.clearSearch}
-                    aria-label="Clear place search"
+                    aria-label={t("Clear place search")}
                     onClick={() => {
                       updateBrowse({
                         query: "",
@@ -455,7 +473,7 @@ export function OriginsDirectory({
             </div>
             {countries.length > 1 && (
               <label className={styles.filter}>
-                <span className={styles.label}>Country</span>
+                <span className={styles.label}>{t("Country")}</span>
                 <select
                   value={countryId}
                   onChange={(event) => {
@@ -466,10 +484,10 @@ export function OriginsDirectory({
                     });
                   }}
                 >
-                  <option value="">All countries</option>
+                  <option value="">{t("All countries")}</option>
                   {countries.map((country) => (
                     <option key={country.id} value={country.id}>
-                      {country.name}
+                      {t(country.name)}
                     </option>
                   ))}
                 </select>
@@ -478,7 +496,9 @@ export function OriginsDirectory({
           </div>
           <div className={styles.resultsHeader}>
             <h2>
-              {search || countryId ? "Search results" : "Browse by country"}
+              {search || countryId
+                ? t("Search results")
+                : t("Browse by country")}
             </h2>
             <p role="status">
               {countLabel(places.length, search ? "place" : "region")}
@@ -497,11 +517,11 @@ export function OriginsDirectory({
                       type="button"
                       onClick={() => onPlaceChange(group.country!.id)}
                     >
-                      {group.country.name}
+                      {t(group.country.name)}
                       <span aria-hidden="true">↗</span>
                     </button>
                   ) : (
-                    "Places"
+                    t("Places")
                   )}
                 </h3>
                 <div className={styles.placeList}>
@@ -512,8 +532,8 @@ export function OriginsDirectory({
             {!places.length && (
               <p className={styles.empty} role="status">
                 {search || countryId
-                  ? "No places found. Try another name."
-                  : "More growing places will appear here."}
+                  ? t("No places found. Try another name.")
+                  : t("More growing places will appear here.")}
               </p>
             )}
           </div>
@@ -524,7 +544,8 @@ export function OriginsDirectory({
               onClick={showMore}
               aria-controls={`${id}-places`}
             >
-              Show more places<span aria-hidden="true">+</span>
+              {t("Show more places")}
+              <span aria-hidden="true">+</span>
             </button>
           )}
           {searchEntries.length > 0 && (
@@ -533,7 +554,9 @@ export function OriginsDirectory({
               aria-labelledby={`${id}-matching-entries`}
             >
               <div className={styles.sectionHeader}>
-                <h2 id={`${id}-matching-entries`}>Photographs & field work</h2>
+                <h2 id={`${id}-matching-entries`}>
+                  {t("Photographs & field work")}
+                </h2>
                 <span>{searchEntries.length}</span>
               </div>
               <EntryList
@@ -549,7 +572,8 @@ export function OriginsDirectory({
                   onClick={() => showMoreEntries(true)}
                   aria-controls={`${id}-search-entry-results`}
                 >
-                  Show more photographs<span aria-hidden="true">+</span>
+                  {t("Show more photographs")}
+                  <span aria-hidden="true">+</span>
                 </button>
               )}
             </section>
@@ -557,18 +581,18 @@ export function OriginsDirectory({
         </>
       ) : place ? (
         <>
-          <nav className={styles.breadcrumbs} aria-label="Place path">
+          <nav className={styles.breadcrumbs} aria-label={t("Place path")}>
             <button type="button" onClick={() => onPlaceChange(null)}>
-              Origins
+              {t("Origins")}
             </button>
             {path.map((part) => (
               <span key={part.id} className={styles.crumb}>
                 <span aria-hidden="true">/</span>
                 {part.id === place.id ? (
-                  <span aria-current="page">{part.name}</span>
+                  <span aria-current="page">{t(part.name)}</span>
                 ) : (
                   <button type="button" onClick={() => onPlaceChange(part.id)}>
-                    {part.name}
+                    {t(part.name)}
                   </button>
                 )}
               </span>
@@ -576,7 +600,7 @@ export function OriginsDirectory({
           </nav>
           <div
             className={styles.placeIntro}
-            data-photograph={Boolean(featuredEntry)}
+            data-photograph={Boolean(featuredPhotograph)}
           >
             <header className={styles.heading}>
               <div>
@@ -584,44 +608,44 @@ export function OriginsDirectory({
                   {path
                     .slice(0, -1)
                     .reverse()
-                    .map((part) => part.name)
-                    .join(" / ") || "Growing origins"}
+                    .map((part) => t(part.name))
+                    .join(" / ") || t("Growing origins")}
                 </p>
                 <h1 ref={heading} id={`${id}-title`} tabIndex={-1}>
-                  {place.name}
+                  {t(place.name)}
                 </h1>
               </div>
-              <p className={styles.introduction}>{place.description}</p>
+              <p className={styles.introduction}>{t(place.description)}</p>
               <nav
                 className={styles.placeNav}
-                aria-label={`Explore ${place.name}`}
+                aria-label={t("Explore {place}", { place: t(place.name) })}
               >
                 <button
                   type="button"
                   onClick={() => jumpTo(productsHeading.current)}
                 >
-                  Matcha <span aria-hidden="true">↓</span>
+                  {t("Matcha")} <span aria-hidden="true">↓</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => jumpTo(workHeading.current)}
                 >
-                  People & work <span aria-hidden="true">↓</span>
+                  {t("People & work")} <span aria-hidden="true">↓</span>
                 </button>
               </nav>
             </header>
-            {featuredEntry && (
+            {featuredPhotograph && (
               <figure className={styles.landscape}>
                 <div className={styles.landscapeImage}>
                   <Image
-                    src={featuredEntry.image}
-                    alt={featuredEntry.imageAlt}
+                    src={featuredPhotograph.image}
+                    alt={t(featuredPhotograph.imageAlt)}
                     fill
                     sizes="(max-width: 760px) 90vw, 55vw"
                   />
                 </div>
                 <figcaption>
-                  <span>{featuredEntry.imageCaption}</span>
+                  <span>{t(featuredPhotograph.imageCaption)}</span>
                 </figcaption>
               </figure>
             )}
@@ -629,11 +653,13 @@ export function OriginsDirectory({
           <section className={styles.section} aria-labelledby={`${id}-matchas`}>
             <div className={`${styles.sectionHeader} ${styles.matchaHeader}`}>
               <h2 ref={productsHeading} id={`${id}-matchas`} tabIndex={-1}>
-                Matcha from {place.name}
+                {designation
+                  ? t("{name} series", { name: t(designation.name) })
+                  : t("Matcha from {place}", { place: t(place.name) })}
               </h2>
               {!loading && !catalogUnavailable && types.length > 1 && (
                 <label className={`${styles.filter} ${styles.typeFilter}`}>
-                  <span className={styles.label}>Matcha type</span>
+                  <span className={styles.label}>{t("Matcha type")}</span>
                   <select
                     value={selectedTypeId}
                     onChange={(event) =>
@@ -643,31 +669,37 @@ export function OriginsDirectory({
                       })
                     }
                   >
-                    <option value="">All types</option>
+                    <option value="">{t("All types")}</option>
                     {types.map((type) => (
                       <option key={type.id} value={type.id}>
-                        {type.label}
+                        {t(type.label)}
                       </option>
                     ))}
                   </select>
                 </label>
               )}
             </div>
+            {designation && (
+              <p className={styles.introduction}>
+                {t(designation.productNote)}
+              </p>
+            )}
             {loading ? (
               <p className={styles.empty} role="status">
-                Loading matchas…
+                {t("Loading matchas…")}
               </p>
             ) : catalogUnavailable ? (
               <div className={styles.catalogStatus}>
                 <p className={styles.empty} role="status">
-                  Matchas are temporarily unavailable.
+                  {t("Matchas are temporarily unavailable.")}
                 </p>
                 <button
                   className={styles.action}
                   type="button"
                   onClick={retryCatalog}
                 >
-                  Try again<span aria-hidden="true">↻</span>
+                  {t("Try again")}
+                  <span aria-hidden="true">↻</span>
                 </button>
               </div>
             ) : matchas.length > 0 ? (
@@ -676,8 +708,14 @@ export function OriginsDirectory({
                   {filteredMatchas
                     .slice(0, visibleMatchaCount)
                     .map((product) => {
-                      const content = getProductContent(product);
+                      const content = getProductContent(product, locale);
                       const growingPlaces = getPlacesForMatcha(product.handle);
+                      const originLabel = [
+                        ...growingPlaces.map((origin) => t(origin.name)),
+                        ...getProductDesignations(product.handle).map(
+                          (item) => `${t(item.name)} tea designation`,
+                        ),
+                      ].join(" + ");
                       return (
                         <Link
                           key={product.handle}
@@ -700,13 +738,15 @@ export function OriginsDirectory({
                           </div>
                           <span className={styles.productBody}>
                             <span className={styles.productName}>
-                              {productName(product.title)}
+                              {productName(
+                                product.title,
+                                product.handle,
+                                locale,
+                              )}
                             </span>
                             <span className={styles.productMeta}>
-                              {growingPlaces
-                                .map((origin) => origin.name)
-                                .join(" + ")}
-                              {growingPlaces.length > 0 && " / "}
+                              {originLabel}
+                              {originLabel && " / "}
                               {content.application}
                             </span>
                           </span>
@@ -714,8 +754,8 @@ export function OriginsDirectory({
                             {product.variants.some(
                               (variant) => variant.available,
                             )
-                              ? "View matcha"
-                              : "Unavailable"}
+                              ? t("View matcha")
+                              : t("Unavailable")}
                           </span>
                           <span className={styles.arrow} aria-hidden="true">
                             ↗
@@ -731,19 +771,26 @@ export function OriginsDirectory({
                     onClick={showMoreMatchas}
                     aria-controls={`${id}-matcha-results`}
                   >
-                    Show more matchas<span aria-hidden="true">+</span>
+                    {t("Show more matchas")}
+                    <span aria-hidden="true">+</span>
                   </button>
                 )}
               </>
             ) : (
               <p className={styles.empty}>
-                No matcha is currently listed for {place.name}.
+                {t("No matcha is currently listed for {place}.", {
+                  place: designation
+                    ? t("{name} series", { name: t(designation.name) })
+                    : t(place.name),
+                })}
               </p>
             )}
           </section>
           {children.length > 0 && (
             <section className={styles.within} aria-labelledby={`${id}-within`}>
-              <h2 id={`${id}-within`}>Within {place.name}</h2>
+              <h2 id={`${id}-within`}>
+                {t("Within {place}", { place: t(place.name) })}
+              </h2>
               <div id={`${id}-child-places`} className={styles.childPlaces}>
                 {children.slice(0, visibleChildCount).map((child) => (
                   <button
@@ -756,7 +803,7 @@ export function OriginsDirectory({
                     type="button"
                     onClick={() => onPlaceChange(child.id)}
                   >
-                    {child.name}
+                    {t(child.name)}
                     <span aria-hidden="true">↗</span>
                   </button>
                 ))}
@@ -767,7 +814,8 @@ export function OriginsDirectory({
                     onClick={showMoreChildren}
                     aria-controls={`${id}-child-places`}
                   >
-                    More places<span aria-hidden="true">+</span>
+                    {t("More places")}
+                    <span aria-hidden="true">+</span>
                   </button>
                 )}
               </div>
@@ -776,7 +824,7 @@ export function OriginsDirectory({
           <section className={styles.section} aria-labelledby={`${id}-entries`}>
             <div className={styles.sectionHeader}>
               <h2 ref={workHeading} tabIndex={-1} id={`${id}-entries`}>
-                People & work
+                {t("People & work")}
               </h2>
             </div>
             <div
@@ -799,7 +847,8 @@ export function OriginsDirectory({
                       onClick={() => showMoreEntries(false)}
                       aria-controls={`${id}-place-entry-results`}
                     >
-                      Show more photographs<span aria-hidden="true">+</span>
+                      {t("Show more photographs")}
+                      <span aria-hidden="true">+</span>
                     </button>
                   )}
                 </div>
@@ -812,14 +861,15 @@ export function OriginsDirectory({
         <header className={styles.heading}>
           <div>
             <h1 ref={heading} id={`${id}-title`} tabIndex={-1}>
-              Place unavailable
+              {t("Place unavailable")}
             </h1>
             <button
               className={styles.action}
               type="button"
               onClick={() => onPlaceChange(null)}
             >
-              Return to Origins<span aria-hidden="true">↗</span>
+              {t("Return to Origins")}
+              <span aria-hidden="true">↗</span>
             </button>
           </div>
         </header>
@@ -830,20 +880,22 @@ export function OriginsDirectory({
           aria-labelledby={`${id}-people`}
         >
           <div className={styles.sectionHeader}>
-            <h2 id={`${id}-people`}>Growers</h2>
+            <h2 id={`${id}-people`}>{t("Growers")}</h2>
           </div>
           {growerPlaceholder}
         </section>
       )}
       <footer className={styles.footer}>
-        <span>ATOMA / Matcha collection</span>
+        <span>{t("ATOMA / Matcha collection")}</span>
         {onExplore ? (
           <button className={styles.action} type="button" onClick={onExplore}>
-            Explore matcha<span aria-hidden="true">↗</span>
+            {t("Explore matcha")}
+            <span aria-hidden="true">↗</span>
           </button>
         ) : (
           <Link className={styles.action} href={home}>
-            Explore matcha<span aria-hidden="true">↗</span>
+            {t("Explore matcha")}
+            <span aria-hidden="true">↗</span>
           </Link>
         )}
       </footer>
@@ -851,7 +903,7 @@ export function OriginsDirectory({
   );
 }
 
-function Thumbnail({ entry }: { entry?: FieldEntry }) {
+function Thumbnail({ entry }: { entry?: Pick<FieldEntry, "image"> }) {
   return (
     <span className={styles.thumbnail} aria-hidden="true">
       {entry ? (
@@ -881,6 +933,7 @@ function PlacePhotographs({
   registerEntry: (slug: string, element: HTMLButtonElement | null) => void;
   featuredImage?: string;
 }) {
+  const { t } = useStorefrontLocale();
   return (
     <div id={id} className={styles.collections}>
       {entries.map((entry) => {
@@ -911,17 +964,20 @@ function PlacePhotographs({
           <div key={entry.slug} className={styles.collection}>
             <div className={styles.collectionHeading}>
               <div>
-                <h3 className={styles.collectionTitle}>{entry.title}</h3>
-                <p className={styles.path}>{entry.region}</p>
+                <h3 className={styles.collectionTitle}>{t(entry.title)}</h3>
+                <p className={styles.path}>{t(entry.region)}</p>
               </div>
               <button
                 ref={(element) => registerEntry(entry.slug, element)}
                 className={styles.fieldLink}
                 type="button"
-                aria-label={`View photographs: ${entry.title}`}
+                aria-label={t("View photographs: {title}", {
+                  title: t(entry.title),
+                })}
                 onClick={() => onRead(entry.slug)}
               >
-                View photographs<span aria-hidden="true">↗</span>
+                {t("View photographs")}
+                <span aria-hidden="true">↗</span>
               </button>
             </div>
             {photographs.length > 0 && (
@@ -931,12 +987,12 @@ function PlacePhotographs({
                     <div className={styles.photographImage}>
                       <Image
                         src={photograph.src}
-                        alt={photograph.alt}
+                        alt={t(photograph.alt)}
                         fill
                         sizes="(max-width: 600px) 42vw, 35vw"
                       />
                     </div>
-                    <figcaption>{photograph.caption}</figcaption>
+                    <figcaption>{t(photograph.caption)}</figcaption>
                   </figure>
                 ))}
               </div>
@@ -959,6 +1015,7 @@ function EntryList({
   onRead: (slug: string) => void;
   registerEntry: (slug: string, element: HTMLButtonElement | null) => void;
 }) {
+  const { t } = useStorefrontLocale();
   return (
     <div id={id} className={styles.entryList}>
       {entries.map((entry) => (
@@ -971,8 +1028,8 @@ function EntryList({
         >
           <Thumbnail entry={entry} />
           <span className={styles.rowBody}>
-            <span className={styles.path}>{entry.region}</span>
-            <span className={styles.entryTitle}>{entry.title}</span>
+            <span className={styles.path}>{t(entry.region)}</span>
+            <span className={styles.entryTitle}>{t(entry.title)}</span>
           </span>
           <span className={styles.arrow} aria-hidden="true">
             ↗

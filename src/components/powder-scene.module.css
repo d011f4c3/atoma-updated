@@ -74,7 +74,9 @@
   margin: 0;
   color: #30382c;
   font-family: var(--font-atoma-mono), monospace;
-  font-size: clamp(0.75rem, 1.1vw, 0.9375rem);
+  font-size: calc(
+    clamp(0.75rem, 1.1vw, 0.9375rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   line-height: 1.6;
   text-align: center;
@@ -82,7 +84,7 @@
 
 .unavailable span {
   font-family: var(--font-atoma-mono), monospace;
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }

@@ -8,6 +8,13 @@ import {
   type OriginsGraph,
 } from "./origins-model.ts";
 
+export type FieldPhotograph = {
+  image: string;
+  imageAlt: string;
+  imageCaption: string;
+  observation: string;
+};
+
 export type FieldEntry = {
   slug: string;
   region: string;
@@ -27,6 +34,8 @@ export type FieldEntry = {
   }[];
   /** Editorial coverage only. Product provenance belongs to its own graph. */
   placeIds: readonly string[];
+  /** Display choices within this collection, not evidence of capture location. */
+  photographsByPlace?: Readonly<Record<string, FieldPhotograph>>;
 };
 
 /** Original photographic observations, not SKU provenance or a dated visit. */
@@ -70,8 +79,35 @@ export const FIELD_ENTRIES: FieldEntry[] = [
       },
     ],
     placeIds: ["kyoto"],
+    photographsByPlace: {
+      "uji-city": {
+        image: "/images/origins/uji-context-landscape.jpg",
+        imageAlt:
+          "Shade cloth stretches across the foreground, with tea rows and wooded hills beyond.",
+        imageCaption: "Tea fields · Kyoto",
+        observation:
+          "Shade cloth stretches across the foreground, with tea rows and wooded hills beyond.",
+      },
+    },
   },
 ];
+
+export function getFieldEntryPhotograph(
+  entry: FieldEntry,
+  placeId?: string,
+): FieldPhotograph {
+  const photographs = entry.photographsByPlace;
+  return (
+    (placeId && photographs && Object.hasOwn(photographs, placeId)
+      ? photographs[placeId]
+      : undefined) ?? {
+      image: entry.image,
+      imageAlt: entry.imageAlt,
+      imageCaption: entry.imageCaption,
+      observation: entry.sections[0]?.body[0] ?? entry.dek,
+    }
+  );
+}
 
 export function getRelatedMatchas(
   entry: FieldEntry,

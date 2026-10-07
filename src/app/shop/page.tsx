@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Shop } from "@/components/shop";
 import { StorefrontFooter } from "@/components/storefront-footer";
+import { readStorefrontLocale } from "@/lib/i18n/server";
+import { localizedMetadata } from "@/lib/i18n/metadata";
 
-export const metadata: Metadata = {
-  title: "ATOMA — Shop matcha",
-  description:
-    "Explore the ATOMA matcha collection. Choose your format, quantity and matcha for the way you serve it.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return localizedMetadata("shop", await readStorefrontLocale());
+}
 
 export default function ShopPage() {
   return (

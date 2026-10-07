@@ -408,6 +408,20 @@ export function createCartApplication(
       }
 
       try {
+        const cart = await dependencies.cartSource.readCart(reference);
+        if (cart === null) return MISSING_RESULT;
+        if (cart.totalQuantity === 0) return EMPTY_RESULT;
+        if (
+          cart.lines.some(
+            (line) =>
+              line.merchandise.purchaseStatus !== "purchasable" ||
+              !satisfiesQuantityRule(
+                line.quantity,
+                line.merchandise.quantityRule,
+              ),
+          )
+        )
+          return ERROR_RESULT;
         const checkout = await dependencies.cartSource.readCheckout(reference);
 
         if (checkout === null) {
@@ -417,6 +431,7 @@ export function createCartApplication(
         if (checkout.totalQuantity === 0) {
           return EMPTY_RESULT;
         }
+        if (checkout.totalQuantity !== cart.totalQuantity) return ERROR_RESULT;
 
         const result = {
           kind: "ready" as const,

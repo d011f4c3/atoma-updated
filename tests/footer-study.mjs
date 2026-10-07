@@ -303,7 +303,7 @@ async function runCase(browser, width, height) {
       .getByRole("group", { name: "Matcha to explore", exact: true })
       .getByRole("button", { name: "Select Barista Matcha", exact: true })
       .click();
-    await selectView(page, "Origins");
+    await selectView(page, "Origin");
     await page.locator('[data-origin-preview="panorama"]').waitFor();
     await selectView(page, "Shop");
     await page

@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import {
   useCallback,
   useEffect,
@@ -132,22 +134,25 @@ function LabelCardFace({
   showReference = true,
   onEditReference,
 }: LabelCardProps) {
+  const { t } = useStorefrontLocale();
   return (
     <div className={styles.front}>
       <header className={styles.header}>
         <span className={styles.brand}>ATOMA</span>
-        {!profile && <span className={styles.heading}>MATCHA</span>}
+        {!profile && <span className={styles.heading}>{t("MATCHA")}</span>}
         <span className={styles.descriptor}>
-          {profile ? "MATERIAL / MATCHA" : "POWDER / YOUR SELECTION"}
+          {t(profile ? "MATERIAL / MATCHA" : "POWDER / YOUR SELECTION")}
         </span>
       </header>
       <dl className={styles.fields} aria-live="polite" aria-atomic="false">
         <div className={styles.selection}>
-          <dt className={profile ? styles.accessible : undefined}>SELECTION</dt>
+          <dt className={profile ? styles.accessible : undefined}>
+            {t("SELECTION")}
+          </dt>
           <dd className={styles.name}>
             <Ink
               field="name"
-              value={title || "Matcha"}
+              value={title || t("Matcha")}
               delay={20}
               visible={visible}
             />
@@ -163,15 +168,15 @@ function LabelCardFace({
         </div>
         {profile && (
           <div className={styles.specifications} aria-live="off">
-            <dt>SPECIFICATIONS</dt>
+            <dt>{t("SPECIFICATIONS")}</dt>
             <dd>
               <dl className={styles.profile}>
                 {profile.materialProfile.map((property, index) => (
-                  <div key={property.label}>
+                  <div key={index}>
                     <dt>{property.label}</dt>
                     <dd>
                       <Ink
-                        field={`specification-${property.label.toLowerCase()}`}
+                        field={`specification-${["aroma", "flavour", "umami", "bitterness", "texture", "colour", "finish"][index] ?? index}`}
                         value={property.value}
                         delay={80 + index * 25}
                         visible={visible}
@@ -185,7 +190,7 @@ function LabelCardFace({
         )}
         <div className={styles.order}>
           <div>
-            <dt>FORMAT</dt>
+            <dt>{t("FORMAT")}</dt>
             <dd>
               <Ink
                 field="format"
@@ -197,12 +202,12 @@ function LabelCardFace({
           </div>
           {annotation ? (
             <div>
-              <dt className={styles.accessible}>NOTE</dt>
+              <dt className={styles.accessible}>{t("NOTE")}</dt>
               <dd className={styles.annotation}>{annotation}</dd>
             </div>
           ) : (
             <div>
-              <dt>QUANTITY</dt>
+              <dt>{t("QUANTITY")}</dt>
               <dd className={styles.quantity}>
                 <Ink
                   field="quantity"
@@ -216,7 +221,7 @@ function LabelCardFace({
         </div>
         {showReference && (
           <div className={styles.reference}>
-            <dt>YOUR REFERENCE</dt>
+            <dt>{t("YOUR REFERENCE")}</dt>
             <dd
               data-reference-length={
                 reference.trim().length > 20 ? "long" : "short"
@@ -227,11 +232,11 @@ function LabelCardFace({
                   type="button"
                   className={styles.referenceEdit}
                   data-reference-trigger="card"
-                  aria-label={
+                  aria-label={t(
                     reference.trim()
                       ? "Edit reference on label"
-                      : "Add reference to label"
-                  }
+                      : "Add reference to label",
+                  )}
                   onClick={onEditReference}
                 >
                   <Ink
@@ -263,6 +268,7 @@ function PrintedLabelCard({
   tone = "dark",
   ...content
 }: LabelCardProps) {
+  const { t } = useStorefrontLocale();
   return (
     <div
       className={`${styles.root} ${styles.inkOnly}`}
@@ -278,7 +284,7 @@ function PrintedLabelCard({
       <div
         className={styles.card}
         role="group"
-        aria-label="Printed product information"
+        aria-label={t("Printed product information")}
       >
         <LabelCardFace {...content} visible={visible} />
       </div>
@@ -313,6 +319,7 @@ function PaperLabelCard({
   showReference = true,
   onEditReference,
 }: LabelCardProps) {
+  const { t } = useStorefrontLocale();
   const rootRef = useRef<HTMLDivElement>(null);
   const objectRef = useRef<HTMLDivElement>(null);
   const faceRef = useRef<HTMLDivElement>(null);
@@ -603,7 +610,7 @@ function PaperLabelCard({
           ref={faceRef}
           className={styles.card}
           role="group"
-          aria-label="Move label card"
+          aria-label={t("Move label card")}
           aria-describedby={instructionId}
           tabIndex={visible ? 0 : -1}
           onPointerDown={beginDrag}
@@ -642,18 +649,19 @@ function PaperLabelCard({
         </div>
         <div className={styles.controls}>
           <p id={instructionId}>
-            <ScrambleText text="Drag to move" periodic />
+            <ScrambleText text={t("Drag to move")} periodic />
             <span className={styles.accessible}>
-              . Arrow keys move the card. Hold Shift for larger steps. Home
-              resets its position.
+              {t(
+                ". Arrow keys move the card. Hold Shift for larger steps. Home resets its position.",
+              )}
             </span>
           </p>
           <button
             type="button"
-            aria-label="Reset label position"
+            aria-label={t("Reset label position")}
             onClick={() => settle(0, 0, true)}
           >
-            <ScrambleText text="Reset" interactive />{" "}
+            <ScrambleText text={t("Reset")} interactive />{" "}
             <span aria-hidden="true">↺</span>
           </button>
         </div>

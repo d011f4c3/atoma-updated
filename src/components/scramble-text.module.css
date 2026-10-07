@@ -53,3 +53,8 @@
 :global([data-brand-direction]:not([data-brand-direction="current"])) .glyph {
   visibility: hidden;
 }
+
+/* CJK passages wrap between characters rather than requiring spaces. */
+.root[data-wrap="true"] .word[data-cjk="true"] {
+  display: inline;
+}

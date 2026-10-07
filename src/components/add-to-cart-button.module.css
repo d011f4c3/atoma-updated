@@ -21,7 +21,7 @@
     inset 0 1px 0 color-mix(in srgb, var(--button-ink) 12%, transparent),
     0 3px 8px rgb(0 0 0 / 8%);
   font-family: var(--font-atoma-mono), monospace;
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   font-weight: 500;
   line-height: 1.5;
   letter-spacing: 0.04em;
@@ -79,7 +79,7 @@
 }
 
 .plus {
-  font-size: 1.25rem;
+  font-size: calc(1.25rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   line-height: 1;
 }

@@ -1,5 +1,69 @@
 # Browser experience regression checks
 
+## About page study
+
+```sh
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright node tests/about-study.mjs
+```
+
+Compares Fieldnotes, Map, Chapters, Index, Broadside and Sequence at 1366px and
+320px in both palettes. Query values are `fieldnotes`, `compact`, `ledger`,
+`columns`, `broadside` and `sequence`. Fieldnotes remains continuous; Map and
+Chapters use initially closed native disclosures, while Index tiles reveal an
+inline passage. Broadside exposes its editorial grid together; Sequence uses
+three steps with numbered jumps and previous/next controls. Checks initial
+states and distinct composition, all short shared copy after activation, body
+typography, keyboard/touch controls, Index close/focus return, future community
+intent, and absence of horizontal overflow. Checks Sequence endpoint states,
+active heading focus and shared copy. Saves first views and expanded states.
+Open disclosures, Index selection and Sequence progress survive reader and
+local theme changes.
+The field reader retains Escape, focus and scroll return; the canonical homepage
+retains its selected product and About popup with Escape/outside dismissal.
+Commerce reads are mocked and writes are blocked. `ABOUT_STUDY_BASE_URL` defaults
+to `http://127.0.0.1:3100`; `ABOUT_STUDY_FILTER` selects case names;
+`ABOUT_STUDY_EVIDENCE` defaults to `.local/about-layouts-0133`. Run separately
+from `pnpm validate` with an existing Playwright installation. Publication
+eligibility has unit coverage in `tests/about-study-content.test.mjs`.
+
+## Overview study
+
+```sh
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright node tests/overview-study.mjs
+```
+
+Compares Original, Digest, Index and Folded at 1366px and 320px in both themes.
+Checks reduced visible copy, shared tab type scale, all three product codes,
+keyboard disclosures, mobile touch targets, original formats/prices/availability,
+provisional product facts and selection/quantity continuity with the mounted
+material scene. Three additional phone cases verify Simplified Chinese,
+Traditional Chinese and Japanese copy, alongside English. The canonical Overview
+uses Folded with one full introduction and three initially closed disclosures;
+the study's Original option retains its inline details. Adoption checks cover
+shared typography, localized copy, keyboard access, product facts and formats,
+selection, quantity and scene continuity in all four languages. All commerce
+reads are mocked and writes blocked.
+`OVERVIEW_STUDY_BASE_URL` defaults to `http://127.0.0.1:3100`;
+`OVERVIEW_STUDY_FILTER` selects case names, and `OVERVIEW_STUDY_EVIDENCE`
+optionally saves screenshots. Run separately from
+`pnpm validate` with an existing Playwright installation.
+
+## Localization product identity
+
+```sh
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright node tests/localization-product-identity.mjs
+```
+
+Task 0116 checks that translated upstream titles keep the same known product
+names, application copy, powder images and codes across Home, Shop, product,
+Origins and cart surfaces. The English storefront layout is compared against
+an English-title baseline; selection, quantity, mounted scenes and accessible
+cart controls are retained. Four cases cover 1366px/320px and both themes.
+All API reads use in-memory fixtures and all writes are blocked.
+`LOCALIZATION_IDENTITY_BASE_URL` defaults to `http://127.0.0.1:3100`;
+`LOCALIZATION_IDENTITY_EVIDENCE` defaults to `.local/localization-0116`.
+Run separately from `pnpm validate` with an existing Playwright installation.
+
 ## Mobile popups
 
 ```sh
@@ -25,7 +89,7 @@ PLAYWRIGHT_MODULE=/absolute/path/to/playwright node tests/product-code-study.mjs
 
 The eight `/numbering-exploration` directions are checked across Overview,
 Specifications and Shop at 1440px and 320px in both themes. The suite verifies
-stable handle-based WZKA codes, unchanged product names, unknown-product
+stable handle-based WZKA/UJI codes, unchanged product names, unknown-product
 fallback, keyboard study controls, no overlapping names or horizontal overflow,
 retained product/quantity/view and mounted powder canvas, local theme isolation,
 shareable directions and an unmarked No code comparison. Adoption checks verify
@@ -35,6 +99,25 @@ requests are mocked. `PRODUCT_CODE_BASE_URL` defaults to `http://127.0.0.1:3100`
 `PRODUCT_CODE_FILTER` selects cases and `PRODUCT_CODE_EVIDENCE` saves captures
 and JSON results. The standalone browser suite is separate from `pnpm validate`.
 The two handle-mapping unit checks run with the normal test command.
+
+## UJI designation and geographic origins
+
+```sh
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright node tests/origin-designations.mjs
+```
+
+This mocked suite covers the Uji City location view and its two UJI series products,
+the separate Uji City and Wazuka municipality paths, Ceremonial's Wazuka growing
+link, and both UJI products' homepage/retail reader flows. Desktop and 320-pixel
+cases run in both themes and preserve product, format, quantity, focus and the
+mounted material scene through button, Escape and backdrop dismissal. It compares
+UJI and Ceremonial Panorama DOM/classes, typography, photo dimensions and theme
+colors, and checks the original shared Uji City/Wazuka location composition. Requests
+use a synthetic public catalog; commerce writes are rejected.
+`ORIGIN_DESIGNATIONS_BASE_URL` defaults to `http://127.0.0.1:3100`,
+`ORIGIN_DESIGNATIONS_FILTER` selects viewport/theme cases, and
+`ORIGIN_DESIGNATIONS_EVIDENCE` saves screenshots. The matching designation model
+tests run with the normal unit-test command.
 
 ## Hero study 2
 
@@ -314,3 +397,48 @@ Captures are in `.local/qa/mineral-final/`, including the 320-pixel light layout
 and final 1440-pixel homepages in both themes. A final palette probe verified the
 5% white fill on all three header controls and solid dark light-theme footer and
 powder-caption ink. All commerce remained mocked.
+
+Four-language storefront regression (Task 0117):
+
+```bash
+PLAYWRIGHT_MODULE=/path/to/playwright node --experimental-strip-types tests/storefront-localization.mjs
+```
+
+This uses only mocked catalog/cart reads. It covers English, Simplified Chinese,
+Traditional Chinese and Japanese on desktop and 320px mobile in both themes:
+language/theme control adjacency, cookie and server rendering, metadata, selected
+product/quantity and mounted scene continuity, Shop, cart, Origins, JPY totals
+and wrapping. Captures are written to `.local/localization-0117/`. Translations
+and locale validation also have unit coverage in `pnpm test`.
+
+Localized text glitch regression (Task 0118):
+
+```bash
+PLAYWRIGHT_MODULE=/path/to/playwright node tests/localized-text-glitch.mjs
+```
+
+The test observes real glyph mutations and restoration in English, Simplified
+Chinese, Traditional Chinese and Japanese. It checks desktop hover, keyboard
+focus, mobile tap and hero playback; accessible source text and measured layout
+stay fixed. Reduced motion must produce no scrambling. CJK wrapping and line
+starts are checked on 320px mobile. All commerce is mocked. Use
+`LOCALIZED_GLITCH_WIDTHS=1366` or `320` for a targeted rerun; default covers both.
+Evidence goes to `.local/localized-text-glitch/`. Character grouping, script
+handling and the unchanged scheduler have focused unit tests in `pnpm test`.
+
+Native Shopify popup and same-tab fallback regression (Tasks 0131 and 0134):
+
+```bash
+PLAYWRIGHT_MODULE=/path/to/playwright node --experimental-strip-types tests/checkout-popup.mjs
+PLAYWRIGHT_MODULE=/path/to/playwright node --experimental-strip-types tests/checkout-flow.mjs
+```
+
+Run against the local development server; `CHECKOUT_BASE_URL` defaults to
+`http://127.0.0.1:3100`. Commerce responses are mocked. The popup suite starts
+an inert second loopback origin to verify native form targeting, opener
+isolation and COOP behavior without contacting a payment provider. Both
+suites cover all four languages, cart guards and deliberate return/recovery.
+The popup suite also checks automatic authoritative cart clearing, cancellation
+and failure preservation, hidden-page pause, serialized reads and stale-response
+rejection. Popup captures go to `.local/checkout-0134/browser/`. These tests do not prove
+wallet onboarding or a real payment; record those separately in the task.

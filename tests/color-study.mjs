@@ -455,14 +455,14 @@ async function overlays(page, palette, width, pathname = "/color-study") {
   await cart.getByRole("button", { name: "Close cart", exact: true }).click();
   await cart.waitFor({ state: "hidden" });
 
-  await selectView(page, "Origins");
+  await selectView(page, "Origin");
   const origin = page.locator(
     `[data-origin-preview="${pathname === "/" ? "panorama" : "split"}"]`,
   );
   await origin.waitFor();
   await capture(page, `${width}-${palette.value}-origins`);
   const trigger = origin.getByRole("button", {
-    name: "About Wazuka",
+    name: "About Uji",
     exact: true,
   });
   await trigger.focus();

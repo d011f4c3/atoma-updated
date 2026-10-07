@@ -3,14 +3,16 @@
   padding: 1.25rem 0 1.5rem;
   color: var(--ink);
   font-family: var(--font-atoma-mono), monospace;
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   line-height: 1.7;
 }
 
 .editor h2 {
   margin: 0;
-  font-size: clamp(1.25rem, 1.7vw, 1.5rem);
+  font-size: calc(
+    clamp(1.25rem, 1.7vw, 1.5rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: -0.025em;
@@ -21,7 +23,7 @@
   max-width: 40ch;
   margin: 0.875rem 0 2.25rem;
   color: var(--muted);
-  font-size: 0.8125rem;
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
   line-height: 1.8;
 }
 
@@ -35,14 +37,14 @@
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.75rem;
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
 }
 
 .counter {
   flex-shrink: 0;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   font-variant-numeric: tabular-nums;
 }
 
@@ -57,7 +59,7 @@
   background: color-mix(in srgb, var(--ink) 5%, transparent);
   color: var(--ink);
   font-family: var(--font-antro-vectra, cursive);
-  font-size: 2rem;
+  font-size: calc(2rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   font-style: normal;
   line-height: 1.8;
@@ -74,7 +76,7 @@
 .note {
   margin: 0.875rem 0 0;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   line-height: 1.7;
 }
 
@@ -98,7 +100,7 @@
   background: color-mix(in srgb, var(--ink) 5%, transparent);
   color: var(--ink);
   font: inherit;
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
   cursor: pointer;
   transition: background 160ms ease;

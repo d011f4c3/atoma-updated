@@ -3,6 +3,7 @@ import type {
   CatalogVariantReference,
 } from "@jmm/shopify-storefront";
 import type { Catalog, CatalogVariant } from "./catalog-types";
+import { getProductCode } from "./product-codes.ts";
 
 export const CATALOG_SHOP_DOMAIN = "h0cuaw-f7.myshopify.com";
 export const CATALOG_SHOP_URL = `https://${CATALOG_SHOP_DOMAIN}`;
@@ -24,6 +25,7 @@ export function projectCatalog(
     imageUrl: safeImageUrl(product.image?.url ?? null),
     imageAlt: product.image?.altText ?? product.title,
     handle: product.handle,
+    productCode: getProductCode(product.handle) ?? null,
     // All current products have verified null onlineStoreUrl. A route assembled
     // from a Headless handle would falsely imply Online Store publication.
     productUrl: null,

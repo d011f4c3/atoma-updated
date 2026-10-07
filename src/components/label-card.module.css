@@ -88,7 +88,7 @@
   background: #dce2d8;
   color: #6c7b71;
   font-family: var(--font-atoma-mono), monospace;
-  font-size: 4cqw;
+  font-size: calc(4cqw + var(--locale-font-increment, 0px));
   letter-spacing: 0.15em;
 }
 .edgeTop,
@@ -241,18 +241,24 @@
 }
 .brand {
   color: #516366;
-  font-size: clamp(0.5625rem, 3cqw, 0.625rem);
+  font-size: calc(
+    clamp(0.5625rem, 3cqw, 0.625rem) + var(--locale-font-increment, 0px)
+  );
   letter-spacing: 0.06em;
 }
 .heading {
   font-weight: 500;
   margin: 2.5cqw 0 0.8cqw;
-  font-size: clamp(1rem, 8cqw, 1.5rem);
+  font-size: calc(
+    clamp(1rem, 8cqw, 1.5rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.2;
   letter-spacing: 0.06em;
 }
 .descriptor {
-  font-size: clamp(0.5rem, 2.8cqw, 0.625rem);
+  font-size: calc(
+    clamp(0.5rem, 2.8cqw, 0.625rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.5;
   letter-spacing: 0.015em;
 }
@@ -261,13 +267,17 @@
 }
 .fields dt {
   margin: 0;
-  font-size: clamp(0.5625rem, 3cqw, 0.625rem);
+  font-size: calc(
+    clamp(0.5625rem, 3cqw, 0.625rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.3;
   letter-spacing: 0.055em;
 }
 .fields dd {
   margin: 2.5cqw 0 0;
-  font-size: clamp(0.625rem, 4cqw, 0.8125rem);
+  font-size: calc(
+    clamp(0.625rem, 4cqw, 0.8125rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
@@ -281,12 +291,16 @@
   padding-bottom: 6cqw;
 }
 .fields .name {
-  font-size: clamp(0.625rem, 4.3cqw, 0.875rem);
+  font-size: calc(
+    clamp(0.625rem, 4.3cqw, 0.875rem) + var(--locale-font-increment, 0px)
+  );
 }
 .fields .application {
   margin-top: 1.4cqw;
   color: #4b564b;
-  font-size: clamp(0.5625rem, 3.3cqw, 0.6875rem);
+  font-size: calc(
+    clamp(0.5625rem, 3.3cqw, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
 }
 .order {
   display: grid;
@@ -298,7 +312,9 @@
   text-align: right;
 }
 .fields .quantity {
-  font-size: clamp(0.875rem, 5.5cqw, 1.125rem);
+  font-size: calc(
+    clamp(0.875rem, 5.5cqw, 1.125rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.05;
 }
 .fields .annotation {
@@ -310,7 +326,9 @@
 }
 .reference dd {
   font-family: var(--font-antro-vectra), cursive;
-  font-size: clamp(1rem, 8cqw, 1.875rem);
+  font-size: calc(
+    clamp(1rem, 8cqw, 1.875rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   letter-spacing: 0;
   text-transform: none;
@@ -318,7 +336,9 @@
   white-space: pre-wrap;
 }
 .reference dd[data-reference-length="long"] {
-  font-size: clamp(0.875rem, 5.8cqw, 1.375rem);
+  font-size: calc(
+    clamp(0.875rem, 5.8cqw, 1.375rem) + var(--locale-font-increment, 0px)
+  );
 }
 .referenceEdit {
   display: block;
@@ -364,7 +384,9 @@
   margin-top: 0.45rem;
   color: #c1c5bc;
   font-family: var(--font-atoma-mono), monospace;
-  font-size: clamp(0.5rem, 3cqw, 0.625rem);
+  font-size: calc(
+    clamp(0.5rem, 3cqw, 0.625rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.3;
 }
 .controls p {
@@ -422,7 +444,9 @@
   gap: 2cqw;
 }
 .root[data-specifications="true"] .descriptor {
-  font-size: clamp(0.5rem, 3cqw, 0.5625rem);
+  font-size: calc(
+    clamp(0.5rem, 3cqw, 0.5625rem) + var(--locale-font-increment, 0px)
+  );
 }
 .root[data-specifications="true"] .fields {
   margin-top: 5cqw;
@@ -433,14 +457,18 @@
 }
 .root[data-specifications="true"] .name {
   margin: 0;
-  font-size: clamp(0.875rem, 6cqw, 1.125rem);
+  font-size: calc(
+    clamp(0.875rem, 6cqw, 1.125rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.025em;
 }
 .root[data-specifications="true"] .application {
   margin-top: 1.5cqw;
-  font-size: clamp(0.5625rem, 3.4cqw, 0.625rem);
+  font-size: calc(
+    clamp(0.5625rem, 3.4cqw, 0.625rem) + var(--locale-font-increment, 0px)
+  );
 }
 .specifications {
   padding: 3.5cqw 0;
@@ -458,7 +486,9 @@
   align-items: baseline;
   gap: 2cqw;
   padding: 0.8cqw 0;
-  font-size: clamp(0.5625rem, 3.5cqw, 0.6875rem);
+  font-size: calc(
+    clamp(0.5625rem, 3.5cqw, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
 }
 .profile dt,
 .profile dd {
@@ -487,7 +517,9 @@
 }
 .root[data-specifications="true"] .order dd {
   margin: 0;
-  font-size: clamp(0.625rem, 4cqw, 0.75rem);
+  font-size: calc(
+    clamp(0.625rem, 4cqw, 0.75rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.4;
 }
 .root[data-specifications="true"] .reference {
@@ -495,24 +527,28 @@
 }
 .root[data-specifications="true"] .reference dd {
   margin-top: 1cqw;
-  font-size: clamp(1rem, 6.5cqw, 1.5rem);
+  font-size: calc(
+    clamp(1rem, 6.5cqw, 1.5rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.2;
 }
 .root[data-specifications="true"] .reference dd[data-reference-length="long"] {
-  font-size: clamp(0.875rem, 5.2cqw, 1.125rem);
+  font-size: calc(
+    clamp(0.875rem, 5.2cqw, 1.125rem) + var(--locale-font-increment, 0px)
+  );
 }
 @container (max-width: 140px) {
   .front {
     padding: 8%;
   }
   .brand {
-    font-size: 8px;
+    font-size: calc(8px + var(--locale-font-increment, 0px));
     line-height: 1;
   }
   .heading {
     font-weight: 500;
     margin: 2px 0 0;
-    font-size: 14px;
+    font-size: calc(14px + var(--locale-font-increment, 0px));
     line-height: 1;
   }
   .descriptor {
@@ -522,14 +558,14 @@
     margin-top: 3px;
   }
   .fields dt {
-    font-size: 8px;
+    font-size: calc(8px + var(--locale-font-increment, 0px));
     line-height: 1.1;
     letter-spacing: 0;
   }
   .fields dd,
   .fields .name {
     margin-top: 2px;
-    font-size: 8px;
+    font-size: calc(8px + var(--locale-font-increment, 0px));
     line-height: 1.2;
   }
   .selection,
@@ -549,12 +585,12 @@
     display: none;
   }
   .fields .quantity {
-    font-size: 11px;
+    font-size: calc(11px + var(--locale-font-increment, 0px));
     line-height: 1;
   }
   .reference dd,
   .reference dd[data-reference-length="long"] {
-    font-size: 12px;
+    font-size: calc(12px + var(--locale-font-increment, 0px));
     line-height: 1.05;
   }
   .controls {
@@ -575,7 +611,7 @@
     font-size: 0;
   }
   .controls button > span[aria-hidden="true"] {
-    font-size: 12px;
+    font-size: calc(12px + var(--locale-font-increment, 0px));
   }
 }
 @keyframes write-ink {
@@ -655,29 +691,39 @@
 
 /* Ink scales as one printed composition; paper keeps its reading-size floors. */
 .root.inkOnly[data-tone] .brand {
-  font-size: calc(3.9cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(3.9cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.4;
 }
 .root.inkOnly[data-tone] .heading {
   margin: 2.5cqw 0 0.8cqw;
-  font-size: calc(8cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(8cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.2;
 }
 .root.inkOnly[data-tone] .descriptor {
   display: block;
-  font-size: calc(3.3cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(3.3cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.4;
 }
 .root.inkOnly[data-tone] .fields {
   margin-top: 5cqw;
 }
 .root.inkOnly[data-tone] .fields dt {
-  font-size: calc(4cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(4cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.3;
 }
 .root.inkOnly[data-tone] .fields dd {
   margin-top: 2cqw;
-  font-size: calc(4.6cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(4.6cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.35;
 }
 .root.inkOnly[data-tone] .selection,
@@ -686,20 +732,26 @@
   padding-bottom: 4cqw;
 }
 .root.inkOnly[data-tone] .fields .name {
-  font-size: calc(5.2cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(5.2cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.3;
 }
 .root.inkOnly[data-tone] .fields .application {
   height: auto;
   margin-top: 1.5cqw;
-  font-size: calc(3.8cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(3.8cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.35;
 }
 .root.inkOnly[data-tone] .application .printed {
   display: block;
 }
 .root.inkOnly[data-tone] .fields .quantity {
-  font-size: calc(6cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(6cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.1;
 }
 .root.inkOnly[data-tone] .reference {
@@ -707,11 +759,15 @@
 }
 .root.inkOnly[data-tone] .reference dd {
   margin-top: 1cqw;
-  font-size: calc(8cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(8cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.2;
 }
 .root.inkOnly[data-tone] .reference dd[data-reference-length="long"] {
-  font-size: calc(7.5cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(7.5cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
 }
 .root.inkOnly[data-specifications="true"] .fields {
   margin-top: 4cqw;
@@ -721,7 +777,9 @@
 }
 .root.inkOnly[data-specifications="true"] .fields .name {
   margin: 0;
-  font-size: calc(6.5cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(6.5cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.2;
 }
 .root.inkOnly[data-specifications="true"] .specifications {
@@ -733,7 +791,9 @@
 .root.inkOnly[data-specifications="true"] .profile > div {
   gap: 1.5cqw;
   padding: 0.8cqw 0;
-  font-size: calc(4.4cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(4.4cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
 }
 .root.inkOnly[data-specifications="true"] .profile :is(dt, dd) {
   margin: 0;
@@ -745,11 +805,13 @@
 }
 .root.inkOnly[data-specifications="true"] .order dd {
   margin: 0;
-  font-size: calc(4.6cqw * var(--ink-type-scale));
+  font-size: calc(
+    calc(4.6cqw * var(--ink-type-scale)) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.3;
 }
 .root.inkOnly[data-tone] .order .annotation {
   margin: -1cqw 0 0;
-  font-size: 9cqw;
+  font-size: calc(9cqw + var(--locale-font-increment, 0px));
   line-height: 1;
 }

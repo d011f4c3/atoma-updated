@@ -3,7 +3,7 @@
 .eyebrow,
 .preparation summary {
   font-family: var(--font-atoma-mono), monospace;
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   letter-spacing: 0.035em;
   font-weight: 400;
   line-height: 1.5;
@@ -22,11 +22,11 @@
   white-space: nowrap;
 }
 .trigger > span[aria-hidden="true"] {
-  font-size: 1rem;
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
 }
 .dialog {
   --panel-gutter: clamp(1.25rem, 4vw, 3rem);
-  --material-font-size: 0.75rem;
+  --material-font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   --material-label-size: 0.625rem;
   --material-reading-width: 56ch;
   --material-reading-color: var(--ink);
@@ -45,7 +45,7 @@
   background: var(--surface);
   color: var(--ink);
   font-family: var(--font-atoma-mono), monospace;
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   font-variant-numeric: tabular-nums;
   line-height: 1.8;
@@ -98,19 +98,19 @@
   cursor: pointer;
 }
 .header button > span[aria-hidden="true"] {
-  font-size: 1.125rem;
+  font-size: calc(1.125rem + var(--locale-font-increment, 0px));
 }
 .body {
   padding: 2rem var(--panel-gutter) max(3rem, env(safe-area-inset-bottom));
 }
 .eyebrow {
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   text-transform: uppercase;
 }
 .body h2 {
   margin: 0.625rem 0 1rem;
-  font-size: 1.125rem;
+  font-size: calc(1.125rem + var(--locale-font-increment, 0px));
   line-height: 1.35;
   font-weight: 400;
   letter-spacing: -0.025em;
@@ -121,7 +121,7 @@
   margin: 0 0 2rem;
   max-width: 56ch;
   text-wrap: pretty;
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   line-height: 1.8;
 }
 .preparation {
@@ -136,7 +136,7 @@
   min-height: 3.5rem;
   gap: 1.25rem;
   padding-block: 1rem;
-  font-size: 0.875rem;
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
   font-weight: 500;
   border-radius: var(--radius-button, 6px);
   cursor: pointer;
@@ -146,7 +146,7 @@
   display: none;
 }
 .preparation summary > span[aria-hidden="true"] {
-  font-size: 1rem;
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
 }
 .preparation[open] summary > span[aria-hidden="true"] {
   transform: rotate(45deg);
@@ -158,7 +158,7 @@
 .preparationBody li {
   max-width: 56ch;
   margin: 0;
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   line-height: 1.8;
   color: var(--ink);
   text-wrap: pretty;
@@ -169,7 +169,7 @@
 .preparationBody h3 {
   max-width: 48ch;
   margin: 0 0 0.5rem;
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   font-weight: 500;
   line-height: 1.6;
   letter-spacing: 0.035em;
@@ -189,7 +189,7 @@
   padding-top: 1.25rem;
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
 }
 .dialog :is(button, summary):focus-visible {
   outline: 1px solid var(--ink);
@@ -225,7 +225,7 @@
     flex-wrap: wrap;
     gap: 0.25rem 1rem;
     padding: 0.875rem var(--panel-gutter);
-    font-size: 0.625rem;
+    font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   }
   .header button {
     gap: 0.75rem;
@@ -243,14 +243,13 @@
   letter-spacing: 0.04em;
 }
 
-:global([data-embedded="true"])
-  :is(
-    .introduction,
-    .preparationBody p,
-    .preparationBody li,
-    .preparationBody h3
-  ) {
+:global([data-embedded="true"]) .preparationBody h3 {
   text-transform: uppercase;
+}
+.introduction,
+.preparationBody p,
+.preparationBody li {
+  text-transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

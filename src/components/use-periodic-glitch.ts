@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-/** Re-resolve hovered display text, with a quiet gap between each short pulse. */
-export function usePeriodicGlitch(active: boolean) {
+/** Re-resolve display text, with a quiet gap between each short pulse. */
+export function usePeriodicGlitch(
+  active: boolean,
+  { intervalMs = 2800, mobileIntervalMs = 5600 } = {},
+) {
   const [cycle, setCycle] = useState(0);
 
   useEffect(() => {
@@ -18,7 +21,7 @@ export function usePeriodicGlitch(active: boolean) {
       if (preference.matches || document.hidden) return;
       timer = setInterval(
         () => setCycle((previous) => previous + 1),
-        mobile.matches ? 5600 : 2800,
+        mobile.matches ? mobileIntervalMs : intervalMs,
       );
     }
 
@@ -32,7 +35,7 @@ export function usePeriodicGlitch(active: boolean) {
       mobile.removeEventListener("change", synchronize);
       document.removeEventListener("visibilitychange", synchronize);
     };
-  }, [active]);
+  }, [active, intervalMs, mobileIntervalMs]);
 
   return cycle;
 }

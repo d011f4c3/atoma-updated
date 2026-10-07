@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useStorefrontLocale } from "./storefront-locale-provider";
 import { useEffect, useRef, useState } from "react";
 import type { WebGLRenderer } from "three";
 import { powderMask } from "@/lib/powder-mask";
@@ -34,6 +35,7 @@ export function PowderScene({
   tone = "light",
   onReady,
 }: PowderSceneProps) {
+  const { t } = useStorefrontLocale();
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasHostRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<SceneEngine | null>(null);
@@ -279,7 +281,9 @@ export function PowderScene({
       data-tone={tone}
       data-photograph-failed={photographFailed}
       role="img"
-      aria-label={`${title || "Matcha"} powder, formed from its material photograph.`}
+      aria-label={t("{name} powder, formed from its material photograph.", {
+        name: title || t("Matcha"),
+      })}
       aria-busy={mode === "loading" || (mode === "fallback" && !fallbackReady)}
     >
       <div className={styles.fallbackImage} aria-hidden="true">
@@ -305,8 +309,8 @@ export function PowderScene({
       </div>
       {mode === "fallback" && photographFailed && (
         <p className={styles.unavailable} aria-hidden="true">
-          {title || "Matcha"}
-          <span>Matcha powder</span>
+          {title || t("Matcha")}
+          <span>{t("Matcha powder")}</span>
         </p>
       )}
       <div

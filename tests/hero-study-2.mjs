@@ -405,7 +405,7 @@ async function assertSelection(page) {
 }
 
 async function originsRoundTrip(page, tone) {
-  await selectView(page, "Origins");
+  await selectView(page, "Origin");
   const entry = page
     .locator('[data-origin-preview="panorama"]')
     .getByRole("button", { name: "Explore the growing region", exact: true });

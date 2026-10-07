@@ -18,6 +18,8 @@ export interface CatalogProduct {
   imageUrl: string | null;
   imageAlt: string;
   handle: string;
+  /** Public ATOMA reference, without brackets; null for an unmapped handle. */
+  productCode: string | null;
   productUrl: string | null;
   isFixture: boolean;
   variants: CatalogVariant[];

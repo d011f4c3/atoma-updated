@@ -1,9 +1,15 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import type { CatalogProduct } from "@/lib/catalog-types";
 import { getProductContent } from "@/lib/product-content";
 import { getProductFieldEntries } from "@/lib/origins-content";
-import { getPlacePath, getProductPlaceRecords } from "@/lib/origins-model";
+import {
+  getPlacePath,
+  getProductPlaceRecords,
+  getProductDesignations,
+} from "@/lib/origins-model";
 import { useCart } from "./cart-drawer";
 import { useOrigins } from "./origins-provider";
 import { ProductDetails } from "./product-details";
@@ -26,7 +32,8 @@ export function RetailProductInformation({
   product,
   tone,
 }: RetailProductInformationProps) {
-  const content = getProductContent(product);
+  const { locale, t } = useStorefrontLocale();
+  const content = getProductContent(product, locale);
   const { busy } = useCart();
   const { openOrigins } = useOrigins();
   // No lot is selected on this page. Keep origin claims at material scope;
@@ -34,15 +41,39 @@ export function RetailProductInformation({
   const originRecords = getProductPlaceRecords(product.handle).filter(
     (record) => record.subjects.some((subject) => subject.kind === "material"),
   );
+  const originContexts = [
+    ...originRecords.map((record) => ({
+      id: `${record.role}-${record.place.id}`,
+      label: t(originRoles[record.role]),
+      name: t(record.place.name),
+      path: getPlacePath(record.place.id)
+        .slice(0, -1)
+        .reverse()
+        .map((place) => t(place.name))
+        .join(", "),
+      paragraphs: [t(record.place.description)],
+      placeId: record.place.id,
+      action: t("Explore {place}", { place: t(record.place.name) }),
+    })),
+    ...getProductDesignations(product.handle).map((designation) => ({
+      id: designation.id,
+      label: t("Tea designation"),
+      name: t(designation.name),
+      path: t("Kyoto, Japan · regional context"),
+      paragraphs: [t(designation.summary), t(designation.productNote)],
+      placeId: designation.contextPlaceId,
+      action: t("About Uji"),
+    })),
+  ];
   const fieldEntries = getProductFieldEntries(product.handle);
-  const returnLabel = `Return to ${content.name}`;
+  const returnProduct = { title: product.title, handle: product.handle };
 
   return (
     <section
       className={styles.root}
       data-retail-product-information
       data-tone={tone}
-      aria-label={`Information about ${content.name}`}
+      aria-label={t("Information about {product}", { product: content.name })}
     >
       <details
         className={styles.accordion}
@@ -51,7 +82,7 @@ export function RetailProductInformation({
         data-retail-specifications
       >
         <summary className={styles.trigger}>
-          <span>Specifications</span>
+          <span>{t("Specifications")}</span>
           <span className={styles.plus} aria-hidden="true">
             +
           </span>
@@ -59,10 +90,10 @@ export function RetailProductInformation({
         <div className={styles.body}>
           <ul
             className={styles.properties}
-            aria-label="Material specifications"
+            aria-label={t("Material specifications")}
           >
-            {content.materialProfile.map((property) => (
-              <li key={property.label}>
+            {content.materialProfile.map((property, index) => (
+              <li key={index}>
                 <details className={styles.property} data-retail-specification>
                   <summary>
                     <span className={styles.propertyLabel}>
@@ -85,14 +116,14 @@ export function RetailProductInformation({
 
       <details className={styles.accordion} data-retail-material-use>
         <summary className={styles.trigger}>
-          <span>Material & use</span>
+          <span>{t("Material & use")}</span>
           <span className={styles.plus} aria-hidden="true">
             +
           </span>
         </summary>
         <div className={`${styles.body} ${styles.prose}`}>
           <section>
-            <h3>Use & preparation</h3>
+            <h3>{t("Use & preparation")}</h3>
             <p>{content.preparation}</p>
           </section>
           {content.sections.map((section) => (
@@ -102,7 +133,7 @@ export function RetailProductInformation({
             </section>
           ))}
           <section>
-            <h3>What to look for</h3>
+            <h3>{t("What to look for")}</h3>
             <ul>
               {content.lookFor.map((item) => (
                 <li key={item}>{item}</li>
@@ -121,26 +152,22 @@ export function RetailProductInformation({
         data-retail-origins
       >
         <summary className={styles.trigger}>
-          <span>Origins & field notes</span>
+          <span>{t("Origins & field notes")}</span>
           <span className={styles.plus} aria-hidden="true">
             +
           </span>
         </summary>
         <div className={`${styles.body} ${styles.prose}`}>
-          {originRecords.length ? (
+          {originContexts.length ? (
             <div className={styles.places}>
-              {originRecords.map((record) => (
-                <section key={`${record.role}-${record.place.id}`}>
-                  <p className={styles.caption}>{originRoles[record.role]}</p>
-                  <h3 className={styles.placeName}>{record.place.name}</h3>
-                  <p className={styles.placePath}>
-                    {getPlacePath(record.place.id)
-                      .slice(0, -1)
-                      .reverse()
-                      .map((place) => place.name)
-                      .join(", ")}
-                  </p>
-                  <p>{record.place.description}</p>
+              {originContexts.map((record) => (
+                <section key={record.id}>
+                  <p className={styles.caption}>{record.label}</p>
+                  <h3 className={styles.placeName}>{record.name}</h3>
+                  <p className={styles.placePath}>{record.path}</p>
+                  {record.paragraphs.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
                   <button
                     className={styles.action}
                     type="button"
@@ -149,12 +176,12 @@ export function RetailProductInformation({
                     onClick={() =>
                       openOrigins({
                         tone,
-                        placeId: record.place.id,
-                        returnLabel,
+                        placeId: record.placeId,
+                        returnProduct,
                       })
                     }
                   >
-                    Explore {record.place.name}
+                    {record.action}
                     <span aria-hidden="true">↗</span>
                   </button>
                 </section>
@@ -162,17 +189,19 @@ export function RetailProductInformation({
             </div>
           ) : (
             <section>
-              <h3>Product origin</h3>
-              <p>Origin details have not been published for this matcha.</p>
+              <h3>{t("Product origin")}</h3>
+              <p>
+                {t("Origin details have not been published for this matcha.")}
+              </p>
             </section>
           )}
           {content.originNote && <p>{content.originNote}</p>}
           {fieldEntries.length > 0 && (
             <section
               className={styles.fieldNotes}
-              aria-label="Related field notes"
+              aria-label={t("Related field notes")}
             >
-              <h3>Related field notes</h3>
+              <h3>{t("Related field notes")}</h3>
               {fieldEntries.map((entry) => (
                 <button
                   className={styles.fieldEntry}
@@ -181,15 +210,17 @@ export function RetailProductInformation({
                   aria-haspopup="dialog"
                   disabled={busy}
                   onClick={() =>
-                    openOrigins({ tone, entry: entry.slug, returnLabel })
+                    openOrigins({ tone, entry: entry.slug, returnProduct })
                   }
                 >
-                  <span className={styles.caption}>{entry.region}</span>
+                  <span className={styles.caption}>{t(entry.region)}</span>
                   <span className={styles.entryTitle}>
-                    {entry.title}
+                    {t(entry.title)}
                     <span aria-hidden="true">↗</span>
                   </span>
-                  <span className={styles.entryDescription}>{entry.dek}</span>
+                  <span className={styles.entryDescription}>
+                    {t(entry.dek)}
+                  </span>
                 </button>
               ))}
             </section>
@@ -199,9 +230,10 @@ export function RetailProductInformation({
             type="button"
             aria-haspopup="dialog"
             disabled={busy}
-            onClick={() => openOrigins({ tone, returnLabel })}
+            onClick={() => openOrigins({ tone, returnProduct })}
           >
-            All origins<span aria-hidden="true">↗</span>
+            {t("All origins")}
+            <span aria-hidden="true">↗</span>
           </button>
         </div>
       </details>

@@ -629,7 +629,11 @@ for (const tone of ["dark", "light"]) {
           );
         assert.match(
           await details.textContent(),
-          /have not yet been published/,
+          /Further product details are awaiting supplier confirmation/,
+        );
+        assert.equal(
+          await details.locator("[data-provisional-detail]").count(),
+          3,
         );
         await details.locator("summary").click();
 
@@ -905,7 +909,7 @@ for (const [width, height, tone] of [
           .getByRole("button", { name: "About ATOMA", exact: true })
           .click();
         const about = page.getByRole("dialog", {
-          name: /A closer look\s+at matcha\./,
+          name: /Matcha,\s+in detail\./,
         });
         await about.waitFor();
         await assertOverlayPalette(about, otherTone);

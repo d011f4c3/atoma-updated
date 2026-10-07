@@ -3,7 +3,7 @@
   margin-top: 0.75rem;
   color: var(--ink);
   font: inherit;
-  font-size: 0.8125rem;
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
   line-height: 1.75;
 }
 
@@ -20,7 +20,7 @@
     --night-control,
     color-mix(in srgb, var(--ink) 4%, transparent)
   );
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
   list-style: none;
   cursor: pointer;
@@ -58,7 +58,7 @@
 .plus {
   flex: none;
   color: var(--muted);
-  font-size: 1rem;
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
   line-height: 1;
   transition: transform 180ms;
 }
@@ -79,7 +79,7 @@
 
 .section h3 {
   margin: 0 0 0.75rem;
-  font-size: 0.8125rem;
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: -0.015em;
@@ -96,6 +96,9 @@
 .section .application {
   margin-bottom: 0.5rem;
   color: var(--ink);
+}
+.section p:not(.application) {
+  text-transform: none;
 }
 
 .formats {
@@ -126,7 +129,7 @@
 .options,
 .availability {
   color: var(--muted);
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
 }
 
 .facts {
@@ -143,7 +146,7 @@
 
 .facts dt {
   color: var(--muted);
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
 }
 
 .facts dd {
@@ -159,7 +162,9 @@
 .root[data-presentation="inline"] {
   margin-top: 1.5rem;
   border-top: 1px solid var(--line);
-  font-size: var(--tab-body-size, 0.75rem);
+  font-size: calc(
+    var(--tab-body-size, 0.75rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.8;
 }
 
@@ -174,13 +179,17 @@
 
 .root[data-presentation="inline"] .section h3 {
   margin-bottom: 0.625rem;
-  font-size: var(--tab-label-size, 0.6875rem);
+  font-size: calc(
+    var(--tab-label-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
 }
 
 .root[data-presentation="inline"] .options,
 .root[data-presentation="inline"] .availability,
 .root[data-presentation="inline"] .facts dt {
-  font-size: var(--tab-label-size, 0.6875rem);
+  font-size: calc(
+    var(--tab-label-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
 }
 
 .root[data-presentation="inline"] .section p {

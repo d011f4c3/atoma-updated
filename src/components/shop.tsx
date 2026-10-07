@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import Link from "next/link";
 import { useId, useRef } from "react";
 import type { CatalogProduct, CatalogVariant } from "@/lib/catalog-types";
@@ -15,6 +17,7 @@ import styles from "./shop.module.css";
 import { useStorefrontTheme } from "./storefront-theme-provider";
 
 export function Shop() {
+  const { t } = useStorefrontLocale();
   const { tone } = useStorefrontTheme();
   const { catalog, loading, retry } = useProductSelection();
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -32,17 +35,17 @@ export function Shop() {
         <header className={styles.intro}>
           <div>
             <p className={styles.eyebrow}>
-              <ScrambleText text="SHOP / MATCHA" periodic wrap />
+              <ScrambleText text={t("SHOP / MATCHA")} periodic wrap />
             </p>
             <h1 ref={headingRef} tabIndex={-1}>
-              Find your matcha.
+              {t("Find your matcha.")}
             </h1>
           </div>
           <p className={styles.introCopy}>
-            <ScrambleText text="For the way you make it." periodic wrap />
+            <ScrambleText text={t("For the way you make it.")} periodic wrap />
             <br />
             <ScrambleText
-              text="Explore the collection, choose your format."
+              text={t("Explore the collection, choose your format.")}
               periodic
               wrap
             />
@@ -50,40 +53,47 @@ export function Shop() {
         </header>
         <div className={styles.collectionHeader}>
           <span>
-            <ScrambleText text="THE COLLECTION" periodic wrap />
+            <ScrambleText text={t("THE COLLECTION")} periodic wrap />
           </span>
           <span aria-live="polite">
             {loading
-              ? "LOADING…"
-              : String(products.length).padStart(2, "0") +
-                (products.length === 1 ? " MATCHA" : " SELECTIONS")}
+              ? t("LOADING…")
+              : t(
+                  products.length === 1
+                    ? "{count} MATCHA"
+                    : "{count} SELECTIONS",
+                  { count: String(products.length).padStart(2, "0") },
+                )}
           </span>
         </div>
         {loading ? (
           <div className={styles.state} role="status">
             <span className={styles.loader} aria-hidden="true" />
-            Opening the collection…
+            {t("Opening the collection…")}
           </div>
         ) : catalog?.status === "unavailable" || !catalog ? (
           <div className={styles.state} role="status">
-            <h2>The collection couldn’t be loaded.</h2>
-            <p>Please try again.</p>
+            <h2>{t("The collection couldn’t be loaded.")}</h2>
+            <p>{t("Please try again.")}</p>
             <button
               className={styles.retry}
               type="button"
               onClick={retryCollection}
             >
-              <ScrambleText text="Try again" interactive />
+              <ScrambleText text={t("Try again")} interactive />
               <span aria-hidden="true">↻</span>
             </button>
           </div>
         ) : products.length === 0 ? (
           <div className={styles.state} role="status">
-            <h2>The next selection is taking shape.</h2>
-            <p>There are no matcha available to browse just yet.</p>
+            <h2>{t("The next selection is taking shape.")}</h2>
+            <p>{t("There are no matcha available to browse just yet.")}</p>
           </div>
         ) : (
-          <section className={styles.collection} aria-label="Matcha collection">
+          <section
+            className={styles.collection}
+            aria-label={t("Matcha collection")}
+          >
             {products.map((product) => (
               <ShopProduct key={product.id} product={product} />
             ))}
@@ -91,17 +101,21 @@ export function Shop() {
         )}
         <div className={styles.explore}>
           <span>
-            <ScrambleText text="A closer look at the material." periodic wrap />
+            <ScrambleText
+              text={t("A closer look at the material.")}
+              periodic
+              wrap
+            />
           </span>
           <Link href="/">
-            <ScrambleText text="Explore matcha" interactive />
+            <ScrambleText text={t("Explore matcha")} interactive />
             <span aria-hidden="true">↗</span>
           </Link>
         </div>
       </div>
       <footer className={styles.footer}>
         <span>
-          <ScrambleText text="ATOMA / MATCHA" periodic wrap />
+          <ScrambleText text={t("ATOMA / MATCHA")} periodic wrap />
         </span>
         <ThemeSwitcher />
       </footer>
@@ -110,8 +124,9 @@ export function Shop() {
 }
 
 function ShopProduct({ product }: { product: CatalogProduct }) {
+  const { locale, t } = useStorefrontLocale();
   const codeId = useId();
-  const content = getProductContent(product);
+  const content = getProductContent(product, locale);
   const displayIndex = getProductDisplayIndex(product.handle);
   const availableVariants = product.variants.filter(
     (variant) => variant.available,
@@ -143,14 +158,14 @@ function ShopProduct({ product }: { product: CatalogProduct }) {
       <Link
         className={styles.productLink}
         href={href}
-        aria-label={"View " + content.name}
+        aria-label={t("View {name}", { name: content.name })}
         aria-describedby={displayIndex ? codeId : undefined}
       >
         <div className={styles.productTopline}>
           <span>{content.application}</span>
           <span className={styles.availability}>
             <span aria-hidden="true" />
-            {available ? "Available" : "Unavailable"}
+            {available ? t("Available") : t("Unavailable")}
           </span>
         </div>
         <div className={styles.material}>
@@ -168,7 +183,7 @@ function ShopProduct({ product }: { product: CatalogProduct }) {
                 id={codeId}
                 data-shop-product-code={displayIndex}
               >
-                <span className={styles.srOnly}>Product code </span>
+                <span className={styles.srOnly}>{t("Product code")} </span>
                 {displayIndex}
               </span>
             )}
@@ -177,19 +192,23 @@ function ShopProduct({ product }: { product: CatalogProduct }) {
           <div className={styles.productFacts}>
             <span className={styles.price} data-shop-from-price>
               {fromVariant
-                ? "From " + money(fromVariant.priceMinor, fromVariant.currency)
+                ? t("From {price}", {
+                    price: money(fromVariant.priceMinor, fromVariant.currency),
+                  })
                 : available
-                  ? "View pricing"
-                  : "Currently unavailable"}
+                  ? t("View pricing")
+                  : t("Currently unavailable")}
             </span>
             <span className={styles.formatCount}>
               {formatCount === 0
-                ? "No published format"
-                : formatCount + (formatCount === 1 ? " format" : " formats")}
+                ? t("No published format")
+                : t(formatCount === 1 ? "{count} format" : "{count} formats", {
+                    count: formatCount,
+                  })}
             </span>
           </div>
           <span className={styles.viewProduct}>
-            View matcha <span aria-hidden="true">↗</span>
+            {t("View matcha")} <span aria-hidden="true">↗</span>
           </span>
         </div>
       </Link>

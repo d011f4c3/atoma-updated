@@ -11,7 +11,7 @@
   color: var(--origin-ink);
   color-scheme: dark;
   font-family: var(--font-atoma-mono), monospace;
-  font-size: 0.8125rem;
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   line-height: 1.8;
   font-variant-numeric: tabular-nums;
@@ -73,7 +73,7 @@
   padding: 0.5rem 0.75rem;
   border: 1px solid transparent;
   border-radius: 6px;
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
   text-align: left;
   overflow-wrap: anywhere;
@@ -86,7 +86,7 @@
 
 .back > span {
   flex: none;
-  font-size: 1rem;
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
 }
 
 .indexButton {
@@ -115,7 +115,7 @@
 .journalLabel,
 .eyebrow {
   color: var(--origin-muted);
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
   letter-spacing: 0.02em;
 }
@@ -149,7 +149,9 @@
 
 .articleHeading h1 {
   margin: 0;
-  font-size: clamp(1.5rem, 2.25vw, 2rem);
+  font-size: calc(
+    clamp(1.5rem, 2.25vw, 2rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   line-height: 1.2;
   letter-spacing: -0.04em;
@@ -160,7 +162,7 @@
   max-width: 48ch;
   margin: 0.75rem 0 0;
   color: var(--origin-muted);
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   line-height: 1.8;
 }
 
@@ -184,7 +186,7 @@
   border: 1px solid transparent;
   border-radius: 6px;
   background: var(--origin-control);
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
   text-align: left;
   overflow-wrap: anywhere;
@@ -201,7 +203,7 @@
 
 .chapterNumber {
   color: var(--origin-muted);
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
 }
 
 .chapterNumber:empty {
@@ -279,7 +281,7 @@
 
 .caption h2 {
   margin: 0 0 0.75rem;
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   line-height: 1.6;
 }
@@ -287,7 +289,7 @@
 .prose {
   margin: 0 0 0.875rem;
   color: var(--origin-muted);
-  font-size: 0.8125rem;
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
   line-height: 1.85;
   text-wrap: pretty;
 }
@@ -300,7 +302,7 @@
 .photograph figcaption {
   margin: 1.25rem 0 0;
   color: var(--origin-muted);
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   line-height: 1.7;
 }
 
@@ -316,7 +318,7 @@
 
 .connections h2 {
   margin: 0 0 1rem;
-  font-size: 0.875rem;
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   line-height: 1.6;
 }
@@ -342,7 +344,7 @@
   border: 1px solid transparent;
   border-radius: 6px;
   background: var(--origin-control);
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   line-height: 1.6;
 }
 
@@ -354,7 +356,7 @@
 
 .availability {
   color: var(--origin-muted);
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
 }
 
 .action {
@@ -367,7 +369,7 @@
   border: 1px solid transparent;
   border-radius: 6px;
   background: var(--origin-control);
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
   text-align: left;
   cursor: pointer;
@@ -395,6 +397,12 @@
 .prose[role="status"] {
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.dek,
+.prose,
+.prose[role="status"] {
+  text-transform: none;
 }
 
 @media (max-width: 1000px) {
@@ -428,12 +436,12 @@
   .indexButton {
     gap: 0.5rem;
     padding-inline: 0.5rem;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   }
 
   .journalLabel {
     max-width: 12ch;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   }
 
   .reader {
@@ -453,7 +461,7 @@
 
   .chapters button {
     padding: 0.5rem 0.625rem;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   }
 
   .chapter,

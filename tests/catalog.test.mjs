@@ -6,6 +6,8 @@ import {
   projectCatalog,
   unavailableCatalog,
 } from "../src/lib/catalog-model.ts";
+import { getProductDisplayIndex } from "../src/lib/product-display-index.ts";
+import { getProductFacts } from "../src/lib/product-details.ts";
 
 function snapshot(overrides = {}, variantOverrides = {}) {
   return {
@@ -48,7 +50,90 @@ test("maps exact money and quantity rules and preserves fixture disclosure", () 
   assert.equal(catalog.products[0].variants[0].minimum, 2);
   assert.equal(catalog.products[0].variants[0].available, true);
   assert.equal(catalog.products[0].productUrl, null);
-  assert.doesNotMatch(JSON.stringify(catalog), /gid:\/\/shopify|PRIVATE-SKU/);
+  assert.equal(catalog.products[0].productCode, null);
+  assert.doesNotMatch(
+    JSON.stringify(catalog),
+    /gid:\/\/shopify|PRIVATE-SKU|merchantSku|"reference"/,
+  );
+});
+
+test("server, UI and published facts share codes without changing purchase locators or catalog data", () => {
+  const knownCodes = [
+    [
+      "test-only-japanese-premium-matcha-powder-for-tea-service-1-kg",
+      "WZKA-00",
+    ],
+    ["test-only-japanese-barista-matcha-powder-for-lattes-1-kg", "UJI-00"],
+    ["jmm-storefront-test-matcha", "UJI-01"],
+  ];
+  const products = knownCodes.map(
+    ([handle], index) =>
+      snapshot(
+        {
+          handle,
+          title: `Localized title ${index}`,
+          description: "Public copy",
+        },
+        {
+          reference: `gid://shopify/ProductVariant/${index + 10}`,
+          price: { minorUnits: 5000 + index, currency: "JPY" },
+        },
+      ).products[0],
+  );
+  const original = structuredClone(products);
+  for (const order of [products, [...products].reverse()]) {
+    const receivedReferences = [];
+    const catalog = projectCatalog({ products: order }, (reference) => {
+      receivedReferences.push(reference);
+      return `signed-locator-${products.findIndex((product) => product.variants[0].reference === reference)}`;
+    });
+    for (const [index, product] of catalog.products.entries()) {
+      const source = order[index];
+      const code = knownCodes.find(([handle]) => handle === source.handle)[1];
+      assert.equal(product.productCode, code);
+      assert.equal(getProductDisplayIndex(product.handle), `[${code}]`);
+      assert.equal(getProductFacts(product.handle).published[0].value, code);
+      assert.equal(product.id, source.handle);
+      assert.equal(product.handle, source.handle);
+      assert.equal(product.title, source.title);
+      assert.equal(product.description, source.description);
+      assert.deepEqual(product.variants[0], {
+        id: `signed-locator-${products.indexOf(source)}`,
+        title: "1 kg",
+        available: true,
+        priceMinor: source.variants[0].price.minorUnits,
+        currency: "JPY",
+        options: [{ name: "Size", value: "1 kg" }],
+        minimum: 2,
+        maximum: 10,
+        increment: 2,
+      });
+    }
+    assert.deepEqual(
+      receivedReferences,
+      order.map((product) => product.variants[0].reference),
+    );
+    assert.doesNotMatch(
+      JSON.stringify(catalog),
+      /gid:\/\/shopify|PRIVATE-SKU|merchantSku|"reference"/,
+    );
+  }
+  assert.deepEqual(products, original);
+});
+
+test("unknown and lookalike handles never inherit a vendor code or derive one from titles", () => {
+  for (const handle of [
+    "new-matcha",
+    "barista-matcha-2026",
+    "CULINARY-MATCHA",
+    "constructor",
+    "__proto__",
+  ]) {
+    const product = projectCatalog(
+      snapshot({ handle, title: "Ceremonial Matcha", productCode: "WZKA-00" }),
+    ).products[0];
+    assert.equal(product.productCode, null);
+  }
 });
 
 test("does not infer online publication from a handle or fixture availability", () => {

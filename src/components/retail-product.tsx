@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { getProductContent } from "@/lib/product-content";
@@ -17,6 +19,7 @@ import styles from "./retail-product.module.css";
 import { useStorefrontTheme } from "./storefront-theme-provider";
 
 export function RetailProduct({ handle }: { handle: string }) {
+  const { locale, t } = useStorefrontLocale();
   const { tone } = useStorefrontTheme();
   const model = useProductSelection(handle);
   const cart = useCart();
@@ -27,7 +30,7 @@ export function RetailProduct({ handle }: { handle: string }) {
   // The shared homepage hook can fall back to its first matcha; a retail URL
   // must match exactly so an unknown handle can never purchase that fallback.
   const product = model.product?.handle === handle ? model.product : undefined;
-  const content = product ? getProductContent(product) : undefined;
+  const content = product ? getProductContent(product, locale) : undefined;
   const unavailable = !catalog || catalog.status === "unavailable";
   const locked = pending || cart.busy;
   const available = Boolean(product && variant?.available);
@@ -45,9 +48,9 @@ export function RetailProduct({ handle }: { handle: string }) {
     catalog?.products.filter((item) => item.handle !== handle) ?? [];
 
   useEffect(() => {
-    setSelectedMatcha(content?.name ?? null);
+    setSelectedMatcha(product?.title ?? null, product?.handle);
     return () => setSelectedMatcha(null);
-  }, [content?.name, setSelectedMatcha]);
+  }, [product?.title, product?.handle, setSelectedMatcha]);
 
   async function addToCart() {
     if (submitting.current || locked || !product || !variant || !purchasable)
@@ -71,30 +74,30 @@ export function RetailProduct({ handle }: { handle: string }) {
     >
       <HomeHeader persistentTheme tone={tone} activePage="shop" />
       <div className={styles.content}>
-        <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-          <Link href={collectionHref}>Shop</Link>
+        <nav className={styles.breadcrumb} aria-label={t("Breadcrumb")}>
+          <Link href={collectionHref}>{t("Shop")}</Link>
           <span aria-hidden="true">/</span>
-          <span aria-current="page">{content?.name ?? "Matcha"}</span>
+          <span aria-current="page">{content?.name ?? t("Matcha")}</span>
         </nav>
 
         {loading ? (
           <div className={styles.state} role="status">
-            Opening your matcha…
+            {t("Opening your matcha…")}
           </div>
         ) : unavailable ? (
           <div className={styles.state} role="status">
-            <h1>This matcha couldn’t be loaded.</h1>
-            <p>Please try again.</p>
+            <h1>{t("This matcha couldn’t be loaded.")}</h1>
+            <p>{t("Please try again.")}</p>
             <button type="button" onClick={model.retry}>
-              Try again <span aria-hidden="true">↻</span>
+              {t("Try again")} <span aria-hidden="true">↻</span>
             </button>
           </div>
         ) : !product || !content ? (
           <div className={styles.state} data-product-not-found>
-            <h1>Matcha not found.</h1>
-            <p>This selection is not in the current collection.</p>
+            <h1>{t("Matcha not found.")}</h1>
+            <p>{t("This selection is not in the current collection.")}</p>
             <Link href={collectionHref}>
-              Back to the collection <span aria-hidden="true">↗</span>
+              {t("Back to the collection")} <span aria-hidden="true">↗</span>
             </Link>
           </div>
         ) : (
@@ -115,7 +118,7 @@ export function RetailProduct({ handle }: { handle: string }) {
               <div className={styles.productBody}>
                 <section
                   className={styles.purchase}
-                  aria-label={`Purchase ${content.name}`}
+                  aria-label={t("Purchase {name}", { name: content.name })}
                 >
                   <p className={styles.eyebrow}>{content.application}</p>
                   <div className={styles.identity}>
@@ -125,20 +128,20 @@ export function RetailProduct({ handle }: { handle: string }) {
                       data-available={available}
                     >
                       <span aria-hidden="true" />
-                      {available ? "Available" : "Currently unavailable"}
+                      {available ? t("Available") : t("Currently unavailable")}
                     </p>
                   </div>
                   <p className={styles.purpose}>{content.purpose}</p>
                   <p className={styles.unitPrice}>
                     {variant
                       ? money(variant.priceMinor, variant.currency)
-                      : "No published format"}
+                      : t("No published format")}
                     {variant && (
                       <span>
                         {" "}
                         /{" "}
                         {variant.title === "Default Title"
-                          ? "Standard"
+                          ? t("Standard")
                           : variant.title}
                       </span>
                     )}
@@ -148,7 +151,7 @@ export function RetailProduct({ handle }: { handle: string }) {
                   </p>
 
                   <fieldset className={styles.formats} disabled={locked}>
-                    <legend>Format</legend>
+                    <legend>{t("Format")}</legend>
                     <div>
                       {product.variants.map((item) => (
                         <button
@@ -161,25 +164,25 @@ export function RetailProduct({ handle }: { handle: string }) {
                         >
                           <span>
                             {item.title === "Default Title"
-                              ? "Standard"
+                              ? t("Standard")
                               : item.title}
                           </span>
-                          {!item.available && <small>Unavailable</small>}
+                          {!item.available && <small>{t("Unavailable")}</small>}
                         </button>
                       ))}
                     </div>
                     {!product.variants.length && (
-                      <p>No formats are currently published.</p>
+                      <p>{t("No formats are currently published.")}</p>
                     )}
                   </fieldset>
 
                   <div className={styles.orderLine}>
                     <div className={styles.quantityGroup}>
-                      <span>Quantity</span>
+                      <span>{t("Quantity")}</span>
                       <div className={styles.stepper}>
                         <button
                           type="button"
-                          aria-label="Decrease quantity"
+                          aria-label={t("Decrease quantity")}
                           disabled={
                             locked ||
                             !available ||
@@ -190,12 +193,12 @@ export function RetailProduct({ handle }: { handle: string }) {
                         >
                           −
                         </button>
-                        <output aria-label="Quantity" aria-live="polite">
+                        <output aria-label={t("Quantity")} aria-live="polite">
                           {quantity}
                         </output>
                         <button
                           type="button"
-                          aria-label="Increase quantity"
+                          aria-label={t("Increase quantity")}
                           disabled={locked || !available || !model.canIncrement}
                           onClick={model.incrementQuantity}
                         >
@@ -204,22 +207,25 @@ export function RetailProduct({ handle }: { handle: string }) {
                       </div>
                     </div>
                     <div className={styles.total}>
-                      <span>Total</span>
+                      <span>{t("Total")}</span>
                       <strong aria-live="polite">{total}</strong>
                     </div>
                   </div>
                   {variant &&
                     (variant.minimum > 1 || variant.increment > 1) && (
                       <p className={styles.quantityNote}>
-                        Minimum {variant.minimum} · Increments of{" "}
-                        {variant.increment}
+                        {t("Minimum {minimum} · Increments of {increment}", {
+                          minimum: variant.minimum,
+                          increment: variant.increment,
+                        })}
                       </p>
                     )}
                   <details className={styles.purchaseOptions}>
                     <summary>
-                      <span>One-time purchase</span>
+                      <span>{t("One-time purchase")}</span>
                       <span>
-                        Purchase options <span aria-hidden="true">+</span>
+                        {t("Purchase options")}{" "}
+                        <span aria-hidden="true">+</span>
                       </span>
                     </summary>
                     <PurchaseOptions />
@@ -237,7 +243,7 @@ export function RetailProduct({ handle }: { handle: string }) {
                   )}
                   {available && !purchasable && (
                     <p className={styles.quantityNote}>
-                      This format’s quantity is currently unavailable.
+                      {t("This format’s quantity is currently unavailable.")}
                     </p>
                   )}
                 </section>
@@ -246,7 +252,7 @@ export function RetailProduct({ handle }: { handle: string }) {
                   className={styles.overview}
                   aria-labelledby="retail-overview"
                 >
-                  <p className={styles.sectionLabel}>Overview</p>
+                  <p className={styles.sectionLabel}>{t("Overview")}</p>
                   <h2 id="retail-overview">{content.purpose}</h2>
                   <p>{content.summary}</p>
                 </section>
@@ -260,20 +266,20 @@ export function RetailProduct({ handle }: { handle: string }) {
                 aria-labelledby="retail-related"
               >
                 <header>
-                  <h2 id="retail-related">Explore the collection.</h2>
+                  <h2 id="retail-related">{t("Explore the collection.")}</h2>
                   <Link href={collectionHref}>
-                    All matcha <span aria-hidden="true">↗</span>
+                    {t("All matcha")} <span aria-hidden="true">↗</span>
                   </Link>
                 </header>
                 <div className={styles.relatedGrid}>
                   {related.map((item) => {
-                    const details = getProductContent(item);
+                    const details = getProductContent(item, locale);
                     return (
                       <Link
                         key={item.id}
                         className={styles.relatedProduct}
                         href={productHref(item.handle)}
-                        aria-label={`View ${details.name}`}
+                        aria-label={t("View {name}", { name: details.name })}
                         aria-disabled={locked || undefined}
                         onNavigate={(event) => {
                           if (locked) event.preventDefault();
@@ -302,7 +308,7 @@ export function RetailProduct({ handle }: { handle: string }) {
         )}
       </div>
       <footer className={styles.footer}>
-        <Link href={collectionHref}>ATOMA / MATCHA</Link>
+        <Link href={collectionHref}>{t("ATOMA / MATCHA")}</Link>
         <ThemeSwitcher />
       </footer>
     </main>

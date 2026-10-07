@@ -11,6 +11,8 @@ import {
   type ReactNode,
 } from "react";
 import { usePathname } from "next/navigation";
+import { productName } from "@/lib/product-name";
+import { useStorefrontLocale } from "./storefront-locale-provider";
 import { OriginsContent } from "./origins-content";
 import { useCart } from "./cart-drawer";
 import { useStorefrontTheme } from "./storefront-theme-provider";
@@ -22,10 +24,11 @@ type Opening = {
   entry?: string;
   placeId?: string;
   returnLabel?: string;
+  returnProduct?: { title: string; handle?: string };
 };
 type OriginsContextValue = {
   openOrigins: (opening: Opening) => void;
-  setSelectedMatcha: (name: string | null) => void;
+  setSelectedMatcha: (name: string | null, handle?: string) => void;
 };
 
 const OriginsContext = createContext<OriginsContextValue | null>(null);
@@ -37,12 +40,13 @@ export function useOrigins() {
 }
 
 export function OriginsProvider({ children }: { children: ReactNode }) {
+  const { locale, t } = useStorefrontLocale();
   const pathname = usePathname();
   const { tone: storefrontTone } = useStorefrontTheme();
   const { busy } = useCart();
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLElement | null>(null);
-  const selectedMatcha = useRef<string | null>(null);
+  const selectedMatcha = useRef<Opening["returnProduct"] | null>(null);
   const historyEntry = useRef(false);
   const previousURL = useRef("");
   const [opening, setOpening] = useState<Opening | null>(null);
@@ -53,9 +57,12 @@ export function OriginsProvider({ children }: { children: ReactNode }) {
   // History restores the reader's place; appearance remains the current choice.
   // Saved concepts and studies retain the tone supplied when opening the reader.
   const tone = regularStorefront ? storefrontTone : (opening?.tone ?? "dark");
-  const setSelectedMatcha = useCallback((name: string | null) => {
-    selectedMatcha.current = name;
-  }, []);
+  const setSelectedMatcha = useCallback(
+    (name: string | null, handle?: string) => {
+      selectedMatcha.current = name === null ? null : { title: name, handle };
+    },
+    [],
+  );
 
   const openOrigins = useCallback(
     (next: Opening) => {
@@ -67,11 +74,12 @@ export function OriginsProvider({ children }: { children: ReactNode }) {
       previousURL.current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
       const value = {
         ...next,
-        returnLabel:
-          next.returnLabel ??
-          (selectedMatcha.current
-            ? `Return to ${selectedMatcha.current}`
-            : "Return to matcha"),
+        returnProduct:
+          next.returnProduct ??
+          (next.returnLabel
+            ? undefined
+            : (selectedMatcha.current ?? undefined)),
+        returnLabel: next.returnLabel ?? "Return to matcha",
       };
       // Let Next attach its routing metadata and synchronize the canonical URL.
       window.history.pushState({ atomaOrigins: value }, "", "#origins");
@@ -145,7 +153,7 @@ export function OriginsProvider({ children }: { children: ReactNode }) {
         className={styles.dialog}
         data-origins-dialog
         data-tone={tone}
-        aria-label="ATOMA Origins"
+        aria-label={t("ATOMA Origins")}
         onKeyDown={(event) => {
           if (event.key !== "Tab") return;
           const controls = Array.from(
@@ -205,7 +213,17 @@ export function OriginsProvider({ children }: { children: ReactNode }) {
             initialEntry={opening.entry}
             initialPlace={opening.placeId}
             onReturn={closeOrigins}
-            returnLabel={opening.returnLabel}
+            returnLabel={
+              opening.returnProduct
+                ? t("Return to {product}", {
+                    product: productName(
+                      opening.returnProduct.title,
+                      opening.returnProduct.handle,
+                      locale,
+                    ),
+                  })
+                : t(opening.returnLabel ?? "Return to matcha")
+            }
           />
         )}
       </dialog>

@@ -386,7 +386,7 @@ for (const tone of ["light", "dark"]) {
             exact: true,
           });
           assert.equal(await modes.getByRole("button").count(), 4);
-          for (const name of ["Overview", "Specifications", "Origins", "Shop"])
+          for (const name of ["Overview", "Specifications", "Shop", "Origin"])
             assert.equal(
               await modes
                 .getByRole("button", { name, exact: true })
@@ -454,25 +454,28 @@ for (const tone of ["light", "dark"]) {
           const panel = (view) =>
             page.locator(`[data-homepage-view-panel="${view}"]`);
           async function assertOverviewDetails(productIndex) {
-            const details = panel("overview").locator("[data-product-details]");
+            const details = panel("overview").locator(
+              '[data-overview-study="folded"]',
+            );
             assert.equal(await details.count(), 1);
             assert.equal(await details.isVisible(), true);
-            assert.equal(
-              await details.locator("summary").count(),
-              0,
-              "Overview product details must be readable without opening a disclosure",
+            assert.deepEqual(
+              await details
+                .locator("summary > span:first-child")
+                .allTextContents(),
+              [
+                "Formats & availability",
+                "Application & preparation",
+                "Product record",
+              ],
+              "Folded Overview exposes the existing details in three disclosures",
             );
-            for (const name of [
-              "Formats & availability",
-              "Application & preparation",
-              "Product record",
-            ])
-              assert.equal(
-                await details
-                  .getByRole("heading", { name, exact: true })
-                  .isVisible(),
-                true,
-              );
+            assert.equal(await details.locator("details[open]").count(), 0);
+            for (const summary of await details.locator("summary").all()) {
+              assert.equal(await summary.isVisible(), true);
+              await summary.click();
+            }
+            assert.equal(await details.locator("details[open]").count(), 3);
             const formats = details.getByRole("listitem");
             const expectedFormats = productStories[productIndex].variants;
             assert.equal(await formats.count(), expectedFormats.length);
@@ -495,7 +498,7 @@ for (const tone of ["light", "dark"]) {
             );
             assert.match(
               await details.textContent(),
-              /have not yet been published/,
+              /Further product details are awaiting supplier confirmation/,
             );
             assert.equal(
               await panel("specifications")
@@ -504,6 +507,13 @@ for (const tone of ["light", "dark"]) {
               0,
               "Specifications must not retain a second product-details disclosure",
             );
+            assert.equal(
+              await details.locator("[data-provisional-detail]").count(),
+              3,
+            );
+            for (const summary of await details.locator("summary").all())
+              await summary.click();
+            assert.equal(await details.locator("details[open]").count(), 0);
           }
           await panel("overview").waitFor();
           assert.match(
@@ -783,7 +793,7 @@ for (const tone of ["light", "dark"]) {
             firstRow,
             "Closing an explanation must restore its specification row",
           );
-          await switchView("Origins", "origins");
+          await switchView("Origin", "origins");
           assert.match(await panel("origins").textContent(), /Barista Matcha/);
           assert.match(
             await panel("origins").textContent(),

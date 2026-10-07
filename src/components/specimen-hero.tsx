@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import type { ProductCodePlacement } from "@/lib/product-display-index";
 
 import Image from "next/image";
@@ -16,6 +18,7 @@ import {
   type ProductLabelSnapshot,
 } from "./product-configurator";
 import type { OriginPreviewVariant } from "./origin-preview";
+import type { OverviewStudyVariant } from "./overview-study-panel";
 import type { ShopPreviewVariant } from "./shop-preview";
 import type { ShopExplorationLayout } from "./shop-exploration-panel";
 import type {
@@ -61,6 +64,7 @@ export function SpecimenHero({
   startAtSelection = false,
   initialProductHandle,
   originPreviewVariant = "current",
+  overviewStudyVariant = "current",
   shopPreviewVariant = "current",
   shopExplorationLayout,
   productCodePlacement,
@@ -80,6 +84,7 @@ export function SpecimenHero({
   startAtSelection?: boolean;
   initialProductHandle?: string;
   originPreviewVariant?: "current" | OriginPreviewVariant;
+  overviewStudyVariant?: OverviewStudyVariant;
   shopPreviewVariant?: "current" | "refined" | ShopPreviewVariant;
   shopExplorationLayout?: ShopExplorationLayout;
   productCodePlacement?: ProductCodePlacement;
@@ -88,6 +93,7 @@ export function SpecimenHero({
   introductionVariant?: "current" | HeroIntroductionDirection;
   introductionStudy2Variant?: HeroStudy2Direction;
 }) {
+  const { t } = useStorefrontLocale();
   const theme = useStorefrontTheme();
   const persistentTheme = storefrontTheme && !onToneChange;
   const tone = persistentTheme ? theme.tone : initialTone;
@@ -494,7 +500,7 @@ export function SpecimenHero({
 
         <section
           className={styles.composition}
-          aria-label="Matcha"
+          aria-label={t("Matcha")}
           data-brand-part="composition"
         >
           <div
@@ -521,7 +527,7 @@ export function SpecimenHero({
               <>
                 <div className={styles.category} data-brand-part="category">
                   <span className={styles.statusDot} aria-hidden="true" />
-                  <ScrambleText text="MATCHA" delay={260} periodic />
+                  <ScrambleText text={t("MATCHA")} delay={260} periodic />
                 </div>
                 <div
                   className={styles.introStatement}
@@ -529,24 +535,24 @@ export function SpecimenHero({
                 >
                   <h1 className={styles.heading} data-brand-part="headline">
                     <span>
-                      <span>A closer</span>
+                      <span>{t("A closer")}</span>
                     </span>
                     <span>
-                      <span>look at</span>
+                      <span>{t("look at")}</span>
                     </span>
                     <span>
-                      <span>matcha.</span>
+                      <span>{t("matcha.")}</span>
                     </span>
                   </h1>
                   <p className={styles.introCopy} data-brand-part="intro-copy">
                     <ScrambleText
-                      text="Flavour. Texture. Performance."
+                      text={t("Flavour. Texture. Performance.")}
                       periodic
                       wrap
                     />
                     <br />
                     <ScrambleText
-                      text="Matcha selected for a specific application."
+                      text={t("Matcha selected for a specific application.")}
                       periodic
                       wrap
                     />
@@ -561,7 +567,11 @@ export function SpecimenHero({
                   className={styles.exploreLabel}
                   data-brand-part="explore-action"
                 >
-                  <ScrambleText text="EXPLORE MATCHA" delay={380} interactive />
+                  <ScrambleText
+                    text={t("EXPLORE MATCHA")}
+                    delay={380}
+                    interactive
+                  />
                   <Arrow />
                 </button>
               </>
@@ -583,7 +593,7 @@ export function SpecimenHero({
                 [ <ScrambleText text="01" delay={420} periodic /> ]
               </span>
               <span className={styles.registrationLine} />
-              <ScrambleText text="MATCHA" delay={470} periodic />
+              <ScrambleText text={t("MATCHA")} delay={470} periodic />
             </div>
             <div
               ref={stageRef}
@@ -597,8 +607,8 @@ export function SpecimenHero({
                 onClick={openSelection}
                 aria-label={
                   materialObject === "silver-bag"
-                    ? "Explore matcha from the silver bag"
-                    : "Explore matcha from the tray"
+                    ? t("Explore matcha from the silver bag")
+                    : t("Explore matcha from the tray")
                 }
                 tabIndex={exploring ? -1 : 0}
                 disabled={exploring}
@@ -645,7 +655,9 @@ export function SpecimenHero({
                   >
                     <Image
                       src="/images/hero/matcha-tray-concept-02.webp"
-                      alt="An overhead view of fine green matcha in a shallow rectangular metal tray."
+                      alt={t(
+                        "An overhead view of fine green matcha in a shallow rectangular metal tray.",
+                      )}
                       fill
                       preload
                       sizes="(max-width: 700px) 110vw, 70vw"
@@ -697,7 +709,7 @@ export function SpecimenHero({
                 >
                   <ScrambleText
                     key={hovered ? `active-${hoverCycle}` : "rest"}
-                    text="EXPLORE MATCHA"
+                    text={t("EXPLORE MATCHA")}
                   />
                   <Arrow />
                 </span>
@@ -727,6 +739,7 @@ export function SpecimenHero({
                 sectionSelectorVariant={sectionSelectorVariant}
                 selectorPlacement={selectorPlacement}
                 originPreviewVariant={originPreviewVariant}
+                overviewStudyVariant={overviewStudyVariant}
                 shopPreviewVariant={shopPreviewVariant}
                 shopExplorationLayout={shopExplorationLayout}
                 productCodePlacement={productCodePlacement}
@@ -779,18 +792,18 @@ export function SpecimenHero({
           <span className={styles.footerMark} aria-hidden="true">
             <ScrambleText text="ATOMA" periodic />
             <span className={styles.footerDivider}> / </span>
-            <ScrambleText text="MATCHA" periodic />
+            <ScrambleText text={t("MATCHA")} periodic />
           </span>
           {persistentTheme && <ThemeSwitcher />}
           {!persistentTheme && (
             <nav
               className={styles.themeSwitcher}
-              aria-label="Appearance"
+              aria-label={t("Appearance")}
               data-brand-part="theme-switcher"
             >
               <Link
                 href="/"
-                aria-label="Dark mode"
+                aria-label={t("Dark mode")}
                 aria-current={tone === "dark" ? "page" : undefined}
                 onNavigate={(event) => {
                   if (onToneChange) {
@@ -801,14 +814,14 @@ export function SpecimenHero({
                   theme.setTone("dark");
                 }}
               >
-                <ScrambleText text="DARK" interactive periodic />
+                <ScrambleText text={t("DARK")} interactive periodic />
               </Link>
               <span className={styles.themeDivider} aria-hidden="true">
                 /
               </span>
               <Link
                 href="/"
-                aria-label="Light mode"
+                aria-label={t("Light mode")}
                 aria-current={tone === "light" ? "page" : undefined}
                 onNavigate={(event) => {
                   if (onToneChange) {
@@ -819,7 +832,7 @@ export function SpecimenHero({
                   theme.setTone("light");
                 }}
               >
-                <ScrambleText text="LIGHT" interactive periodic />
+                <ScrambleText text={t("LIGHT")} interactive periodic />
               </Link>
             </nav>
           )}

@@ -2,6 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { createPeriodicTextScheduler } from "@/lib/periodic-text-scheduler";
+import {
+  hasCjkCharacters,
+  isScrambleUnit,
+  randomizeScrambleText,
+  splitScrambleUnits,
+} from "@/lib/scramble-glyphs";
 import styles from "./scramble-text.module.css";
 
 type ScrambleTextProps = {
@@ -14,13 +20,13 @@ type ScrambleTextProps = {
   connected?: boolean;
   animateOnMount?: boolean;
   visibleOnly?: boolean;
+  durationMs?: number;
+  mobileDurationMs?: number;
 };
 
-const duration = 500;
 const tapDuration = 950;
 const tapMovementThreshold = 10;
 const frameInterval = 40;
-const glyphPattern = /^[a-z0-9]$/i;
 
 let ambientScheduler:
   ReturnType<typeof createPeriodicTextScheduler> | undefined;
@@ -55,36 +61,19 @@ function registerAmbientPassage(canPlay: () => boolean, play: () => void) {
   };
 }
 
-function randomGlyph(character: string) {
-  const alphabet = /\d/.test(character)
-    ? "0123456789"
-    : character === character.toUpperCase()
-      ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-      : "abcdefghijklmnopqrstuvwxyz";
-
-  return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-}
-
-function randomizeText(text: string) {
-  return Array.from(text)
-    .map((character) =>
-      glyphPattern.test(character) ? randomGlyph(character) : character,
-    )
-    .join("");
-}
-
 function renderCharacters(text: string, connected: boolean) {
-  return (connected ? [text] : Array.from(text)).map((character, index) =>
-    connected || glyphPattern.test(character) ? (
-      <span className={styles.slot} key={`${index}-${character}`}>
-        <span className={styles.measure}>{character}</span>
-        <span className={styles.glyph} data-scramble-glyph>
-          {character}
+  return (connected ? [text] : splitScrambleUnits(text)).map(
+    (character, index) =>
+      connected || isScrambleUnit(character) ? (
+        <span className={styles.slot} key={`${index}-${character}`}>
+          <span className={styles.measure}>{character}</span>
+          <span className={styles.glyph} data-scramble-glyph>
+            {character}
+          </span>
         </span>
-      </span>
-    ) : (
-      character
-    ),
+      ) : (
+        character
+      ),
   );
 }
 
@@ -98,6 +87,8 @@ export function ScrambleText({
   connected = false,
   animateOnMount = true,
   visibleOnly = false,
+  durationMs = 500,
+  mobileDurationMs = tapDuration,
 }: ScrambleTextProps) {
   const rootRef = useRef<HTMLSpanElement>(null);
 
@@ -112,7 +103,10 @@ export function ScrambleText({
       ? wrap
         ? text.split(/\s+/u).filter(Boolean)
         : [text]
-      : Array.from(text).filter((character) => glyphPattern.test(character));
+      : (wrap
+          ? text.split(/\s+/u).flatMap(splitScrambleUnits)
+          : splitScrambleUnits(text)
+        ).filter(isScrambleUnit);
     const motionPreference = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     );
@@ -196,7 +190,7 @@ export function ScrambleText({
       running = true;
       tapRunning = tapped;
       const playbackDuration =
-        tapped || mobile.matches ? tapDuration : duration;
+        tapped || mobile.matches ? mobileDurationMs : durationMs;
 
       function animate() {
         delayTimer = undefined;
@@ -207,7 +201,7 @@ export function ScrambleText({
         const startedAt = performance.now();
         let previousTick = -1;
         glyphs.forEach((glyph, index) => {
-          glyph.textContent = randomizeText(characters[index] ?? "");
+          glyph.textContent = randomizeScrambleText(characters[index] ?? "");
         });
 
         function frame(now: number) {
@@ -232,7 +226,9 @@ export function ScrambleText({
               const index = resolved + ((tick * 2 + offset) % remaining);
               const glyph = glyphs[index];
               if (glyph)
-                glyph.textContent = randomizeText(characters[index] ?? "");
+                glyph.textContent = randomizeScrambleText(
+                  characters[index] ?? "",
+                );
             }
           }
 
@@ -401,6 +397,8 @@ export function ScrambleText({
     connected,
     animateOnMount,
     visibleOnly,
+    durationMs,
+    mobileDurationMs,
   ]);
 
   return (
@@ -418,7 +416,11 @@ export function ScrambleText({
               !word || /^\s+$/u.test(word) ? (
                 word
               ) : (
-                <span className={styles.word} key={`${index}-${word}`}>
+                <span
+                  className={styles.word}
+                  key={`${index}-${word}`}
+                  data-cjk={hasCjkCharacters(word) || undefined}
+                >
                   {renderCharacters(word, connected)}
                 </span>
               ),

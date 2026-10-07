@@ -19,6 +19,7 @@ export default async function HomePage({
         sectionSelectorVariant="tabs"
         selectorPlacement="left"
         originPreviewVariant="panorama"
+        overviewStudyVariant="folded"
         shopPreviewVariant="refined"
         shopExplorationLayout="compact"
         productCodePlacement="register"

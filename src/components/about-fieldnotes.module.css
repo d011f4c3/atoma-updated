@@ -1,0 +1,345 @@
+.article {
+  width: 100%;
+  max-width: 70rem;
+  min-width: 0;
+  margin-inline: auto;
+  color: var(--ink);
+  font-size: 0.8125rem;
+  line-height: 1.85;
+  font-variant-numeric: tabular-nums;
+  border-bottom: 1px solid var(--line);
+}
+.article :is(h1, h2, p, figure, dl, dd) {
+  margin: 0;
+}
+.runningTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.5rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.runningTitle > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.register {
+  flex: none;
+  width: 0.45rem;
+  height: 0.45rem;
+  border: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+.introduction {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 3rem;
+  padding-block: 1.5rem 2.75rem;
+}
+.article h1 {
+  font-size: clamp(1.75rem, 2.65vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+.lead {
+  max-width: 52ch;
+}
+.landscape {
+  padding-bottom: 2.75rem;
+}
+.imageMount {
+  position: relative;
+  margin-inline: 0.5rem;
+}
+.imageMount::before,
+.imageMount::after {
+  position: absolute;
+  z-index: 1;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-color: var(--muted);
+  border-style: solid;
+  content: "";
+  pointer-events: none;
+}
+.imageMount::before {
+  inset: -0.5rem auto auto -0.5rem;
+  border-width: 1px 0 0 1px;
+}
+.imageMount::after {
+  inset: auto -0.5rem -0.5rem auto;
+  border-width: 0 1px 1px 0;
+}
+.landscapeFrame,
+.leafFrame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+.landscapeFrame {
+  height: clamp(13rem, 23vw, 20rem);
+}
+.leafFrame {
+  aspect-ratio: 1.65;
+}
+.landscapeFrame img,
+.leafFrame img {
+  object-fit: cover;
+}
+.landscapeFrame img {
+  object-position: center 57%;
+}
+.leafFrame img {
+  object-position: center 35%;
+}
+.article figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.handwritten {
+  color: var(--ink);
+  font-family: var(--font-antro-vectra), cursive;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.chapter {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.65fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  padding-block: 2.25rem;
+  border-top: 1px solid var(--line);
+}
+.chapterHeading {
+  min-width: 0;
+}
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.article h2 {
+  max-width: 25ch;
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.035em;
+}
+.principles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: start;
+  gap: 1.5rem;
+  padding-top: 0.125rem;
+}
+.principle {
+  min-width: 0;
+}
+.principle + .principle {
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--line);
+}
+.principle dt {
+  margin-bottom: 1rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.readingColumn {
+  min-width: 0;
+  max-width: 58ch;
+}
+.imageNote {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  line-height: 1.7;
+}
+.article .note {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  line-height: 1.7;
+}
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 2.75rem;
+  max-width: 100%;
+  margin-top: 1.25rem;
+  padding: 0.625rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 180ms;
+}
+.action svg {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  stroke: currentColor;
+  stroke-width: 1;
+  transition: transform 180ms;
+}
+.action:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+.action:hover:not(:disabled) svg {
+  transform: translate(2px, -2px);
+}
+.article button:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+.article button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Fieldnotes: the panoramic essay remains the calm reference composition. */
+.essayPlace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 1.5rem 2rem;
+}
+.article h2 {
+  scroll-margin-top: 2rem;
+}
+.article h2:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 6px;
+}
+
+.alternative {
+  width: 100%;
+  color: var(--ink);
+  font-size: 0.8125rem;
+  line-height: 1.85;
+  border-bottom: 1px solid var(--line);
+}
+@media (max-width: 1000px) {
+  .chapter {
+    gap: 2rem;
+  }
+  .principles {
+    gap: 1rem;
+  }
+  .principle + .principle {
+    padding-left: 1rem;
+  }
+}
+@media (max-width: 760px) {
+  .runningTitle {
+    align-items: start;
+    font-size: 0.5625rem;
+  }
+  .runningTitle > span:last-child {
+    max-width: 16ch;
+    text-align: right;
+  }
+  .introduction {
+    display: block;
+    padding-block: 0.75rem 1.75rem;
+  }
+  .article h1 {
+    max-width: 12ch;
+    margin-bottom: 1rem;
+    font-size: 1.75rem;
+  }
+  .article h2 {
+    max-width: 25ch;
+    margin-top: 0.75rem;
+  }
+  .article figcaption {
+    font-size: 0.5625rem;
+  }
+  .handwritten {
+    font-size: 1.25rem;
+  }
+  .landscape {
+    padding-bottom: 1.75rem;
+  }
+  .landscapeFrame {
+    height: auto;
+    aspect-ratio: 1.65;
+  }
+  .chapter {
+    display: block;
+    padding-block: 1.5rem 2rem;
+  }
+  .chapterHeading {
+    margin-bottom: 1.5rem;
+  }
+  .principles {
+    display: block;
+    padding: 0;
+  }
+  .principle {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.875rem 0;
+  }
+  .principle:first-child {
+    padding-top: 0;
+  }
+  .principle + .principle {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .principle dt {
+    margin: 0;
+    padding-top: 0.125rem;
+  }
+  .essayPlace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+  .essayPlace .leaf {
+    grid-row: 1;
+  }
+  .action {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .action,
+  .action svg {
+    transition: none;
+  }
+}

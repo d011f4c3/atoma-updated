@@ -118,7 +118,7 @@ async function setup(browser, viewport, tone) {
   page.setDefaultTimeout(12_000);
   page.setDefaultNavigationTimeout(30_000);
   page.on("pageerror", (error) => state.errors.push(error.message));
-  await page.goto(`${baseURL}/?matcha=${products[0].handle}`);
+  await page.goto(`${baseURL}/?matcha=${products[1].handle}`);
   await page
     .locator("[data-homepage-product-choice]:not(:disabled)")
     .first()
@@ -162,7 +162,7 @@ async function assertSelection(page, view) {
   );
   assert.equal(
     await page
-      .getByRole("button", { name: "Select Barista Matcha", exact: true })
+      .getByRole("button", { name: "Select Ceremonial Matcha", exact: true })
       .getAttribute("aria-pressed"),
     "true",
   );
@@ -419,7 +419,7 @@ try {
           dialog: () => page.locator("[data-origins-dialog][open]"),
           close: (dialog) =>
             dialog.getByRole("button", {
-              name: "Return to Barista Matcha",
+              name: "Return to Ceremonial Matcha",
               exact: true,
             }),
           focus: mobile ? menu : originsTrigger,
@@ -435,7 +435,7 @@ try {
                 name: "Growing places",
                 exact: true,
               }),
-              "Origins initially focuses Growing places",
+              "Origins initially focuses its directory heading",
             );
             for (const key of ["Shift+Tab", "Tab"]) {
               await page.keyboard.press(key);
@@ -458,7 +458,7 @@ try {
             await checkQuantity();
           },
         });
-        await switchView(page, "Origins");
+        await switchView(page, "Origin");
         const preview = page.locator(
           '[data-homepage-view-panel="origins"] [data-origin-preview="panorama"]',
         );
@@ -504,7 +504,7 @@ try {
           dialog: () => page.locator("[data-origins-dialog][open]"),
           close: (dialog) =>
             dialog.getByRole("button", {
-              name: "Return to Barista Matcha",
+              name: "Return to Ceremonial Matcha",
               exact: true,
             }),
           focus: placeTrigger,

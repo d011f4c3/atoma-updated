@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import { useId } from "react";
 import type { CatalogProduct } from "@/lib/catalog-types";
 import { getProductContent } from "@/lib/product-content";
@@ -22,11 +24,11 @@ type InformationView = "overview" | "specifications" | "origins" | "builder";
 const sections: { value: InformationView; label: string }[] = [
   { value: "overview", label: "Overview" },
   { value: "specifications", label: "Specifications" },
-  { value: "origins", label: "Origins" },
   { value: "builder", label: "Shop" },
+  { value: "origins", label: "Origin" },
 ];
 
-const sectionWeights = [1, 1.7, 0.9, 0.6] as const;
+const sectionWeights = [1, 1.7, 0.6, 0.9] as const;
 
 export function VisualProductSelectors({
   products,
@@ -45,6 +47,7 @@ export function VisualProductSelectors({
   disabled: boolean;
   onSelect: (id: string) => void;
 }) {
+  const { locale, t } = useStorefrontLocale();
   const radioName = useId();
   const selectedProduct = products.find((product) => product.id === selectedId);
   const selectedIndex = products.findIndex(
@@ -62,7 +65,7 @@ export function VisualProductSelectors({
     <div
       className={styles.products}
       role="group"
-      aria-label="Matcha to explore"
+      aria-label={t("Matcha to explore")}
       data-visual-product-selectors={variant}
       data-variant={variant}
       data-tone={tone}
@@ -72,7 +75,7 @@ export function VisualProductSelectors({
           <button
             className={styles.stepperControl}
             type="button"
-            aria-label="Previous matcha"
+            aria-label={t("Previous matcha")}
             disabled={disabled || selectedIndex <= 0}
             onClick={() => stepSelection(-1)}
           >
@@ -86,8 +89,12 @@ export function VisualProductSelectors({
           >
             <span className={styles.stepperName}>
               {selectedProduct
-                ? productName(selectedProduct.title)
-                : "Choose matcha"}
+                ? productName(
+                    selectedProduct.title,
+                    selectedProduct.handle,
+                    locale,
+                  )
+                : t("Choose matcha")}
             </span>
             <span
               className={styles.stepperPosition}
@@ -98,14 +105,14 @@ export function VisualProductSelectors({
                 ? String(selectedIndex + 1).padStart(2, "0")
                 : "—"}
               <span aria-hidden="true"> / </span>
-              <span className={styles.srOnly}> of </span>
+              <span className={styles.srOnly}> {t("of")} </span>
               {String(products.length).padStart(2, "0")}
             </span>
           </div>
           <button
             className={styles.stepperControl}
             type="button"
-            aria-label="Next matcha"
+            aria-label={t("Next matcha")}
             disabled={
               disabled ||
               selectedIndex < 0 ||
@@ -122,16 +129,16 @@ export function VisualProductSelectors({
             {selectedProduct && (
               <div className={styles.menuPhotograph}>
                 <ShopMaterialImage
-                  src={getProductContent(selectedProduct).materialImage}
+                  src={getProductContent(selectedProduct, locale).materialImage}
                   alt=""
                 />
               </div>
             )}
           </div>
           <label className={styles.productMenu}>
-            <span>Matcha type</span>
+            <span>{t("Matcha type")}</span>
             <select
-              aria-label="Matcha type"
+              aria-label={t("Matcha type")}
               value={selectedProduct?.id ?? ""}
               disabled={disabled}
               onChange={(event) => {
@@ -141,12 +148,12 @@ export function VisualProductSelectors({
             >
               {!selectedProduct && (
                 <option value="" disabled>
-                  Choose matcha
+                  {t("Choose matcha")}
                 </option>
               )}
               {products.map((product) => (
                 <option key={product.id} value={product.id}>
-                  {productName(product.title)}
+                  {productName(product.title, product.handle, locale)}
                 </option>
               ))}
             </select>
@@ -154,8 +161,11 @@ export function VisualProductSelectors({
         </>
       ) : (
         products.map((product, index) => {
-          const name = productName(product.title);
-          const grade = name.replace(/\s+matcha$/i, "") || name;
+          const name = productName(product.title, product.handle, locale);
+          const englishName = productName(product.title, product.handle);
+          const grade = t(
+            englishName.replace(/\s+matcha$/i, "") || englishName,
+          );
           if (variant === "radio") {
             return (
               <label
@@ -168,7 +178,7 @@ export function VisualProductSelectors({
                   type="radio"
                   name={radioName}
                   value={product.id}
-                  aria-label={`Select ${name}`}
+                  aria-label={t("Select {name}", { name })}
                   data-homepage-product-choice={product.id}
                   checked={selectedId === product.id}
                   disabled={disabled}
@@ -187,7 +197,7 @@ export function VisualProductSelectors({
                 className={styles.product}
                 type="button"
                 key={product.id}
-                aria-label={`Select ${name}`}
+                aria-label={t("Select {name}", { name })}
                 aria-pressed={selectedId === product.id}
                 data-homepage-product-choice={product.id}
                 disabled={disabled}
@@ -203,7 +213,7 @@ export function VisualProductSelectors({
               </button>
             );
           }
-          const content = getProductContent(product);
+          const content = getProductContent(product, locale);
           return (
             <button
               className={styles.product}
@@ -214,7 +224,7 @@ export function VisualProductSelectors({
               }
               type="button"
               key={product.id}
-              aria-label={`Select ${name}`}
+              aria-label={t("Select {name}", { name })}
               aria-pressed={selectedId === product.id}
               data-homepage-product-choice={product.id}
               disabled={disabled}
@@ -252,7 +262,7 @@ export function VisualProductSelectors({
                   />
                 </span>
                 {variant === "slides" && (
-                  <span className={styles.materialLabel}>Matcha</span>
+                  <span className={styles.materialLabel}>{t("Matcha")}</span>
                 )}
               </span>
             </button>
@@ -274,6 +284,7 @@ export function VisualSectionSelectors({
   disabled: boolean;
   onSelect: (view: InformationView) => void;
 }) {
+  const { t } = useStorefrontLocale();
   const activeIndex = Math.max(
     0,
     sections.findIndex((section) => section.value === active),
@@ -293,15 +304,17 @@ export function VisualSectionSelectors({
     <div
       className={styles.sections}
       role="group"
-      aria-label="Shopping mode"
+      aria-label={t("Shopping mode")}
+      data-shopping-mode
       data-visual-section-selectors={variant}
       data-variant={variant}
     >
       {variant === "menu" ? (
         <label className={styles.sectionMenu}>
-          <span>View</span>
+          <span>{t("View")}</span>
           <select
-            aria-label="Information view"
+            aria-label={t("Information view")}
+            data-information-view
             value={active}
             disabled={disabled}
             onChange={(event) => {
@@ -313,7 +326,7 @@ export function VisualSectionSelectors({
           >
             {sections.map((section) => (
               <option key={section.value} value={section.value}>
-                {section.label}
+                {t(section.label)}
               </option>
             ))}
           </select>
@@ -331,7 +344,7 @@ export function VisualSectionSelectors({
             }}
           >
             <ScrambleText
-              text={section.label}
+              text={t(section.label)}
               interactive
               animateOnMount={false}
             />

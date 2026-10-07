@@ -6,7 +6,7 @@
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-atoma-mono), monospace;
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   line-height: 1.6;
   letter-spacing: 0.025em;
@@ -40,7 +40,7 @@
   align-items: center;
   color: inherit;
   font-family: var(--font-fraktion-sans), sans-serif;
-  font-size: 2rem;
+  font-size: calc(2rem + var(--locale-font-increment, 0px));
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.055em;
@@ -51,7 +51,7 @@
   max-width: 26ch;
   margin: 0;
   color: var(--color-muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   line-height: 1.8;
 }
 
@@ -86,7 +86,7 @@
 .number {
   grid-column: 1 / -1;
   color: var(--color-muted);
-  font-size: 0.5625rem;
+  font-size: calc(0.5625rem + var(--locale-font-increment, 0px));
 }
 
 .linkCopy {
@@ -96,13 +96,13 @@
 
 .description {
   color: var(--color-muted);
-  font-size: 0.5625rem;
+  font-size: calc(0.5625rem + var(--locale-font-increment, 0px));
   line-height: 1.7;
 }
 
 .arrow {
   display: inline-block;
-  font-size: 0.875rem;
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
   transition: transform 180ms;
 }
 
@@ -140,7 +140,7 @@
   padding-block: 1rem;
   border-top: 1px solid var(--color-line);
   color: var(--color-muted);
-  font-size: 0.5625rem;
+  font-size: calc(0.5625rem + var(--locale-font-increment, 0px));
   letter-spacing: 0.06em;
 }
 
@@ -160,7 +160,7 @@
 
 .utility {
   color: var(--color-muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 
 .utilityList {
@@ -193,7 +193,9 @@
   grid-column: 1 / -1;
   grid-row: 2;
   justify-self: start;
-  font-size: clamp(6rem, 20.5vw, 23rem);
+  font-size: calc(
+    clamp(6rem, 20.5vw, 23rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 0.8;
 }
 
@@ -232,12 +234,12 @@
 }
 
 .footer[data-footer-direction="compact"] .wordmark {
-  font-size: 1.25rem;
+  font-size: calc(1.25rem + var(--locale-font-increment, 0px));
 }
 
 .footer[data-footer-direction="compact"] .statement {
   max-width: 28ch;
-  font-size: 0.5625rem;
+  font-size: calc(0.5625rem + var(--locale-font-increment, 0px));
 }
 
 .footer[data-footer-direction="rail"] .body {
@@ -253,7 +255,7 @@
 }
 
 .footer[data-footer-direction="rail"] .wordmark {
-  font-size: 1.25rem;
+  font-size: calc(1.25rem + var(--locale-font-increment, 0px));
 }
 
 .footer[data-footer-direction="rail"] .navigation {
@@ -287,7 +289,7 @@
 }
 
 .footer[data-footer-direction="directory"] .wordmark {
-  font-size: 1.5rem;
+  font-size: calc(1.5rem + var(--locale-font-increment, 0px));
 }
 
 .footer[data-footer-direction="directory"] .navigation {
@@ -381,12 +383,12 @@
     padding: 1rem 0;
     border: 0;
     border-top: 1px solid var(--color-line);
-    font-size: 0.75rem;
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   }
 
   .number {
     grid-column: auto;
-    font-size: 0.625rem;
+    font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   }
 
   .linkCopy {
@@ -394,11 +396,11 @@
   }
 
   .description {
-    font-size: 0.625rem;
+    font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   }
 
   .statement {
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   }
 
   .footer[data-footer-direction="colophon"] .navigation {
@@ -408,7 +410,7 @@
 
   .footer[data-footer-direction="colophon"] .wordmark {
     grid-row: 3;
-    font-size: 24vw;
+    font-size: calc(24vw + var(--locale-font-increment, 0px));
   }
 
   .footer[data-footer-direction="colophon"] .destination,
@@ -423,14 +425,14 @@
   }
 
   .footer[data-footer-direction="compact"] .statement {
-    font-size: 0.625rem;
+    font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   }
 
   .base {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.5rem 1rem;
-    font-size: 0.625rem;
+    font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   }
 
   .base > .utility {

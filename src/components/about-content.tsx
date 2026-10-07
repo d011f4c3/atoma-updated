@@ -1,3 +1,6 @@
+"use client";
+
+import { useStorefrontLocale } from "./storefront-locale-provider";
 import styles from "./about-content.module.css";
 
 const entries = [
@@ -19,18 +22,18 @@ const entries = [
 ];
 
 export function AboutContent({ headingId }: { headingId: string }) {
+  const { t } = useStorefrontLocale();
   return (
     <div className={styles.root} data-about-content>
       <div className={styles.introduction}>
         <h2 id={headingId} className={styles.heading}>
-          Matcha,
-          <br />
-          in detail.
+          {t("Matcha,")} <br />
+          {t("in detail.")}
         </h2>
         <p className={styles.lead}>
-          ATOMA approaches matcha as a material. Flavour, texture and
-          performance define the starting point; intended use gives them
-          context.
+          {t(
+            "ATOMA approaches matcha as a material. Flavour, texture and performance define the starting point; intended use gives them context.",
+          )}
         </p>
       </div>
       <div className={styles.entries}>
@@ -40,9 +43,9 @@ export function AboutContent({ headingId }: { headingId: string }) {
               <span className={styles.number} aria-hidden="true">
                 {entry.number}
               </span>
-              <h3>{entry.title}</h3>
+              <h3>{t(entry.title)}</h3>
             </div>
-            <p>{entry.text}</p>
+            <p>{t(entry.text)}</p>
           </section>
         ))}
       </div>

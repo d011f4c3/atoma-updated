@@ -64,9 +64,17 @@ function cart(quantity = 1) {
           ],
   };
 }
-function setup({ available = true, ambiguous = false } = {}) {
+function setup({
+  available = true,
+  ambiguous = false,
+  snapshot = cart(),
+  checkout = null,
+  checkoutFailure = false,
+} = {}) {
   let writes = 0;
   let reads = 0;
+  let cartReads = 0;
+  let checkoutReads = 0;
   const mutate = async () => {
     writes += 1;
     if (ambiguous) throw new Error("unknown outcome");
@@ -74,12 +82,19 @@ function setup({ available = true, ambiguous = false } = {}) {
   };
   const app = createCartApplication({
     cartSource: {
-      readCart: async () => cart(),
+      readCart: async () => {
+        cartReads += 1;
+        return snapshot;
+      },
       createCart: mutate,
       addCartLine: mutate,
       updateCartLine: mutate,
       removeCartLine: mutate,
-      readCheckout: async () => null,
+      readCheckout: async () => {
+        checkoutReads += 1;
+        if (checkoutFailure) throw new Error("private failure");
+        return checkout;
+      },
     },
     catalogSource: {
       readPublishedProductByHandle: async () => {
@@ -92,7 +107,13 @@ function setup({ available = true, ambiguous = false } = {}) {
     matchesVariantActionKey: (key) => key === VARIANT_KEY,
     classifyError: () => "ambiguous",
   });
-  return { app, writes: () => writes, reads: () => reads };
+  return {
+    app,
+    writes: () => writes,
+    reads: () => reads,
+    cartReads: () => cartReads,
+    checkoutReads: () => checkoutReads,
+  };
 }
 const add = {
   productHandle: "test-matcha",
@@ -166,4 +187,55 @@ test("JSON input accepts exact commands and rejects client prices/IDs/invalid qu
     { action: "checkout", checkoutUrl: "https://attacker.example" },
   ])
     assert.equal(parseCartRequest(value), null);
+});
+
+test("checkout freshly validates the cart and exposes its URL only as a hidden server property", async () => {
+  const checkoutUrl =
+    "https://h0cuaw-f7.myshopify.com/checkouts/server-only-sentinel";
+  const s = setup({ checkout: { totalQuantity: 1, checkoutUrl } });
+  const result = await s.app.prepareCheckout("sealed-reference");
+  assert.equal(result.kind, "ready");
+  assert.equal(result.checkoutUrl, checkoutUrl);
+  assert.equal(s.cartReads(), 1);
+  assert.equal(s.checkoutReads(), 1);
+  assert.equal(s.writes(), 0);
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {
+    kind: "ready",
+    totalQuantity: 1,
+  });
+});
+
+test("checkout rejects absent, deleted, empty, unavailable and invalid-quantity carts before handoff", async () => {
+  const unavailable = cart();
+  unavailable.lines[0].merchandise.purchaseStatus = "not_purchasable";
+  const invalidQuantity = cart(11);
+  for (const [reference, snapshot, kind, reads] of [
+    [null, cart(), "empty", 0],
+    ["cart", null, "missing", 1],
+    ["cart", cart(0), "empty", 1],
+    ["cart", unavailable, "error", 1],
+    ["cart", invalidQuantity, "error", 1],
+  ]) {
+    const s = setup({ snapshot });
+    assert.deepEqual(await s.app.prepareCheckout(reference), { kind });
+    assert.equal(s.cartReads(), reads);
+    assert.equal(s.checkoutReads(), 0);
+    assert.equal(s.writes(), 0);
+  }
+});
+
+test("checkout fails closed when its fresh read is missing, empty, changed or rejected", async () => {
+  for (const [checkout, kind] of [
+    [null, "missing"],
+    [{ totalQuantity: 0, checkoutUrl: "private" }, "empty"],
+    [{ totalQuantity: 2, checkoutUrl: "private" }, "error"],
+  ]) {
+    const s = setup({ checkout });
+    assert.deepEqual(await s.app.prepareCheckout("cart"), { kind });
+    assert.equal(s.checkoutReads(), 1);
+    assert.equal(s.writes(), 0);
+  }
+  const s = setup({ checkoutFailure: true });
+  assert.deepEqual(await s.app.prepareCheckout("cart"), { kind: "error" });
+  assert.equal(s.checkoutReads(), 1);
 });

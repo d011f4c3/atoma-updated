@@ -766,11 +766,11 @@ const cases = [
         await setLayout(page, "open");
         await selectView(page, "Specifications");
         assert.equal(await page.locator("[data-specification]").count(), 7);
-        await selectView(page, "Origins");
+        await selectView(page, "Origin");
         const preview = page.locator('[data-origin-preview="split"]');
         await preview.waitFor();
         await preview
-          .getByRole("button", { name: "About Wazuka", exact: true })
+          .getByRole("button", { name: "About Uji", exact: true })
           .click();
         const origins = page.getByRole("dialog", {
           name: "ATOMA Origins",

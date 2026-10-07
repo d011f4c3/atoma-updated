@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LabelCard, type LabelCardProps } from "./label-card";
@@ -31,6 +33,7 @@ export function SilverBagScene({
   interactive = true,
   appearance = "product",
 }: SilverBagSceneProps) {
+  const { t } = useStorefrontLocale();
   const readyRef = useRef(onReady);
   const notifiedRef = useRef(false);
   const [failed, setFailed] = useState(false);
@@ -59,7 +62,9 @@ export function SilverBagScene({
       data-image-failed={failed}
       data-interactive={interactive}
       role="group"
-      aria-label={`${title || "Matcha"} in a silver resealable bag`}
+      aria-label={t("{name} in a silver resealable bag", {
+        name: title || t("Matcha"),
+      })}
       aria-hidden={!visible}
       inert={!visible}
     >
@@ -90,7 +95,7 @@ export function SilverBagScene({
             application={application}
             format={format}
             quantity={quantity}
-            annotation="Matcha"
+            annotation={t("Matcha")}
             reference={reference}
             profile={profile}
             showReference={showReference}

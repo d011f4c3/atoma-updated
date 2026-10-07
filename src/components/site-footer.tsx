@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import Link from "next/link";
 import type { ReactNode, Ref } from "react";
 import { useCart } from "./cart-drawer";
@@ -24,6 +26,7 @@ export function SiteFooter({
   footerRef?: Ref<HTMLElement>;
   themeControl?: ReactNode;
 }) {
+  const { t } = useStorefrontLocale();
   const { busy } = useCart();
   const { openOrigins } = useOrigins();
   // Plain placeholders until real policy and contact destinations are supplied.
@@ -32,12 +35,12 @@ export function SiteFooter({
       className={styles.utility}
       data-footer-utility-preview
       role="group"
-      aria-label="Information"
+      aria-label={t("Information")}
     >
       <ul className={styles.utilityList}>
-        <li>Privacy policy</li>
-        <li>Terms</li>
-        <li>Contact</li>
+        <li>{t("Privacy policy")}</li>
+        <li>{t("Terms")}</li>
+        <li>{t("Contact")}</li>
       </ul>
     </div>
   );
@@ -45,7 +48,7 @@ export function SiteFooter({
     <Link
       className={styles.wordmark}
       href="/"
-      aria-label="ATOMA homepage"
+      aria-label={t("ATOMA homepage")}
       aria-disabled={busy || undefined}
       onClick={(event) => {
         if (busy) event.preventDefault();
@@ -62,15 +65,15 @@ export function SiteFooter({
       data-site-footer
       data-footer-direction={direction}
       data-tone={tone}
-      aria-label="ATOMA footer"
+      aria-label={t("ATOMA footer")}
       tabIndex={-1}
     >
       <div className={styles.body}>
         <div className={styles.identity}>
           {direction !== "colophon" && wordmark}
-          <p className={styles.statement}>Carefully specified matcha.</p>
+          <p className={styles.statement}>{t("Carefully specified matcha.")}</p>
         </div>
-        <nav className={styles.navigation} aria-label="Footer navigation">
+        <nav className={styles.navigation} aria-label={t("Footer navigation")}>
           <Link
             className={styles.destination}
             href="/shop"
@@ -83,8 +86,10 @@ export function SiteFooter({
               01
             </span>
             <span className={styles.linkCopy}>
-              <span>Shop matcha</span>
-              <span className={styles.description}>Formats & selection</span>
+              <span>{t("Shop matcha")}</span>
+              <span className={styles.description}>
+                {t("Formats & selection")}
+              </span>
             </span>
             <span className={styles.arrow} aria-hidden="true">
               ↗
@@ -100,8 +105,10 @@ export function SiteFooter({
               02
             </span>
             <span className={styles.linkCopy}>
-              <span>Growing places</span>
-              <span className={styles.description}>Explore the origins</span>
+              <span>{t("Growing places")}</span>
+              <span className={styles.description}>
+                {t("Explore the origins")}
+              </span>
             </span>
             <span className={styles.arrow} aria-hidden="true">
               ↗
@@ -117,9 +124,9 @@ export function SiteFooter({
               03
             </span>
             <span className={styles.linkCopy}>
-              <span>Back to top</span>
+              <span>{t("Back to top")}</span>
               <span className={styles.description}>
-                Return to the beginning
+                {t("Return to the beginning")}
               </span>
             </span>
             <span className={styles.arrow} aria-hidden="true">
@@ -135,11 +142,11 @@ export function SiteFooter({
         {direction !== "directory" && utilityLinks}
         {themeControl ? (
           <div className={styles.appearance}>
-            <span>Appearance</span>
+            <span>{t("Appearance")}</span>
             {themeControl}
           </div>
         ) : (
-          <span>Matcha</span>
+          <span>{t("Matcha")}</span>
         )}
       </div>
     </footer>

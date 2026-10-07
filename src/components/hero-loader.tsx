@@ -1,3 +1,6 @@
+"use client";
+
+import { useStorefrontLocale } from "./storefront-locale-provider";
 import styles from "./hero-loader.module.css";
 
 export function HeroLoader({
@@ -9,6 +12,7 @@ export function HeroLoader({
   phase: "loading" | "complete" | "leaving";
   tone: "light" | "dark";
 }) {
+  const { t } = useStorefrontLocale();
   const value = Math.min(100, Math.max(0, Math.round(progress)));
 
   return (
@@ -18,7 +22,7 @@ export function HeroLoader({
       data-state={phase}
       data-tone={tone}
       role="progressbar"
-      aria-label="Loading ATOMA"
+      aria-label={t("Loading ATOMA")}
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={value}
@@ -33,7 +37,7 @@ export function HeroLoader({
           </div>
           <div className={styles.readout}>
             <span className={styles.status}>
-              {value === 100 ? "READY" : "LOADING"}
+              {t(value === 100 ? "READY" : "LOADING")}
             </span>
             <span className={styles.percentage}>
               {String(value).padStart(2, "0")}%

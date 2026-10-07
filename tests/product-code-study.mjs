@@ -21,6 +21,11 @@ const directions = [
   ["register", "Register"],
   ["tag", "Specimen tag"],
 ];
+const codeById = {
+  culinary: "[UJI-01]",
+  barista: "[UJI-00]",
+  ceremonial: "[WZKA-00]",
+};
 const products = [
   [
     "barista",
@@ -50,6 +55,7 @@ const products = [
   id,
   title: `Japanese ${title} Matcha Powder for ${application} — 1 kg`,
   handle,
+  productCode: codeById[id].slice(1, -1),
   description: "Isolated browser fixture for presentation checks.",
   imageUrl: null,
   imageAlt: "",
@@ -69,11 +75,6 @@ const products = [
     },
   ],
 }));
-const codeById = {
-  culinary: "[WZKA-00]",
-  barista: "[WZKA-01]",
-  ceremonial: "[WZKA-02]",
-};
 const nameById = {
   culinary: "Culinary Matcha",
   barista: "Barista Matcha",
@@ -81,7 +82,7 @@ const nameById = {
   unknown: "New Matcha",
 };
 const views = [
-  ["Overview", '[data-homepage-view-panel="overview"] > header'],
+  ["Overview", '[data-homepage-view-panel="overview"] header'],
   ["Specifications", "[data-focused-specifications] > header"],
   ["Shop", "[data-shop-exploration] > header"],
 ];
@@ -401,7 +402,7 @@ async function matrixCase(browser, width, initialTone) {
       "Study appearance leaves the site preference intact",
     );
     await switchDirection(page, "caption");
-    // Catalog deliberately uses a different order from 00 / 01 / 02.
+    // Catalog deliberately uses a different order from the product references.
     for (const product of products) {
       await page
         .locator(`[data-homepage-product-choice="${product.id}"]`)
@@ -428,6 +429,7 @@ async function unknownCase(browser) {
     id: "unknown",
     title: "New Matcha",
     handle: "unmapped-new-matcha",
+    productCode: null,
   };
   const { context, page, state } = await setup(browser, 320, "light", [
     unknown,
@@ -455,7 +457,7 @@ async function unknownCase(browser) {
     const unknownCard = page.locator('[data-shop-product="unknown"]');
     await unknownCard.waitFor();
     assert.equal(
-      await unknownCard.getByText(/WZKA-/).count(),
+      await unknownCard.getByText(/WZKA-|UJI-/).count(),
       0,
       "The dedicated shop also omits unsupported product codes",
     );

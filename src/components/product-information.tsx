@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import { useId, useRef, useState } from "react";
 import type { ProductContent } from "@/lib/product-content";
 import { MaterialProfile } from "./material-profile";
@@ -8,6 +10,7 @@ import { useDialogDismiss, useDialogScrollLock } from "./use-dialog-dismiss";
 import styles from "./product-information.module.css";
 
 export function ProductInformation({ content }: { content: ProductContent }) {
+  const { t } = useStorefrontLocale();
   const id = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -31,7 +34,7 @@ export function ProductInformation({ content }: { content: ProductContent }) {
           closeRef.current?.focus({ preventScroll: true });
         }}
       >
-        <ScrambleText text="Material & use" interactive />{" "}
+        <ScrambleText text={t("Material & use")} interactive />{" "}
         <span aria-hidden="true">+</span>
       </button>
       <dialog
@@ -65,14 +68,14 @@ export function ProductInformation({ content }: { content: ProductContent }) {
       >
         <div className={styles.header}>
           <span>
-            <ScrambleText text="A CLOSER LOOK" periodic wrap />
+            <ScrambleText text={t("A CLOSER LOOK")} periodic wrap />
           </span>
           <button
             ref={closeRef}
             type="button"
             onClick={() => dialogRef.current?.close()}
           >
-            <ScrambleText text="Back to selection" interactive />{" "}
+            <ScrambleText text={t("Back to selection")} interactive />{" "}
             <span aria-hidden="true">×</span>
           </button>
         </div>
@@ -87,7 +90,7 @@ export function ProductInformation({ content }: { content: ProductContent }) {
           <MaterialProfile content={content} />
           <details className={styles.preparation}>
             <summary>
-              <ScrambleText text="Use & preparation" interactive />{" "}
+              <ScrambleText text={t("Use & preparation")} interactive />{" "}
               <span aria-hidden="true">+</span>
             </summary>
             <div className={styles.preparationBody}>
@@ -103,7 +106,7 @@ export function ProductInformation({ content }: { content: ProductContent }) {
                 </section>
               ))}
               <section>
-                <h3>What to look for</h3>
+                <h3>{t("What to look for")}</h3>
                 <ul>
                   {content.lookFor.map((item) => (
                     <li key={item}>

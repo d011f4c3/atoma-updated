@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import { useId, useRef, useState } from "react";
 import type { CatalogProduct } from "@/lib/catalog-types";
 import { getProductContent } from "@/lib/product-content";
@@ -19,6 +21,7 @@ export function FocusedSpecifications({
   presentation?: "index" | "homepage";
   productCodePlacement?: ProductCodePlacement;
 }) {
+  const { locale, t } = useStorefrontLocale();
   const id = useId();
   const dialog = useRef<HTMLDialogElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
@@ -27,7 +30,7 @@ export function FocusedSpecifications({
   const [open, setOpen] = useState(false);
   const dismiss = useDialogDismiss();
   useDialogScrollLock(open);
-  const content = getProductContent(product);
+  const content = getProductContent(product, locale);
   const property =
     content.materialProfile[activeProperty] ?? content.materialProfile[0];
 
@@ -42,9 +45,11 @@ export function FocusedSpecifications({
   if (!product || !property)
     return (
       <p className={styles.empty}>
-        {product
-          ? "Specifications aren’t available for this selection."
-          : "Choose a matcha to see its specifications."}
+        {t(
+          product
+            ? "Specifications aren’t available for this selection."
+            : "Choose a matcha to see its specifications.",
+        )}
       </p>
     );
 
@@ -65,13 +70,19 @@ export function FocusedSpecifications({
         </h2>
         <p>{content.application}</p>
       </ProductCodeIdentity>
-      <ul className={styles.properties} aria-label="Material specifications">
+      <ul
+        className={styles.properties}
+        aria-label={t("Material specifications")}
+      >
         {content.materialProfile.map((item, index) => (
-          <li key={item.label}>
+          <li key={index}>
             <button
               type="button"
               data-specification
-              aria-label={`${item.label}: ${item.value}. Read explanation`}
+              aria-label={t("{label}: {value}. Read explanation", {
+                label: item.label,
+                value: item.value,
+              })}
               aria-haspopup="dialog"
               aria-controls={`${id}-explanation`}
               onClick={(event) => explain(index, event.currentTarget)}
@@ -98,11 +109,13 @@ export function FocusedSpecifications({
         }}
       >
         <div className={styles.dialogTop}>
-          <span>{content.name} / Specifications</span>
+          <span>
+            {t("{product} / Specifications", { product: content.name })}
+          </span>
           <button
             ref={closeButton}
             type="button"
-            aria-label="Close specification explanation"
+            aria-label={t("Close specification explanation")}
             onClick={() => dialog.current?.close()}
           >
             ×

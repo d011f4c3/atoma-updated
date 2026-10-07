@@ -5,9 +5,42 @@ beyond a specification or configuration panel. This is an internal content
 record, not public copy, new product approval, or authorization to publish the
 source correspondence.
 
+## October 6 correction: UJI designation and Wazuka origin
+
+The [current client feedback](../briefs/2026-10-06-client-feedback.md), section 5,
+supersedes the October 1 all-three-materials Wazuka attribution. Ceremonial keeps
+its documented material-level Wazuka growing relationship. Barista and Culinary
+have explicit material-level **UJI tea designation** associations instead; their
+specific growing and processing locations are not established by the feedback.
+Their codes do not create provenance or designation membership.
+
+The [MAFF Uji Tea reference](https://www.maff.go.jp/e/policies/market/dento_syoku/menu/uzi_tea.html),
+verified on 2026-10-06, explains that Uji tea may use leaves produced in Kyoto,
+Nara, Shiga or Mie and processed in Kyoto using Uji-region methods. This is
+context about the designation, not evidence of either ATOMA product's particular
+field, processing site or processor.
+[Kyoto Prefecture's municipality list](https://www.pref.kyoto.jp/link.html),
+also verified on 2026-10-06, identifies Uji City and Wazuka Town as separate
+municipalities within Kyoto Prefecture. The directory keeps designations separate
+from geographic ancestry; neither UJI product is assigned a growing place.
+
+The existing Kyoto photographs retain their original captions and editorial
+scope. Only Ceremonial currently connects to them through its documented growing
+relationship. The existing Uji City view lists Barista and Culinary under UJI
+series using a separate query from geographic growing relationships. Its
+homepage Panorama retains the original Wazuka layout. Under
+[Task 0124](../tasks/0124-uji-place-format-and-imagery.md), both previews show
+Country / Region / Locality, using Japan → Kyoto → Uji City and
+Japan → Kyoto → Wazuka respectively. This is a display path for place context;
+it does not add a product-growing relationship. Uji uses a different supplied
+Kyoto photograph with the same accurate regional caption. Grower and partner
+identities remain private under Task 0074; the historical named-people discussion
+below does not publish them.
+
 ## October 1 correction: confirmed origin and named people
 
-This update supersedes the older unknown-origin and no-named-partner findings
+This historical update was superseded for product origins on October 6 above.
+At the time, it superseded the older unknown-origin and no-named-partner findings
 below. The owner explicitly confirms that the three current test materials come
 from **Wazuka, Kyoto**. Their exact product handles are linked to their materials,
 then to Wazuka, with Kyoto and Japan as geographic ancestors.
@@ -243,6 +276,20 @@ All following assets are under
 | `ceremony-whisk.jpg`   | Hands holding a bowl and utensils                     | Preparation detail, not active whisking, a recipe or product performance                                 |
 | `ceremony-powder.jpg`  | Powder in a ceramic bowl with a scoop nearby          | Material/preparation detail, not product identity, grade, weight or origin                               |
 | `ceremony-matcha.jpg`  | Prepared matcha in a patterned bowl                   | Preparation context, not a verified result of one product or sample                                      |
+
+Task 0124 adds `public/images/origins/uji-context-landscape.jpg` in this ATOMA
+workspace, downloaded from the same owner-shared Google Drive Kyoto collection
+as `2025-05_KOMA_Kyoto_InitialEdit_136.jpg` on 2026-10-07. The original is
+6240 × 4160 pixels, approximately 1.3 MB, with SHA-256
+`4e864a034f788c4d7fa4735f7a6092278bbf37e8a6f23bf648de74a9712f3b1d`.
+Visual inspection shows shade cloth across the foreground, tea rows and wooded
+hills. It is a distinct display photograph for the Uji preview and directory,
+selected from the existing Kyoto field collection. **Tea fields · Kyoto**
+remains its caption; the source does not verify a Uji City capture location,
+particular field, producer or product connection. This presentation override
+does not add an editorial entry or narrow the collection's geographic coverage.
+The existing Wazuka image remains unchanged. Existing media-rights and release
+boundaries above also apply to this added asset.
 
 Media source and restrictions:
 

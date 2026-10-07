@@ -23,20 +23,69 @@ function fact(value, status = "published", source = "Reviewed test source") {
   return { value, status, source };
 }
 
-test("current product facts remain unpublished without inference from a handle", () => {
-  assert.deepEqual(productFactRecords, {});
+const pendingNote =
+  "Further product details are awaiting supplier confirmation.";
+const placeholders = [
+  {
+    key: "ingredients",
+    label: "Ingredients",
+    value: "To be confirmed",
+    status: "provisional",
+  },
+  {
+    key: "storage",
+    label: "Storage",
+    value: "To be confirmed",
+    status: "provisional",
+  },
+  {
+    key: "shelfLife",
+    label: "Shelf life",
+    value: "To be confirmed",
+    status: "provisional",
+  },
+];
+
+test("approved product codes publish from the shared reference without inventing other facts", () => {
+  const knownCodes = [
+    [
+      "test-only-japanese-premium-matcha-powder-for-tea-service-1-kg",
+      "WZKA-00",
+    ],
+    ["premium-matcha", "WZKA-00"],
+    ["ceremonial-matcha", "WZKA-00"],
+    ["test-only-japanese-barista-matcha-powder-for-lattes-1-kg", "UJI-00"],
+    ["barista-matcha", "UJI-00"],
+    ["jmm-storefront-test-matcha", "UJI-01"],
+    ["culinary-matcha", "UJI-01"],
+  ];
+  for (const [handle, code] of knownCodes) {
+    const details = getProductFacts(handle);
+    assert.deepEqual(details.published, [
+      { key: "productCode", label: "Product code", value: code },
+    ]);
+    assert.match(productFactRecords[handle].productCode.source, /2026-10-06/);
+    assert.equal(details.unpublishedNote, pendingNote);
+    assert.deepEqual(details.placeholders, placeholders);
+    assert.equal(productFactRecords[handle].ingredients, null);
+    assert.equal(productFactRecords[handle].storage, null);
+    assert.equal(productFactRecords[handle].shelfLife, null);
+  }
+});
+
+test("unknown product facts remain unpublished without inference from a handle", () => {
   for (const handle of [
-    "culinary-matcha",
     "premium-japanese-matcha",
     "organic-certified-SKU-001",
+    "CULINARY-MATCHA",
+    "ceremonial-matcha-2026",
+    "__proto__",
     "unknown",
   ]) {
     const details = getProductFacts(handle);
     assert.deepEqual(details.published, []);
-    assert.equal(
-      details.unpublishedNote,
-      "Product code, ingredients, material, cultivar, harvest, lot, storage, shelf life, certifications and supporting evidence have not yet been published for this matcha.",
-    );
+    assert.equal(details.unpublishedNote, pendingNote);
+    assert.deepEqual(details.placeholders, placeholders);
   }
 });
 
@@ -63,7 +112,8 @@ test("factual content requires exact handle, publication and a nonblank source",
     { key: "ingredients", label: "Ingredients", value: "Reviewed ingredients" },
   ]);
   assert.doesNotMatch(details.unpublishedNote, /ingredients/i);
-  assert.match(details.unpublishedNote, /^Material, cultivar, harvest/);
+  assert.equal(details.unpublishedNote, pendingNote);
+  assert.deepEqual(details.placeholders, placeholders.slice(1));
   assert.deepEqual(getProductFacts("MATCHA-ONE", records).published, []);
   assert.deepEqual(getProductFacts("matcha-two", records).published, []);
   assert.deepEqual(getProductFacts("toString", records).published, []);
@@ -90,15 +140,14 @@ test("published facts render selectively without blank rows or stale missing lab
   const details = getProductFacts("matcha-one", { "matcha-one": complete });
   assert.equal(details.published.length, 10);
   assert.equal(details.unpublishedNote, null);
+  assert.deepEqual(details.placeholders, []);
 
   const partial = getProductFacts("matcha-one", {
     "matcha-one": { ...complete, evidence: null },
   });
   assert.equal(partial.published.length, 9);
-  assert.equal(
-    partial.unpublishedNote,
-    "Supporting evidence has not yet been published for this matcha.",
-  );
+  assert.equal(partial.unpublishedNote, pendingNote);
+  assert.deepEqual(partial.placeholders, []);
 });
 
 test("product codes and certifications require sourced publication and retain exact values", () => {
@@ -133,8 +182,62 @@ test("product codes and certifications require sourced publication and retain ex
     getProductFacts("matcha-one", {
       "matcha-one": { ...complete, certifications: null },
     }).unpublishedNote,
-    "Certifications have not yet been published for this matcha.",
+    pendingNote,
   );
+});
+
+test("provisional rows never reveal draft, verified, unsourced or inherited supplier values", () => {
+  const records = {
+    "matcha-one": {
+      ...emptyRecord,
+      ingredients: fact("Private draft ingredients", "draft"),
+      storage: fact("Private verified storage", "verified"),
+      shelfLife: fact("Unsupported shelf life", "published", " "),
+    },
+  };
+  const result = getProductFacts("matcha-one", records);
+  assert.deepEqual(result.published, []);
+  assert.deepEqual(result.placeholders, placeholders);
+  assert.doesNotMatch(JSON.stringify(result), /Private|Unsupported/);
+  const inherited = Object.create({
+    "matcha-one": {
+      ...emptyRecord,
+      ingredients: fact("Inherited ingredients"),
+      storage: fact("Inherited storage"),
+      shelfLife: fact("Inherited shelf life"),
+    },
+  });
+  assert.deepEqual(
+    getProductFacts("matcha-one", inherited).placeholders,
+    placeholders,
+  );
+});
+
+test("reviewed publication replaces each provisional row without changing other placeholders", () => {
+  for (const { key } of placeholders) {
+    const records = {
+      "matcha-one": { ...emptyRecord, [key]: fact(`Reviewed ${key}`) },
+    };
+    const result = getProductFacts("matcha-one", records);
+    assert.deepEqual(
+      result.placeholders,
+      placeholders.filter((row) => row.key !== key),
+    );
+    assert.deepEqual(result.published, [
+      {
+        key,
+        label: placeholders.find((row) => row.key === key).label,
+        value: `Reviewed ${key}`,
+      },
+    ]);
+    assert.equal(result.unpublishedNote, pendingNote);
+    assert.equal(
+      Object.values(records["matcha-one"]).some(
+        (value) => value?.value === "To be confirmed",
+      ),
+      false,
+    );
+  }
 });
 
 test("formats keep canonical options, money and actual per-variant availability", () => {

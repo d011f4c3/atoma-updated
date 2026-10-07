@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import { useId, useRef, type ReactNode } from "react";
 import { getProductContent } from "@/lib/product-content";
 import { canPurchaseQuantity, money } from "@/lib/product-selection";
@@ -38,11 +40,12 @@ export function ShopPreview({
   onDecrement,
   referenceControl,
 }: ShopPreviewProps) {
+  const { locale, t } = useStorefrontLocale();
   const id = useId();
   const heading = useRef<HTMLHeadingElement>(null);
   const cart = useCart();
   const { catalog, loading, product, variant, quantity } = model;
-  const content = getProductContent(product);
+  const content = getProductContent(product, locale);
   const ready = !loading && catalog?.status === "ready" && product;
   const empty =
     catalog?.status === "empty" ||
@@ -65,12 +68,12 @@ export function ShopPreview({
     Boolean(product && product.variants.length > 1);
   const format = variant
     ? variant.title === "Default Title"
-      ? "Standard"
+      ? t("Standard")
       : variant.title
-    : "No published format";
+    : t("No published format");
   const orderTotal = (
     <div className={styles.total} aria-live="polite">
-      <span className={styles.label}>Total</span>
+      <span className={styles.label}>{t("Total")}</span>
       <strong data-shop-total>{validTotal ? model.priceLabel : "—"}</strong>
     </div>
   );
@@ -102,7 +105,7 @@ export function ShopPreview({
           tabIndex={-1}
           data-homepage-product-name
         >
-          {ready ? content.name : "Shop matcha."}
+          {ready ? content.name : t("Shop matcha.")}
         </h2>
         {ready && <p>{content.application}</p>}
       </header>
@@ -111,10 +114,10 @@ export function ShopPreview({
         <div className={styles.state}>
           <p role="status">
             {loading
-              ? "Opening the collection…"
+              ? t("Opening the collection…")
               : empty
-                ? "There are no matcha available just yet."
-                : "The collection couldn’t be loaded. Please try again."}
+                ? t("There are no matcha available just yet.")
+                : t("The collection couldn’t be loaded. Please try again.")}
           </p>
           {!loading && (
             <button
@@ -123,20 +126,22 @@ export function ShopPreview({
               disabled={cart.busy}
               onClick={retry}
             >
-              Try again <span aria-hidden="true">↻</span>
+              {t("Try again")} <span aria-hidden="true">↻</span>
             </button>
           )}
         </div>
       ) : (
         <>
           <fieldset className={styles.controls} disabled={cart.busy}>
-            <legend className={styles.srOnly}>Order configuration</legend>
+            <legend className={styles.srOnly}>
+              {t("Order configuration")}
+            </legend>
 
             {priceFirst && (
               <div className={styles.priceOverview}>
                 {orderTotal}
                 <div className={styles.orderSummary} data-shop-order-summary>
-                  <span className={styles.label}>Your order</span>
+                  <span className={styles.label}>{t("Your order")}</span>
                   <p>
                     {format} × {quantity}
                   </p>
@@ -152,7 +157,7 @@ export function ShopPreview({
                       01
                     </span>
                   )}
-                  Format
+                  {t("Format")}
                 </span>
                 <div className={styles.formatValue}>
                   {showFormatOptions ? (
@@ -181,7 +186,7 @@ export function ShopPreview({
                           />
                           <span className={styles.optionTitle}>
                             {item.title === "Default Title"
-                              ? "Standard"
+                              ? t("Standard")
                               : item.title}
                           </span>
                           <span
@@ -194,10 +199,10 @@ export function ShopPreview({
                             item.priceMinor >= 0
                               ? money(item.priceMinor, item.currency)
                               : "—"}
-                            <span> / unit</span>
+                            <span> {t("/ unit")}</span>
                             {!item.available && (
                               <span className={styles.optionAvailability}>
-                                Unavailable
+                                {t("Unavailable")}
                               </span>
                             )}
                           </span>
@@ -212,7 +217,7 @@ export function ShopPreview({
                     <select
                       id={`${id}-format`}
                       data-shop-format
-                      aria-label="Format"
+                      aria-label={t("Format")}
                       value={variant?.id ?? ""}
                       onChange={(event) => {
                         if (!cart.busy && event.target.value !== variant?.id)
@@ -222,9 +227,9 @@ export function ShopPreview({
                       {product.variants.map((item) => (
                         <option key={item.id} value={item.id}>
                           {item.title === "Default Title"
-                            ? "Standard"
+                            ? t("Standard")
                             : item.title}
-                          {!item.available ? " — Unavailable" : ""}
+                          {!item.available ? ` — ${t("Unavailable")}` : ""}
                         </option>
                       ))}
                     </select>
@@ -236,7 +241,7 @@ export function ShopPreview({
                   {variant && validPrice && !showFormatOptions && (
                     <p className={styles.unitPrice} data-shop-unit-price>
                       {money(variant.priceMinor, variant.currency)}
-                      <span> / unit</span>
+                      <span> {t("/ unit")}</span>
                     </p>
                   )}
                 </div>
@@ -249,12 +254,12 @@ export function ShopPreview({
                       02
                     </span>
                   )}
-                  Quantity
+                  {t("Quantity")}
                 </span>
                 <div className={styles.stepper}>
                   <button
                     type="button"
-                    aria-label="Decrease quantity"
+                    aria-label={t("Decrease quantity")}
                     disabled={
                       !variant?.available || quantity <= variant.minimum
                     }
@@ -269,12 +274,12 @@ export function ShopPreview({
                   >
                     −
                   </button>
-                  <output aria-label="Quantity" aria-live="polite">
+                  <output aria-label={t("Quantity")} aria-live="polite">
                     {quantity}
                   </output>
                   <button
                     type="button"
-                    aria-label="Increase quantity"
+                    aria-label={t("Increase quantity")}
                     disabled={!variant?.available || !model.canIncrement}
                     onClick={() => {
                       if (
@@ -290,9 +295,9 @@ export function ShopPreview({
                 </div>
                 {variant && (variant.minimum > 1 || variant.increment > 1) && (
                   <p className={styles.quantityNote}>
-                    Minimum {variant.minimum}
+                    {t("Minimum {count}", { count: variant.minimum })}
                     {variant.increment > 1 &&
-                      ` · Increments of ${variant.increment}`}
+                      ` · ${t("Increments of {count}", { count: variant.increment })}`}
                   </p>
                 )}
               </div>
@@ -312,7 +317,7 @@ export function ShopPreview({
                       03
                     </span>
                   )}
-                  One-time purchase
+                  {t("One-time purchase")}
                 </span>
                 <span aria-hidden="true">+</span>
               </summary>
@@ -322,11 +327,11 @@ export function ShopPreview({
             <div
               className={styles.purchase}
               role={showOrderSummary ? "group" : undefined}
-              aria-label={showOrderSummary ? "Order summary" : undefined}
+              aria-label={showOrderSummary ? t("Order summary") : undefined}
             >
               {showOrderSummary && (
                 <div className={styles.orderSummary} data-shop-order-summary>
-                  <span className={styles.label}>Your order</span>
+                  <span className={styles.label}>{t("Your order")}</span>
                   <p>
                     {format} × {quantity}
                   </p>

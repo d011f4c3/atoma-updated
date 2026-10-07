@@ -1,0 +1,317 @@
+.sequence {
+  width: 100%;
+  max-width: 78rem;
+  min-width: 0;
+  margin-inline: auto;
+  color: var(--ink);
+  font-size: 0.8125rem;
+  line-height: 1.85;
+  font-variant-numeric: tabular-nums;
+}
+.sequence :is(h1, h2, p, figure, dl, dd) {
+  margin: 0;
+}
+.heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem 3rem;
+  padding-block: 1.75rem 2.25rem;
+}
+.label {
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 1.7;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.heading h1 {
+  font-size: clamp(1.375rem, 2vw, 1.875rem);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+.progress ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.progress li {
+  min-width: 0;
+}
+.stepButton {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.625rem 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.stepButton[aria-current="step"] {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.marker {
+  flex: none;
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-left: auto;
+  margin-right: 0.25rem;
+  border: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+.stepButton[aria-current="step"] .marker {
+  background: var(--ink);
+}
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(2.5rem, 7vw, 7rem);
+  min-height: 29rem;
+  padding-block: 2.75rem 3.5rem;
+}
+.page[hidden] {
+  display: none;
+}
+.copy {
+  min-width: 0;
+  max-width: 47ch;
+}
+.copy h2 {
+  max-width: 25ch;
+  margin-block: 1rem 1.5rem;
+  font-size: clamp(1.25rem, 1.7vw, 1.625rem);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.035em;
+  scroll-margin-top: 2rem;
+}
+.copy .note {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  line-height: 1.7;
+}
+.principles {
+  min-width: 0;
+  border-bottom: 1px solid var(--line);
+}
+.principles > div {
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+.principles dt {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  font-size: clamp(1.125rem, 2.3vw, 1.75rem);
+  line-height: 1.5;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+.principles dt > span {
+  color: var(--muted);
+  font-size: 0.625rem;
+  letter-spacing: 0.05em;
+}
+.principles dd {
+  margin-top: 0.5rem;
+  padding-left: 2.25rem;
+}
+.field {
+  min-width: 0;
+}
+.photo {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1.48;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ink) 5%, var(--surface));
+}
+.photo img {
+  object-fit: cover;
+  object-position: center 57%;
+}
+.field figcaption {
+  padding-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.future {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 1.5rem;
+  min-width: 0;
+  padding: 2rem clamp(1.5rem, 4vw, 3rem);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--ink) 2%, transparent);
+}
+.futureMark {
+  color: var(--muted);
+  font-size: 3rem;
+  line-height: 1;
+}
+.future > p:not(.label) {
+  max-width: 44ch;
+}
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  min-height: 2.75rem;
+  max-width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.625rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+}
+.navigation p {
+  color: var(--muted);
+  text-align: center;
+  text-transform: uppercase;
+}
+.navigation button {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.sequence button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.stepButton:hover:not(:disabled),
+.action:hover:not(:disabled) {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.navigation button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+.sequence :is(button, h2):focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+@media (max-width: 760px) {
+  .heading {
+    display: block;
+    padding-block: 1.5rem 1.75rem;
+  }
+  .heading h1 {
+    margin-top: 0.75rem;
+  }
+  .progress ol {
+    gap: 0.75rem;
+  }
+  .stepButton {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.25rem;
+    font-size: 0.5625rem;
+  }
+  .stepNumber {
+    grid-column: 1;
+  }
+  .stepButton > span:nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .marker {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 2rem;
+    min-height: 0;
+    padding-block: 2rem;
+  }
+  .copy {
+    max-width: 100%;
+  }
+  .copy h2 {
+    margin-bottom: 1rem;
+  }
+  .principles > div {
+    padding-block: 1.125rem;
+  }
+  .principles dt {
+    font-size: 1.25rem;
+  }
+  .field figcaption {
+    font-size: 0.5625rem;
+  }
+  .future {
+    gap: 1.25rem;
+    padding: 1.5rem;
+  }
+  .action {
+    width: 100%;
+  }
+  .navigation {
+    gap: 0.5rem;
+    font-size: 0.625rem;
+  }
+  .navigation button {
+    gap: 0.5rem;
+    padding-inline: 0.5rem;
+  }
+  .statusLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

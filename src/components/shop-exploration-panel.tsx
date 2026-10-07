@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import { useId, useRef } from "react";
 import { getProductContent } from "@/lib/product-content";
 import type { ProductCodePlacement } from "@/lib/product-display-index";
@@ -35,11 +37,12 @@ export function ShopExplorationPanel({
   onIncrement,
   onDecrement,
 }: ShopExplorationPanelProps) {
+  const { locale, t } = useStorefrontLocale();
   const id = useId();
   const heading = useRef<HTMLHeadingElement>(null);
   const cart = useCart();
   const { catalog, loading, product, variant, quantity } = model;
-  const content = getProductContent(product);
+  const content = getProductContent(product, locale);
   const ready = !loading && catalog?.status === "ready" && product;
   const empty =
     catalog?.status === "empty" ||
@@ -55,14 +58,22 @@ export function ShopExplorationPanel({
     Number.isSafeInteger(variant.priceMinor * quantity),
   );
   const eligible = validPrice && canPurchaseQuantity(variant, quantity);
-  const format = variant ? formatName(variant.title) : "No published format";
+  const format = variant
+    ? t(formatName(variant.title))
+    : t("No published format");
   const unitPrice =
     variant && validPrice ? money(variant.priceMinor, variant.currency) : "—";
   const quantityRules = variant
     ? [
-        variant.minimum > 1 ? `Minimum ${variant.minimum}` : null,
-        variant.increment > 1 ? `Increments of ${variant.increment}` : null,
-        variant.maximum !== null ? `Maximum ${variant.maximum}` : null,
+        variant.minimum > 1
+          ? t("Minimum {count}", { count: variant.minimum })
+          : null,
+        variant.increment > 1
+          ? t("Increments of {count}", { count: variant.increment })
+          : null,
+        variant.maximum !== null
+          ? t("Maximum {count}", { count: variant.maximum })
+          : null,
       ]
         .filter(Boolean)
         .join(" · ")
@@ -103,7 +114,7 @@ export function ShopExplorationPanel({
           tabIndex={-1}
           data-homepage-product-name
         >
-          {ready ? content.name : "Shop matcha."}
+          {ready ? content.name : t("Shop matcha.")}
         </h2>
         {ready && <p>{content.application}</p>}
       </ProductCodeIdentity>
@@ -112,10 +123,10 @@ export function ShopExplorationPanel({
         <div className={styles.state}>
           <p role="status">
             {loading
-              ? "Opening the collection…"
+              ? t("Opening the collection…")
               : empty
-                ? "There are no matcha available just yet."
-                : "The collection couldn’t be loaded. Please try again."}
+                ? t("There are no matcha available just yet.")
+                : t("The collection couldn’t be loaded. Please try again.")}
           </p>
           {!loading && (
             <button
@@ -124,14 +135,16 @@ export function ShopExplorationPanel({
               disabled={cart.busy}
               onClick={retry}
             >
-              Try again <span aria-hidden="true">↻</span>
+              {t("Try again")} <span aria-hidden="true">↻</span>
             </button>
           )}
         </div>
       ) : (
         <>
           <fieldset className={styles.controls} disabled={cart.busy}>
-            <legend className={styles.srOnly}>Order configuration</legend>
+            <legend className={styles.srOnly}>
+              {t("Order configuration")}
+            </legend>
             <div className={styles.order}>
               <div className={styles.configuration}>
                 <fieldset className={styles.format}>
@@ -139,7 +152,7 @@ export function ShopExplorationPanel({
                     <span className={styles.stepIndex} aria-hidden="true">
                       01
                     </span>
-                    Format
+                    {t("Format")}
                   </legend>
                   {product.variants.length > 1 ? (
                     layout === "guided" ? (
@@ -164,7 +177,7 @@ export function ShopExplorationPanel({
                               onChange={() => selectFormat(item.id)}
                             />
                             <span className={styles.optionName}>
-                              {formatName(item.title)}
+                              {t(formatName(item.title))}
                             </span>
                             <span
                               className={styles.optionPrice}
@@ -176,11 +189,11 @@ export function ShopExplorationPanel({
                               item.priceMinor >= 0
                                 ? money(item.priceMinor, item.currency)
                                 : "—"}
-                              <span> / unit</span>
+                              <span> {t("/ unit")}</span>
                             </span>
                             {!item.available && (
                               <span className={styles.availability}>
-                                Unavailable
+                                {t("Unavailable")}
                               </span>
                             )}
                             <span
@@ -194,21 +207,21 @@ export function ShopExplorationPanel({
                       <>
                         <select
                           className={styles.formatSelect}
-                          aria-label="Format"
+                          aria-label={t("Format")}
                           data-shop-format
                           value={variant?.id ?? ""}
                           onChange={(event) => selectFormat(event.target.value)}
                         >
                           {product.variants.map((item) => (
                             <option key={item.id} value={item.id}>
-                              {formatName(item.title)}
-                              {!item.available ? " — Unavailable" : ""}
+                              {t(formatName(item.title))}
+                              {!item.available ? ` — ${t("Unavailable")}` : ""}
                             </option>
                           ))}
                         </select>
                         {layout !== "receipt" && (
                           <p className={styles.unitPrice} data-shop-unit-price>
-                            {unitPrice} <span>/ unit</span>
+                            {unitPrice} <span>{t("/ unit")}</span>
                           </p>
                         )}
                       </>
@@ -218,11 +231,13 @@ export function ShopExplorationPanel({
                       <p data-shop-format>{format}</p>
                       {variant && layout !== "receipt" && (
                         <p className={styles.unitPrice} data-shop-unit-price>
-                          {unitPrice} <span>/ unit</span>
+                          {unitPrice} <span>{t("/ unit")}</span>
                         </p>
                       )}
                       {variant && !variant.available && (
-                        <p className={styles.availability}>Unavailable</p>
+                        <p className={styles.availability}>
+                          {t("Unavailable")}
+                        </p>
                       )}
                     </div>
                   )}
@@ -233,7 +248,7 @@ export function ShopExplorationPanel({
                     <span className={styles.stepIndex} aria-hidden="true">
                       02
                     </span>
-                    Quantity
+                    {t("Quantity")}
                   </span>
                   <div
                     className={styles.stepper}
@@ -245,7 +260,7 @@ export function ShopExplorationPanel({
                   >
                     <button
                       type="button"
-                      aria-label="Decrease quantity"
+                      aria-label={t("Decrease quantity")}
                       disabled={
                         !variant?.available || quantity <= variant.minimum
                       }
@@ -260,12 +275,12 @@ export function ShopExplorationPanel({
                     >
                       −
                     </button>
-                    <output aria-label="Quantity" aria-live="polite">
+                    <output aria-label={t("Quantity")} aria-live="polite">
                       {quantity}
                     </output>
                     <button
                       type="button"
-                      aria-label="Increase quantity"
+                      aria-label={t("Increase quantity")}
                       disabled={!variant?.available || !model.canIncrement}
                       onClick={() => {
                         if (
@@ -297,28 +312,28 @@ export function ShopExplorationPanel({
               <div
                 className={styles.checkout}
                 role="group"
-                aria-label="Order summary"
+                aria-label={t("Order summary")}
               >
                 {layout === "receipt" && (
                   <div className={styles.receipt} data-shop-order-summary>
-                    <p className={styles.receiptHeading}>Your order</p>
+                    <p className={styles.receiptHeading}>{t("Your order")}</p>
                     <p className={styles.receiptName}>{content.name}</p>
                     <dl className={styles.receiptLines}>
                       <div>
-                        <dt>Selection</dt>
+                        <dt>{t("Selection")}</dt>
                         <dd>
                           {format} × {quantity}
                         </dd>
                       </div>
                       <div>
-                        <dt>Unit price</dt>
+                        <dt>{t("Unit price")}</dt>
                         <dd data-shop-unit-price>{unitPrice}</dd>
                       </div>
                     </dl>
                   </div>
                 )}
                 <div className={styles.total} aria-live="polite">
-                  <span className={styles.label}>Total</span>
+                  <span className={styles.label}>{t("Total")}</span>
                   <strong data-shop-total>
                     {validTotal ? model.priceLabel : "—"}
                   </strong>

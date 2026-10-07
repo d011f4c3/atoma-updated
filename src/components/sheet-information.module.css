@@ -26,7 +26,7 @@
 .sheetHeader,
 .close {
   font-family: var(--font-fraktion-mono), monospace;
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: 0.045em;
@@ -145,14 +145,16 @@
 
 .body h2 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-size: calc(
+    clamp(2rem, 4vw, 2.75rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 300;
   line-height: 1.08;
   letter-spacing: -0.02em;
 }
 
 .copy {
-  font-size: 1.0625rem;
+  font-size: calc(1.0625rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
 }
 
@@ -192,7 +194,7 @@
 }
 
 .close > span:last-child {
-  font-size: 1rem;
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
   line-height: 1;
 }
 
@@ -215,7 +217,7 @@
   }
 
   .copy {
-    font-size: 1rem;
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
   }
 }
 
@@ -229,10 +231,10 @@
     padding: 1rem 0;
   }
   .body h2 {
-    font-size: 1.625rem;
+    font-size: calc(1.625rem + var(--locale-font-increment, 0px));
   }
   .copy {
-    font-size: 0.875rem;
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
     line-height: 1.4;
   }
   .copy p + p {

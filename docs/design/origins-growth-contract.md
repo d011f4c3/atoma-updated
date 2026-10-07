@@ -89,9 +89,42 @@ provide those identities and relationships, leave the relevant records empty.
 
 The current catalog establishes product identities, variants and commerce
 values. Authored application guidance and seven sensory properties are approved
-sample content, not lot measurements. The owner confirmed on October 1 that all three current materials are grown in
-Wazuka, Kyoto. They now have explicit material-level growing links. Product-level
-producer assignments, lots and certificates remain separate facts.
+sample content, not lot measurements. The October 6 feedback replaces the
+October 1 all-three-materials Wazuka attribution: Ceremonial retains its
+material-level Wazuka growing link; Barista and Culinary have sourced UJI tea
+designation links, with their exact growing and processing locations still
+unpublished. Product-level producer assignments, lots and certificates remain
+separate facts.
+
+Tea designations have independent definitions and material associations, each
+with publication/evidence guards. They are not Place records or supply-chain
+roles and never enter growing-place filters, geographic ancestry or automatic
+field-note relationships. The same exact material bindings serve the homepage,
+retail information and the existing Uji City view's UJI-series products. Unknown
+handles and familiar names or code prefixes do not create an association.
+
+The existing Uji City location view explains the designation's wider scope and
+shows its associated products under UJI series. The homepage uses the same
+photographic Panorama composition as Wazuka. Task 0124 uses matching
+Country / Region / Locality rows for both: Japan → Kyoto → Uji City and
+Japan → Kyoto → Wazuka. This Uji display path is editorial place context, with
+the designation caveat in body copy; it does not add growing provenance. A
+distinct image from the supplied Kyoto collection appears in Uji's preview,
+directory hero and thumbnail, retaining its Kyoto caption and without adding
+an editorial field entry or changing the Wazuka photograph.
+The existing directory/location markup, section order and theme hooks remain.
+Its context follows [MAFF's Uji Tea reference](https://www.maff.go.jp/e/policies/market/dento_syoku/menu/uzi_tea.html)
+and [Kyoto Prefecture's municipality list](https://www.pref.kyoto.jp/link.html),
+verified on 2026-10-06. These sources do not establish product-specific growing
+or processing locations. Uji City and Wazuka Town are separate municipalities
+within Kyoto Prefecture; Wazuka is not a child of Uji City.
+
+Under Task 0115, directory browsing uses `getDirectoryMatchasForPlace` to
+combine documented growing relationships with designation context within the
+selected place's published subtree. Kyoto and Japan list all three products;
+Uji City lists its two UJI associations and Wazuka lists Ceremonial. Counts and
+type filters use the same lookup. This browsing roll-up does not add provenance
+links or change `getMatchasForPlace`, product field notes or photo evidence.
 
 The original client strategy and detailed rules identify Hayashi as a tea grower
 with Wazuka field context, Hatakeyama as wholesaler/supplier/processor/custodian,

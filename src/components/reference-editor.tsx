@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import { useEffect, useId, useRef } from "react";
 import { ScrambleText } from "./scramble-text";
 import styles from "./reference-editor.module.css";
@@ -15,6 +17,7 @@ export function ReferenceEditor({
   onChange,
   onDone,
 }: ReferenceEditorProps) {
+  const { t } = useStorefrontLocale();
   const id = useId();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -37,13 +40,17 @@ export function ReferenceEditor({
         onDone();
       }}
     >
-      <h2 id={`${id}-title`}>Make it yours.</h2>
+      <h2 id={`${id}-title`}>{t("Make it yours.")}</h2>
       <p className={styles.introduction} id={`${id}-hint`}>
-        <ScrambleText text="Add a name, studio, or short note." periodic wrap />
+        <ScrambleText
+          text={t("Add a name, studio, or short note.")}
+          periodic
+          wrap
+        />
       </p>
       <div className={styles.field}>
         <div className={styles.fieldHeading}>
-          <label htmlFor={`${id}-reference`}>Your reference</label>
+          <label htmlFor={`${id}-reference`}>{t("Your reference")}</label>
           <span className={styles.counter}>{value.length} / 32</span>
         </div>
         <input
@@ -54,14 +61,18 @@ export function ReferenceEditor({
           value={value}
           maxLength={32}
           onChange={(event) => onChange(event.target.value)}
-          placeholder="E.g. Studio 01"
+          placeholder={t("E.g. Studio 01")}
           autoComplete="off"
           autoCapitalize="off"
           spellCheck={false}
           aria-describedby={`${id}-hint ${id}-preview`}
         />
         <p className={styles.note} id={`${id}-preview`}>
-          <ScrambleText text="For your label preview only." periodic wrap />
+          <ScrambleText
+            text={t("For your label preview only.")}
+            periodic
+            wrap
+          />
         </p>
       </div>
       <div className={styles.actions}>
@@ -73,11 +84,11 @@ export function ReferenceEditor({
             inputRef.current?.focus({ preventScroll: true });
           }}
         >
-          <ScrambleText text="Clear text" interactive />
+          <ScrambleText text={t("Clear text")} interactive />
           <span aria-hidden="true">×</span>
         </button>
         <button className={styles.done} type="submit">
-          <ScrambleText text="Done" interactive />
+          <ScrambleText text={t("Done")} interactive />
           <span aria-hidden="true">→</span>
         </button>
       </div>

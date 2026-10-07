@@ -1,5 +1,13 @@
 # ATOMA updated
 
+## October client feedback
+
+[Task 0105](docs/tasks/0105-client-feedback-delivery-plan.md) tracks the
+6 October feedback: product codes and origins first, followed by product facts,
+readability, About, samples, international selling/localization and packaging.
+The [source summary](docs/briefs/2026-10-06-client-feedback.md) distinguishes
+confirmed corrections from commercial inputs and the independent-launch decision.
+
 ## Hosted release — Task 0103
 
 The current storefront is published from `main` to
@@ -75,11 +83,41 @@ The latest visual review and repository gate are recorded in Task 0025. The earl
 [Task 0019 design pass](docs/design/2026-09-30-visual-quality-pass.md) records the
 prior layout and is superseded where the owner's later feedback differs.
 
+## Standalone About comparison — Task 0125
+
+Open [the About study](http://127.0.0.1:3100/about-study) to compare Fieldnotes,
+Map, Chapters and Index. These pages share copy grounded in the
+client's brand notes and October feedback: application-led selection, fieldwork,
+Wazuka as the first editorial chapter and prospective community work. The current
+About popup and navigation remain unchanged. Company details and completed
+activity stories await supplied confirmation; none are invented for the layouts.
+See [Task 0125](docs/tasks/0125-standalone-about-explorations.md).
+
+Fieldnotes is the panoramic essay reference. Map starts with connected subject
+branches that expand independently. Chapters starts with three closed native
+disclosures. Index uses four visual tiles to reveal passages below its contents
+sheet. These models retain short copy, consistent type, palettes and field reader
+behavior. Saved query values remain: `compact` opens Map, `ledger` opens Chapters
+and `columns` opens Index. Study notes can be opened from the review toolbar.
+See [Task 0132](docs/tasks/0132-about-reading-models.md).
+
+## Overview comparison — Task 0119
+
+Open [the Overview study](http://127.0.0.1:3100/overview-study) to compare Digest,
+Index and Folded against the original tab. The alternatives reduce visible prose
+using material qualities, ruled rows and native disclosures. All share the
+existing tab type scale, translated product content, formats and product records.
+Folded is now the homepage Overview in both themes: one introduction and three
+expandable sections for formats, preparation and the product record. All study
+options remain available; selection and the material scene stay mounted while
+switching directions. See [Task 0119](docs/tasks/0119-overview-design-study.md)
+and [the Folded adoption](docs/tasks/0121-adopt-folded-overview.md).
+
 ## Hero introduction comparison — Task 0086
 
 [Product-code study](http://127.0.0.1:3100/numbering-exploration) adds Caption,
 Edge note, Register and Specimen tag to the earlier placement options. It uses
-the requested WZKA display identifiers consistently across the product cards,
+the approved WZKA/UJI product identifiers consistently across the product cards,
 Overview, Specifications and Quick order. Register, with an open diamond, is now
 the current homepage treatment; dedicated Shop cards carry a matching small code.
 The study retains all alternatives and an unmarked No code comparison.

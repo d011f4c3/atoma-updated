@@ -34,7 +34,7 @@
 .targetLabel,
 .footer {
   font-family: var(--font-atoma-mono), monospace;
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: 0.07em;
@@ -80,7 +80,9 @@
 }
 .heading {
   margin: 0;
-  font-size: clamp(1.875rem, 3.25vw, 3.25rem);
+  font-size: calc(
+    clamp(1.875rem, 3.25vw, 3.25rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   line-height: 1.12;
   letter-spacing: -0.06em;
@@ -93,7 +95,7 @@
 .introCopy {
   margin: 1.75rem 0 0;
   color: var(--muted);
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   line-height: 1.9;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -115,7 +117,7 @@
   animation-delay: 380ms;
 }
 .exploreLabel {
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   letter-spacing: 0.045em;
   width: min(100%, 19rem);
   padding: 0.875rem 1rem;
@@ -403,7 +405,7 @@
   border-radius: 1px;
   background: var(--surface);
   color: var(--paper);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   white-space: nowrap;
 }
 .targetLabel svg {
@@ -441,7 +443,7 @@
   min-height: 2.75rem;
   padding: 0 0.35rem;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   letter-spacing: 0.045em;
   text-decoration: none;
   transition: color 250ms;
@@ -465,10 +467,10 @@
 }
 .themeDivider {
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 .footerMark {
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 .footerDivider {
   padding: 0 0.5rem;
@@ -702,11 +704,13 @@
     grid-template-columns: minmax(0, 0.68fr) minmax(0, 1.32fr);
   }
   .heading {
-    font-size: clamp(1.75rem, 3.2vw, 2rem);
+    font-size: calc(
+      clamp(1.75rem, 3.2vw, 2rem) + var(--locale-font-increment, 0px)
+    );
   }
   .exploreLabel {
     gap: 1.5rem;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   }
 }
 @media (max-width: 760px) {
@@ -730,7 +734,9 @@
     display: none;
   }
   .heading {
-    font-size: clamp(1.75rem, 8.5vw, 2.5rem);
+    font-size: calc(
+      clamp(1.75rem, 8.5vw, 2.5rem) + var(--locale-font-increment, 0px)
+    );
     line-height: 1.12;
     letter-spacing: -0.065em;
   }
@@ -747,7 +753,7 @@
   }
   .introCopy {
     margin-top: 1rem;
-    font-size: 0.75rem;
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
     line-height: 1.7;
   }
   .introCopy br {
@@ -763,7 +769,7 @@
     gap: 1.5rem;
     margin: 0;
     padding: 1rem 1.125rem;
-    font-size: 0.75rem;
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
   }
   .exploreLabel svg {
     width: 1.125rem;
@@ -777,7 +783,7 @@
   }
   .viewerHeading,
   .viewerFooter {
-    font-size: 0.625rem;
+    font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   }
   .viewerHeading {
     justify-content: space-between;
@@ -815,14 +821,16 @@
     padding: 0.75rem 0 0.875rem;
   }
   .heading {
-    font-size: clamp(1.625rem, 8vw, 2rem);
+    font-size: calc(
+      clamp(1.625rem, 8vw, 2rem) + var(--locale-font-increment, 0px)
+    );
   }
   .introCopy {
     display: none;
   }
   .exploreLabel {
     min-height: 3.25rem;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   }
   .viewer {
     grid-template-rows: 2.25rem minmax(0, 1fr) 1.75rem;
@@ -849,7 +857,9 @@
     display: none;
   }
   .heading {
-    font-size: clamp(1.375rem, 2.8vw, 1.75rem);
+    font-size: calc(
+      clamp(1.375rem, 2.8vw, 1.75rem) + var(--locale-font-increment, 0px)
+    );
   }
   .introStatement {
     padding: 0;
@@ -861,7 +871,7 @@
     min-height: 2.75rem;
     margin-top: 1rem;
     gap: 1rem;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   }
   .viewer {
     grid-row: 1;
@@ -1083,7 +1093,7 @@
     display: none;
   }
   .footerMark {
-    font-size: 0.625rem;
+    font-size: calc(0.625rem + var(--locale-font-increment, 0px));
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1109,14 +1119,16 @@
     padding: 1.75rem 0 1.25rem;
   }
   .hero[data-material-object="silver-bag"] .heading {
-    font-size: clamp(2rem, 9.4vw, 2.75rem);
+    font-size: calc(
+      clamp(2rem, 9.4vw, 2.75rem) + var(--locale-font-increment, 0px)
+    );
     line-height: 1.06;
     letter-spacing: -0.06em;
   }
   .hero[data-material-object="silver-bag"] .introCopy {
     display: block;
     margin-top: 1.125rem;
-    font-size: 0.625rem;
+    font-size: calc(0.625rem + var(--locale-font-increment, 0px));
     line-height: 1.8;
   }
   .hero[data-material-object="silver-bag"] .introCopy > span:last-child {
@@ -1131,14 +1143,14 @@
     display: none;
   }
   .hero[data-material-object="silver-bag"] .viewerHeading {
-    font-size: 0.5625rem;
+    font-size: calc(0.5625rem + var(--locale-font-increment, 0px));
   }
   .hero[data-material-object="silver-bag"] .exploreLabel {
     grid-row: 3;
     min-height: 3.25rem;
     margin: 0 0 1.25rem;
     padding: 0.875rem 1rem;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   }
 }
 
@@ -1147,7 +1159,9 @@
     padding: 1.125rem 0 1rem;
   }
   .hero[data-material-object="silver-bag"] .heading {
-    font-size: clamp(1.875rem, 8.8vw, 2.125rem);
+    font-size: calc(
+      clamp(1.875rem, 8.8vw, 2.125rem) + var(--locale-font-increment, 0px)
+    );
   }
   .hero[data-material-object="silver-bag"] .introCopy {
     margin-top: 0.875rem;

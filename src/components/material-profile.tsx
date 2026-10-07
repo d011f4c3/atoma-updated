@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import { useId, useState } from "react";
 import type { ProductContent } from "@/lib/product-content";
 import { ScrambleText } from "./scramble-text";
@@ -14,6 +16,7 @@ export function MaterialProfile({
   activeIndex?: number;
   onSelect?: (index: number) => void;
 }) {
+  const { t } = useStorefrontLocale();
   const explanationId = useId();
   // Keeping the selected column across products lets a buyer compare the same
   // material property without opening it again after every product change.
@@ -30,22 +33,24 @@ export function MaterialProfile({
   return (
     <section
       className={styles.profile}
-      aria-label={`Material profile for ${content.name}`}
+      aria-label={t("Material profile for {product}", {
+        product: content.name,
+      })}
       data-material-profile
     >
       <div className={styles.caption}>
         <span>
-          <ScrambleText text="SELECT A PROPERTY ↓" periodic wrap />
+          <ScrambleText text={t("SELECT A PROPERTY ↓")} periodic wrap />
         </span>
       </div>
       <div
         className={styles.properties}
         role="group"
-        aria-label="Explore material properties"
+        aria-label={t("Explore material properties")}
       >
         {properties.map((property, index) => (
           <button
-            key={property.label}
+            key={index}
             className={styles.property}
             type="button"
             aria-pressed={index === selectedIndex}

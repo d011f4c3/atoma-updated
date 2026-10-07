@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import type { ProductCodePlacement } from "@/lib/product-display-index";
 
 import Link from "next/link";
@@ -16,6 +18,7 @@ import { productName } from "@/lib/product-name";
 import { HomeHeader } from "./home-header";
 import { CatalogPanel } from "./catalog-panel";
 import { HomepageProductInformation } from "./homepage-product-information";
+import type { OverviewStudyVariant } from "./overview-study-panel";
 import type { OriginPreviewVariant } from "./origin-preview";
 import { ShopPreview, type ShopPreviewVariant } from "./shop-preview";
 import {
@@ -59,8 +62,8 @@ export type ProductLabelSnapshot = {
 const homepageViews = [
   { value: "overview", label: "Overview" },
   { value: "specifications", label: "Specifications" },
-  { value: "origins", label: "Origins" },
   { value: "builder", label: "Shop" },
+  { value: "origins", label: "Origin" },
 ] as const;
 
 const mobileViewportQuery = "(max-width: 760px)";
@@ -93,6 +96,7 @@ export function ProductConfigurator({
   selectorPlacement = "right",
   initialProductHandle,
   originPreviewVariant = "current",
+  overviewStudyVariant = "current",
   shopPreviewVariant = "current",
   shopExplorationLayout,
   productCodePlacement,
@@ -116,12 +120,14 @@ export function ProductConfigurator({
   selectorPlacement?: "left" | "right";
   initialProductHandle?: string;
   originPreviewVariant?: "current" | OriginPreviewVariant;
+  overviewStudyVariant?: OverviewStudyVariant;
   shopPreviewVariant?: "current" | "refined" | ShopPreviewVariant;
   shopExplorationLayout?: ShopExplorationLayout;
   productCodePlacement?: ProductCodePlacement;
   initialView?: HomepageInformationView | "builder";
   materialObject?: "powder" | "silver-bag";
 }) {
+  const { locale, t } = useStorefrontLocale();
   const silverBag = materialObject === "silver-bag";
   const PackagingScene = packaging === "bag" ? BagScene : VesselScene;
   const Container = embedded ? "div" : "main";
@@ -161,12 +167,17 @@ export function ProductConfigurator({
     x: number;
     y: number;
   } | null>(null);
-  const content = getProductContent(model.product);
+  // Keep translated profile arrays stable so label snapshots do not retrigger
+  // the parent update on every render.
+  const content = useMemo(
+    () => getProductContent(model.product, locale),
+    [model.product, locale],
+  );
   useEffect(() => {
     if (!entered || !model.product) return;
-    setSelectedMatcha(content.name);
+    setSelectedMatcha(model.product.title, model.product.handle);
     return () => setSelectedMatcha(null);
-  }, [entered, model.product, content.name, setSelectedMatcha]);
+  }, [entered, model.product, setSelectedMatcha]);
   const products =
     model.catalog?.status === "ready" ? model.catalog.products : [];
   const index = Math.max(
@@ -177,8 +188,8 @@ export function ProductConfigurator({
   );
   const format =
     model.variant?.title === "Default Title"
-      ? "Standard"
-      : (model.variant?.title ?? "MATCHA");
+      ? t("Standard")
+      : (model.variant?.title ?? t("MATCHA"));
   const materialStage =
     packaging !== "label" && entered && (mode === "standard" || builderStep > 0)
       ? "vessel"
@@ -203,7 +214,7 @@ export function ProductConfigurator({
     !referenceEditorOpen &&
     (mobileEmbedded || mode !== "builder" || builderStep === 0);
   const materialSentence =
-    content.materialSummary.split(/(?<=[.!?])\s/)[0] ?? "";
+    content.materialSummary.split(/(?<=[.!?])\s+|(?<=[。！？])\s*/u)[0] ?? "";
 
   const bagLabel = useMemo<ProductLabelSnapshot>(
     () => ({
@@ -337,7 +348,7 @@ export function ProductConfigurator({
       if (
         silverBag &&
         document.activeElement instanceof HTMLElement &&
-        document.activeElement.closest('[aria-label="Shopping mode"]') &&
+        document.activeElement.closest("[data-shopping-mode]") &&
         panelRef.current?.contains(document.activeElement)
       )
         return;
@@ -345,8 +356,7 @@ export function ProductConfigurator({
       // Button and CTA navigation still move focus into the selected view.
       if (
         document.activeElement instanceof HTMLSelectElement &&
-        document.activeElement.getAttribute("aria-label") ===
-          "Information view" &&
+        document.activeElement.hasAttribute("data-information-view") &&
         panelRef.current?.contains(document.activeElement)
       )
         return;
@@ -358,7 +368,7 @@ export function ProductConfigurator({
           : null) ??
         Array.from(
           panelRef.current?.querySelectorAll<HTMLElement>(
-            entryLoading ? 'button[aria-label="Back to overview"]' : "h2",
+            entryLoading ? "button[data-back-to-overview]" : "h2",
           ) ?? [],
         ).find((element) => element.getClientRects().length > 0);
       heading?.focus({ preventScroll: true });
@@ -388,11 +398,11 @@ export function ProductConfigurator({
     >
       <span>
         <ScrambleText
-          text={labelText.trim() ? "Edit reference" : "Add reference"}
+          text={labelText.trim() ? t("Edit reference") : t("Add reference")}
           interactive
         />
         <small>
-          <ScrambleText text="Personalize your label" periodic wrap />
+          <ScrambleText text={t("Personalize your label")} periodic wrap />
         </small>
       </span>
       <span aria-hidden="true">↗</span>
@@ -461,7 +471,7 @@ export function ProductConfigurator({
         ref={overviewRef}
         className={styles.workspace}
         data-brand-part="selection-workspace"
-        aria-label="Matcha selection"
+        aria-label={t("Matcha selection")}
       >
         {placeSelectorLeft && (
           <div className={styles.stageSelectors} data-stage-selectors>
@@ -477,7 +487,12 @@ export function ProductConfigurator({
             className={styles.stageHeading}
             data-brand-part="material-heading"
           >
-            <ScrambleText text="ATOMA / MATCHA" delay={150} periodic wrap />
+            <ScrambleText
+              text={t("ATOMA / MATCHA")}
+              delay={150}
+              periodic
+              wrap
+            />
             <span>
               {String(index + 1).padStart(2, "0")} /{" "}
               {String(model.catalog?.products.length ?? 3).padStart(2, "0")}
@@ -548,7 +563,7 @@ export function ProductConfigurator({
               <>
                 <div className={styles.silverPowderLayer}>
                   <PowderScene
-                    title={prepareSelection ? content.name : "Matcha"}
+                    title={prepareSelection ? content.name : t("Matcha")}
                     selectionIndex={prepareSelection ? index : 0}
                     enterPowder={enterPowder}
                     tone={tone}
@@ -572,7 +587,7 @@ export function ProductConfigurator({
               <>
                 <div className={styles.powderLayer}>
                   <PowderScene
-                    title={prepareSelection ? content.name : "Matcha"}
+                    title={prepareSelection ? content.name : t("Matcha")}
                     selectionIndex={prepareSelection ? index : 0}
                     entryFromTray={entryFromTray}
                     enterPowder={enterPowder}
@@ -601,7 +616,7 @@ export function ProductConfigurator({
               </>
             ) : (
               <PackagingScene
-                title={prepareSelection ? content.name : "MATCHA"}
+                title={prepareSelection ? content.name : t("MATCHA")}
                 format={prepareSelection ? format : ""}
                 quantity={prepareSelection ? model.quantity : 1}
                 selectionIndex={prepareSelection ? index : 0}
@@ -621,7 +636,7 @@ export function ProductConfigurator({
               <div className={styles.materialNavigation}>
                 <button
                   type="button"
-                  aria-label="Previous matcha"
+                  aria-label={t("Previous matcha")}
                   disabled={
                     index === 0 || entryPending || !entrySettled || cart.busy
                   }
@@ -630,11 +645,11 @@ export function ProductConfigurator({
                   <span aria-hidden="true">←</span>
                 </button>
                 <span>
-                  <ScrambleText text="Swipe to explore" periodic wrap />
+                  <ScrambleText text={t("Swipe to explore")} periodic wrap />
                 </span>
                 <button
                   type="button"
-                  aria-label="Next matcha"
+                  aria-label={t("Next matcha")}
                   disabled={
                     index === products.length - 1 ||
                     entryPending ||
@@ -661,7 +676,9 @@ export function ProductConfigurator({
           >
             <span>
               <ScrambleText
-                text={entered ? content.name : "MATCHA / IN ITS MATERIAL FORM"}
+                text={
+                  entered ? content.name : t("MATCHA / IN ITS MATERIAL FORM")
+                }
                 periodic
                 wrap
               />
@@ -673,7 +690,15 @@ export function ProductConfigurator({
                 onClick={() => setOpenedVessel((value) => !value)}
               >
                 <ScrambleText
-                  text={`${openedVessel ? "CLOSE" : "OPEN"} ${packaging === "bag" ? "BAG" : "VESSEL"}`}
+                  text={t(
+                    openedVessel
+                      ? packaging === "bag"
+                        ? "CLOSE BAG"
+                        : "CLOSE VESSEL"
+                      : packaging === "bag"
+                        ? "OPEN BAG"
+                        : "OPEN VESSEL",
+                  )}
                   interactive
                 />
                 <span aria-hidden="true">{openedVessel ? "−" : "+"}</span>
@@ -686,10 +711,10 @@ export function ProductConfigurator({
                 disabled={cart.busy}
                 aria-label={
                   referenceEditorOpen
-                    ? "Done editing reference"
+                    ? t("Done editing reference")
                     : labelText.trim()
-                      ? "Edit label reference"
-                      : "Add label reference"
+                      ? t("Edit label reference")
+                      : t("Add label reference")
                 }
                 onClick={() => {
                   if (referenceEditorOpen) finishReference();
@@ -700,10 +725,10 @@ export function ProductConfigurator({
                   <ScrambleText
                     text={
                       referenceEditorOpen
-                        ? "DONE EDITING"
+                        ? t("DONE EDITING")
                         : labelText.trim()
-                          ? "EDIT REFERENCE"
-                          : "ADD REFERENCE"
+                          ? t("EDIT REFERENCE")
+                          : t("ADD REFERENCE")
                     }
                     interactive
                   />
@@ -716,21 +741,20 @@ export function ProductConfigurator({
         <div className={styles.entry} hidden={entered || embedded}>
           <span className={styles.eyebrow}>
             <ScrambleText
-              text="MATERIAL / INFORMATION / SELECTION"
+              text={t("MATERIAL / INFORMATION / SELECTION")}
               delay={200}
               periodic
               wrap
             />
           </span>
           <h1>
-            A closer look
-            <br />
-            at matcha.
+            {t("A closer look")} <br />
+            {t("at matcha.")}
           </h1>
           <p>
-            <ScrambleText text="Understand the material." periodic wrap />
+            <ScrambleText text={t("Understand the material.")} periodic wrap />
             <br />
-            <ScrambleText text="Make it your selection." periodic wrap />
+            <ScrambleText text={t("Make it your selection.")} periodic wrap />
           </p>
           <button
             ref={triggerRef}
@@ -740,7 +764,7 @@ export function ProductConfigurator({
             aria-controls="matcha-workspace"
             aria-expanded={entered}
           >
-            <ScrambleText text="SELECT MATCHA" interactive />
+            <ScrambleText text={t("SELECT MATCHA")} interactive />
             <span aria-hidden="true">↗</span>
           </button>
           <button
@@ -749,7 +773,7 @@ export function ProductConfigurator({
             onClick={() => enter("builder")}
           >
             <ScrambleText
-              text="Explore with the interactive builder"
+              text={t("Explore with the interactive builder")}
               interactive
               wrap
             />{" "}
@@ -774,19 +798,29 @@ export function ProductConfigurator({
                   <div
                     className={styles.typeChoices}
                     role="group"
-                    aria-label="Matcha to explore"
+                    aria-label={t("Matcha to explore")}
                   >
                     {products.map((product, position) => {
-                      const details = getProductContent(product);
-                      const name = productName(product.title);
-                      const grade = name.replace(/\s+matcha$/i, "") || name;
+                      const details = getProductContent(product, locale);
+                      const name = productName(
+                        product.title,
+                        product.handle,
+                        locale,
+                      );
+                      const englishName = productName(
+                        product.title,
+                        product.handle,
+                      );
+                      const grade = t(
+                        englishName.replace(/\s+matcha$/i, "") || englishName,
+                      );
                       return (
                         <button
                           key={product.id}
                           type="button"
                           className={styles.typeChoice}
                           data-homepage-product-choice={product.id}
-                          aria-label={`Select ${name}`}
+                          aria-label={t("Select {name}", { name })}
                           aria-pressed={product.id === model.product?.id}
                           disabled={
                             entryPending ||
@@ -828,7 +862,8 @@ export function ProductConfigurator({
                   <div
                     className={styles.modeSwitch}
                     role="group"
-                    aria-label="Shopping mode"
+                    aria-label={t("Shopping mode")}
+                    data-shopping-mode
                   >
                     {embedded ? (
                       homepageViews.map((view) => (
@@ -842,7 +877,7 @@ export function ProductConfigurator({
                             setMode(view.value);
                           }}
                         >
-                          <ScrambleText text={view.label} interactive />
+                          <ScrambleText text={t(view.label)} interactive />
                         </button>
                       ))
                     ) : (
@@ -857,7 +892,10 @@ export function ProductConfigurator({
                             setLabelHasQuantity(true);
                           }}
                         >
-                          <ScrambleText text="Standard selection" interactive />
+                          <ScrambleText
+                            text={t("Standard selection")}
+                            interactive
+                          />
                         </button>
                         <button
                           type="button"
@@ -869,7 +907,7 @@ export function ProductConfigurator({
                           }}
                         >
                           <ScrambleText
-                            text="Interactive builder"
+                            text={t("Interactive builder")}
                             interactive
                           />
                         </button>
@@ -880,12 +918,13 @@ export function ProductConfigurator({
                 <button
                   type="button"
                   className={styles.close}
+                  data-back-to-overview
                   onClick={close}
                   disabled={cart.busy}
                   aria-label={
                     referenceEditorOpen
-                      ? "Close reference editor"
-                      : "Back to overview"
+                      ? t("Close reference editor")
+                      : t("Back to overview")
                   }
                 >
                   ×
@@ -910,6 +949,7 @@ export function ProductConfigurator({
                   mode === "origins") ? (
                 <HomepageProductInformation
                   originPreviewVariant={originPreviewVariant}
+                  overviewStudyVariant={overviewStudyVariant}
                   productCodePlacement={productCodePlacement}
                   model={model}
                   view={mode}
@@ -922,7 +962,7 @@ export function ProductConfigurator({
                 />
               ) : mode === "standard" ? (
                 <div className={styles.standard}>
-                  <h2 tabIndex={-1}>Choose your matcha.</h2>
+                  <h2 tabIndex={-1}>{t("Choose your matcha.")}</h2>
                   <CatalogPanel
                     model={model}
                     compact
@@ -966,7 +1006,10 @@ export function ProductConfigurator({
               ) : (
                 <>
                   {!embedded && (
-                    <nav className={styles.steps} aria-label="Builder steps">
+                    <nav
+                      className={styles.steps}
+                      aria-label={t("Builder steps")}
+                    >
                       {(["Matcha", "Quantity"] as const).map(
                         (name, position) => (
                           <button
@@ -985,7 +1028,7 @@ export function ProductConfigurator({
                             <span className={styles.stepNumber}>
                               0{position + 1}
                             </span>
-                            <ScrambleText text={name} interactive />
+                            <ScrambleText text={t(name)} interactive />
                           </button>
                         ),
                       )}
@@ -1001,10 +1044,10 @@ export function ProductConfigurator({
                   >
                     <h2 tabIndex={-1}>
                       {embedded
-                        ? "Format & quantity."
+                        ? t("Format & quantity.")
                         : step === 0
-                          ? "Choose your matcha."
-                          : "How much would you like?"}
+                          ? t("Choose your matcha.")
+                          : t("How much would you like?")}
                     </h2>
                     <p className={styles.guidance}>
                       <ScrambleText
@@ -1012,8 +1055,10 @@ export function ProductConfigurator({
                           embedded
                             ? `${content.name} · ${content.application}`
                             : step === 0
-                              ? "Start with what you make."
-                              : `${content.name}. Ready to make yours.`
+                              ? t("Start with what you make.")
+                              : t("{name}. Ready to make yours.", {
+                                  name: content.name,
+                                })
                         }
                         periodic
                         wrap
@@ -1021,17 +1066,17 @@ export function ProductConfigurator({
                     </p>
                     {model.loading ? (
                       <div className={styles.state} role="status">
-                        Opening the collection…
+                        {t("Opening the collection…")}
                       </div>
                     ) : model.catalog?.status !== "ready" ? (
                       <div className={styles.state} role="status">
                         <p>
                           {model.catalog?.status === "empty"
-                            ? "The next selection is taking shape."
-                            : "The collection couldn’t be loaded."}
+                            ? t("The next selection is taking shape.")
+                            : t("The collection couldn’t be loaded.")}
                         </p>
                         <button type="button" onClick={model.retry}>
-                          <ScrambleText text="Try again" interactive />{" "}
+                          <ScrambleText text={t("Try again")} interactive />{" "}
                           <span aria-hidden="true">↻</span>
                         </button>
                       </div>
@@ -1043,10 +1088,13 @@ export function ProductConfigurator({
                               className={styles.applicationChoices}
                               disabled={cart.busy}
                             >
-                              <legend>Choose a matcha</legend>
+                              <legend>{t("Choose a matcha")}</legend>
                               {model.catalog.products.map(
                                 (product, position) => {
-                                  const details = getProductContent(product);
+                                  const details = getProductContent(
+                                    product,
+                                    locale,
+                                  );
                                   return (
                                     <label
                                       key={product.id}
@@ -1072,9 +1120,14 @@ export function ProductConfigurator({
                                         <strong>
                                           <ScrambleText
                                             text={
-                                              details.application ===
+                                              getProductContent(product)
+                                                .application ===
                                               "Matcha selection"
-                                                ? productName(product.title)
+                                                ? productName(
+                                                    product.title,
+                                                    product.handle,
+                                                    locale,
+                                                  )
                                                 : details.application
                                             }
                                             interactive
@@ -1083,14 +1136,18 @@ export function ProductConfigurator({
                                         </strong>
                                         <small>
                                           <ScrambleText
-                                            text={productName(product.title)}
+                                            text={productName(
+                                              product.title,
+                                              product.handle,
+                                              locale,
+                                            )}
                                             interactive
                                             periodic
                                             wrap
                                           />
                                           {!product.variants.some(
                                             (variant) => variant.available,
-                                          ) && " / UNAVAILABLE"}
+                                          ) && ` / ${t("UNAVAILABLE")}`}
                                         </small>
                                       </span>
                                       <span
@@ -1123,7 +1180,7 @@ export function ProductConfigurator({
                               disabled={entryPending || cart.busy}
                             >
                               <ScrambleText
-                                text="Continue to quantity"
+                                text={t("Continue to quantity")}
                                 interactive
                                 wrap
                               />{" "}
@@ -1138,7 +1195,11 @@ export function ProductConfigurator({
                               disabled={cart.busy}
                             >
                               <legend>
-                                <ScrambleText text="Format" periodic wrap />
+                                <ScrambleText
+                                  text={t("Format")}
+                                  periodic
+                                  wrap
+                                />
                               </legend>
                               {model.product?.variants.length === 1 ? (
                                 <span>
@@ -1160,14 +1221,14 @@ export function ProductConfigurator({
                                       <ScrambleText
                                         text={
                                           variant.title === "Default Title"
-                                            ? "Standard"
+                                            ? t("Standard")
                                             : variant.title
                                         }
                                         interactive
                                         wrap
                                       />
                                       {!variant.available && (
-                                        <small>Unavailable</small>
+                                        <small>{t("Unavailable")}</small>
                                       )}
                                     </button>
                                   ))}
@@ -1177,7 +1238,7 @@ export function ProductConfigurator({
                             <div className={styles.quantityBuilder}>
                               <button
                                 type="button"
-                                aria-label="Decrease quantity"
+                                aria-label={t("Decrease quantity")}
                                 disabled={
                                   cart.busy ||
                                   !model.variant ||
@@ -1192,14 +1253,19 @@ export function ProductConfigurator({
                               </button>
                               <div>
                                 <output
-                                  aria-label="Quantity"
+                                  aria-label={t("Quantity")}
                                   aria-live="polite"
                                 >
                                   {String(model.quantity).padStart(2, "0")}
                                 </output>
                                 <span>
                                   <ScrambleText
-                                    text={`${model.quantity === 1 ? "UNIT" : "UNITS"} / ${format}`}
+                                    text={t(
+                                      model.quantity === 1
+                                        ? "UNIT / {format}"
+                                        : "UNITS / {format}",
+                                      { format },
+                                    )}
                                     periodic
                                     wrap
                                   />
@@ -1207,7 +1273,7 @@ export function ProductConfigurator({
                               </div>
                               <button
                                 type="button"
-                                aria-label="Increase quantity"
+                                aria-label={t("Increase quantity")}
                                 disabled={cart.busy || !model.canIncrement}
                                 onClick={() => {
                                   setLabelHasQuantity(true);
@@ -1270,16 +1336,16 @@ export function ProductConfigurator({
       {!embedded && (
         <footer className={styles.footer}>
           <Link href="/">
-            <ScrambleText text="01 / THE TRAY" interactive />
+            <ScrambleText text={t("01 / THE TRAY")} interactive />
           </Link>
           {packaging !== "label" && (
             <Link href="/concept-02">
-              <ScrambleText text="LABEL STUDY" interactive />{" "}
+              <ScrambleText text={t("LABEL STUDY")} interactive />{" "}
               <span aria-hidden="true">↗</span>
             </Link>
           )}
           <span>
-            <ScrambleText text="ATOMA / CONCEPT 02" periodic wrap />
+            <ScrambleText text={t("ATOMA / CONCEPT 02")} periodic wrap />
           </span>
         </footer>
       )}

@@ -1,10 +1,12 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import { useId, useRef } from "react";
 import Image from "next/image";
 import { getProductContent } from "@/lib/product-content";
 import { getProductPlaceRecords, getPlacePath } from "@/lib/origins-model";
-import { FIELD_ENTRIES } from "@/lib/origins-content";
+import { getOriginPreview } from "@/lib/origin-preview";
 import { useOrigins } from "./origins-provider";
 import { useCart } from "./cart-drawer";
 import { FocusedSpecifications } from "./focused-specifications";
@@ -12,6 +14,10 @@ import type { ProductCodePlacement } from "@/lib/product-display-index";
 import { ProductCodeIdentity } from "./product-code-identity";
 import { ScrambleText } from "./scramble-text";
 import { ProductDetails } from "./product-details";
+import {
+  OverviewStudyPanel,
+  type OverviewStudyVariant,
+} from "./overview-study-panel";
 import { OriginPreview, type OriginPreviewVariant } from "./origin-preview";
 import type { ProductSelectionModel } from "./use-product-selection";
 import styles from "./homepage-product-information.module.css";
@@ -23,17 +29,9 @@ type HomepageProductInformationProps = {
   onShop: () => void;
   onSpecifications?: () => void;
   originPreviewVariant?: "current" | OriginPreviewVariant;
+  overviewStudyVariant?: OverviewStudyVariant;
   productCodePlacement?: ProductCodePlacement;
 };
-
-function getPlacePhotograph(placeId: string) {
-  for (const place of getPlacePath(placeId).reverse()) {
-    const entry = FIELD_ENTRIES.find((item) =>
-      item.placeIds.includes(place.id),
-    );
-    if (entry?.image) return entry;
-  }
-}
 
 export function HomepageProductInformation({
   model,
@@ -42,8 +40,10 @@ export function HomepageProductInformation({
   onShop,
   onSpecifications,
   originPreviewVariant = "current",
+  overviewStudyVariant = "current",
   productCodePlacement,
 }: HomepageProductInformationProps) {
+  const { locale, t } = useStorefrontLocale();
   const id = useId();
   const root = useRef<HTMLElement>(null);
   const { busy } = useCart();
@@ -52,7 +52,8 @@ export function HomepageProductInformation({
   const products = catalog?.products ?? [];
   const unavailable = !catalog || catalog.status === "unavailable";
   const ready = !loading && !unavailable && products.length > 0;
-  const content = ready && product ? getProductContent(product) : undefined;
+  const content =
+    ready && product ? getProductContent(product, locale) : undefined;
   // The current product view has no chosen lot. Never flatten lot-only evidence
   // into a product-wide growing claim; the graph retains those scoped records.
   const originRecords = product
@@ -60,9 +61,12 @@ export function HomepageProductInformation({
         record.subjects.some((subject) => subject.kind === "material"),
       )
     : [];
-  const growingOrigins = originRecords.filter(
-    (record) => record.role === "grown",
-  );
+  const originPreview = product
+    ? getOriginPreview(product, undefined, undefined, locale)
+    : null;
+  const displayOrigins = originPreview
+    ? [...originPreview.places, ...originPreview.designations]
+    : [];
   const otherOrigins = originRecords.filter(
     (record) => record.role !== "grown",
   );
@@ -79,23 +83,25 @@ export function HomepageProductInformation({
       data-homepage-product-information
       data-view={view}
       data-tone={tone}
-      aria-label="Matcha information"
+      aria-label={t("Matcha information")}
       aria-busy={loading}
       tabIndex={-1}
     >
       {loading || !ready || !content ? (
         <div className={styles.state}>
           <h2 className={styles.heading} tabIndex={-1}>
-            Explore matcha.
+            {t("Explore matcha.")}
           </h2>
           <p role="status">
-            {loading
-              ? "Opening the collection…"
-              : unavailable
-                ? "The collection couldn’t be loaded. Please try again."
-                : products.length === 0
-                  ? "There are no matcha to explore just yet."
-                  : "Select a matcha to explore its material."}
+            {t(
+              loading
+                ? "Opening the collection…"
+                : unavailable
+                  ? "The collection couldn’t be loaded. Please try again."
+                  : products.length === 0
+                    ? "There are no matcha to explore just yet."
+                    : "Select a matcha to explore its material.",
+            )}
           </p>
           {!loading && (!ready || !content) && (
             <button
@@ -104,7 +110,7 @@ export function HomepageProductInformation({
               disabled={busy}
               onClick={retryCollection}
             >
-              {unavailable ? "Try again" : "Check again"}
+              {t(unavailable ? "Try again" : "Check again")}
               <span aria-hidden="true">↻</span>
             </button>
           )}
@@ -117,60 +123,73 @@ export function HomepageProductInformation({
             data-homepage-view-panel="overview"
             hidden={view !== "overview"}
           >
-            <ProductCodeIdentity
-              className={styles.identity}
-              placement={productCodePlacement}
-              handle={product?.handle}
-            >
-              <h2
-                className={styles.heading}
-                tabIndex={-1}
-                data-homepage-product-name
-              >
-                {content.name}
-              </h2>
-              <p className={styles.application}>{content.application}</p>
-            </ProductCodeIdentity>
-            <p className={styles.purpose}>{content.purpose}</p>
-            <p className={styles.summary}>{content.summary}</p>
-            <div className={styles.actions}>
-              {onSpecifications && (
-                <button
-                  className={styles.secondary}
-                  type="button"
-                  disabled={busy}
-                  onClick={onSpecifications}
-                >
-                  <ScrambleText
-                    text="View specifications"
-                    interactive
-                    animateOnMount={false}
-                    wrap
-                  />
-                  <span aria-hidden="true">+</span>
-                </button>
-              )}
-              <button
-                className={styles.shop}
-                type="button"
-                disabled={busy}
-                onClick={onShop}
-              >
-                <ScrambleText
-                  text="Shop this matcha"
-                  interactive
-                  animateOnMount={false}
-                  wrap
-                />
-                <span aria-hidden="true">→</span>
-              </button>
-            </div>
-            {product && (
-              <ProductDetails
+            {overviewStudyVariant !== "current" && product ? (
+              <OverviewStudyPanel
                 product={product}
-                tone={tone}
-                presentation="inline"
+                variant={overviewStudyVariant}
+                productCodePlacement={productCodePlacement}
+                busy={busy}
+                onShop={onShop}
+                onSpecifications={onSpecifications}
               />
+            ) : (
+              <>
+                <ProductCodeIdentity
+                  className={styles.identity}
+                  placement={productCodePlacement}
+                  handle={product?.handle}
+                >
+                  <h2
+                    className={styles.heading}
+                    tabIndex={-1}
+                    data-homepage-product-name
+                  >
+                    {content.name}
+                  </h2>
+                  <p className={styles.application}>{content.application}</p>
+                </ProductCodeIdentity>
+                <p className={styles.purpose}>{content.purpose}</p>
+                <p className={styles.summary}>{content.summary}</p>
+                <div className={styles.actions}>
+                  {onSpecifications && (
+                    <button
+                      className={styles.secondary}
+                      type="button"
+                      disabled={busy}
+                      onClick={onSpecifications}
+                    >
+                      <ScrambleText
+                        text={t("View specifications")}
+                        interactive
+                        animateOnMount={false}
+                        wrap
+                      />
+                      <span aria-hidden="true">+</span>
+                    </button>
+                  )}
+                  <button
+                    className={styles.shop}
+                    type="button"
+                    disabled={busy}
+                    onClick={onShop}
+                  >
+                    <ScrambleText
+                      text={t("Shop this matcha")}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />
+                    <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+                {product && (
+                  <ProductDetails
+                    product={product}
+                    tone={tone}
+                    presentation="inline"
+                  />
+                )}
+              </>
             )}
           </div>
 
@@ -213,20 +232,16 @@ export function HomepageProductInformation({
                   </h2>
                 </header>
                 <div className={styles.originRecord}>
-                  {growingOrigins.length ? (
+                  {displayOrigins.length ? (
                     <div className={styles.originPlaces}>
-                      {growingOrigins.map((record) => {
-                        const photograph = getPlacePhotograph(record.place.id);
-                        const path = getPlacePath(record.place.id)
-                          .slice(0, -1)
-                          .reverse()
-                          .map((place) => place.name)
-                          .join(", ");
+                      {displayOrigins.map((record) => {
+                        const photograph = record.photograph;
+                        const path = record.parents;
                         return (
                           <article
                             className={styles.originCard}
-                            key={record.place.id}
-                            aria-labelledby={`${id}-origin-${record.place.id}`}
+                            key={record.id}
+                            aria-labelledby={`${id}-origin-${record.id}`}
                           >
                             {photograph && (
                               <figure className={styles.originPhoto}>
@@ -247,12 +262,14 @@ export function HomepageProductInformation({
                             <div className={styles.originCardBody}>
                               <div className={styles.originPlaceHeading}>
                                 <div>
-                                  <p className={styles.originRole}>Grown in</p>
+                                  <p className={styles.originRole}>
+                                    {record.roleLabel}
+                                  </p>
                                   <h3
                                     className={styles.originName}
-                                    id={`${id}-origin-${record.place.id}`}
+                                    id={`${id}-origin-${record.id}`}
                                   >
-                                    {record.place.name}
+                                    {record.name}
                                   </h3>
                                 </div>
                                 {path && (
@@ -260,7 +277,7 @@ export function HomepageProductInformation({
                                 )}
                               </div>
                               <p className={styles.originDescription}>
-                                {record.place.description}
+                                {record.description}
                               </p>
                               <button
                                 className={styles.originExplore}
@@ -269,11 +286,13 @@ export function HomepageProductInformation({
                                 onClick={() =>
                                   openOrigins({
                                     tone,
-                                    placeId: record.place.id,
+                                    placeId: record.linkPlaceId,
                                   })
                                 }
                               >
-                                <span>Explore {record.place.name}</span>
+                                <span>
+                                  {t("Explore {place}", { place: record.name })}
+                                </span>
                                 <span aria-hidden="true">↗</span>
                               </button>
                             </div>
@@ -283,9 +302,11 @@ export function HomepageProductInformation({
                     </div>
                   ) : (
                     <div className={styles.originEmpty}>
-                      <h3>Product origin</h3>
+                      <h3>{t("Product origin")}</h3>
                       <p>
-                        Origin details are not yet available for this matcha.
+                        {t(
+                          "Origin details are not yet available for this matcha.",
+                        )}
                       </p>
                     </div>
                   )}
@@ -294,15 +315,15 @@ export function HomepageProductInformation({
                       {otherOrigins.map((record) => (
                         <div key={`${record.role}-${record.place.id}`}>
                           <dt>
-                            {
+                            {t(
                               {
                                 grown: "Grown in",
                                 processed: "Processed in",
                                 packed: "Packed in",
                                 selected: "Selected in",
                                 dispatched: "Ships from",
-                              }[record.role]
-                            }
+                              }[record.role],
+                            )}
                           </dt>
                           <dd>
                             <button
@@ -315,7 +336,7 @@ export function HomepageProductInformation({
                             >
                               {getPlacePath(record.place.id)
                                 .reverse()
-                                .map((place) => place.name)
+                                .map((place) => t(place.name))
                                 .join(", ")}
                               <span aria-hidden="true">↗</span>
                             </button>
@@ -332,7 +353,8 @@ export function HomepageProductInformation({
                     disabled={busy}
                     onClick={() => openOrigins({ tone })}
                   >
-                    <span>All origins</span> <span aria-hidden="true">↗</span>
+                    <span>{t("All origins")}</span>{" "}
+                    <span aria-hidden="true">↗</span>
                   </button>
                   <button
                     className={styles.originFooterLink}
@@ -340,7 +362,7 @@ export function HomepageProductInformation({
                     disabled={busy}
                     onClick={onShop}
                   >
-                    <span>Shop this matcha</span>
+                    <span>{t("Shop this matcha")}</span>
                     <span aria-hidden="true">→</span>
                   </button>
                 </div>

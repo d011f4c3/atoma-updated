@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   FIELD_ENTRIES,
+  getFieldEntryPhotograph,
   getRelatedMatchas,
   getProductFieldEntries,
   getFieldEntriesForPlace,
@@ -84,32 +85,32 @@ test("regional photography alone cannot establish product origins without indepe
   assert.deepEqual(getFieldEntriesForPlace("japan"), FIELD_ENTRIES);
 });
 
-test("owner-confirmed Wazuka origins connect all three launch products to broader Kyoto context without relabelling photographs", () => {
-  const launchProducts = ORIGINS_GRAPH.products.map((link, index) => ({
+test("only Ceremonial retains a product connection to the Kyoto photographs", () => {
+  const launchProducts = ORIGINS_GRAPH.products.map((link) => ({
     handle: link.productHandle,
     title: "Matcha",
-    variants: [{ available: index === 0 }],
+    variants: [{ available: false }],
   }));
   const catalog = [
     ...launchProducts,
     { handle: "another-kyoto-matcha", title: "Kyoto Matcha", variants: [] },
   ];
+  assert.deepEqual(getRelatedMatchas(FIELD_ENTRIES[0], catalog), [
+    launchProducts[2],
+  ]);
   assert.deepEqual(
-    getRelatedMatchas(FIELD_ENTRIES[0], catalog),
-    launchProducts,
+    getProductFieldEntries(launchProducts[2].handle),
+    FIELD_ENTRIES,
   );
-  for (const product of launchProducts) {
-    assert.deepEqual(getProductFieldEntries(product.handle), FIELD_ENTRIES);
-  }
+  for (const product of launchProducts.slice(0, 2))
+    assert.deepEqual(getProductFieldEntries(product.handle), []);
   assert.deepEqual(getProductFieldEntries("another-kyoto-matcha"), []);
   assert.deepEqual(getFieldEntriesForPlace("wazuka"), []);
   assert.deepEqual(FIELD_ENTRIES[0].placeIds, ["kyoto"]);
   assert.match(FIELD_ENTRIES[0].imageCaption, /Kyoto/);
-  assert.deepEqual(
-    getRelatedMatchas(FIELD_ENTRIES[0], catalog).map(
-      (product) => product.variants[0].available,
-    ),
-    [true, false, false],
+  assert.equal(
+    getRelatedMatchas(FIELD_ENTRIES[0], catalog)[0].variants[0].available,
+    false,
   );
 });
 
@@ -197,4 +198,22 @@ test("current documentary sections retain unique identities and factual captions
       }
     }
   }
+});
+
+test("Uji's display photograph differs while the Kyoto collection and Wazuka image stay unchanged", () => {
+  assert.equal(FIELD_ENTRIES.length, 1);
+  const entry = FIELD_ENTRIES[0];
+  const before = structuredClone(entry);
+  const uji = getFieldEntryPhotograph(entry, "uji-city");
+  const wazuka = getFieldEntryPhotograph(entry, "wazuka");
+  assert.equal(uji.image, "/images/origins/uji-context-landscape.jpg");
+  assert.equal(wazuka.image, "/images/origins/field-landscape.webp");
+  assert.notEqual(uji.image, wazuka.image);
+  assert.equal(uji.imageCaption, "Tea fields · Kyoto");
+  assert.doesNotMatch(uji.imageAlt, /Uji|Wazuka/);
+  assert.deepEqual(entry, before);
+  assert.deepEqual(entry.placeIds, ["kyoto"]);
+  assert.deepEqual(getFieldEntryPhotograph(entry, "unknown"), wazuka);
+  assert.deepEqual(getFieldEntryPhotograph(entry, "constructor"), wazuka);
+  assert.deepEqual(getFieldEntryPhotograph(entry), wazuka);
 });

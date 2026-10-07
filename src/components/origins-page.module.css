@@ -26,7 +26,7 @@
   gap: 1rem;
   padding: 1.5rem 0;
   border-top: 1px solid var(--line);
-  font-size: 0.6875rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }

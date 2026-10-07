@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import { useEffect, useId, useRef, type ReactNode } from "react";
 import {
   useProductSelection,
@@ -59,6 +61,7 @@ function CatalogControls({
   model,
   referenceControl,
 }: Omit<CatalogPanelProps, "model"> & { model: ProductSelectionModel }) {
+  const { locale, t } = useStorefrontLocale();
   const cart = useCart();
   const productGroupId = useId();
   const {
@@ -77,7 +80,7 @@ function CatalogControls({
   } = model;
   const productId = product?.id;
   const variantId = variant?.id;
-  const content = getProductContent(product);
+  const content = getProductContent(product, locale);
   const callbackRef = useRef(onSelectionChange);
   useEffect(() => {
     callbackRef.current = onSelectionChange;
@@ -87,9 +90,9 @@ function CatalogControls({
     callbackRef.current?.(
       product && variant
         ? {
-            title: productName(product.title),
+            title: productName(product.title, product.handle, locale),
             variantTitle:
-              variant.title === "Default Title" ? "Standard" : variant.title,
+              variant.title === "Default Title" ? t("Standard") : variant.title,
             quantity,
             priceLabel,
             index:
@@ -100,47 +103,49 @@ function CatalogControls({
           }
         : null,
     );
-  }, [catalog, product, variant, quantity, priceLabel]);
+  }, [catalog, product, variant, quantity, priceLabel, locale, t]);
 
-  const materialDescription =
-    content.materialSummary.split(/(?<=[.!?])\s+/u)[0];
+  const materialDescription = content.materialSummary.split(
+    /(?<=[.!?])\s+|(?<=[。！？])\s*/u,
+  )[0];
 
   return (
     <div className={styles.panel} aria-busy={loading} data-compact={compact}>
       {!compact && (
         <h2 className={styles.heading} tabIndex={-1}>
-          Find your matcha.
+          {t("Find your matcha.")}
         </h2>
       )}
       {loading ? (
         <div className={styles.message} role="status">
           <span className={styles.loader} aria-hidden="true" />
-          <p>Opening the collection…</p>
+          <p>{t("Opening the collection…")}</p>
         </div>
       ) : catalog?.status !== "ready" ? (
         <div className={styles.message} role="status">
           <p>
             {catalog?.status === "empty"
-              ? "The next selection is taking shape."
-              : "The collection couldn’t be loaded."}
+              ? t("The next selection is taking shape.")
+              : t("The collection couldn’t be loaded.")}
           </p>
           <p className={styles.muted}>
             {catalog?.status === "empty"
-              ? "Published matcha will appear here."
-              : "Please try again in a moment."}
+              ? t("Published matcha will appear here.")
+              : t("Please try again in a moment.")}
           </p>
           <button className={styles.retry} type="button" onClick={retry}>
-            <ScrambleText text="Try again" interactive />{" "}
+            <ScrambleText text={t("Try again")} interactive />{" "}
             <span aria-hidden="true">↻</span>
           </button>
         </div>
       ) : (
         <>
           <fieldset className={styles.products}>
-            <legend className={styles.srOnly}>Select matcha</legend>
+            <legend className={styles.srOnly}>{t("Select matcha")}</legend>
             {catalog.products.map((item) => {
-              const itemContent = getProductContent(item);
-              const namedUse = itemContent.application !== "Matcha selection";
+              const itemContent = getProductContent(item, locale);
+              const namedUse =
+                getProductContent(item).application !== "Matcha selection";
               const priceVariant =
                 item.variants.find((option) => option.available) ??
                 item.variants[0];
@@ -187,12 +192,12 @@ function CatalogControls({
                       money(priceVariant.priceMinor, priceVariant.currency)}
                     <small>
                       {!available ? (
-                        "Unavailable"
+                        t("Unavailable")
                       ) : priceVariant ? (
                         <ScrambleText
                           text={
                             priceVariant.title === "Default Title"
-                              ? "Per unit"
+                              ? t("Per unit")
                               : priceVariant.title
                           }
                           interactive
@@ -222,7 +227,7 @@ function CatalogControls({
                 {product.variants.length > 1 ? (
                   <fieldset className={styles.variants}>
                     <legend>
-                      <ScrambleText text="Format" periodic wrap />
+                      <ScrambleText text={t("Format")} periodic wrap />
                     </legend>
                     <div className={styles.variantOptions}>
                       {product.variants.map((item) => (
@@ -235,13 +240,13 @@ function CatalogControls({
                           <ScrambleText
                             text={
                               item.title === "Default Title"
-                                ? "Standard"
+                                ? t("Standard")
                                 : item.title
                             }
                             interactive
                             wrap
                           />
-                          {!item.available && <small>Unavailable</small>}
+                          {!item.available && <small>{t("Unavailable")}</small>}
                         </button>
                       ))}
                     </div>
@@ -249,16 +254,16 @@ function CatalogControls({
                 ) : (
                   <div className={styles.formatFact}>
                     <span className={styles.label}>
-                      <ScrambleText text="Format" periodic wrap />
+                      <ScrambleText text={t("Format")} periodic wrap />
                     </span>
                     <p>
                       <ScrambleText
                         text={
                           variant
                             ? variant.title === "Default Title"
-                              ? "Standard"
+                              ? t("Standard")
                               : variant.title
-                            : "No published format"
+                            : t("No published format")
                         }
                         periodic
                         wrap
@@ -269,23 +274,23 @@ function CatalogControls({
                 {variant && (
                   <div className={styles.quantity}>
                     <span className={styles.label}>
-                      <ScrambleText text="Quantity" periodic wrap />
+                      <ScrambleText text={t("Quantity")} periodic wrap />
                     </span>
                     <div className={styles.stepper}>
                       <button
                         type="button"
-                        aria-label="Decrease quantity"
+                        aria-label={t("Decrease quantity")}
                         disabled={quantity <= variant.minimum}
                         onClick={decrementQuantity}
                       >
                         −
                       </button>
-                      <output aria-label="Quantity" aria-live="polite">
+                      <output aria-label={t("Quantity")} aria-live="polite">
                         {quantity}
                       </output>
                       <button
                         type="button"
-                        aria-label="Increase quantity"
+                        aria-label={t("Increase quantity")}
                         disabled={!canIncrement}
                         onClick={incrementQuantity}
                       >
@@ -295,7 +300,9 @@ function CatalogControls({
                     {variant.increment > 1 && (
                       <small className={styles.quantityNote}>
                         <ScrambleText
-                          text={`Increments of ${variant.increment}`}
+                          text={t("Increments of {count}", {
+                            count: variant.increment,
+                          })}
                           periodic
                           wrap
                         />
@@ -314,7 +321,7 @@ function CatalogControls({
         <div className={styles.purchaseBar}>
           <div className={styles.total} aria-live="polite">
             <span>
-              <ScrambleText text="Total" periodic wrap />
+              <ScrambleText text={t("Total")} periodic wrap />
             </span>
             <strong>{priceLabel}</strong>
           </div>

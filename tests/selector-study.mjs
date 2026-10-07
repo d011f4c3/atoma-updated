@@ -800,13 +800,15 @@ const cases = [1440, 320].map((width) => [
           catalogReads,
           "Changing section styles, views and themes must not reload the selected catalog",
         );
-        await view("Origins");
+        await view("Origin");
         const origins = page.locator('[data-origin-preview="split"]');
         await origins.waitFor();
-        assert.match(await origins.textContent(), /Wazuka/);
+        assert.match(await origins.textContent(), /Uji City/);
+        assert.match(await origins.textContent(), /tea designation/i);
+        assert.doesNotMatch(await origins.textContent(), /Grown in/);
         if (secondary === "tabs") {
           const region = origins.getByRole("button", {
-            name: "About Wazuka",
+            name: "About Uji",
             exact: true,
           });
           await region.focus();
@@ -830,7 +832,7 @@ const cases = [1440, 320].map((width) => [
           await eventually(
             () =>
               region.evaluate((element) => element === document.activeElement),
-            "The Origins reader must restore focus to its region trigger",
+            "The Origins reader must restore focus to its designation trigger",
           );
         }
         await view("Shop", "builder");

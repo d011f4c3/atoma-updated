@@ -10,6 +10,7 @@ import {
 } from "@/lib/origins-content";
 import { productName } from "@/lib/product-name";
 import { ORIGINS_GRAPH, getPlacePath } from "@/lib/origins-model";
+import { useStorefrontLocale } from "./storefront-locale-provider";
 import { OriginsDirectory } from "./origins-directory";
 import { useProductSelection } from "./use-product-selection";
 import styles from "./origins-content.module.css";
@@ -38,6 +39,7 @@ function OriginsReader({
   onReturn,
   returnLabel = "Back to matcha",
 }: OriginsContentProps) {
+  const { locale, t } = useStorefrontLocale();
   const id = useId();
   const root = useRef<HTMLElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -73,7 +75,7 @@ function OriginsReader({
         .map((placeId) => getPlacePath(placeId).at(-1))
         .filter((item) => item !== undefined)
     : [];
-  const placeNames = entryPlaces.map((item) => item.name).join(" / ");
+  const placeNames = entryPlaces.map((item) => t(item.name)).join(" / ");
   const firstSection = entry?.sections[0];
   const landscapeInSequence = Boolean(
     firstSection &&
@@ -146,18 +148,18 @@ function OriginsReader({
       data-origins-content
       data-origins-view={entry ? "entry" : "index"}
       aria-labelledby={entry ? `${id}-title` : undefined}
-      aria-label={entry ? undefined : "Origins directory"}
+      aria-label={entry ? undefined : t("Origins directory")}
     >
       <div className={styles.navigation}>
         {onReturn ? (
           <button className={styles.back} type="button" onClick={onReturn}>
             <span aria-hidden="true">←</span>
-            {returnLabel}
+            {t(returnLabel)}
           </button>
         ) : (
           <Link className={styles.back} href={home}>
             <span aria-hidden="true">←</span>
-            Explore matcha
+            {t("Explore matcha")}
           </Link>
         )}
         {entry ? (
@@ -166,7 +168,9 @@ function OriginsReader({
             type="button"
             onClick={returnToDirectory}
           >
-            {place ? `Back to ${place.name}` : "All origins"}
+            {place
+              ? t("Back to {place}", { place: t(place.name) })
+              : t("All origins")}
           </button>
         ) : place ? (
           <button
@@ -174,10 +178,10 @@ function OriginsReader({
             type="button"
             onClick={() => setSelectedPlace(null)}
           >
-            All origins
+            {t("All origins")}
           </button>
         ) : (
-          <span className={styles.journalLabel}>ATOMA / Origins</span>
+          <span className={styles.journalLabel}>{t("ATOMA / Origins")}</span>
         )}
       </div>
 
@@ -185,14 +189,14 @@ function OriginsReader({
         <div className={styles.reader} data-origins-entry={entry.slug}>
           <header className={styles.articleHeading}>
             <div>
-              <p className={styles.eyebrow}>{entry.region}</p>
+              <p className={styles.eyebrow}>{t(entry.region)}</p>
               <h1 ref={heading} id={`${id}-title`} tabIndex={-1}>
-                {entry.title}
+                {t(entry.title)}
               </h1>
-              {entry.dek && <p className={styles.dek}>{entry.dek}</p>}
+              {entry.dek && <p className={styles.dek}>{t(entry.dek)}</p>}
             </div>
             {entry.sections.length > 0 && (
-              <nav className={styles.chapters} aria-label="In this view">
+              <nav className={styles.chapters} aria-label={t("In this view")}>
                 {entry.sections.map((section) => (
                   <button
                     key={section.id}
@@ -203,7 +207,7 @@ function OriginsReader({
                     <span className={styles.chapterNumber}>
                       {section.label.match(/^\d+/)?.[0]}
                     </span>
-                    <span>{section.label.replace(/^\d+\s*\/\s*/, "")}</span>
+                    <span>{t(section.label.replace(/^\d+\s*\/\s*/, ""))}</span>
                   </button>
                 ))}
               </nav>
@@ -254,7 +258,7 @@ function OriginsReader({
                       >
                         <Image
                           src={photograph}
-                          alt={imageAlt}
+                          alt={t(imageAlt)}
                           fill
                           sizes={
                             isLandscape
@@ -267,14 +271,14 @@ function OriginsReader({
                     </figure>
                   )}
                   <div className={styles.caption}>
-                    <h2 id={`${id}-${section.id}-title`}>{section.label}</h2>
+                    <h2 id={`${id}-${section.id}-title`}>{t(section.label)}</h2>
                     {section.body.map((paragraph, paragraphIndex) => (
                       <p key={paragraphIndex} className={styles.prose}>
-                        {paragraph}
+                        {t(paragraph)}
                       </p>
                     ))}
                     {imageCaption && (
-                      <p className={styles.imageCaption}>{imageCaption}</p>
+                      <p className={styles.imageCaption}>{t(imageCaption)}</p>
                     )}
                   </div>
                 </section>
@@ -288,24 +292,24 @@ function OriginsReader({
           >
             <h2 ref={connectionsHeading} id={`${id}-connections`} tabIndex={-1}>
               {placeNames
-                ? `Explore matcha from ${placeNames}`
-                : "Explore matcha"}
+                ? t("Explore matcha from {place}", { place: placeNames })
+                : t("Explore matcha")}
             </h2>
             {loading ? (
               <p className={styles.prose} role="status">
-                Loading matcha…
+                {t("Loading matcha…")}
               </p>
             ) : catalog?.status === "unavailable" || !catalog ? (
               <div>
                 <p className={styles.prose} role="status">
-                  Couldn’t load matcha.
+                  {t("Couldn’t load matcha.")}
                 </p>
                 <button
                   className={styles.action}
                   type="button"
                   onClick={retryConnections}
                 >
-                  Try again <span aria-hidden="true">↻</span>
+                  {t("Try again")} <span aria-hidden="true">↻</span>
                 </button>
               </div>
             ) : related.length > 0 ? (
@@ -319,12 +323,14 @@ function OriginsReader({
                       }}
                     >
                       <span className={styles.relatedName}>
-                        <span>{productName(product.title)}</span>
+                        <span>
+                          {productName(product.title, product.handle, locale)}
+                        </span>
                         {!product.variants.some(
                           (variant) => variant.available,
                         ) && (
                           <span className={styles.availability}>
-                            Currently unavailable
+                            {t("Currently unavailable")}
                           </span>
                         )}
                       </span>
@@ -334,7 +340,9 @@ function OriginsReader({
                 ))}
               </ul>
             ) : (
-              <p className={styles.prose}>No matchas are listed here yet.</p>
+              <p className={styles.prose}>
+                {t("No matchas are listed here yet.")}
+              </p>
             )}
             {related.length > 3 && (
               <div className={styles.placeLinks}>
@@ -349,7 +357,7 @@ function OriginsReader({
                       setSelectedSlug(null);
                     }}
                   >
-                    All matcha from {place.name}{" "}
+                    {t("All matcha from {place}", { place: t(place.name) })}{" "}
                     <span aria-hidden="true">↗</span>
                   </button>
                 ))}
@@ -382,18 +390,19 @@ function FieldPhotograph({
   entry: FieldEntry;
   className?: string;
 }) {
+  const { t } = useStorefrontLocale();
   return (
     <figure className={styles.photograph}>
       <div className={className}>
         <Image
           src={entry.image}
-          alt={entry.imageAlt}
+          alt={t(entry.imageAlt)}
           fill
           sizes="(max-width: 760px) calc(100vw - 40px), 55vw"
           loading="eager"
         />
       </div>
-      <figcaption>{entry.imageCaption}</figcaption>
+      <figcaption>{t(entry.imageCaption)}</figcaption>
     </figure>
   );
 }

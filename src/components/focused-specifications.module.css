@@ -1,13 +1,17 @@
 .root {
   color: var(--ink, #d6dad5);
   font-family: var(--font-atoma-mono), monospace;
-  font-size: var(--tab-body-size, 0.75rem);
+  font-size: calc(
+    var(--tab-body-size, 0.75rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.5;
 }
 
 .heading h2 {
   margin: 0;
-  font-size: var(--tab-heading-size, 1.125rem);
+  font-size: calc(
+    var(--tab-heading-size, 1.125rem) + var(--locale-font-increment, 0px)
+  );
   font-weight: 400;
   letter-spacing: -0.025em;
   line-height: 1.4;
@@ -16,7 +20,9 @@
 .heading p {
   margin: 0.375rem 0 1.5rem;
   color: var(--muted, #a0a9a4);
-  font-size: var(--tab-label-size, 0.6875rem);
+  font-size: calc(
+    var(--tab-label-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
 }
 
 .properties {
@@ -58,11 +64,15 @@
 
 .label {
   color: var(--muted, #a0a9a4);
-  font-size: var(--tab-label-size, 0.6875rem);
+  font-size: calc(
+    var(--tab-label-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
 }
 
 .value {
-  font-size: var(--tab-body-size, 0.75rem);
+  font-size: calc(
+    var(--tab-body-size, 0.75rem) + var(--locale-font-increment, 0px)
+  );
 }
 
 .plus {
@@ -72,7 +82,9 @@
 
 .empty {
   color: var(--muted, #a0a9a4);
-  font-size: var(--tab-body-size, 0.75rem);
+  font-size: calc(
+    var(--tab-body-size, 0.75rem) + var(--locale-font-increment, 0px)
+  );
 }
 
 .dialog {
@@ -134,7 +146,7 @@
   padding-bottom: 0.75rem;
   border-bottom: 1px solid rgb(213 228 216 / 19%);
   color: #abb7ac;
-  font-size: 0.625rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 
 .dialogTop button {
@@ -144,7 +156,7 @@
   border: 1px solid transparent;
   background: transparent;
   color: inherit;
-  font-size: 1.5rem;
+  font-size: calc(1.5rem + var(--locale-font-increment, 0px));
   cursor: pointer;
 }
 
@@ -155,12 +167,14 @@
 .propertyLabel {
   margin: 2rem 0 0.75rem;
   color: #abb7ac;
-  font-size: var(--tab-label-size, 0.6875rem);
+  font-size: calc(
+    var(--tab-label-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
 }
 
 .dialog h2 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: calc(1.25rem + var(--locale-font-increment, 0px));
   font-weight: 400;
   line-height: 1.4;
 }
@@ -168,8 +182,12 @@
 .explanation {
   margin: 1.5rem 0 2rem;
   color: #c4cec4;
-  font-size: 0.8125rem;
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
   line-height: 1.9;
+}
+.explanation,
+.empty {
+  text-transform: none;
 }
 
 .root[data-presentation="homepage"] {
@@ -190,14 +208,18 @@
 }
 
 .root[data-presentation="homepage"] .heading h2 {
-  font-size: var(--tab-heading-size, 1.125rem);
+  font-size: calc(
+    var(--tab-heading-size, 1.125rem) + var(--locale-font-increment, 0px)
+  );
   line-height: var(--tab-heading-leading, 1.4);
   letter-spacing: var(--tab-heading-tracking, 0.01em);
 }
 
 .root[data-presentation="homepage"] .heading p {
   margin: 0;
-  font-size: var(--tab-label-size, 0.6875rem);
+  font-size: calc(
+    var(--tab-label-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
   line-height: 1.5;
 }
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import type { PointerEvent } from "react";
 import { ScrambleText } from "./scramble-text";
 import styles from "./add-to-cart-button.module.css";
@@ -17,6 +19,7 @@ export function AddToCartButton({
   disabled = false,
   onAdd,
 }: AddToCartButtonProps) {
+  const { t } = useStorefrontLocale();
   function followPointer(event: PointerEvent<HTMLButtonElement>) {
     if (
       event.pointerType !== "mouse" ||
@@ -46,13 +49,13 @@ export function AddToCartButton({
       <span className={styles.surface} aria-hidden="true" />
       <span className={styles.label}>
         <ScrambleText
-          text={
+          text={t(
             pending
               ? "Adding…"
               : available
                 ? "Add to cart"
-                : "Currently unavailable"
-          }
+                : "Currently unavailable",
+          )}
           interactive
           paused={pending || !available || disabled}
           wrap

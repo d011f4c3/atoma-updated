@@ -1,5 +1,7 @@
 "use client";
 
+import { useStorefrontLocale } from "./storefront-locale-provider";
+
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { CartButton } from "./cart-drawer";
@@ -44,6 +46,7 @@ export function HomeHeader({
   onOverview,
   persistentTheme = false,
 }: HomeHeaderProps) {
+  const { t } = useStorefrontLocale();
   const id = useId();
   const { openOrigins } = useOrigins();
   const dialogId = `${id}-about`;
@@ -143,7 +146,7 @@ export function HomeHeader({
       <span className={styles.index} data-nav-index aria-hidden="true">
         01
       </span>
-      <ScrambleText text="MATCHA" delay={150} interactive />
+      <ScrambleText text={t("MATCHA")} delay={150} interactive />
       <span className={styles.sectionMark} aria-hidden="true" />
       {hasDescriptions && (
         <span
@@ -151,7 +154,7 @@ export function HomeHeader({
           data-nav-description
           aria-hidden="true"
         >
-          Explore the material
+          {t("Explore the material")}
         </span>
       )}
     </>
@@ -173,7 +176,7 @@ export function HomeHeader({
           className={styles.control}
           data-nav-action="matcha"
           type="button"
-          aria-label="Explore matcha"
+          aria-label={t("Explore matcha")}
           aria-expanded={exploring}
           onClick={() => {
             closeIndex();
@@ -188,7 +191,7 @@ export function HomeHeader({
           className={styles.control}
           data-nav-action="matcha"
           href={homeHref}
-          aria-label="Explore matcha"
+          aria-label={t("Explore matcha")}
           onClick={closeIndex}
         >
           {matchaLabel}
@@ -204,7 +207,7 @@ export function HomeHeader({
         <span className={styles.index} data-nav-index aria-hidden="true">
           02
         </span>
-        <ScrambleText text="SHOP" delay={220} interactive />
+        <ScrambleText text={t("SHOP")} delay={220} interactive />
         <span className={styles.shopMark} aria-hidden="true">
           ↗
         </span>
@@ -214,7 +217,7 @@ export function HomeHeader({
             data-nav-description
             aria-hidden="true"
           >
-            Choose your matcha
+            {t("Choose your matcha")}
           </span>
         )}
       </Link>
@@ -235,7 +238,7 @@ export function HomeHeader({
           <span className={styles.index} data-nav-index aria-hidden="true">
             03
           </span>
-          <ScrambleText text="ORIGINS" delay={260} interactive />
+          <ScrambleText text={t("ORIGINS")} delay={260} interactive />
           <span className={styles.shopMark} aria-hidden="true">
             ↗
           </span>
@@ -246,7 +249,7 @@ export function HomeHeader({
         className={styles.control}
         data-nav-action="about"
         type="button"
-        aria-label="About ATOMA"
+        aria-label={t("About ATOMA")}
         aria-haspopup="dialog"
         aria-controls={dialogId}
         aria-expanded={open}
@@ -257,7 +260,7 @@ export function HomeHeader({
             ? "04"
             : "03"}
         </span>
-        <ScrambleText text="ABOUT" delay={290} interactive />
+        <ScrambleText text={t("ABOUT")} delay={290} interactive />
         <span className={styles.plus} aria-hidden="true">
           +
         </span>
@@ -267,7 +270,7 @@ export function HomeHeader({
             data-nav-description
             aria-hidden="true"
           >
-            A closer look at ATOMA
+            {t("A closer look at ATOMA")}
           </span>
         )}
       </button>
@@ -287,7 +290,7 @@ export function HomeHeader({
         data-nav-brand
         data-brand-part="wordmark"
         href={homeHref}
-        aria-label="ATOMA home"
+        aria-label={t("ATOMA home")}
       >
         <ScrambleText text="ATOMA" interactive />
       </Link>
@@ -296,7 +299,7 @@ export function HomeHeader({
         className={styles.navigation}
         data-nav-controls
         data-brand-part="primary-navigation"
-        aria-label="Main navigation"
+        aria-label={t("Main navigation")}
         onClick={(event) => {
           if (!indexRef.current?.contains(event.target as Node)) closeIndex();
         }}
@@ -306,18 +309,18 @@ export function HomeHeader({
             <button
               className={styles.control}
               type="button"
-              aria-label="Back to overview"
+              aria-label={t("Back to overview")}
               onClick={onOverview}
             >
-              <ScrambleText text="OVERVIEW" interactive />
+              <ScrambleText text={t("OVERVIEW")} interactive />
             </button>
           ) : (
             <Link
               className={styles.control}
               href={homeHref}
-              aria-label="Back to overview"
+              aria-label={t("Back to overview")}
             >
-              <ScrambleText text="OVERVIEW" interactive />
+              <ScrambleText text={t("OVERVIEW")} interactive />
             </Link>
           )
         ) : hasIndex || hasResponsiveMenu ? (
@@ -346,11 +349,11 @@ export function HomeHeader({
                   ? styles.responsiveSummary
                   : styles.indexSummary
               }
-              aria-label={hasResponsiveMenu ? "Menu" : "Index"}
+              aria-label={t(hasResponsiveMenu ? "Menu" : "Index")}
               aria-controls={indexPanelId}
             >
               <ScrambleText
-                text={hasResponsiveMenu ? "MENU" : "INDEX"}
+                text={t(hasResponsiveMenu ? "MENU" : "INDEX")}
                 interactive
               />
               <span
@@ -371,13 +374,13 @@ export function HomeHeader({
               {navigationVariant === "folio" && (
                 <div className={styles.directoryHeading} aria-hidden="true">
                   <span>ATOMA</span>
-                  <span>DIRECTORY</span>
+                  <span>{t("DIRECTORY")}</span>
                 </div>
               )}
               {mainLinks}
               {hasResponsiveMenu && persistentTheme && (
                 <div className={styles.mobileTheme}>
-                  <span>Appearance</span>
+                  <span>{t("Appearance")}</span>
                   <ThemeSwitcher label="Dark mode in menu" />
                 </div>
               )}
@@ -413,7 +416,7 @@ export function HomeHeader({
       >
         <div className={styles.dialogHeader}>
           <span>
-            <ScrambleText text="ABOUT ATOMA" periodic />
+            <ScrambleText text={t("ABOUT ATOMA")} periodic />
           </span>
           <button
             ref={closeRef}
@@ -421,7 +424,7 @@ export function HomeHeader({
             type="button"
             onClick={() => dialogRef.current?.close()}
           >
-            <ScrambleText text="CLOSE" interactive />
+            <ScrambleText text={t("CLOSE")} interactive />
             <span aria-hidden="true">×</span>
           </button>
         </div>
