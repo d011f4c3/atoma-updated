@@ -454,3 +454,16 @@ isolated `/about-exploration` in both palettes, desktop/phone layouts, scroll
 progress, reduced motion, accessible application descriptions, image loading,
 navigation and Origins reader return. Commerce is mocked. Captures are saved
 under `.local/about-exploration-0136/browser/`.
+
+Smaller About variations (Task 0137):
+
+```bash
+PLAYWRIGHT_MODULE=/path/to/playwright node --experimental-strip-types tests/about-variations.mjs
+```
+
+The default server is port 3100; set `ABOUT_VARIATIONS_BASE_URL` for an isolated
+preview. Tests cover Studio, Atlas and Notes across desktop/phone, both palettes
+and normal/reduced motion, plus direct links, comparison switching, query
+fallbacks, accessible copy, image loading and cart/reader continuity. The earlier
+exploration suite now targets `?direction=original`. Variation captures are in
+`.local/about-variations-0137/browser/`.

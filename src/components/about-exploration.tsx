@@ -42,7 +42,7 @@ const applications = [
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
-export function AboutExploration() {
+export function AboutExploration({ compact = false }: { compact?: boolean }) {
   const { tone } = useStorefrontTheme();
   const { busy } = useCart();
   const { openOrigins } = useOrigins();
@@ -77,7 +77,10 @@ export function AboutExploration() {
       if (!root || !stage || !place || motion.matches) return;
       const stageRect = stage.getBoundingClientRect();
       const progress = clamp(
-        -stageRect.top / Math.max(1, stageRect.height - window.innerHeight),
+        compact
+          ? (window.innerHeight - stageRect.top) /
+              (window.innerHeight + stageRect.height)
+          : -stageRect.top / Math.max(1, stageRect.height - window.innerHeight),
       );
       const heroProgress = clamp(window.scrollY / window.innerHeight);
       const placeRect = place.getBoundingClientRect();
@@ -85,11 +88,20 @@ export function AboutExploration() {
         (window.innerHeight - placeRect.top) /
           (window.innerHeight + placeRect.height),
       );
-      root.style.setProperty("--hero-shift", `${heroProgress * 100}px`);
+      root.style.setProperty(
+        "--hero-shift",
+        `${heroProgress * (compact ? 30 : 100)}px`,
+      );
       root.style.setProperty("--hero-turn", `${heroProgress * 9}deg`);
       root.style.setProperty("--application-progress", String(progress));
-      root.style.setProperty("--image-turn", `${progress * 14 - 7}deg`);
-      root.style.setProperty("--image-scale", String(1.05 + progress * 0.12));
+      root.style.setProperty(
+        "--image-turn",
+        `${progress * (compact ? 4 : 14) - (compact ? 2 : 7)}deg`,
+      );
+      root.style.setProperty(
+        "--image-scale",
+        String(1.05 + progress * (compact ? 0.03 : 0.12)),
+      );
       root.style.setProperty(
         "--place-shift",
         `${(placeProgress - 0.5) * (mobile.matches ? 30 : 90)}px`,
@@ -135,7 +147,7 @@ export function AboutExploration() {
       window.removeEventListener("resize", schedule);
       motion.removeEventListener("change", syncMotion);
     };
-  }, []);
+  }, [compact]);
 
   function readFieldStory() {
     if (!busy)
@@ -151,6 +163,7 @@ export function AboutExploration() {
       ref={rootRef}
       className={styles.page}
       data-about-exploration
+      data-scale={compact ? "compact" : "original"}
       data-tone={tone}
       data-storefront-theme={tone}
       data-motion="off"

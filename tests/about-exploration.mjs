@@ -256,7 +256,7 @@ try {
         page.setDefaultTimeout(12000);
         page.setDefaultNavigationTimeout(40000);
         page.on("pageerror", (error) => errors.push(error.message));
-        await page.goto(`${baseURL}/about-exploration`, {
+        await page.goto(`${baseURL}/about-exploration?direction=original`, {
           waitUntil: "domcontentloaded",
         });
         const root = page.locator("[data-about-exploration]");

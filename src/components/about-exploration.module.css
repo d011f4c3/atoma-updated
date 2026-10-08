@@ -1075,3 +1075,230 @@
     display: none;
   }
 }
+
+/* Studio: a compact alternative; the original remains intact for comparison. */
+.page[data-scale="compact"] {
+  --section-space: clamp(3.5rem, 5vw, 5rem);
+}
+.page[data-scale="compact"] .hero {
+  min-height: 26rem;
+  height: min(52svh, 32rem);
+  padding-top: 2.25rem;
+}
+.page[data-scale="compact"] .heroTitle {
+  max-width: 56%;
+  font-size: clamp(3.25rem, 6vw, 5rem);
+  line-height: 0.96;
+  letter-spacing: -0.06em;
+}
+.page[data-scale="compact"] .heroMaterial {
+  top: 0;
+  right: 9%;
+  width: min(43vw, 36rem);
+}
+.page[data-scale="compact"] .heroWordmark {
+  bottom: 0.35em;
+  right: 0.15em;
+  font-size: 12vw;
+}
+.page[data-scale="compact"] .orbit {
+  width: 30vw;
+  left: 66%;
+  top: 40%;
+}
+.page[data-scale="compact"] .heroFoot {
+  bottom: 1.5rem;
+  padding-top: 1rem;
+}
+.page[data-scale="compact"] .intro {
+  gap: 1.75rem 3rem;
+}
+.page[data-scale="compact"] .introStatement {
+  font-size: clamp(1.75rem, 2.8vw, 2.5rem);
+}
+.page[data-scale="compact"] .introAside {
+  justify-self: start;
+  width: min(100%, 38rem);
+}
+.page[data-scale="compact"] .applicationStage {
+  height: auto;
+  min-height: 0;
+}
+.page[data-scale="compact"] .applicationSticky {
+  position: relative;
+  top: auto;
+  grid-template-columns: minmax(8rem, 0.7fr) minmax(0, 3fr);
+  height: auto;
+  min-height: 0;
+  gap: 2rem;
+  padding-block: 2rem 3.5rem;
+}
+.page[data-scale="compact"] .applicationVisual {
+  width: 100%;
+  max-width: 14rem;
+  align-self: center;
+  border-radius: 50% 50% 46% 46%;
+}
+.page[data-scale="compact"] .applicationReading {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.75rem;
+}
+.page[data-scale="compact"] .applicationSlide {
+  position: static;
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition: none;
+}
+.page[data-scale="compact"] .applicationSlide > span {
+  margin-bottom: 1.25rem;
+}
+.page[data-scale="compact"] .applicationSlide h3 {
+  font-size: 1.75rem;
+  max-width: 13ch;
+  min-height: 2.1em;
+}
+.page[data-scale="compact"] .applicationSlide p {
+  font-size: 0.75rem;
+  margin-top: 1rem;
+}
+.page[data-scale="compact"] .applicationSlide > div {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 1.25rem;
+}
+.page[data-scale="compact"] .applicationCounter {
+  display: none;
+}
+.page[data-scale="compact"] .place {
+  height: 25rem;
+  min-height: 0;
+}
+.page[data-scale="compact"] .placeTitle {
+  bottom: 6rem;
+}
+.page[data-scale="compact"] .placeTitle h2 {
+  font-size: clamp(2rem, 3.2vw, 3rem);
+}
+.page[data-scale="compact"] .placeCopy {
+  padding-block: 2.5rem 3.5rem;
+}
+.page[data-scale="compact"] .community {
+  padding-block: 3rem;
+  gap: 2rem;
+}
+.page[data-scale="compact"] .communityMark {
+  font-size: 8rem;
+}
+.page[data-scale="compact"] .communityText h2 {
+  font-size: 2.5rem;
+}
+.page[data-scale="compact"] .closing {
+  padding-block: 2.5rem 1.5rem;
+}
+.page[data-scale="compact"] .closing > a {
+  font-size: 3rem;
+  padding-bottom: 2rem;
+}
+.page[data-scale="compact"] .footer > a:first-child {
+  justify-self: start;
+  font-size: 5rem;
+  line-height: 1.1;
+}
+@media (max-width: 1050px) {
+  .page[data-scale="compact"] .applicationSticky {
+    grid-template-columns: 1fr;
+  }
+  .page[data-scale="compact"] .applicationVisual {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .page[data-scale="compact"] .hero {
+    min-height: 24rem;
+    height: 24rem;
+    padding-top: 1.5rem;
+  }
+  .page[data-scale="compact"] .heroTitle {
+    font-size: 2.75rem;
+  }
+  .page[data-scale="compact"] .heroMaterial {
+    width: 94%;
+    top: 1rem;
+    right: -18%;
+  }
+  .page[data-scale="compact"] .orbit {
+    width: 60%;
+    top: 43%;
+    left: 72%;
+  }
+  .page[data-scale="compact"] .heroWordmark {
+    font-size: 19vw;
+    bottom: 1.6em;
+  }
+  .page[data-scale="compact"] .heroFoot {
+    bottom: 1rem;
+    gap: 1rem;
+  }
+  .page[data-scale="compact"] .introStatement {
+    font-size: 1.85rem;
+  }
+  .page[data-scale="compact"] .applicationReading {
+    grid-template-columns: 1fr;
+    margin-top: 0;
+    gap: 0;
+  }
+  .page[data-scale="compact"] .applicationSticky {
+    padding-block: 0 1.5rem;
+  }
+  .page[data-scale="compact"] .applicationSlide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+    padding-block: 1.5rem;
+  }
+  .page[data-scale="compact"] .applicationSlide > span {
+    grid-column: 1 / -1;
+    margin-bottom: 0.5rem;
+  }
+  .page[data-scale="compact"] .applicationSlide h3 {
+    min-height: 0;
+    font-size: 1.5rem;
+  }
+  .page[data-scale="compact"] .applicationSlide p {
+    margin-top: 0;
+    font-size: 0.6875rem;
+  }
+  .page[data-scale="compact"] .applicationSlide > div {
+    grid-column: 1 / -1;
+    grid-template-columns: auto 1fr;
+    margin-top: 0.5rem;
+  }
+  .page[data-scale="compact"] .place {
+    height: 20rem;
+  }
+  .page[data-scale="compact"] .placeTitle h2 {
+    font-size: 2rem;
+  }
+  .page[data-scale="compact"] .placeCopy {
+    padding-block: 2rem 3rem;
+  }
+  .page[data-scale="compact"] .community {
+    padding-block: 2.5rem;
+  }
+  .page[data-scale="compact"] .communityMark {
+    font-size: 4rem;
+  }
+  .page[data-scale="compact"] .communityText h2 {
+    font-size: 2rem;
+  }
+  .page[data-scale="compact"] .closing > a {
+    font-size: 2rem;
+  }
+  .page[data-scale="compact"] .footer > a:first-child {
+    font-size: 3.5rem;
+  }
+}
