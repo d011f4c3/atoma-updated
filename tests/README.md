@@ -442,3 +442,15 @@ The popup suite also checks automatic authoritative cart clearing, cancellation
 and failure preservation, hidden-page pause, serialized reads and stale-response
 rejection. Popup captures go to `.local/checkout-0134/browser/`. These tests do not prove
 wallet onboarding or a real payment; record those separately in the task.
+
+About scroll exploration (Task 0136):
+
+```bash
+PLAYWRIGHT_MODULE=/path/to/playwright node --experimental-strip-types tests/about-exploration.mjs
+```
+
+Run against the local development server on port 3100. The suite checks the
+isolated `/about-exploration` in both palettes, desktop/phone layouts, scroll
+progress, reduced motion, accessible application descriptions, image loading,
+navigation and Origins reader return. Commerce is mocked. Captures are saved
+under `.local/about-exploration-0136/browser/`.
