@@ -1,0 +1,155 @@
+/* Opt-in study styles. Current retains its original module and behavior. */
+.button {
+  --treatment-fill: var(--color-raised);
+  --treatment-edge: var(--study-edge);
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.625rem 0.625rem 0.625rem 1.125rem;
+  border: 1px solid var(--treatment-edge);
+  border-radius: var(--radius-button);
+  background: var(--treatment-fill);
+  color: var(--ink);
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 160ms ease;
+}
+
+.button[data-treatment="mineral"] {
+  --treatment-fill: var(--study-mineral);
+  --treatment-edge: var(--study-mineral-edge);
+}
+
+.button[data-treatment="split"] {
+  --treatment-edge: var(--line);
+}
+
+.button[data-treatment="keyline"] {
+  box-shadow: inset 0 -2px 0 var(--treatment-edge);
+}
+
+.label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.surface,
+.track,
+.arrow {
+  display: none;
+}
+
+.action {
+  position: relative;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 4px;
+}
+
+.button[data-treatment="split"] .action {
+  background: var(--study-action);
+  color: var(--study-action-ink);
+  transition: background-color 160ms ease;
+}
+
+.plus {
+  font-size: calc(1.25rem + var(--locale-font-increment, 0px));
+  font-weight: 400;
+  line-height: 1;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--ink) 6%, var(--treatment-fill));
+  }
+
+  .button[data-treatment="split"]:hover:not(:disabled) {
+    background: var(--treatment-fill);
+  }
+
+  .button[data-treatment="split"]:hover:not(:disabled) .action {
+    background: color-mix(
+      in srgb,
+      var(--study-action-ink) 12%,
+      var(--study-action)
+    );
+  }
+}
+
+.button:active:not(:disabled) {
+  background: color-mix(in srgb, var(--ink) 10%, var(--treatment-fill));
+}
+
+.button:disabled:not([data-pending="true"]) {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.button:disabled:not([data-pending="true"]) .action {
+  background: transparent;
+  color: inherit;
+}
+
+.spinner {
+  display: none;
+  position: absolute;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+}
+
+.button[data-pending="true"] {
+  cursor: progress;
+}
+
+.button[data-pending="true"] .plus {
+  visibility: hidden;
+}
+
+.button[data-pending="true"] .spinner {
+  display: block;
+  animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 380px) {
+  .button {
+    gap: 0.625rem;
+    padding-left: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .button * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

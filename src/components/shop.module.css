@@ -167,6 +167,13 @@
 .product {
   min-width: 0;
 }
+.product[hidden] {
+  display: none;
+}
+.state.filteredEmpty {
+  grid-column: 1 / -1;
+  min-height: 12rem;
+}
 .productLink {
   display: flex;
   min-width: 0;

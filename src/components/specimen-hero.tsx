@@ -12,6 +12,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  type ReactNode,
 } from "react";
 import {
   ProductConfigurator,
@@ -42,6 +43,8 @@ import { useStorefrontTheme } from "./storefront-theme-provider";
 import { useHomepageJourney } from "./homepage-journey-provider";
 import { HeroLoader } from "./hero-loader";
 import { useHeroLoading } from "./use-hero-loading";
+import { usePageReveals } from "./use-page-reveals";
+import revealStyles from "./page-reveals.module.css";
 import {
   HeroStudyIntroduction,
   type HeroIntroductionDirection,
@@ -78,6 +81,7 @@ export function SpecimenHero({
   overviewStudyVariant = "current",
   shopPreviewVariant = "current",
   shopExplorationLayout,
+  purchaseAction,
   productCodePlacement,
   initialView = "overview",
   materialObject = "powder",
@@ -107,6 +111,7 @@ export function SpecimenHero({
   overviewStudyVariant?: OverviewStudyVariant;
   shopPreviewVariant?: "current" | "refined" | ShopPreviewVariant;
   shopExplorationLayout?: ShopExplorationLayout;
+  purchaseAction?: ReactNode;
   productCodePlacement?: ProductCodePlacement;
   initialView?: "overview" | "specifications" | "origins" | "builder";
   materialObject?: "powder" | "silver-bag";
@@ -139,6 +144,9 @@ export function SpecimenHero({
     heroAssetReady,
     heroRef,
   );
+  const pageEntrance =
+    persistentTheme && (intro.phase === "leaving" || intro.phase === "done");
+  usePageReveals(heroRef, pageEntrance);
   const [exploring, setExploring] = useState(resumeSelection);
   const [opened, setOpened] = useState(resumeSelection);
   const [bagLabel, setBagLabel] = useState<ProductLabelSnapshot>({
@@ -510,10 +518,11 @@ export function SpecimenHero({
     <>
       <main
         ref={heroRef}
-        className={styles.hero}
+        className={`${styles.hero}${pageEntrance ? ` ${revealStyles.scope}` : ""}`}
         data-brand-part="hero"
         data-concept="01"
         data-storefront-theme={storefrontTheme ? tone : undefined}
+        data-page-entrance={persistentTheme || undefined}
         data-exploring={exploring}
         data-tone={tone}
         data-visible={visible}
@@ -564,6 +573,7 @@ export function SpecimenHero({
                 exploring={exploring}
                 onExplore={openSelection}
                 exploreRef={exploreRef}
+                pageEntrance={persistentTheme}
               />
             ) : (
               <>
@@ -630,6 +640,7 @@ export function SpecimenHero({
               className={styles.viewerHeading}
               aria-hidden="true"
               data-brand-part="viewer-heading"
+              data-page-enter={persistentTheme ? "text" : undefined}
             >
               <span className={styles.ordinal}>
                 [ <ScrambleText text="01" delay={420} periodic /> ]
@@ -641,6 +652,7 @@ export function SpecimenHero({
               ref={stageRef}
               className={styles.imageStage}
               data-brand-part="image-stage"
+              data-page-enter={persistentTheme ? "visual" : undefined}
               data-hovered={hovered}
             >
               <button
@@ -781,6 +793,7 @@ export function SpecimenHero({
                 sampleImageryVariant={sampleImageryVariant}
                 sampleOrderLayout={sampleOrderLayout}
                 sampleMobileLayout={sampleMobileLayout}
+                pageReveals={persistentTheme}
                 contextVisible={contextVisible}
                 sampleEntrancePlacement={
                   sampleEntrancePlacement ??
@@ -797,6 +810,7 @@ export function SpecimenHero({
                 overviewStudyVariant={overviewStudyVariant}
                 shopPreviewVariant={shopPreviewVariant}
                 shopExplorationLayout={shopExplorationLayout}
+                purchaseAction={purchaseAction}
                 productCodePlacement={productCodePlacement}
                 initialView={initialView}
                 active={exploring}

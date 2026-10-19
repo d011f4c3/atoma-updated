@@ -1,5 +1,5 @@
-/* Mobile About reveals: real animation/visibility checks with isolated read
- * fixtures. External traffic and all network writes are blocked. */
+/* About desktop/mobile reveals: real animation and visibility checks with
+ * isolated read fixtures. External traffic and all network writes are blocked. */
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -16,7 +16,7 @@ const destination = { countryCode: "US", currency: "USD" };
 const engine = process.env.ABOUT_REVEALS_BROWSER ?? "chromium";
 const filter = process.env.ABOUT_REVEALS_FILTER;
 const evidence =
-  process.env.ABOUT_REVEALS_EVIDENCE ?? ".local/about-reveals-0206/browser";
+  process.env.ABOUT_REVEALS_EVIDENCE ?? ".local/page-reveals-0210/about";
 assert.ok(["chromium", "webkit"].includes(engine));
 const browser = await playwright[engine].launch(
   engine === "chromium"
@@ -25,8 +25,8 @@ const browser = await playwright[engine].launch(
 );
 await mkdir(evidence, { recursive: true });
 const results = [];
-const heroSelector = "[data-about-enter]";
-const revealSelector = "[data-about-reveal]";
+const heroSelector = "[data-about-page] main [data-page-enter]";
+const revealSelector = "[data-about-page] main [data-page-reveal]";
 
 async function setup({
   width = 390,
@@ -109,7 +109,7 @@ async function setup({
         const NativeObserver = window.IntersectionObserver;
         window.IntersectionObserver = class extends NativeObserver {
           observe(target) {
-            if (target.hasAttribute("data-about-reveal"))
+            if (target.hasAttribute("data-page-reveal"))
               throw new Error("Fixture IntersectionObserver.observe failure");
             return super.observe(target);
           }
@@ -220,8 +220,10 @@ async function traceFirstPaint(fixture) {
             items: nodes.map((node) => {
               const style = getComputedStyle(node);
               return {
+                kind: node.dataset.pageEnter,
                 opacity: Number(style.opacity),
                 transform: style.transform,
+                translate: style.translate,
                 animation: style.animationName,
                 duration: style.animationDuration,
                 delay: style.animationDelay,
@@ -239,7 +241,7 @@ async function traceFirstPaint(fixture) {
           const image = event.target;
           if (
             !(image instanceof HTMLImageElement) ||
-            !image.closest('[data-about-enter="photograph"]')
+            !image.closest('[data-page-enter="visual"]')
           )
             return;
           const start = performance.now();
@@ -247,7 +249,7 @@ async function traceFirstPaint(fixture) {
             trace.images.push({
               time: time - start,
               opacity: Number(getComputedStyle(image).opacity),
-              arriving: image.hasAttribute("data-about-image-arriving"),
+              arriving: image.hasAttribute("data-page-image-arriving"),
             });
             if (time - start < 800) requestAnimationFrame(sampleImage);
           }
@@ -302,6 +304,7 @@ async function visibleRevealState(locator) {
         opacity: Number(style.opacity),
         visibility: style.visibility,
         transform: style.transform,
+        translate: style.translate,
         animation: style.animationName,
       };
     }),
@@ -317,8 +320,8 @@ async function waitVisible(locator) {
       return (
         style.opacity === "1" &&
         style.visibility === "visible" &&
-        (!element.hasAttribute("data-about-reveal") ||
-          element.dataset.aboutRevealState === "complete")
+        (!element.hasAttribute("data-page-reveal") ||
+          element.dataset.pageRevealState === "complete")
       );
     }, node);
   } finally {
@@ -346,7 +349,11 @@ async function assertHeroTrace(fixture) {
     const nodes = [...document.querySelectorAll(selector)];
     return (
       nodes.length > 0 &&
-      nodes.every((node) => getComputedStyle(node).opacity === "1")
+      nodes.every(
+        (node) =>
+          getComputedStyle(node).opacity === "1" &&
+          node.hasAttribute("data-page-enter-done"),
+      )
     );
   }, heroSelector);
   const trace = await fixture.page.evaluate(
@@ -368,9 +375,19 @@ async function assertHeroTrace(fixture) {
   );
   assert.ok(
     trace.some((frame) =>
-      frame.items.some((item) => item.transform !== "none"),
+      frame.items.some(
+        (item) => item.translate !== "none" && item.translate !== "0px",
+      ),
     ),
     "The hero uses its small entrance translation",
+  );
+  assert.ok(
+    trace.every((frame) =>
+      frame.items
+        .filter((item) => item.kind === "visual")
+        .every((item) => item.translate === "none"),
+    ),
+    "The photographic entrance preserves the scroll-driven stage geometry",
   );
   const animations = trace
     .flatMap((frame) => frame.items)
@@ -380,8 +397,8 @@ async function assertHeroTrace(fixture) {
     const duration = Number.parseFloat(item.duration) * 1000;
     const delay = Number.parseFloat(item.delay) * 1000;
     assert.ok(
-      duration >= 640 && duration <= 800,
-      `Hero duration stays within 640–800 ms: ${duration}`,
+      duration >= 900 && duration <= 1100,
+      `Hero duration stays within 900–1100 ms: ${duration}`,
     );
     assert.ok(
       delay >= 0 && delay <= 180,
@@ -448,13 +465,20 @@ async function modalRoundtrip(fixture) {
 async function revealAll(fixture) {
   const { page } = fixture;
   const items = page.locator(revealSelector);
-  const count = await items.count();
+  const rendered = await items.evaluateAll((nodes) =>
+    nodes.flatMap((node, index) =>
+      node.getClientRects().length ? [index] : [],
+    ),
+  );
+  const count = rendered.length;
   assert.ok(count > 2, "Lower sections expose bounded reveal targets");
   const initial = await items.evaluateAll((nodes) =>
-    nodes.map((node) => ({
-      opacity: Number(getComputedStyle(node).opacity),
-      top: node.getBoundingClientRect().top,
-    })),
+    nodes
+      .filter((node) => node.getClientRects().length)
+      .map((node) => ({
+        opacity: Number(getComputedStyle(node).opacity),
+        top: node.getBoundingClientRect().top,
+      })),
   );
   assert.ok(
     initial.some((node) => node.opacity === 0),
@@ -467,20 +491,39 @@ async function revealAll(fixture) {
     "Only below-viewport sections start hidden",
   );
   let transient = false;
-  for (let index = 0; index < count; index++) {
+  for (const index of rendered) {
     const target = items.nth(index);
-    await scroll(
-      page,
-      (await position(target)) - fixture.page.viewportSize().height * 0.65,
-    );
+    if (
+      fixture.width > 760 &&
+      (await target.getAttribute("data-about-story"))
+    ) {
+      const top = await target.evaluate((node) => {
+        const rail = node.closest("[data-about-field-rail]");
+        const stories = [...rail.querySelectorAll("[data-about-story]")];
+        const box = rail.getBoundingClientRect();
+        return (
+          box.top +
+          scrollY +
+          ((box.height - innerHeight) * stories.indexOf(node)) /
+            (stories.length - 1)
+        );
+      });
+      await scroll(page, top);
+    } else {
+      await scroll(
+        page,
+        (await position(target)) - fixture.page.viewportSize().height * 0.65,
+      );
+    }
     const frames = await target.evaluate(async (node) => {
       const frames = [];
       const start = performance.now();
-      while (performance.now() - start < 850) {
+      while (performance.now() - start < 1100) {
         const style = getComputedStyle(node);
         frames.push({
           opacity: Number(style.opacity),
           transform: style.transform,
+          translate: style.translate,
         });
         if (style.opacity === "1" && frames.length > 1) break;
         await new Promise(requestAnimationFrame);
@@ -490,6 +533,11 @@ async function revealAll(fixture) {
     transient ||= frames.some(
       (frame) => frame.opacity > 0 && frame.opacity < 0.98,
     );
+    if ((await target.getAttribute("data-page-reveal")) === "fade")
+      assert.ok(
+        frames.every((frame) => frame.translate === "none"),
+        "Photographic groups fade without translating measured scroll geometry",
+      );
     await waitVisible(target);
   }
   assert.ok(
@@ -504,86 +552,100 @@ try {
   for (const [width, tone] of [
     [390, "light"],
     [320, "dark"],
+    [1440, "light"],
+    [1440, "dark"],
   ]) {
-    await run(`mobile-${width}-${tone}`, async () => {
-      const fixture = await setup({ width, tone });
-      try {
-        await traceFirstPaint(fixture);
-        await open(fixture);
-        await assertHeroTrace(fixture);
-        await capture(fixture, "hero-complete");
-        const count = await revealAll(fixture);
-        const before = await fixture.page.evaluate(
-          () => window.__aboutRevealTrace.animations,
-        );
-        await scroll(fixture.page, 0);
-        await scroll(
-          fixture.page,
-          await fixture.page.evaluate(
-            () => document.documentElement.scrollHeight,
-          ),
-        );
-        await fixture.page
-          .getByRole("switch", { name: "Dark mode", exact: true })
-          .last()
-          .click();
-        await fixture.page.waitForFunction(
-          (tone) =>
-            document
-              .querySelector("[data-about-page]")
-              ?.getAttribute("data-tone") !== tone,
-          tone,
-        );
-        await modalRoundtrip(fixture);
-        await fixture.page.evaluate(
-          () =>
-            new Promise((done) =>
-              requestAnimationFrame(() => requestAnimationFrame(done)),
+    await run(
+      `${width <= 760 ? "mobile" : "desktop"}-${width}-${tone}`,
+      async () => {
+        const fixture = await setup({ width, tone });
+        try {
+          await traceFirstPaint(fixture);
+          await open(fixture);
+          await assertHeroTrace(fixture);
+          await capture(fixture, "hero-complete");
+          const count = await revealAll(fixture);
+          const before = await fixture.page.evaluate(
+            () => window.__aboutRevealTrace.animations,
+          );
+          await scroll(fixture.page, 0);
+          await scroll(
+            fixture.page,
+            await fixture.page.evaluate(
+              () => document.documentElement.scrollHeight,
             ),
-        );
-        const after = await fixture.page.evaluate(
-          () => window.__aboutRevealTrace,
-        );
-        assert.deepEqual(
-          after.animations,
-          before,
-          "Scroll return, theme change and reader roundtrip never restart reveals",
-        );
-        assert.equal(
-          after.mutations.filter(
-            (mutation) =>
-              mutation.attribute === "data-about-reveal-state" &&
-              mutation.oldValue === "complete" &&
-              mutation.value !== "complete",
-          ).length,
-          0,
-          "Completed reveals are never hidden again",
-        );
-        assert.equal(
+          );
           await fixture.page
-            .locator('[data-about-reveal-state="complete"]')
-            .count(),
-          count,
-        );
-        const starts = after.animations.filter((animation) => !animation.hero);
-        assert.equal(
-          new Set(starts.map((animation) => animation.index)).size,
-          starts.length,
-          "Each lower target animates at most once",
-        );
-        await capture(fixture, "community-complete");
-        await finish(fixture);
-      } catch (error) {
-        await fixture.page
-          .screenshot({
-            path: `${evidence}/${engine}-${width}-${tone}-failure.png`,
-          })
-          .catch(() => {});
-        throw error;
-      } finally {
-        await fixture.context.close();
-      }
-    });
+            .getByRole("switch", { name: "Dark mode", exact: true })
+            .last()
+            .click();
+          await fixture.page.waitForFunction(
+            (tone) =>
+              document
+                .querySelector("[data-about-page]")
+                ?.getAttribute("data-tone") !== tone,
+            tone,
+          );
+          await modalRoundtrip(fixture);
+          await fixture.page.evaluate(
+            () =>
+              new Promise((done) =>
+                requestAnimationFrame(() => requestAnimationFrame(done)),
+              ),
+          );
+          const after = await fixture.page.evaluate(
+            () => window.__aboutRevealTrace,
+          );
+          assert.deepEqual(
+            after.animations,
+            before,
+            "Scroll return, theme change and reader roundtrip never restart reveals",
+          );
+          assert.equal(
+            after.mutations.filter(
+              (mutation) =>
+                mutation.attribute === "data-page-reveal-state" &&
+                mutation.oldValue === "complete" &&
+                mutation.value !== "complete",
+            ).length,
+            0,
+            "Completed reveals are never hidden again",
+          );
+          assert.equal(
+            await fixture.page
+              .locator(revealSelector)
+              .evaluateAll(
+                (nodes) =>
+                  nodes.filter(
+                    (node) =>
+                      node.getClientRects().length &&
+                      node.dataset.pageRevealState === "complete",
+                  ).length,
+              ),
+            count,
+          );
+          const starts = after.animations.filter(
+            (animation) => !animation.hero,
+          );
+          assert.equal(
+            new Set(starts.map((animation) => animation.index)).size,
+            starts.length,
+            "Each lower target animates at most once",
+          );
+          await capture(fixture, "community-complete");
+          await finish(fixture);
+        } catch (error) {
+          await fixture.page
+            .screenshot({
+              path: `${evidence}/${engine}-${width}-${tone}-failure.png`,
+            })
+            .catch(() => {});
+          throw error;
+        } finally {
+          await fixture.context.close();
+        }
+      },
+    );
   }
 
   await run("keyboard-immediate", async () => {
@@ -592,23 +654,25 @@ try {
       await open(fixture);
       await fixture.page.waitForFunction(
         () =>
-          document.querySelector('[data-about-reveal-state="pending"] a') !==
-          null,
+          document.querySelector(
+            '[data-about-page] main [data-page-reveal-state="pending"] a',
+          ) !== null,
       );
       const result = await fixture.page.evaluate(() => {
         const link = document.querySelector(
-          '[data-about-reveal-state="pending"] a',
+          '[data-about-page] main [data-page-reveal-state="pending"] a',
         );
-        const target = link.closest("[data-about-reveal]");
+        const target = link.closest("[data-page-reveal]");
         const wasBelow = target.getBoundingClientRect().top >= innerHeight;
         link.focus({ preventScroll: true });
         const style = getComputedStyle(target);
         return {
           wasBelow,
           focused: document.activeElement === link,
-          state: target.dataset.aboutRevealState,
+          state: target.dataset.pageRevealState,
           opacity: style.opacity,
           transform: style.transform,
+          translate: style.translate,
           animation: style.animationName,
         };
       });
@@ -620,6 +684,7 @@ try {
           state: "complete",
           opacity: "1",
           transform: "none",
+          translate: "none",
           animation: "none",
         },
         "Keyboard focus synchronously reveals its target without an animation wait",
@@ -628,7 +693,7 @@ try {
       assert.equal(
         await fixture.page
           .locator('main article[data-about-story="harvest"]')
-          .getAttribute("data-about-reveal-state"),
+          .getAttribute("data-page-reveal-state"),
         "complete",
       );
       await finish(fixture);
@@ -696,20 +761,22 @@ try {
     try {
       await open(fixture);
       const target = fixture.page
-        .locator('[data-about-reveal-state="pending"]')
+        .locator(`${revealSelector}[data-page-reveal-state="pending"]`)
         .first();
       await target.waitFor();
       const node = await target.elementHandle();
       await scroll(fixture.page, (await position(target)) - 650);
       await fixture.page.waitForFunction(
-        (element) => element.dataset.aboutRevealState === "entering",
+        (element) => element.dataset.pageRevealState === "entering",
         node,
       );
       await fixture.page.emulateMedia({ reducedMotion: "reduce" });
       await fixture.page.waitForFunction(() =>
-        [...document.querySelectorAll("[data-about-reveal]")].every(
-          (node) => node.dataset.aboutRevealState === "complete",
-        ),
+        [
+          ...document.querySelectorAll(
+            "[data-about-page] main [data-page-reveal]",
+          ),
+        ].every((node) => node.dataset.pageRevealState === "complete"),
       );
       await assertNewRevealsStatic(fixture.page);
       await fixture.page.emulateMedia({ reducedMotion: "no-preference" });
@@ -720,7 +787,7 @@ try {
       assert.equal(
         await fixture.page
           .locator(
-            '[data-about-reveal-state="pending"], [data-about-reveal-state="entering"]',
+            `${revealSelector}[data-page-reveal-state="pending"], ${revealSelector}[data-page-reveal-state="entering"]`,
           )
           .count(),
         0,
@@ -736,7 +803,8 @@ try {
   for (const spec of [
     { name: "mobile-reduced", width: 390, reduced: true },
     { name: "mobile-no-js", width: 390, javascript: false },
-    { name: "desktop", width: 1440 },
+    { name: "desktop-reduced", width: 1440, reduced: true },
+    { name: "desktop-no-js", width: 1440, javascript: false },
     { name: "missing-observer", observer: "missing" },
     { name: "failed-observer", observer: "failed" },
     { name: "failed-observe", observer: "observe-failed" },
@@ -747,9 +815,11 @@ try {
         await open(fixture);
         if (fixture.javascript)
           await fixture.page.waitForFunction(() =>
-            [...document.querySelectorAll("[data-about-reveal]")].every(
-              (node) => node.dataset.aboutRevealState === "complete",
-            ),
+            [
+              ...document.querySelectorAll(
+                "[data-about-page] main [data-page-reveal]",
+              ),
+            ].every((node) => node.dataset.pageRevealState === "complete"),
           );
         await assertNewRevealsStatic(fixture.page);
         await fit(fixture.page);
@@ -761,64 +831,66 @@ try {
     });
   }
 
-  await run("slow-hero-image", async () => {
-    const fixture = await setup({ slowHero: true });
-    try {
-      await traceFirstPaint(fixture);
-      await open(fixture);
-      await assertHeroTrace(fixture);
-      const photograph = fixture.page.locator(
-        "[data-about-opening-photographs] img",
-      );
-      assert.equal(
-        await photograph.evaluate(
-          (image) => image.complete && image.naturalWidth > 0,
-        ),
-        false,
-        "The held photograph is still unavailable while hero text finishes",
-      );
-      assert.ok(
-        (
-          await visibleRevealState(
-            fixture.page.locator(
-              '[data-about-enter="heading"], [data-about-enter="statement"]',
-            ),
-          )
-        ).every((state) => state.opacity === 1),
-      );
-      fixture.releaseHero();
-      await fixture.page.waitForFunction(() =>
-        window.__aboutRevealTrace.images.some(
-          (frame) =>
-            frame.arriving && frame.opacity > 0 && frame.opacity < 0.98,
-        ),
-      );
-      await fixture.page.waitForFunction(() => {
-        const image = document.querySelector(
+  for (const width of [390, 1440]) {
+    await run(`slow-hero-image-${width}`, async () => {
+      const fixture = await setup({ width, slowHero: true });
+      try {
+        await traceFirstPaint(fixture);
+        await open(fixture);
+        await assertHeroTrace(fixture);
+        const photograph = fixture.page.locator(
           "[data-about-opening-photographs] img",
         );
-        return (
-          image.complete &&
-          image.naturalWidth > 0 &&
-          !image.hasAttribute("data-about-image-arriving") &&
-          getComputedStyle(image).opacity === "1"
+        assert.equal(
+          await photograph.evaluate(
+            (image) => image.complete && image.naturalWidth > 0,
+          ),
+          false,
+          "The held photograph is still unavailable while hero text finishes",
         );
-      });
-      await writeFile(
-        `${evidence}/${engine}-slow-image-trace.json`,
-        JSON.stringify(
-          await fixture.page.evaluate(() => window.__aboutRevealTrace.images),
-          null,
-          2,
-        ),
-      );
-      await capture(fixture, "slow-image-complete");
-      await finish(fixture);
-    } finally {
-      fixture.releaseHero();
-      await fixture.context.close();
-    }
-  });
+        assert.ok(
+          (
+            await visibleRevealState(
+              fixture.page.locator(
+                '[data-about-page] main [data-page-enter="text"]',
+              ),
+            )
+          ).every((state) => state.opacity === 1),
+        );
+        fixture.releaseHero();
+        await fixture.page.waitForFunction(() =>
+          window.__aboutRevealTrace.images.some(
+            (frame) =>
+              frame.arriving && frame.opacity > 0 && frame.opacity < 0.98,
+          ),
+        );
+        await fixture.page.waitForFunction(() => {
+          const image = document.querySelector(
+            "[data-about-opening-photographs] img",
+          );
+          return (
+            image.complete &&
+            image.naturalWidth > 0 &&
+            !image.hasAttribute("data-page-image-arriving") &&
+            getComputedStyle(image).opacity === "1"
+          );
+        });
+        await writeFile(
+          `${evidence}/${engine}-${width}-slow-image-trace.json`,
+          JSON.stringify(
+            await fixture.page.evaluate(() => window.__aboutRevealTrace.images),
+            null,
+            2,
+          ),
+        );
+        await capture(fixture, "slow-image-complete");
+        await finish(fixture);
+      } finally {
+        fixture.releaseHero();
+        await fixture.context.close();
+      }
+    });
+  }
 } finally {
   await browser.close();
   await writeFile(

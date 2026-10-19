@@ -943,6 +943,8 @@ function PlacePhotographs({
                 {
                   id: section.id,
                   src: section.image,
+                  width: section.imageWidth,
+                  height: section.imageHeight,
                   alt: section.imageAlt ?? "",
                   caption: section.imageCaption ?? entry.imageCaption,
                 },
@@ -956,6 +958,8 @@ function PlacePhotographs({
           photographs.unshift({
             id: `${entry.slug}-landscape`,
             src: entry.image,
+            width: entry.imageWidth,
+            height: entry.imageHeight,
             alt: entry.imageAlt,
             caption: entry.imageCaption,
           });
@@ -988,7 +992,8 @@ function PlacePhotographs({
                       <Image
                         src={photograph.src}
                         alt={t(photograph.alt)}
-                        fill
+                        width={photograph.width}
+                        height={photograph.height}
                         sizes="(max-width: 600px) 42vw, 35vw"
                       />
                     </div>

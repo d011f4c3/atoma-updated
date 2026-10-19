@@ -1,6 +1,8 @@
 "use client";
 
 import { useStorefrontLocale } from "./storefront-locale-provider";
+import { usePageReveals } from "./use-page-reveals";
+import revealStyles from "./page-reveals.module.css";
 
 import type { ProductCodePlacement } from "@/lib/product-display-index";
 import type { SampleMobileLayout } from "@/lib/sample-mobile-layouts";
@@ -12,6 +14,7 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  type ReactNode,
 } from "react";
 import { getProductContent } from "@/lib/product-content";
 import type { ProductContent } from "@/lib/product-content";
@@ -127,6 +130,7 @@ export function ProductConfigurator({
   overviewStudyVariant = "current",
   shopPreviewVariant = "current",
   shopExplorationLayout,
+  purchaseAction,
   productCodePlacement,
   initialView = "overview",
   materialObject = "powder",
@@ -138,6 +142,7 @@ export function ProductConfigurator({
   sampleImageryVariant,
   sampleOrderLayout,
   sampleMobileLayout,
+  pageReveals = false,
   contextVisible = true,
 }: {
   packaging?: "label" | "bag" | "canister";
@@ -161,6 +166,7 @@ export function ProductConfigurator({
   overviewStudyVariant?: OverviewStudyVariant;
   shopPreviewVariant?: "current" | "refined" | ShopPreviewVariant;
   shopExplorationLayout?: ShopExplorationLayout;
+  purchaseAction?: ReactNode;
   productCodePlacement?: ProductCodePlacement;
   initialView?: HomepageInformationView | "builder";
   materialObject?: "powder" | "silver-bag";
@@ -172,6 +178,7 @@ export function ProductConfigurator({
   sampleImageryVariant?: SampleImageryVariant;
   sampleOrderLayout?: SampleOrderLayout;
   sampleMobileLayout?: SampleMobileLayout;
+  pageReveals?: boolean;
   contextVisible?: boolean;
 }) {
   const { locale, t } = useStorefrontLocale();
@@ -263,6 +270,8 @@ export function ProductConfigurator({
   const panelRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const overviewRef = useRef<HTMLElement>(null);
+  const pageRevealReady = pageReveals && entered && entrySettled;
+  usePageReveals(overviewRef, pageRevealReady);
   const materialTouchRef = useRef<{
     identifier: number;
     x: number;
@@ -669,12 +678,16 @@ export function ProductConfigurator({
       )}
       <section
         ref={overviewRef}
-        className={styles.workspace}
+        className={`${styles.workspace}${pageRevealReady ? ` ${revealStyles.scope}` : ""}`}
         data-brand-part="selection-workspace"
         aria-label={t("Matcha selection")}
       >
         {placeSelectorLeft && (
-          <div className={styles.stageSelectors} data-stage-selectors>
+          <div
+            className={styles.stageSelectors}
+            data-stage-selectors
+            data-page-reveal={pageReveals ? "rise" : undefined}
+          >
             {multipleSampleEntries && (
               <SampleEntryLink
                 variant={
@@ -983,6 +996,7 @@ export function ProductConfigurator({
           <div
             className={styles.sampleStage}
             data-sample-imagery-stage
+            data-page-reveal={pageReveals ? "fade" : undefined}
             hidden={!sampleImageryActive}
             inert={!sampleImageryActive}
           >
@@ -1069,6 +1083,7 @@ export function ProductConfigurator({
                 <div
                   className={styles.sampleStartNavigation}
                   data-sample-start-navigation
+                  data-page-reveal={pageReveals ? "rise" : undefined}
                   hidden={!sampleStartActive}
                   inert={!sampleStartActive}
                 >
@@ -1104,6 +1119,7 @@ export function ProductConfigurator({
                     sampleMobileLayout={
                       mobileEmbedded ? sampleMobileLayout : undefined
                     }
+                    pageReveals={pageReveals}
                   />
                 </div>
               </>
@@ -1122,6 +1138,7 @@ export function ProductConfigurator({
             )}
             <div
               className={embedded ? styles.homepageControls : undefined}
+              data-page-reveal={pageReveals ? "rise" : undefined}
               hidden={sampleStartActive}
               inert={sampleStartActive}
             >
@@ -1337,6 +1354,7 @@ export function ProductConfigurator({
                 <ShopExplorationPanel
                   model={model}
                   layout={shopExplorationLayout}
+                  purchaseAction={purchaseAction}
                   productCodePlacement={productCodePlacement}
                   tone={tone}
                   onIncrement={() => {

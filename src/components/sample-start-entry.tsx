@@ -16,11 +16,13 @@ export function SampleStartEntry({
   packagesOnMobile = false,
   studyLayout,
   sampleMobileLayout,
+  pageReveals = false,
 }: {
   disabled: boolean;
   packagesOnMobile?: boolean;
   studyLayout?: SampleOrderLayout;
   sampleMobileLayout?: SampleMobileLayout;
+  pageReveals?: boolean;
 }) {
   const { t } = useStorefrontLocale();
   const purchase = useSampleSetPurchase();
@@ -33,6 +35,7 @@ export function SampleStartEntry({
         disabled={disabled}
         packagesOnMobile={packagesOnMobile}
         sampleMobileLayout={sampleMobileLayout}
+        pageReveals={pageReveals}
       />
     );
   }

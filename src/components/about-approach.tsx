@@ -40,7 +40,11 @@ export function AboutApproach({ t }: { t: (source: string) => string }) {
       aria-labelledby="approach-title"
       data-about-approach
     >
-      <header className={styles.heading} data-about-reveal="rise">
+      <header
+        className={styles.heading}
+        data-about-reveal="rise"
+        data-page-reveal="rise"
+      >
         <h2 id="approach-title">{t("Our approach")}</h2>
         <span aria-hidden="true">01 — 03</span>
       </header>
@@ -64,7 +68,11 @@ export function AboutApproach({ t }: { t: (source: string) => string }) {
               key={principle.id}
               data-approach-step={principle.id}
             >
-              <div className={styles.copy} data-about-reveal="rise">
+              <div
+                className={styles.copy}
+                data-about-reveal="rise"
+                data-page-reveal="rise"
+              >
                 <span className={styles.number} aria-hidden="true">
                   {principle.number}
                 </span>
@@ -76,6 +84,7 @@ export function AboutApproach({ t }: { t: (source: string) => string }) {
                 data-approach-inline
                 data-about-mobile-visual
                 data-about-reveal="fade"
+                data-page-reveal="fade"
               >
                 <Image
                   src={principle.photograph.src}
@@ -88,7 +97,12 @@ export function AboutApproach({ t }: { t: (source: string) => string }) {
             </article>
           ))}
         </div>
-        <div className={styles.stage} data-approach-stage aria-hidden="true">
+        <div
+          className={styles.stage}
+          data-approach-stage
+          data-page-reveal="fade"
+          aria-hidden="true"
+        >
           <div className={styles.labels}>
             {principles.map((principle) => (
               <span key={principle.id} data-approach-label={principle.id}>

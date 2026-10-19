@@ -115,6 +115,66 @@ export const commerceTranslations = {
     "zh-Hant": "所有抹茶",
     ja: "すべての抹茶",
   },
+  Category: {
+    ja: "カテゴリー",
+    "zh-Hans": "分类",
+    "zh-Hant": "分類",
+  },
+  "Browse by category": {
+    ja: "カテゴリーで選ぶ",
+    "zh-Hans": "按分类选购",
+    "zh-Hant": "按分類選購",
+  },
+  "Refine the collection": {
+    ja: "商品を絞り込む",
+    "zh-Hans": "筛选抹茶",
+    "zh-Hant": "篩選抹茶",
+  },
+  Taste: {
+    ja: "味わい",
+    "zh-Hans": "风味",
+    "zh-Hant": "風味",
+  },
+  "Coming soon": {
+    ja: "準備中",
+    "zh-Hans": "即将推出",
+    "zh-Hant": "即將推出",
+  },
+  "Matcha category": {
+    ja: "抹茶のカテゴリー",
+    "zh-Hans": "抹茶分类",
+    "zh-Hant": "抹茶分類",
+  },
+  "Count loading": {
+    ja: "件数を読み込み中",
+    "zh-Hans": "正在加载数量",
+    "zh-Hant": "正在載入數量",
+  },
+  "{count} of {total} matcha": {
+    ja: "抹茶 {count} 種 / 全 {total} 種",
+    "zh-Hans": "{count} / {total} 款抹茶",
+    "zh-Hant": "{count} / {total} 款抹茶",
+  },
+  Clear: {
+    ja: "解除",
+    "zh-Hans": "清除",
+    "zh-Hant": "清除",
+  },
+  "No matcha in this category.": {
+    ja: "このカテゴリーの抹茶はありません。",
+    "zh-Hans": "此分类中没有抹茶。",
+    "zh-Hant": "此分類中沒有抹茶。",
+  },
+  "Clear the category to view the collection.": {
+    ja: "カテゴリーの絞り込みを解除すると、すべての商品を表示できます。",
+    "zh-Hans": "清除分类筛选以查看所有抹茶。",
+    "zh-Hant": "清除分類篩選以查看所有抹茶。",
+  },
+  "Clear category": {
+    ja: "カテゴリーを解除",
+    "zh-Hans": "清除分类筛选",
+    "zh-Hant": "清除分類篩選",
+  },
   "Back to the collection": {
     "zh-Hans": "返回商品列表",
     "zh-Hant": "返回商品列表",

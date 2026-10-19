@@ -1,0 +1,72 @@
+.scope {
+  --page-motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Visible HTML is the fallback. Only offscreen groups armed by the observer
+   become hidden; first-paint hero animations finish without JavaScript too. */
+@media (prefers-reduced-motion: no-preference) {
+  .scope :global([data-page-enter]:not([data-page-enter-done])) {
+    --page-reveal-distance: 18px;
+    animation: page-rise 900ms var(--page-enter-delay, 0ms)
+      var(--page-motion-ease) both;
+  }
+
+  .scope :global([data-page-enter="hero"]:not([data-page-enter-done])) {
+    --page-reveal-distance: 26px;
+    animation-duration: 1100ms;
+  }
+
+  .scope :global([data-page-enter="visual"]:not([data-page-enter-done])) {
+    animation: page-fade 1100ms var(--page-enter-delay, 0ms) ease-out both;
+  }
+
+  .scope :global([data-page-reveal-state="pending"]) {
+    opacity: 0;
+  }
+
+  .scope :global([data-page-reveal="rise"][data-page-reveal-state="pending"]) {
+    translate: 0 12px;
+  }
+
+  .scope :global([data-page-reveal-state="entering"]) {
+    --page-reveal-distance: 12px;
+    animation: page-rise 760ms var(--page-reveal-delay, 0ms)
+      var(--page-motion-ease) both;
+  }
+
+  .scope :global([data-page-reveal="fade"][data-page-reveal-state="entering"]) {
+    animation: page-fade 900ms var(--page-reveal-delay, 0ms) ease-out both;
+  }
+
+  .scope :global([data-page-image-arriving]) {
+    animation: page-fade 700ms ease-out both;
+  }
+
+  .scope :global([data-page-enter]:focus-within),
+  .scope :global([data-page-reveal-state="pending"]:focus-within) {
+    animation: none;
+    opacity: 1;
+    translate: none;
+  }
+}
+
+@keyframes page-rise {
+  from {
+    opacity: 0;
+    translate: 0 var(--page-reveal-distance, 12px);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* Photographs, sticky stages and transformed material retain their own geometry. */
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

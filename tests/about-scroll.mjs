@@ -572,6 +572,12 @@ async function popup(page, story, viaPointer, dismiss) {
     () => trigger.evaluate((node) => node === document.activeElement),
     "Closing restores entry focus",
   );
+  if (dismiss === "button")
+    assert.equal(
+      await trigger.evaluate((node) => getComputedStyle(node).outlineStyle),
+      "none",
+      "Pointer dismissal restores focus without a keyboard outline",
+    );
   await eventually(
     async () =>
       Math.abs((await page.evaluate(() => scrollY)) - before.top) <= 2,
@@ -607,8 +613,12 @@ async function smoke(page, desktop) {
       )
       .evaluateAll((nodes) =>
         nodes.map((node) => {
-          const box = node.getBoundingClientRect();
-          return { top: box.top + scrollY, height: box.height };
+          // Entrance translation changes visual coordinates without reflow.
+          // Compare reserved layout positions independently of that motion.
+          let top = 0;
+          for (let ancestor = node; ancestor; ancestor = ancestor.offsetParent)
+            top += ancestor.offsetTop;
+          return { top, height: node.getBoundingClientRect().height };
         }),
       );
   const before = await layout();
@@ -752,7 +762,8 @@ async function smoke(page, desktop) {
     );
     await capture(page, "field-mid");
     await popup(page, "harvest", true, "escape");
-    await page.keyboard.press("Tab");
+    // Safari's default keyboard preference reaches links with Option+Tab.
+    await page.keyboard.press(engine === "webkit" ? "Alt+Tab" : "Tab");
     const second = rail.locator('article[data-about-story="technology"] a');
     assert.equal(
       await second.evaluate((node) => node === document.activeElement),

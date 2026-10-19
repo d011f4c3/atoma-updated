@@ -306,6 +306,7 @@
   padding-block: 2.5rem 4rem;
 }
 .setIntroduction {
+  --page-enter-delay: 60ms;
   grid-area: intro;
   align-self: end;
 }
@@ -326,11 +327,13 @@
   text-wrap: pretty;
 }
 .setVisual {
+  --page-enter-delay: 120ms;
   grid-area: visual;
   min-width: 0;
   transform-origin: 50% 40%;
 }
 .setPurchase {
+  --page-enter-delay: 180ms;
   grid-area: purchase;
   align-self: center;
   min-width: 0;

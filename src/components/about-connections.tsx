@@ -22,7 +22,11 @@ export function AboutConnections({ t }: { t: (source: string) => string }) {
       aria-labelledby="connections-title"
       data-about-connections
     >
-      <header className={styles.heading} data-about-reveal="rise">
+      <header
+        className={styles.heading}
+        data-about-reveal="rise"
+        data-page-reveal="rise"
+      >
         <span className={styles.label}>{t("Connections")}</span>
         <h2 id="connections-title">{t("Understanding is shared.")}</h2>
       </header>
@@ -30,6 +34,7 @@ export function AboutConnections({ t }: { t: (source: string) => string }) {
         className={styles.perspectives}
         data-about-connections-stage
         data-about-reveal="fade"
+        data-page-reveal="fade"
       >
         <svg
           className={styles.horizontalLine}
@@ -73,7 +78,11 @@ export function AboutConnections({ t }: { t: (source: string) => string }) {
           </figure>
         ))}
       </div>
-      <p className={styles.observation} data-about-reveal="rise">
+      <p
+        className={styles.observation}
+        data-about-reveal="rise"
+        data-page-reveal="rise"
+      >
         {t(
           "Matcha connects the people who grow it, process it and prepare it. We connect buyers with each step, building understanding and relationships from the growing place to the final preparation.",
         )}

@@ -19,6 +19,8 @@ import { SamplesRange } from "./samples-range";
 import { SampleNextOrder } from "./sample-next-order";
 import { SampleTastingTools } from "./sample-tasting-tools";
 import { useSamplesMotion } from "./use-samples-motion";
+import { usePageReveals } from "./use-page-reveals";
+import revealStyles from "./page-reveals.module.css";
 import styles from "./samples.module.css";
 
 export function useSampleSetPurchase() {
@@ -378,6 +380,7 @@ export function Samples() {
   const { locked } = purchase;
   const pageRef = useRef<HTMLElement>(null);
   useSamplesMotion(pageRef);
+  usePageReveals(pageRef);
 
   return (
     <div
@@ -387,8 +390,12 @@ export function Samples() {
       data-storefront-theme={tone}
     >
       <HomeHeader persistentTheme tone={tone} activePage="samples" />
-      <main ref={pageRef} className={styles.content} lang={locale}>
-        <div className={styles.topline}>
+      <main
+        ref={pageRef}
+        className={`${styles.content} ${revealStyles.scope}`}
+        lang={locale}
+      >
+        <div className={styles.topline} data-page-enter="text">
           <nav aria-label={t("Breadcrumb")}>
             <Link
               href="/shop"
@@ -410,14 +417,14 @@ export function Samples() {
             className={styles.setLayout}
             aria-labelledby="sample-set-title"
           >
-            <header className={styles.setIntroduction}>
+            <header className={styles.setIntroduction} data-page-enter="hero">
               <h1 id="sample-set-title">{t("Sample Set")}</h1>
               <p className={styles.setDescription}>
                 {t("Three matcha · 20 g each")}
               </p>
             </header>
 
-            <div className={styles.setVisual}>
+            <div className={styles.setVisual} data-page-enter="visual">
               <SamplesGallery />
             </div>
 
@@ -425,6 +432,7 @@ export function Samples() {
               className={styles.setPurchase}
               id="samples-order"
               tabIndex={-1}
+              data-page-enter="text"
             >
               <div className={styles.orderSummary}>
                 <span>3 × 20 g</span>
@@ -444,6 +452,7 @@ export function Samples() {
             <figure
               className={styles.preparationImage}
               data-samples-preparation
+              data-page-reveal="fade"
             >
               <Image
                 src="/images/samples/prepared-matcha.webp"
@@ -459,7 +468,7 @@ export function Samples() {
               disabled={locked}
             />
           </section>
-          <div className={styles.returnLine}>
+          <div className={styles.returnLine} data-page-reveal="rise">
             <span>{t("One set contains all three matcha.")}</span>
             <a
               className={styles.returnAction}

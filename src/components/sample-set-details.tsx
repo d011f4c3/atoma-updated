@@ -9,9 +9,11 @@ import styles from "./sample-set-details.module.css";
 export function SampleSetDetails({
   disabled = false,
   className,
+  pageReveal = false,
 }: {
   disabled?: boolean;
   className?: string;
+  pageReveal?: boolean;
 }) {
   const { t } = useStorefrontLocale();
   const id = useId();
@@ -40,6 +42,7 @@ export function SampleSetDetails({
         aria-expanded={open}
         aria-controls={`${id}-dialog`}
         data-sample-details-trigger
+        data-page-reveal={pageReveal ? "rise" : undefined}
         onClick={() => {
           if (!disabled && !document.querySelector("dialog[open]"))
             setOpen(true);

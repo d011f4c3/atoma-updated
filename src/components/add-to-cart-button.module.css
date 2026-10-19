@@ -252,7 +252,8 @@
   :global([data-concept="01"][data-storefront-theme]) .button,
   :global([data-canonical-shop]) .button,
   :global([data-retail-product]) .button,
-  :global([data-samples-page]) .button {
+  :global([data-samples-page]) .button,
+  :global([data-purchase-button-study]) .button {
     font-size: var(--mobile-type-action);
     letter-spacing: 0.02em;
   }

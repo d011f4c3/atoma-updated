@@ -54,7 +54,11 @@ export function SampleNextOrder({
           : "1 kg is currently unavailable.";
 
   return (
-    <div className={styles.nextOrder} data-sample-next-order>
+    <div
+      className={styles.nextOrder}
+      data-sample-next-order
+      data-page-reveal="rise"
+    >
       <div className={styles.introduction}>
         <span className={styles.progression}>
           {t("Try 20 g → Choose 1 kg → Reorder")}

@@ -2,7 +2,7 @@
 
 import { useStorefrontLocale } from "./storefront-locale-provider";
 
-import { useId, useRef } from "react";
+import { useId, useRef, type ReactNode } from "react";
 import { getProductContent } from "@/lib/product-content";
 import type { ProductCodePlacement } from "@/lib/product-display-index";
 import { ProductCodeIdentity } from "./product-code-identity";
@@ -23,6 +23,8 @@ type ShopExplorationPanelProps = {
   productCodePlacement?: ProductCodePlacement;
   onIncrement: () => void;
   onDecrement: () => void;
+  /** An isolated study can replace the purchase action without a cart write. */
+  purchaseAction?: ReactNode;
 };
 
 function formatName(title: string) {
@@ -36,6 +38,7 @@ export function ShopExplorationPanel({
   productCodePlacement,
   onIncrement,
   onDecrement,
+  purchaseAction,
 }: ShopExplorationPanelProps) {
   const { locale, t } = useStorefrontLocale();
   const id = useId();
@@ -352,13 +355,15 @@ export function ShopExplorationPanel({
                   </strong>
                 </div>
                 <div className={styles.add}>
-                  <AddToCartButton
-                    updating={model.refreshing}
-                    available={Boolean(purchaseVariant?.available)}
-                    pending={cart.adding}
-                    disabled={cart.busy || !eligible}
-                    onAdd={addToCart}
-                  />
+                  {purchaseAction ?? (
+                    <AddToCartButton
+                      updating={model.refreshing}
+                      available={Boolean(purchaseVariant?.available)}
+                      pending={cart.adding}
+                      disabled={cart.busy || !eligible}
+                      onAdd={addToCart}
+                    />
+                  )}
                 </div>
               </div>
             </div>

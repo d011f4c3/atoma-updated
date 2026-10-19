@@ -1,0 +1,486 @@
+.study {
+  --ink: var(--color-ink);
+  --muted: var(--color-muted);
+  --line: var(--color-line);
+  --surface: var(--color-surface);
+  --study-mineral: #dce6d9;
+  --study-mineral-edge: #6f8376;
+  --study-edge: #6f8376;
+  --study-action: #52665b;
+  --study-action-ink: #f8faf6;
+  min-height: 100svh;
+  padding: 0 clamp(1.25rem, 4vw, 4rem);
+  background: var(--color-background);
+  color: var(--ink);
+  font-family: var(--font-atoma-mono), monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.study[data-tone="dark"] {
+  --study-mineral: #263a46;
+  --study-mineral-edge: #8195a2;
+  --study-edge: #617787;
+  --study-action: #aabebc;
+  --study-action-ink: #101820;
+}
+
+.header,
+.introduction,
+.toolbar,
+.workspace,
+.footer {
+  max-width: 80rem;
+  margin-inline: auto;
+}
+
+.header {
+  display: flex;
+  min-height: 5.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.header a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 1rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand {
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+}
+
+.brand span,
+.return {
+  font-size: 0.6875rem;
+  letter-spacing: 0;
+}
+
+.brand span {
+  color: var(--ink);
+}
+
+.introduction {
+  padding-block: clamp(2.5rem, 6vw, 5rem) 2.5rem;
+}
+
+.eyebrow {
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.introduction h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 3.6vw, 3.125rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.065em;
+}
+
+.introduction > p:last-child {
+  max-width: 38rem;
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.8;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.875rem;
+  border-block: 1px solid var(--line);
+}
+
+.toolbar > p {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  font-size: 0.625rem;
+}
+
+.study[data-tone="dark"] .footer {
+  background: color-mix(in srgb, var(--surface) 20%, transparent);
+}
+
+.toolbar > p span {
+  color: var(--muted);
+}
+
+.controls,
+.stateControl {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stateControl > span {
+  font-size: 0.625rem;
+  color: var(--muted);
+}
+
+.stateControl select,
+.contextHeading select,
+.theme {
+  min-height: 2.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--color-raised);
+  color: var(--ink);
+  font: inherit;
+}
+
+.stateControl select {
+  width: 12rem;
+  height: 3rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.contextHeading select {
+  width: 8.25rem;
+  height: 3rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.theme {
+  display: flex;
+  width: 8.25rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.6875rem;
+  cursor: pointer;
+}
+
+.themeDot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  background: linear-gradient(90deg, var(--ink) 50%, transparent 50%);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.4fr);
+  align-items: start;
+  gap: clamp(2rem, 4vw, 4rem);
+  padding-block: 2rem 4rem;
+}
+
+.contextHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.contextHeading h2,
+.comparison legend {
+  margin: 0;
+  padding: 0;
+  font-size: 0.6875rem;
+  font-weight: 400;
+}
+
+.purchase {
+  padding: 0 1.5rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-raised) 70%, transparent);
+}
+
+.materials {
+  display: grid;
+  height: clamp(9rem, 16vw, 13rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding-block: 1.25rem;
+}
+
+.material {
+  min-width: 0;
+  min-height: 0;
+}
+
+.product {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.product h3 {
+  margin: 0;
+  font-size: calc(1.125rem + var(--locale-font-increment));
+  font-weight: 400;
+  letter-spacing: -0.04em;
+}
+
+.product > span {
+  color: var(--muted);
+  font-size: 0.625rem;
+}
+
+.productNote {
+  margin: 0.5rem 0 1.5rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+}
+
+.previewNotice {
+  margin: 0.875rem 0 0;
+  color: var(--muted);
+  font-size: 0.5625rem;
+  text-align: center;
+}
+
+.selectedNote {
+  max-width: 34ch;
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.status {
+  min-height: 3.2em;
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.625rem;
+}
+
+.comparison {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.comparison legend {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  min-height: 2.25rem;
+  align-items: center;
+}
+
+.comparison legend span {
+  color: var(--muted);
+  font-size: 0.625rem;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.option {
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-raised) 50%, transparent);
+}
+
+.option[data-selected="true"] {
+  border-color: var(--muted);
+}
+
+.optionLabel {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.optionNumber {
+  align-self: flex-start;
+  padding-top: 0.25rem;
+  color: var(--muted);
+  font-size: 0.5625rem;
+}
+
+.optionName {
+  font-size: 1rem;
+  letter-spacing: -0.04em;
+}
+
+.optionName > span {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  letter-spacing: 0;
+}
+
+.optionLabel input {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  margin-left: auto;
+  accent-color: var(--ink);
+}
+
+.optionButton {
+  margin-block: 1.5rem 1rem;
+}
+
+.option > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  line-height: 1.75;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-block: 1.25rem 2rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.625rem;
+}
+
+@media (max-width: 1100px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .study {
+    padding-inline: 1.25rem;
+  }
+
+  .header {
+    min-height: 4.5rem;
+  }
+
+  .brand span {
+    display: none;
+  }
+
+  .introduction {
+    padding-block: 2.5rem 2rem;
+  }
+
+  .introduction h1 {
+    max-width: 14ch;
+    font-size: 2rem;
+  }
+
+  .introduction > p:last-child {
+    font-size: 0.8125rem;
+  }
+
+  .toolbar {
+    display: block;
+    padding-block: 1rem;
+  }
+
+  .toolbar > p {
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .controls {
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .stateControl {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .stateControl > span {
+    display: none;
+  }
+
+  .stateControl select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .theme {
+    flex: 0 0 8.25rem;
+  }
+
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding-block: 1.5rem 2.5rem;
+  }
+
+  .purchase {
+    padding-inline: 1rem;
+  }
+
+  .materials {
+    height: 9rem;
+  }
+
+  .product {
+    flex-wrap: wrap;
+  }
+
+  .previewNotice {
+    font-size: 0.625rem;
+  }
+
+  .selectedNote {
+    max-width: none;
+  }
+
+  .status {
+    min-height: 0;
+  }
+
+  .comparison legend {
+    display: block;
+  }
+
+  .comparison legend span {
+    display: block;
+    margin-top: 0.375rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .controls {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .stateControl {
+    flex-basis: 100%;
+  }
+}

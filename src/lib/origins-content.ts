@@ -21,17 +21,21 @@ export type FieldEntry = {
   title: string;
   dek: string;
   image: string;
+  imageWidth: number;
+  imageHeight: number;
   imageAlt: string;
   imageCaption: string;
-  sections: {
+  sections: ({
     id: string;
     label: string;
     title: string;
     body: string[];
-    image?: string;
     imageAlt?: string;
     imageCaption?: string;
-  }[];
+  } & (
+    | { image: string; imageWidth: number; imageHeight: number }
+    | { image?: undefined; imageWidth?: never; imageHeight?: never }
+  ))[];
   /** Editorial coverage only. Product provenance belongs to its own graph. */
   placeIds: readonly string[];
   /** Display choices within this collection, not evidence of capture location. */
@@ -46,6 +50,8 @@ export const FIELD_ENTRIES: FieldEntry[] = [
     title: "In the fields.",
     dek: "Tea fields, field work and leaf handling in Kyoto.",
     image: "/images/origins/field-landscape.webp",
+    imageWidth: 1600,
+    imageHeight: 1067,
     imageAlt:
       "Curving rows of tea plants and covered beds beneath wooded hills.",
     imageCaption: "Tea fields · Kyoto",
@@ -64,6 +70,8 @@ export const FIELD_ENTRIES: FieldEntry[] = [
         title: "Field work.",
         body: ["Work among the tea plants, beneath suspended shade cloth."],
         image: "/images/origins/field-work.webp",
+        imageWidth: 1200,
+        imageHeight: 1600,
         imageAlt:
           "A person working among tea plants beneath suspended shade cloth.",
         imageCaption: "Field work · Kyoto",
@@ -74,6 +82,8 @@ export const FIELD_ENTRIES: FieldEntry[] = [
         title: "The leaf.",
         body: ["Tea leaves handled in a woven basket."],
         image: "/images/origins/tea-handling.jpg",
+        imageWidth: 1080,
+        imageHeight: 1440,
         imageAlt: "A gloved hand handling green leaves inside a woven basket.",
         imageCaption: "Leaf handling · Kyoto",
       },
@@ -103,6 +113,8 @@ export const FIELD_ENTRIES: FieldEntry[] = [
     title: "In Wazuka.",
     dek: "Harvest work, tea leaves and a view from the fields in Wazuka.",
     image: "/images/about/wazuka/harvest-community.webp",
+    imageWidth: 2400,
+    imageHeight: 1600,
     imageAlt:
       "Three people working with a tea harvester and collection bag on a hillside of tea rows in Wazuka.",
     imageCaption: "Harvest · Wazuka, Uji tea region, Kyoto",
@@ -121,6 +133,8 @@ export const FIELD_ENTRIES: FieldEntry[] = [
           "People guide a harvester and collection bag along the hillside.",
         ],
         image: "/images/about/wazuka/harvest-on-the-slope.webp",
+        imageWidth: 1333,
+        imageHeight: 2000,
         imageAlt:
           "Two people guiding a tea harvester and collection bag on a slope, with tea fields and wooded hills beyond.",
         imageCaption: "Field work · Wazuka, Uji tea region, Kyoto",
@@ -131,6 +145,8 @@ export const FIELD_ENTRIES: FieldEntry[] = [
         title: "The leaf.",
         body: ["A close view of tea leaves in the field."],
         image: "/images/about/wazuka/tea-leaf-detail.webp",
+        imageWidth: 2000,
+        imageHeight: 1333,
         imageAlt: "A close view of tea leaves in the field.",
         imageCaption: "Tea leaves · Wazuka, Uji tea region, Kyoto",
       },
@@ -140,6 +156,8 @@ export const FIELD_ENTRIES: FieldEntry[] = [
         title: "A different viewpoint",
         body: ["An FPV pilot looks across the tea fields through a headset."],
         image: "/images/about/wazuka/fpv-in-the-fields.webp",
+        imageWidth: 2000,
+        imageHeight: 1333,
         imageAlt:
           "A person wearing FPV goggles beside collection bags, with rows of tea across the hillside.",
         imageCaption: "FPV in the fields · Wazuka, Uji tea region, Kyoto",

@@ -1,15 +1,20 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useRef } from "react";
 import { useCart } from "./cart-drawer";
 import { SiteFooter } from "./site-footer";
 import { usePageScroll } from "./smooth-scroll";
 import { useStorefrontTheme } from "./storefront-theme-provider";
 import { ThemeSwitcher } from "./theme-switcher";
 import { DestinationSelector } from "./destination-selector";
+import { usePageReveals } from "./use-page-reveals";
 
 export function StorefrontFooter({ year }: { year: number }) {
   const pathname = usePathname();
+  const footerRef = useRef<HTMLElement>(null);
+  const pageReveals = ["/", "/samples", "/about"].includes(pathname);
+  usePageReveals(footerRef, pageReveals);
   const { tone } = useStorefrontTheme();
   const { busy } = useCart();
   const scrollTo = usePageScroll();
@@ -24,6 +29,8 @@ export function StorefrontFooter({ year }: { year: number }) {
 
   return (
     <SiteFooter
+      footerRef={footerRef}
+      pageReveals={pageReveals}
       direction="directory"
       tone={tone}
       year={year}

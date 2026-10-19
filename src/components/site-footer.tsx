@@ -8,6 +8,7 @@ import { SHOPIFY_CUSTOMER_ACCOUNT_URL } from "@/lib/customer-account";
 import { useCart } from "./cart-drawer";
 import { useOrigins } from "./origins-provider";
 import styles from "./site-footer.module.css";
+import revealStyles from "./page-reveals.module.css";
 
 export type FooterDirection =
   "index" | "colophon" | "compact" | "rail" | "directory";
@@ -24,6 +25,7 @@ export function SiteFooter({
   showSamples = false,
   showManageSubscriptions = false,
   originsReturnLabel,
+  pageReveals = false,
 }: {
   direction: FooterDirection;
   tone: "light" | "dark";
@@ -36,6 +38,7 @@ export function SiteFooter({
   showSamples?: boolean;
   showManageSubscriptions?: boolean;
   originsReturnLabel?: string;
+  pageReveals?: boolean;
 }) {
   const { t } = useStorefrontLocale();
   const { busy } = useCart();
@@ -82,14 +85,17 @@ export function SiteFooter({
   return (
     <footer
       ref={footerRef}
-      className={styles.footer}
+      className={`${styles.footer}${pageReveals ? ` ${revealStyles.scope}` : ""}`}
       data-site-footer
       data-footer-direction={direction}
       data-tone={tone}
       aria-label={t("ATOMA footer")}
       tabIndex={-1}
     >
-      <div className={styles.body}>
+      <div
+        className={styles.body}
+        data-page-reveal={pageReveals ? "rise" : undefined}
+      >
         <div className={styles.identity}>
           {direction !== "colophon" && wordmark}
           <p className={styles.statement}>{t("Carefully specified matcha.")}</p>
@@ -209,7 +215,10 @@ export function SiteFooter({
         {direction === "directory" && utilityLinks}
         {direction === "colophon" && wordmark}
       </div>
-      <div className={styles.base}>
+      <div
+        className={styles.base}
+        data-page-reveal={pageReveals ? "fade" : undefined}
+      >
         <span>© {year} ATOMA</span>
         {direction !== "directory" && utilityLinks}
         {destinationControl}

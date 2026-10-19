@@ -1,0 +1,201 @@
+.study {
+  --surface: var(--night-surface);
+  --ink: var(--night-ink);
+  --muted: var(--night-muted);
+  --line: var(--night-line);
+  min-width: 0;
+  background: var(--surface);
+  color: var(--ink);
+  color-scheme: dark;
+  font-family: var(--font-atoma-mono), monospace;
+}
+.study[data-tone="light"] {
+  --surface: var(--lab-surface);
+  --ink: var(--lab-ink);
+  --muted: var(--lab-muted);
+  --line: var(--lab-line);
+  color-scheme: light;
+}
+.header {
+  padding: 1rem clamp(1.25rem, 3.3vw, 4rem) 0.875rem;
+  border-bottom: 1px solid var(--line);
+}
+.topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+.topline a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+.titleRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin: 0.75rem 0 1.125rem;
+}
+.titleRow h1 {
+  margin: 0;
+  font-size: clamp(1.125rem, 1.7vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.035em;
+}
+.titleRow p {
+  margin: 0.375rem 0 0;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+}
+.settings {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.futureToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.75rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  cursor: pointer;
+}
+.futureToggle input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: var(--ink);
+  cursor: pointer;
+}
+.theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.625rem;
+  cursor: pointer;
+}
+.theme > span {
+  font-size: 1rem;
+}
+.directions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+.directions button {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+}
+.directions button[aria-pressed="true"] {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--ink) 50%, transparent);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+.number {
+  color: var(--muted);
+  font-size: 0.5625rem;
+}
+.mark {
+  margin-left: auto;
+}
+.notes {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-top: 0.75rem;
+}
+.notes p {
+  max-width: 90ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 1.7;
+}
+.notes .futureNote {
+  max-width: 48ch;
+}
+.header :is(a, button, input):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+.header :is(:disabled, [aria-disabled="true"]) {
+  opacity: 0.5;
+  cursor: default;
+}
+@media (hover: hover) {
+  .directions button:hover:not(:disabled),
+  .theme:hover:not(:disabled) {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+}
+@media (max-width: 760px) {
+  .header {
+    padding-top: 0.375rem;
+  }
+  .titleRow {
+    display: block;
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .titleRow h1 {
+    max-width: 27ch;
+  }
+  .settings {
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.625rem;
+  }
+  .directions {
+    gap: 0.375rem;
+  }
+  .directions button {
+    flex-wrap: wrap;
+    column-gap: 0.375rem;
+    row-gap: 0.25rem;
+    min-height: 3.25rem;
+    padding: 0.5rem 0.625rem;
+    font-size: 0.6875rem;
+    line-height: 1.4;
+  }
+  .number {
+    flex-basis: 100%;
+  }
+  .mark {
+    display: none;
+  }
+  .notes {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

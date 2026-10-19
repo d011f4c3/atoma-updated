@@ -280,6 +280,7 @@ export function useAboutMotion(rootRef: RefObject<HTMLElement | null>) {
         !rail ||
         !roomy.matches ||
         preference.matches ||
+        document.documentElement.dataset.inputModality === "pointer" ||
         !(event.target instanceof HTMLElement) ||
         !event.target.matches(":focus-visible")
       )

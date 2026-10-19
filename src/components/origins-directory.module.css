@@ -686,12 +686,10 @@
   gap: 1rem;
 }
 
-.photographImage {
-  aspect-ratio: 3 / 4;
-}
-
 .photographImage img {
-  object-fit: contain;
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .growerPlaceholder {

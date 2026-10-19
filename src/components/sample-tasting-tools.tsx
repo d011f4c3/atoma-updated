@@ -253,7 +253,7 @@ export function SampleTastingTools() {
       data-sample-tasting-tools
       aria-labelledby={`${id}-title`}
     >
-      <header className={styles.heading}>
+      <header className={styles.heading} data-page-reveal="rise">
         <div>
           <span className={styles.eyebrow}>{t("Tasting tools")}</span>
           <h2 id={`${id}-title`}>{t("Compare your samples")}</h2>
@@ -266,6 +266,7 @@ export function SampleTastingTools() {
         className={styles.views}
         role="group"
         aria-label={t("Tasting tools")}
+        data-page-reveal="fade"
       >
         <button
           type="button"
@@ -293,6 +294,7 @@ export function SampleTastingTools() {
           className={styles.teaChoices}
           role="group"
           aria-label={t("Choose a matcha")}
+          data-page-reveal="rise"
         >
           {SAMPLE_SET_CONTENTS.map((tea, index) => (
             <button
@@ -321,6 +323,7 @@ export function SampleTastingTools() {
             className={styles.form}
             onSubmit={save}
             aria-label={`${t("Tasting card")} · ${t(item.name)}`}
+            data-page-reveal="rise"
           >
             <fieldset disabled={!saved.ready}>
               <label className={styles.notes}>
@@ -440,7 +443,7 @@ export function SampleTastingTools() {
             data-tasting-preview
             onToggle={(event) => setPreviewOpen(event.currentTarget.open)}
           >
-            <summary>
+            <summary data-page-reveal="rise">
               {t("Card preview")}
               <span aria-hidden="true">+</span>
             </summary>
@@ -686,7 +689,7 @@ export function SampleTastingTools() {
             )
           : ""}
       </p>
-      <p className={styles.deviceNote}>
+      <p className={styles.deviceNote} data-page-reveal="fade">
         {t("These notes and recipes stay on this device.")}
       </p>
     </section>

@@ -3,14 +3,19 @@
 import { useStorefrontLocale } from "./storefront-locale-provider";
 
 import Link from "next/link";
-import { useId, useRef, useState } from "react";
+import { useId, useRef, useState, type ReactNode } from "react";
 import type { CatalogProduct, CatalogVariant } from "@/lib/catalog-types";
+import { translate, type Locale } from "@/lib/i18n";
 import type { SampleEntryDirection } from "@/lib/sample-entry-directions";
 import { getProductContent } from "@/lib/product-content";
 import { getProductDisplayIndex } from "@/lib/product-display-index";
 import { money } from "@/lib/product-selection";
 import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
 import { oneKilogramProductUrl } from "@/lib/sample-journey";
+import {
+  matchesShopCategory,
+  type ShopCategory,
+} from "@/lib/shop-category-filter";
 import { ThemeSwitcher } from "./theme-switcher";
 import { HomeHeader } from "./home-header";
 import { useProductSelection } from "./use-product-selection";
@@ -26,19 +31,39 @@ type ShopProps = {
   sampleEntryDirection?: SampleEntryDirection;
   studyTone?: "light" | "dark";
   onStudyToneChange?: (tone: "light" | "dark") => void;
+  categoryFilter?: {
+    category: ShopCategory;
+    locale?: Locale;
+    onClear: () => void;
+    controls: (context: {
+      products: CatalogProduct[];
+      loading: boolean;
+      disabled: boolean;
+    }) => ReactNode;
+  };
 };
 
 export function Shop({
   sampleEntryDirection,
   studyTone,
   onStudyToneChange,
+  categoryFilter,
 }: ShopProps = {}) {
   const { t } = useStorefrontLocale();
   const { tone: storefrontTone } = useStorefrontTheme();
   const tone = studyTone ?? storefrontTone;
   const localTheme = Boolean(studyTone || onStudyToneChange);
   const { busy } = useCart();
-  const { catalog, products, loading, retry } = useProductSelection();
+  const { catalog, products, loading, refreshing, retry } =
+    useProductSelection();
+  const categoryLoading = loading || refreshing;
+  const categoryDisabled =
+    busy || categoryLoading || catalog?.status !== "ready";
+  const matchCount = categoryFilter
+    ? products.filter((product) =>
+        matchesShopCategory(product.handle, categoryFilter.category),
+      ).length
+    : products.length;
   const headingRef = useRef<HTMLHeadingElement>(null);
   const collectionHeadingRef = useRef<HTMLHeadingElement>(null);
   const saved = useSavedMatcha();
@@ -158,19 +183,41 @@ export function Shop({
             />
           </div>
         )}
+        {categoryFilter?.controls({
+          products,
+          loading: categoryLoading,
+          disabled: categoryDisabled,
+        })}
         <div className={styles.collectionHeader}>
           <h2 ref={collectionHeadingRef} tabIndex={-1}>
             <ScrambleText text={t("THE COLLECTION")} periodic wrap />
           </h2>
-          <span aria-live="polite">
-            {loading
+          <span
+            aria-live="polite"
+            lang={
+              categoryFilter && !categoryLoading && catalog?.status === "ready"
+                ? (categoryFilter.locale ?? "en")
+                : undefined
+            }
+          >
+            {loading || (categoryFilter && refreshing)
               ? t("LOADING…")
-              : t(
-                  products.length === 1 || sampleEntryDirection === "connected"
-                    ? "{count} MATCHA"
-                    : "{count} SELECTIONS",
-                  { count: String(products.length).padStart(2, "0") },
-                )}
+              : categoryFilter && catalog?.status === "ready"
+                ? translate(
+                    categoryFilter.locale ?? "en",
+                    "{count} of {total} matcha",
+                    {
+                      count: String(matchCount).padStart(2, "0"),
+                      total: String(products.length).padStart(2, "0"),
+                    },
+                  )
+                : t(
+                    products.length === 1 ||
+                      sampleEntryDirection === "connected"
+                      ? "{count} MATCHA"
+                      : "{count} SELECTIONS",
+                    { count: String(products.length).padStart(2, "0") },
+                  )}
           </span>
         </div>
         {loading ? (
@@ -209,8 +256,54 @@ export function Shop({
               />
             )}
             {products.map((product) => (
-              <ShopProduct key={product.id} product={product} />
+              <ShopProduct
+                key={product.id}
+                product={product}
+                hidden={
+                  categoryFilter
+                    ? !matchesShopCategory(
+                        product.handle,
+                        categoryFilter.category,
+                      )
+                    : undefined
+                }
+              />
             ))}
+            {categoryFilter && matchCount === 0 && (
+              <div
+                className={`${styles.state} ${styles.filteredEmpty}`}
+                role="status"
+                data-shop-category-empty
+                lang={categoryFilter.locale ?? "en"}
+              >
+                <h2>
+                  {translate(
+                    categoryFilter.locale ?? "en",
+                    "No matcha in this category.",
+                  )}
+                </h2>
+                <p>
+                  {translate(
+                    categoryFilter.locale ?? "en",
+                    "Clear the category to view the collection.",
+                  )}
+                </p>
+                <button
+                  className={styles.retry}
+                  type="button"
+                  disabled={categoryDisabled}
+                  onClick={() => {
+                    if (categoryDisabled) return;
+                    collectionHeadingRef.current?.focus({
+                      preventScroll: true,
+                    });
+                    categoryFilter.onClear();
+                  }}
+                >
+                  {translate(categoryFilter.locale ?? "en", "Clear category")}
+                </button>
+              </div>
+            )}
           </section>
         )}
         {sampleEntryDirection && (
@@ -270,7 +363,13 @@ export function Shop({
   );
 }
 
-function ShopProduct({ product }: { product: CatalogProduct }) {
+function ShopProduct({
+  product,
+  hidden,
+}: {
+  product: CatalogProduct;
+  hidden?: boolean;
+}) {
   const { locale, t } = useStorefrontLocale();
   const codeId = useId();
   const content = getProductContent(product, locale);
@@ -301,6 +400,7 @@ function ShopProduct({ product }: { product: CatalogProduct }) {
       className={styles.product}
       data-available={available}
       data-shop-product={product.id}
+      hidden={hidden}
     >
       <Link
         className={styles.productLink}

@@ -2,7 +2,7 @@
 
 import { useStorefrontLocale } from "./storefront-locale-provider";
 
-import type { RefObject } from "react";
+import type { CSSProperties, RefObject } from "react";
 import { ScrambleText } from "./scramble-text";
 import { usePeriodicGlitch } from "./use-periodic-glitch";
 import {
@@ -19,6 +19,7 @@ type HeroStudyIntroductionProps = {
   exploring: boolean;
   onExplore: () => void;
   exploreRef: RefObject<HTMLButtonElement | null>;
+  pageEntrance?: boolean;
 };
 
 const attributes = ["Flavour.", "Texture.", "Performance."];
@@ -29,6 +30,7 @@ export function HeroStudyIntroduction({
   exploring,
   onExplore,
   exploreRef,
+  pageEntrance = false,
 }: HeroStudyIntroductionProps) {
   const { t } = useStorefrontLocale();
   const heroGlitchCycle = usePeriodicGlitch(
@@ -54,14 +56,26 @@ export function HeroStudyIntroduction({
       className={styles.root}
       data-direction={direction}
       data-exploring={exploring}
+      data-page-entrance={pageEntrance || undefined}
     >
-      <p className={styles.eyebrow}>
+      <p
+        className={styles.eyebrow}
+        data-page-enter={pageEntrance ? "text" : undefined}
+      >
         <span aria-hidden="true" />
         {t("MATCHA")}
       </p>
 
       <div className={styles.statement}>
-        <h1 className={styles.heading}>
+        <h1
+          className={styles.heading}
+          data-page-enter={pageEntrance ? "hero" : undefined}
+          style={
+            pageEntrance
+              ? ({ "--page-enter-delay": "70ms" } as CSSProperties)
+              : undefined
+          }
+        >
           {direction === "specimen" ? (
             <>
               <span>
@@ -91,7 +105,15 @@ export function HeroStudyIntroduction({
           )}
         </h1>
 
-        <p className={styles.attributes}>
+        <p
+          className={styles.attributes}
+          data-page-enter={pageEntrance ? "text" : undefined}
+          style={
+            pageEntrance
+              ? ({ "--page-enter-delay": "130ms" } as CSSProperties)
+              : undefined
+          }
+        >
           {attributes.map((attribute) => (
             <span key={attribute}>
               {direction === "specimen" ? (
@@ -108,7 +130,15 @@ export function HeroStudyIntroduction({
             </span>
           ))}
         </p>
-        <p className={styles.application}>
+        <p
+          className={styles.application}
+          data-page-enter={pageEntrance ? "text" : undefined}
+          style={
+            pageEntrance
+              ? ({ "--page-enter-delay": "210ms" } as CSSProperties)
+              : undefined
+          }
+        >
           <ScrambleText
             text={t("Matcha selected for a specific application.")}
             key={heroGlitchCycle}
@@ -125,6 +155,12 @@ export function HeroStudyIntroduction({
         ref={exploreRef}
         type="button"
         className={styles.action}
+        data-page-enter={pageEntrance ? "text" : undefined}
+        style={
+          pageEntrance
+            ? ({ "--page-enter-delay": "300ms" } as CSSProperties)
+            : undefined
+        }
         aria-expanded={exploring}
         aria-controls="home-selection"
         onClick={onExplore}

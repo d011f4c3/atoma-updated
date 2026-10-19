@@ -624,33 +624,54 @@
 /* The selected introduction follows the material entrance in a quiet sequence.
    The hero loader already pauses descendant animations until its reveal begins. */
 @media (prefers-reduced-motion: no-preference) {
-  .root[data-direction="specimen"][data-exploring="false"] .eyebrow {
+  .root[data-direction="specimen"][data-exploring="false"]:not(
+      [data-page-entrance]
+    )
+    .eyebrow {
     animation: introduction-rise 600ms 100ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  .root[data-direction="specimen"][data-exploring="false"] .statement::before {
+  .root[data-direction="specimen"][data-exploring="false"]:not(
+      [data-page-entrance]
+    )
+    .statement::before {
     animation: introduction-frame 900ms 100ms ease-out both;
   }
 
-  .root[data-direction="specimen"][data-exploring="false"] .heading > span {
+  .root[data-direction="specimen"][data-exploring="false"]:not(
+      [data-page-entrance]
+    )
+    .heading
+    > span {
     animation: introduction-rise 760ms 140ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  .root[data-direction="specimen"][data-exploring="false"]
+  .root[data-direction="specimen"][data-exploring="false"]:not(
+      [data-page-entrance]
+    )
     .heading
     > span:nth-child(2) {
     animation-delay: 220ms;
   }
 
-  .root[data-direction="specimen"][data-exploring="false"] .attributes {
+  .root[data-direction="specimen"][data-exploring="false"]:not(
+      [data-page-entrance]
+    )
+    .attributes {
     animation: introduction-rise 660ms 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  .root[data-direction="specimen"][data-exploring="false"] .application {
+  .root[data-direction="specimen"][data-exploring="false"]:not(
+      [data-page-entrance]
+    )
+    .application {
     animation: introduction-rise 660ms 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  .root[data-direction="specimen"][data-exploring="false"] .action {
+  .root[data-direction="specimen"][data-exploring="false"]:not(
+      [data-page-entrance]
+    )
+    .action {
     animation: introduction-rise 660ms 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 

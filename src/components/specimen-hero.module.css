@@ -1029,6 +1029,14 @@
 .hero[data-material-object="silver-bag"][data-exploring="false"] .bagTray {
   animation: bag-return 480ms ease-out both;
 }
+/* The canonical entrance is coordinated as one image-stage reveal. Leave the
+   photographed object's pointer transforms and Explore handoff independent. */
+.hero[data-page-entrance]
+  :is(.registrationLine, .fieldWindow, .trayImage, .exposureLine),
+.hero[data-page-entrance][data-material-object="silver-bag"] .bagTray,
+.hero[data-page-entrance] .trayShadowSource::before {
+  animation: none;
+}
 @keyframes bag-return {
   from {
     opacity: 0;

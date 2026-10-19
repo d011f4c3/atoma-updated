@@ -108,6 +108,45 @@ test("translations preserve every interpolation placeholder and its multiplicity
   }
 });
 
+test("canonical Shop filters resolve shared labels, status copy and counts in every translated locale", () => {
+  const sources = [
+    "All matcha",
+    "Ceremonial",
+    "Barista",
+    "Culinary",
+    "Category",
+    "Browse by category",
+    "Refine the collection",
+    "Taste",
+    "Region",
+    "Coming soon",
+    "Matcha category",
+    "Count loading",
+    "{count} matcha",
+    "{count} of {total} matcha",
+    "Clear",
+    "No matcha in this category.",
+    "Clear the category to view the collection.",
+    "Clear category",
+  ];
+  for (const source of sources) assert.equal(translate("en", source), source);
+  for (const locale of translatedLocales) {
+    for (const source of sources)
+      assert.notEqual(
+        translate(locale, source),
+        source,
+        `${locale}: ${source}`,
+      );
+    const count = translate(locale, "{count} of {total} matcha", {
+      count: "01",
+      total: "03",
+    });
+    assert.match(count, /01/);
+    assert.match(count, /03/);
+    assert.doesNotMatch(count, /[{}]/);
+  }
+});
+
 test("translation fallback and interpolation preserve supplied values and ignore inherited properties", () => {
   assert.equal(translate("en", "PRODUCT CODE"), "PRODUCT CODE");
   assert.equal(

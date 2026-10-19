@@ -38,12 +38,14 @@ export function SampleOrderPanel({
   disabled,
   packagesOnMobile = false,
   sampleMobileLayout,
+  pageReveals = false,
 }: {
   layout: SampleOrderLayout;
   purchase: ReturnType<typeof useSampleSetPurchase>;
   disabled: boolean;
   packagesOnMobile?: boolean;
   sampleMobileLayout?: SampleMobileLayout;
+  pageReveals?: boolean;
 }) {
   const { t } = useStorefrontLocale();
   const locked = disabled || purchase.locked;
@@ -80,11 +82,17 @@ export function SampleOrderPanel({
       aria-labelledby="sample-start-heading"
     >
       {packagesOnMobile && (
-        <div className={styles.mobilePackages}>
+        <div
+          className={styles.mobilePackages}
+          data-page-reveal={pageReveals ? "fade" : undefined}
+        >
           <SampleFoilTrio disabled={locked} compact />
         </div>
       )}
-      <header className={styles.heading}>
+      <header
+        className={styles.heading}
+        data-page-reveal={pageReveals ? "rise" : undefined}
+      >
         <span className={styles.eyebrow}>{t("Start with samples")}</span>
         <div className={styles.titleLine}>
           <h2 id="sample-start-heading" tabIndex={-1}>
@@ -133,6 +141,7 @@ export function SampleOrderPanel({
         id={`${id}-overview`}
         className={styles.mobileSummary}
         data-sample-mobile-overview
+        data-page-reveal={pageReveals ? "rise" : undefined}
         hidden={summaryHidden}
         inert={summaryHidden}
       >
@@ -159,6 +168,7 @@ export function SampleOrderPanel({
         id={`${id}-contents`}
         className={styles.overview}
         data-sample-mobile-contents
+        data-page-reveal={pageReveals ? "rise" : undefined}
         hidden={contentsHidden}
         inert={contentsHidden}
       >
@@ -184,6 +194,7 @@ export function SampleOrderPanel({
         id={`${id}-order`}
         className={styles.purchasePane}
         data-sample-mobile-purchase
+        data-page-reveal={pageReveals ? "rise" : undefined}
         hidden={purchaseHidden}
         inert={purchaseHidden}
       >
@@ -205,7 +216,11 @@ export function SampleOrderPanel({
         </summary>
         <SetContents numbered />
       </details>
-      <SampleSetDetails className={styles.detailsLink} disabled={locked} />
+      <SampleSetDetails
+        className={styles.detailsLink}
+        disabled={locked}
+        pageReveal={pageReveals}
+      />
     </section>
   );
 }

@@ -16,7 +16,7 @@ export function SamplesRange({ disabled }: { disabled: boolean }) {
       data-samples-range
     >
       <div className={styles.sticky} data-samples-range-sticky>
-        <header className={styles.heading}>
+        <header className={styles.heading} data-page-reveal="rise">
           <div>
             <h2 id="samples-contents" tabIndex={-1}>
               {t("Inside the set")}
@@ -57,6 +57,7 @@ export function SamplesRange({ disabled }: { disabled: boolean }) {
                   id={`sample-${item.key}`}
                   key={item.key}
                   data-sample-content={item.key}
+                  data-page-reveal="fade"
                   aria-labelledby={`sample-${item.key}-title`}
                   tabIndex={-1}
                 >

@@ -8,7 +8,7 @@ import { AboutConnections } from "./about-connections";
 import { AboutApproach } from "./about-approach";
 import { AboutSelectionInvitation } from "./about-selection-invitation";
 import { useAboutMotion } from "./use-about-motion";
-import { useAboutReveals } from "./use-about-reveals";
+import { usePageReveals } from "./use-page-reveals";
 import {
   aboutFarmPhotographs,
   aboutPhotoStories,
@@ -20,6 +20,7 @@ import { useStorefrontTheme } from "./storefront-theme-provider";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { ThemeSwitcher } from "./theme-switcher";
 import styles from "./about-flow.module.css";
+import revealStyles from "./page-reveals.module.css";
 
 const storyChangeEvent = "atoma:about-story";
 
@@ -67,7 +68,7 @@ export function AboutFlow({
   const { busy } = useCart();
   const root = useRef<HTMLDivElement>(null);
   useAboutMotion(root);
-  useAboutReveals(root);
+  usePageReveals(root, !preview);
   const storySlug = useSyncExternalStore(
     subscribeToStory,
     currentStorySlug,
@@ -78,6 +79,13 @@ export function AboutFlow({
 
   function openStory(slug: string) {
     if (busy || document.querySelector("dialog[open]")) return;
+    // Safari does not focus a pointer-activated link. Give the reader an exact
+    // return target before its dialog captures focus, without moving the rail.
+    root.current
+      ?.querySelector<HTMLAnchorElement>(
+        `[data-about-story] a[href="/field-notes/${slug}"]`,
+      )
+      ?.focus({ preventScroll: true });
     window.history.pushState(
       { ...window.history.state, atomaAboutStory: slug },
       "",
@@ -88,7 +96,7 @@ export function AboutFlow({
 
   return (
     <div
-      className={styles.page}
+      className={preview ? styles.page : `${styles.page} ${revealStyles.scope}`}
       ref={root}
       data-about-flow
       data-about-page={!preview || undefined}
@@ -122,7 +130,7 @@ export function AboutFlow({
         <div className={styles.coverTrack} data-about-cover>
           <section className={styles.opening} aria-labelledby="about-title">
             <div className={styles.openingCopy}>
-              <div data-about-enter="heading">
+              <div data-about-enter="heading" data-page-enter="text">
                 <span className={styles.label}>
                   {t("Our approach to matcha")}
                 </span>
@@ -135,6 +143,7 @@ export function AboutFlow({
               <div
                 className={styles.openingStatement}
                 data-about-enter="statement"
+                data-page-enter="text"
               >
                 <p>{t("Selected for its flavour, texture and application.")}</p>
                 <p>{t("Connected to the people and places behind it.")}</p>
@@ -149,6 +158,7 @@ export function AboutFlow({
             <figure
               className={styles.openingPhotograph}
               data-about-enter="photograph"
+              data-page-enter="visual"
             >
               <div
                 className={styles.openingImage}
@@ -178,6 +188,7 @@ export function AboutFlow({
             id="about-purpose"
             aria-labelledby="purpose-title"
             data-about-reveal="rise"
+            data-page-reveal="rise"
           >
             <span className={styles.sectionLabel}>
               {t("About the company")}
@@ -207,7 +218,11 @@ export function AboutFlow({
             data-about-field-rail
           >
             <div className={styles.fieldSticky}>
-              <header className={styles.fieldHeading} data-about-reveal="rise">
+              <header
+                className={styles.fieldHeading}
+                data-about-reveal="rise"
+                data-page-reveal="rise"
+              >
                 <div>
                   <span className={styles.label}>{t("People & place")}</span>
                   <h2 id="field-title">{t("Community")}</h2>
@@ -227,6 +242,7 @@ export function AboutFlow({
                       key={entry.id}
                       data-about-story={entry.id}
                       data-about-reveal="fade"
+                      data-page-reveal="fade"
                     >
                       <Link
                         href={`/field-notes/${entry.slug}`}
@@ -282,7 +298,11 @@ export function AboutFlow({
                   ))}
                 </div>
               </div>
-              <div className={styles.fieldFoot} data-about-reveal="rise">
+              <div
+                className={styles.fieldFoot}
+                data-about-reveal="rise"
+                data-page-reveal="rise"
+              >
                 <p>
                   {t(
                     "Our time in the community is one story. The origin of each matcha is recorded with the product.",
@@ -300,7 +320,7 @@ export function AboutFlow({
       </main>
       <noscript>
         <style>{`
-          [data-about-page] [data-about-enter], [data-about-page] [data-about-reveal] { animation: none !important; opacity: 1 !important; transform: none !important; }
+          [data-about-page] [data-page-enter], [data-about-page] [data-page-reveal] { animation: none !important; opacity: 1 !important; translate: none !important; transform: none !important; }
           [data-about-cover] { min-height: auto !important; margin-bottom: 0 !important; }
           [data-about-cover] > section { position: relative !important; height: auto !important; }
           [data-about-field-rail] { min-height: auto !important; }
