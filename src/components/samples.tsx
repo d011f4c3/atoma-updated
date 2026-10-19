@@ -17,6 +17,7 @@ import { ThemeSwitcher } from "./theme-switcher";
 import { SamplesGallery } from "./samples-gallery";
 import { SamplesRange } from "./samples-range";
 import { SampleNextOrder } from "./sample-next-order";
+import { SampleTastingTools } from "./sample-tasting-tools";
 import { useSamplesMotion } from "./use-samples-motion";
 import styles from "./samples.module.css";
 
@@ -436,6 +437,8 @@ export function Samples() {
 
         <div className={styles.journey}>
           <SamplesRange disabled={locked} />
+
+          <SampleTastingTools />
 
           <section className={styles.next} aria-labelledby="samples-next">
             <figure

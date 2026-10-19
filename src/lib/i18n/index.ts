@@ -4,6 +4,7 @@ import { commerceTranslations } from "./commerce.ts";
 import { originTranslations } from "./origins.ts";
 import { aboutTranslations } from "./about.ts";
 import { sampleTranslations } from "./samples.ts";
+import { tastingTranslations } from "./tastings.ts";
 import type { Locale, TranslationTable } from "./types.ts";
 
 export { locales, resolveLocale, type Locale } from "./types.ts";
@@ -14,6 +15,7 @@ export const translationTables = [
   originTranslations,
   aboutTranslations,
   sampleTranslations,
+  tastingTranslations,
 ];
 const messages: TranslationTable = Object.assign(
   Object.create(null),

@@ -40,7 +40,7 @@ export function AboutApproach({ t }: { t: (source: string) => string }) {
       aria-labelledby="approach-title"
       data-about-approach
     >
-      <header className={styles.heading}>
+      <header className={styles.heading} data-about-reveal="rise">
         <h2 id="approach-title">{t("Our approach")}</h2>
         <span aria-hidden="true">01 — 03</span>
       </header>
@@ -64,7 +64,7 @@ export function AboutApproach({ t }: { t: (source: string) => string }) {
               key={principle.id}
               data-approach-step={principle.id}
             >
-              <div className={styles.copy}>
+              <div className={styles.copy} data-about-reveal="rise">
                 <span className={styles.number} aria-hidden="true">
                   {principle.number}
                 </span>
@@ -75,6 +75,7 @@ export function AboutApproach({ t }: { t: (source: string) => string }) {
                 className={styles.inlineImage}
                 data-approach-inline
                 data-about-mobile-visual
+                data-about-reveal="fade"
               >
                 <Image
                   src={principle.photograph.src}

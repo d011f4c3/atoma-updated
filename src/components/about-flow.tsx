@@ -8,6 +8,7 @@ import { AboutConnections } from "./about-connections";
 import { AboutApproach } from "./about-approach";
 import { AboutSelectionInvitation } from "./about-selection-invitation";
 import { useAboutMotion } from "./use-about-motion";
+import { useAboutReveals } from "./use-about-reveals";
 import {
   aboutFarmPhotographs,
   aboutPhotoStories,
@@ -66,6 +67,7 @@ export function AboutFlow({
   const { busy } = useCart();
   const root = useRef<HTMLDivElement>(null);
   useAboutMotion(root);
+  useAboutReveals(root);
   const storySlug = useSyncExternalStore(
     subscribeToStory,
     currentStorySlug,
@@ -120,7 +122,7 @@ export function AboutFlow({
         <div className={styles.coverTrack} data-about-cover>
           <section className={styles.opening} aria-labelledby="about-title">
             <div className={styles.openingCopy}>
-              <div>
+              <div data-about-enter="heading">
                 <span className={styles.label}>
                   {t("Our approach to matcha")}
                 </span>
@@ -130,7 +132,10 @@ export function AboutFlow({
                   {t("in detail.")}
                 </h1>
               </div>
-              <div className={styles.openingStatement}>
+              <div
+                className={styles.openingStatement}
+                data-about-enter="statement"
+              >
                 <p>{t("Selected for its flavour, texture and application.")}</p>
                 <p>{t("Connected to the people and places behind it.")}</p>
               </div>
@@ -141,7 +146,10 @@ export function AboutFlow({
                 </svg>
               </a>
             </div>
-            <figure className={styles.openingPhotograph}>
+            <figure
+              className={styles.openingPhotograph}
+              data-about-enter="photograph"
+            >
               <div
                 className={styles.openingImage}
                 data-about-opening-photographs
@@ -169,6 +177,7 @@ export function AboutFlow({
             className={styles.purpose}
             id="about-purpose"
             aria-labelledby="purpose-title"
+            data-about-reveal="rise"
           >
             <span className={styles.sectionLabel}>
               {t("About the company")}
@@ -198,7 +207,7 @@ export function AboutFlow({
             data-about-field-rail
           >
             <div className={styles.fieldSticky}>
-              <header className={styles.fieldHeading}>
+              <header className={styles.fieldHeading} data-about-reveal="rise">
                 <div>
                   <span className={styles.label}>{t("People & place")}</span>
                   <h2 id="field-title">{t("Community")}</h2>
@@ -217,6 +226,7 @@ export function AboutFlow({
                       className={styles.entry}
                       key={entry.id}
                       data-about-story={entry.id}
+                      data-about-reveal="fade"
                     >
                       <Link
                         href={`/field-notes/${entry.slug}`}
@@ -272,7 +282,7 @@ export function AboutFlow({
                   ))}
                 </div>
               </div>
-              <div className={styles.fieldFoot}>
+              <div className={styles.fieldFoot} data-about-reveal="rise">
                 <p>
                   {t(
                     "Our time in the community is one story. The origin of each matcha is recorded with the product.",
@@ -290,6 +300,7 @@ export function AboutFlow({
       </main>
       <noscript>
         <style>{`
+          [data-about-page] [data-about-enter], [data-about-page] [data-about-reveal] { animation: none !important; opacity: 1 !important; transform: none !important; }
           [data-about-cover] { min-height: auto !important; margin-bottom: 0 !important; }
           [data-about-cover] > section { position: relative !important; height: auto !important; }
           [data-about-field-rail] { min-height: auto !important; }

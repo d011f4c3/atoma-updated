@@ -17,6 +17,7 @@ export function AboutSelectionInvitation({
       className={styles.invitation}
       aria-labelledby="closing-title"
       data-about-selection-invitation
+      data-about-reveal="rise"
     >
       <div className={styles.heading}>
         <h2 id="closing-title">{t("Find your matcha.")}</h2>

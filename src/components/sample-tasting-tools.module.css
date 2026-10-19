@@ -1,0 +1,635 @@
+.tools {
+  width: min(100% - var(--gutter) * 2, 80rem);
+  margin: 3rem auto 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
+  line-height: 1.65;
+  scroll-margin-top: 2rem;
+}
+
+.heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.eyebrow,
+.cardTop,
+.groupRow th {
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
+  color: var(--muted);
+}
+
+.heading h2 {
+  font-size: calc(1.5rem + var(--locale-font-increment, 0px));
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.035em;
+  margin: 0.5rem 0 0;
+}
+
+.heading p {
+  max-width: 43ch;
+  margin: 0;
+  color: var(--muted);
+}
+
+.tools button,
+.tools input,
+.tools select,
+.tools textarea {
+  font: inherit;
+  color: inherit;
+}
+
+.tools button {
+  min-height: 2.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  background: transparent;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tools button:not(:disabled):hover {
+    background: var(--color-hover);
+  }
+}
+
+.tools :is(button, input, select, textarea, summary):focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
+}
+
+.tools :disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.views {
+  display: flex;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1.5rem;
+}
+
+.views button {
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  color: var(--muted);
+  padding-inline: 0;
+  margin-bottom: -1px;
+}
+
+.views button[aria-pressed="true"] {
+  color: var(--ink);
+  border-bottom-color: currentColor;
+}
+
+.teaChoices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.teaChoices button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  text-align: left;
+}
+
+.teaChoices button[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--color-hover);
+}
+
+.teaNumber,
+.savedMark {
+  font-size: 0.625rem;
+  color: var(--muted);
+}
+
+.savedMark {
+  margin-left: auto;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.form fieldset {
+  min-width: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.tools label {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.tools label > span {
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+}
+
+.tools input,
+.tools select,
+.tools textarea {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  background: var(--color-raised);
+  font-size: 1rem;
+}
+
+.tools textarea {
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.tools :is(input, textarea)::placeholder {
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+.noteMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+}
+
+.noteMeta > :last-child {
+  flex: none;
+}
+
+.disclosure {
+  border-top: 1px solid var(--line);
+  margin-top: 1.25rem;
+}
+
+.disclosure summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  min-height: 2.75rem;
+  padding-block: 0.6rem;
+  list-style: none;
+  cursor: pointer;
+}
+
+.disclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure summary > span {
+  font-size: 1.125rem;
+}
+
+.disclosure[open] > summary > span {
+  transform: rotate(45deg);
+}
+
+.preview {
+  margin-top: 0;
+}
+
+.recipeFields,
+.compareSelectors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-block: 0.75rem 1.25rem;
+}
+
+.actions,
+.exportActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-top: 1rem;
+}
+
+.tools .primary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  background: var(--ink);
+  color: var(--surface);
+  border-color: var(--ink);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tools .primary:not(:disabled):hover {
+    background: var(--muted);
+  }
+}
+
+.tools .textButton {
+  padding-inline: 0;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.card {
+  padding: clamp(1rem, 2.5vw, 2rem);
+  background: var(--color-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  overflow-wrap: anywhere;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.card h3 {
+  font-size: 1.125rem;
+  line-height: 1.45;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  margin: 1.5rem 0 1.25rem;
+}
+
+.card dl {
+  margin: 0;
+}
+
+.card dl > div {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1rem;
+  border-top: 1px solid var(--line);
+  padding-block: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.card dt,
+.cardNotes > span {
+  color: var(--muted);
+}
+
+.card dd {
+  margin: 0;
+}
+
+.cardNotes {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+
+.cardNotes > span,
+.card footer {
+  font-size: 0.625rem;
+}
+
+.cardNotes p {
+  margin: 0.5rem 0 1.5rem;
+  white-space: pre-wrap;
+}
+
+.card footer {
+  color: var(--muted);
+}
+
+.exportActions button {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.copyFallback {
+  margin-top: 1rem;
+}
+
+.compareNote {
+  color: var(--muted);
+  max-width: 65ch;
+  margin-block: 0 1.5rem;
+}
+
+.comparison {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.comparison thead td {
+  width: 24%;
+}
+
+.comparison :is(th, td) {
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+  padding: 0.9rem 1rem;
+  overflow-wrap: anywhere;
+}
+
+.comparison th:first-child,
+.comparison td:first-child {
+  padding-left: 0;
+}
+
+.comparison th:last-child,
+.comparison td:last-child {
+  padding-right: 0;
+}
+
+.comparison tr:not(.groupRow) {
+  border-bottom: 1px solid var(--line);
+}
+
+.comparison tbody th[scope="row"] {
+  color: var(--muted);
+}
+
+.comparison .groupRow th {
+  padding-top: 1.5rem;
+}
+
+.comparison ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.comparison li + li {
+  margin-top: 0.4rem;
+}
+
+.comparedNotes p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.mobileNoteHeading {
+  display: none;
+}
+
+.comparison .textButton {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.feedback,
+.deviceNote {
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  margin: 1.25rem 0 0;
+}
+
+.feedback:empty {
+  display: none;
+}
+
+.deviceNote {
+  color: var(--muted);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .tools {
+    margin-block: 2rem 3rem;
+    padding-top: 1.5rem;
+    font-size: var(--mobile-type-support);
+  }
+  .heading {
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+  .heading h2 {
+    font-size: var(--mobile-type-section);
+    line-height: 1.35;
+  }
+  .heading p {
+    margin-top: 0.75rem;
+  }
+  .views {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+  }
+  .views button {
+    padding-inline: 0.5rem;
+    font-size: var(--mobile-type-action);
+  }
+  .views button[aria-pressed="true"] {
+    background: var(--color-hover);
+  }
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+  .teaChoices {
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .teaChoices button {
+    position: relative;
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.65rem 0.375rem;
+    font-size: var(--mobile-type-support);
+  }
+  .savedMark {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+  }
+  .actions .primary {
+    width: 100%;
+  }
+  .actions {
+    gap: 0.25rem;
+  }
+  .actions .textButton {
+    margin-left: auto;
+  }
+  .disclosure summary {
+    padding-inline-end: 0.375rem;
+  }
+  .disclosure summary > span {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    line-height: 1;
+  }
+  .recipeFields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem 0.5rem;
+  }
+  .recipeFields > :first-child {
+    grid-column: 1 / -1;
+  }
+  .recipeFields input {
+    padding-inline: 0.5rem;
+  }
+  .compareSelectors {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .compareSelectors label {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .tools select {
+    height: 3rem;
+    padding-inline: 0.75rem;
+  }
+  .tools input,
+  .tools select,
+  .tools textarea {
+    font-size: var(--mobile-type-input);
+    scroll-margin-block: 1rem;
+  }
+  .exportActions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+  .exportActions button {
+    width: 100%;
+  }
+  .card h3 {
+    font-size: var(--mobile-type-heading);
+    margin-block: 1.25rem 1rem;
+  }
+  .cardNotes p {
+    font-size: var(--mobile-type-body);
+  }
+  /* Explicit table roles and cell headers preserve associations as its rows
+     reflow. Only supporting labels use the small mobile type scale. */
+  .comparison,
+  .comparison thead,
+  .comparison tbody {
+    display: block;
+  }
+  .comparison tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1.25rem;
+    padding-block: 0.875rem;
+  }
+  .comparison .corner,
+  .comparison .compareActions {
+    display: none;
+  }
+  .comparison :is(th, td) {
+    min-width: 0;
+    padding: 0;
+    font-size: var(--mobile-type-body);
+  }
+  .comparison tbody th[scope="row"],
+  .comparison .groupRow th {
+    grid-column: 1 / -1;
+    font-size: var(--mobile-type-label);
+  }
+  .comparison tbody th[scope="row"] {
+    padding-bottom: 0.5rem;
+  }
+  .comparison .groupRow {
+    padding-block: 1.75rem 0.25rem;
+  }
+  .comparison .groupRow th {
+    padding-top: 0;
+  }
+  .comparison li + li {
+    margin-top: 0.65rem;
+  }
+  .comparison li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.125rem 0.5rem;
+  }
+  .recipeLabel {
+    color: var(--muted);
+    font-size: var(--mobile-type-label);
+  }
+  .comparison .preparationFact {
+    display: block;
+  }
+  .preparationFact .recipeLabel {
+    display: block;
+  }
+  .recipeValue {
+    white-space: nowrap;
+  }
+  .notesRow .comparedNotes {
+    grid-column: 1 / -1;
+  }
+  .notesRow .comparedNotes + .comparedNotes {
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .mobileNoteHeading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.25rem;
+  }
+  .comparison .textButton {
+    gap: 0.5rem;
+    font-size: var(--mobile-type-action);
+  }
+  .feedback {
+    margin-top: 0.75rem;
+  }
+  .noteMeta,
+  .cardNotes > span,
+  .card footer,
+  .eyebrow,
+  .cardTop,
+  .tools label > span,
+  .feedback,
+  .deviceNote {
+    font-size: var(--mobile-type-label);
+  }
+}
