@@ -1,0 +1,139 @@
+.sticker {
+  display: flex;
+  flex-direction: column;
+  container-type: inline-size;
+  position: relative;
+  aspect-ratio: 1.52;
+  color: #252525;
+  background: #fff;
+  text-align: left;
+  text-transform: uppercase;
+  font-family: var(--font-atoma-mono), monospace;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+/* The photograph supplies the paper and adhesion; this layer supplies ink. */
+.sticker[data-attached] {
+  background: transparent;
+  color: #181818;
+  opacity: 0.94;
+  mix-blend-mode: multiply;
+  transform: skewY(0.18deg);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 3cqw;
+  margin: 0 6cqw;
+  padding: 4cqw 0 1.8cqw;
+  border-bottom: 0.5px solid #252525b3;
+  font-size: 2.8cqw;
+  letter-spacing: 0.04em;
+}
+
+.wordmark {
+  font-size: 4.6cqw;
+  letter-spacing: 0.035em;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8cqw;
+  margin: 0 6cqw;
+  padding: 2.5cqw 0 2cqw;
+  border-bottom: 0.5px solid #25252580;
+}
+
+.name {
+  font-size: 5.7cqw;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.code {
+  font-size: 3.2cqw;
+  letter-spacing: 0.03em;
+}
+
+.lower {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18%;
+  align-items: end;
+  gap: 4cqw;
+  margin: 2cqw 6cqw 0;
+}
+
+.lower[data-has-qr="false"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.records {
+  display: grid;
+  gap: 1.1cqw;
+}
+
+.record {
+  display: grid;
+  grid-template-columns: 33% minmax(0, 1fr);
+  align-items: baseline;
+  gap: 2cqw;
+  font-size: 3.4cqw;
+  line-height: 1.25;
+}
+
+.record > span:first-child {
+  font-size: 2.5cqw;
+  letter-spacing: 0.01em;
+}
+
+.literal,
+.reference {
+  text-transform: none;
+}
+
+.reference {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+button.reference {
+  cursor: text;
+}
+
+button.reference:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+}
+
+.qr {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8cqw;
+  margin-top: auto;
+  padding: 2cqw 6cqw 4cqw;
+  font-size: 2.8cqw;
+  line-height: 1.3;
+}
+
+.footer > span:last-child:not(:first-child) {
+  font-size: 2.35cqw;
+  letter-spacing: 0.015em;
+}

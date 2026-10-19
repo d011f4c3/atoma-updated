@@ -33,8 +33,10 @@ const views: View[] = ["experience", "specifications", "origins", "shop"];
 
 export function LaboratoryConcept() {
   const selection = useProductSelection();
-  const { product, catalog, loading } = selection;
-  const products = catalog?.status === "ready" ? catalog.products : [];
+  const { product, products, catalog, loading } = selection;
+  const empty =
+    catalog?.status === "empty" ||
+    (catalog?.status === "ready" && products.length === 0);
   const content = getProductContent(product);
   const { busy } = useCart();
   const [pending, setPending] = useState(false);
@@ -193,11 +195,11 @@ export function LaboratoryConcept() {
               <p>
                 {loading
                   ? "Opening the selection…"
-                  : catalog?.status === "empty"
+                  : empty
                     ? "The next selection is taking shape."
                     : "The selection couldn’t be loaded."}
               </p>
-              {!loading && catalog?.status !== "empty" && (
+              {!loading && !empty && (
                 <button type="button" onClick={selection.retry}>
                   Try again ↻
                 </button>

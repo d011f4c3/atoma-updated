@@ -10,6 +10,7 @@ import {
 import { productName } from "@/lib/product-name";
 import { getProductContent } from "@/lib/product-content";
 import { useCart } from "./cart-drawer";
+import { money } from "@/lib/product-selection";
 import { ProductInformation } from "./product-information";
 import { ScrambleText } from "./scramble-text";
 import { PurchaseOptions } from "./purchase-options";
@@ -25,15 +26,6 @@ export type ProductSelection = {
   handle: string;
   imageUrl: string | null;
 };
-
-function money(amount: number, currency: string) {
-  const formatter = new Intl.NumberFormat("en", {
-    style: "currency",
-    currency,
-  });
-  const digits = formatter.resolvedOptions().maximumFractionDigits ?? 2;
-  return formatter.format(amount / 10 ** digits);
-}
 
 type CatalogPanelProps = {
   compact?: boolean;
@@ -66,9 +58,11 @@ function CatalogControls({
   const productGroupId = useId();
   const {
     catalog,
+    products,
     loading,
     product,
     variant,
+    purchaseVariant,
     quantity,
     priceLabel,
     canIncrement,
@@ -95,15 +89,17 @@ function CatalogControls({
               variant.title === "Default Title" ? t("Standard") : variant.title,
             quantity,
             priceLabel,
-            index:
-              catalog?.products.findIndex((item) => item.id === product.id) ??
-              0,
+            index: products.findIndex((item) => item.id === product.id),
             handle: product.handle,
             imageUrl: product.imageUrl,
           }
         : null,
     );
-  }, [catalog, product, variant, quantity, priceLabel, locale, t]);
+  }, [products, product, variant, quantity, priceLabel, locale, t]);
+
+  const empty =
+    catalog?.status === "empty" ||
+    (catalog?.status === "ready" && products.length === 0);
 
   const materialDescription = content.materialSummary.split(
     /(?<=[.!?])\s+|(?<=[。！？])\s*/u,
@@ -121,15 +117,15 @@ function CatalogControls({
           <span className={styles.loader} aria-hidden="true" />
           <p>{t("Opening the collection…")}</p>
         </div>
-      ) : catalog?.status !== "ready" ? (
+      ) : catalog?.status !== "ready" || empty ? (
         <div className={styles.message} role="status">
           <p>
-            {catalog?.status === "empty"
+            {empty
               ? t("The next selection is taking shape.")
               : t("The collection couldn’t be loaded.")}
           </p>
           <p className={styles.muted}>
-            {catalog?.status === "empty"
+            {empty
               ? t("Published matcha will appear here.")
               : t("Please try again in a moment.")}
           </p>
@@ -142,7 +138,7 @@ function CatalogControls({
         <>
           <fieldset className={styles.products}>
             <legend className={styles.srOnly}>{t("Select matcha")}</legend>
-            {catalog.products.map((item) => {
+            {products.map((item) => {
               const itemContent = getProductContent(item, locale);
               const namedUse =
                 getProductContent(item).application !== "Matcha selection";
@@ -315,7 +311,9 @@ function CatalogControls({
           )}
         </>
       )}
-      {!loading && product && <PurchaseOptions />}
+      {!loading && product && (
+        <PurchaseOptions model={model} disabled={cart.busy} />
+      )}
       {!loading && product && referenceControl}
       {!loading && variant && product && (
         <div className={styles.purchaseBar}>
@@ -326,10 +324,13 @@ function CatalogControls({
             <strong>{priceLabel}</strong>
           </div>
           <AddToCartButton
-            available={variant.available}
+            updating={model.refreshing}
+            available={Boolean(purchaseVariant?.available)}
+            disabled={cart.busy || !purchaseVariant?.available}
             pending={cart.adding}
             onAdd={() => {
-              void cart.addItem(product.handle, variant.id, quantity);
+              if (!cart.busy && purchaseVariant?.available)
+                void cart.addItem(product.handle, purchaseVariant.id, quantity);
             }}
           />
         </div>

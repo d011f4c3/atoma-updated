@@ -41,28 +41,38 @@ export function ShopExplorationPanel({
   const id = useId();
   const heading = useRef<HTMLHeadingElement>(null);
   const cart = useCart();
-  const { catalog, loading, product, variant, quantity } = model;
+  const {
+    catalog,
+    products,
+    loading,
+    product,
+    variant,
+    purchaseVariant,
+    quantity,
+  } = model;
   const content = getProductContent(product, locale);
   const ready = !loading && catalog?.status === "ready" && product;
   const empty =
     catalog?.status === "empty" ||
-    (catalog?.status === "ready" && catalog.products.length === 0);
+    (catalog?.status === "ready" && products.length === 0);
   const validPrice = Boolean(
-    variant &&
-    Number.isSafeInteger(variant.priceMinor) &&
-    variant.priceMinor >= 0,
+    purchaseVariant &&
+    Number.isSafeInteger(purchaseVariant.priceMinor) &&
+    purchaseVariant.priceMinor >= 0,
   );
   const validTotal = Boolean(
-    variant &&
+    purchaseVariant &&
     validPrice &&
-    Number.isSafeInteger(variant.priceMinor * quantity),
+    Number.isSafeInteger(purchaseVariant.priceMinor * quantity),
   );
-  const eligible = validPrice && canPurchaseQuantity(variant, quantity);
+  const eligible = validPrice && canPurchaseQuantity(purchaseVariant, quantity);
   const format = variant
     ? t(formatName(variant.title))
     : t("No published format");
   const unitPrice =
-    variant && validPrice ? money(variant.priceMinor, variant.currency) : "—";
+    purchaseVariant && validPrice
+      ? money(purchaseVariant.priceMinor, purchaseVariant.currency)
+      : "—";
   const quantityRules = variant
     ? [
         variant.minimum > 1
@@ -90,8 +100,8 @@ export function ShopExplorationPanel({
   }
 
   function addToCart() {
-    if (cart.busy || !product || !variant || !eligible) return;
-    void cart.addItem(product.handle, variant.id, quantity);
+    if (cart.busy || !product || !purchaseVariant || !eligible) return;
+    void cart.addItem(product.handle, purchaseVariant.id, quantity);
   }
 
   return (
@@ -234,7 +244,7 @@ export function ShopExplorationPanel({
                           {unitPrice} <span>{t("/ unit")}</span>
                         </p>
                       )}
-                      {variant && !variant.available && (
+                      {variant && !purchaseVariant?.available && (
                         <p className={styles.availability}>
                           {t("Unavailable")}
                         </p>
@@ -262,13 +272,14 @@ export function ShopExplorationPanel({
                       type="button"
                       aria-label={t("Decrease quantity")}
                       disabled={
-                        !variant?.available || quantity <= variant.minimum
+                        !purchaseVariant?.available ||
+                        quantity <= purchaseVariant.minimum
                       }
                       onClick={() => {
                         if (
                           !cart.busy &&
-                          variant?.available &&
-                          quantity > variant.minimum
+                          purchaseVariant?.available &&
+                          quantity > purchaseVariant.minimum
                         )
                           onDecrement();
                       }}
@@ -281,11 +292,13 @@ export function ShopExplorationPanel({
                     <button
                       type="button"
                       aria-label={t("Increase quantity")}
-                      disabled={!variant?.available || !model.canIncrement}
+                      disabled={
+                        !purchaseVariant?.available || !model.canIncrement
+                      }
                       onClick={() => {
                         if (
                           !cart.busy &&
-                          variant?.available &&
+                          purchaseVariant?.available &&
                           model.canIncrement
                         )
                           onIncrement();
@@ -305,7 +318,7 @@ export function ShopExplorationPanel({
                 </div>
 
                 <div className={styles.purchaseChoices}>
-                  <PurchaseOptions />
+                  <PurchaseOptions model={model} disabled={cart.busy} />
                 </div>
               </div>
 
@@ -340,7 +353,8 @@ export function ShopExplorationPanel({
                 </div>
                 <div className={styles.add}>
                   <AddToCartButton
-                    available={Boolean(variant?.available)}
+                    updating={model.refreshing}
+                    available={Boolean(purchaseVariant?.available)}
                     pending={cart.adding}
                     disabled={cart.busy || !eligible}
                     onAdd={addToCart}

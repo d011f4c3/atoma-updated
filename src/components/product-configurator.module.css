@@ -1614,6 +1614,62 @@
 }
 
 @media (min-width: 761px) {
+  /* Keep the tabs fixed while shorter panels settle into the available space.
+     The spacers collapse for expanded content, leaving its top scrollable. */
+  .experience[data-embedded="true"][data-selector-placement="left"][data-section-selector-variant="tabs"]
+    .controlScroll:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+  }
+  .experience[data-embedded="true"][data-selector-placement="left"][data-section-selector-variant="tabs"]
+    .controlScroll::before,
+  .experience[data-embedded="true"][data-selector-placement="left"][data-section-selector-variant="tabs"]
+    .controlScroll::after {
+    content: "";
+    flex: 1 0 0;
+  }
+  .experience[data-embedded="true"][data-selector-placement="left"][data-section-selector-variant="tabs"]
+    .controlScroll
+    > * {
+    flex-shrink: 0;
+  }
+  .experience[data-embedded="true"]:is(
+      [data-preserve-journey="true"],
+      [data-sample-order-layout]
+    )[data-selector-placement="left"][data-section-selector-variant="tabs"]:not(
+      [data-sample-start-active="true"]
+    )
+    .controlArea {
+    justify-content: center;
+  }
+  .experience[data-embedded="true"]:is(
+      [data-preserve-journey="true"],
+      [data-sample-order-layout]
+    )[data-selector-placement="left"][data-section-selector-variant="tabs"]
+    .controlScroll:not([hidden]) {
+    flex: 0 1 clamp(30rem, 60svh, 36rem);
+  }
+  .experience[data-embedded="true"]:is(
+      [data-preserve-journey="true"],
+      [data-sample-order-layout]
+    )[data-selector-placement="left"][data-section-selector-variant="tabs"]
+    .controlScroll::before,
+  .experience[data-embedded="true"]:is(
+      [data-preserve-journey="true"],
+      [data-sample-order-layout]
+    )[data-selector-placement="left"][data-section-selector-variant="tabs"]
+    .controlScroll::after {
+    content: none;
+  }
+  .experience[data-embedded="true"]:is(
+      [data-preserve-journey="true"],
+      [data-sample-order-layout]
+    )[data-section-selector-variant="tabs"]
+    .homepageControls
+    .modeHeader {
+    position: relative;
+    top: -0.75rem;
+  }
   .experience[data-embedded="true"]:is(
       [data-mode="overview"],
       [data-mode="specifications"],
@@ -1795,6 +1851,46 @@
 }
 .stageSelectors > :global([data-visual-product-selectors]) {
   margin-bottom: 0;
+}
+.sampleFooter {
+  min-width: 0;
+}
+
+@media (min-width: 761px) {
+  .experience[data-sample-placement="tile"] .stageSelectors {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 7.5rem;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .experience[data-selector-placement="left"][data-sample-placement="footer"]
+    .workspace {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .experience[data-selector-placement="left"][data-sample-placement="footer"]
+    .controlArea {
+    grid-row: 1 / 3;
+  }
+
+  .sampleFooter {
+    grid-row: 3;
+    grid-column: 1 / -1;
+    padding-block: 1rem 0.75rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .experience[data-sample-placement="tile"] .stageSelectors {
+    display: grid;
+    gap: 0.875rem;
+  }
+
+  .sampleFooter {
+    order: 3;
+    padding-block: 1rem;
+  }
 }
 @media (min-width: 761px) {
   .experience[data-selector-placement="left"] .workspace {
@@ -2194,5 +2290,259 @@
   .experience[data-embedded="true"][data-mode="origins"][data-origin-preview-variant="panorama"]
     .stageArea {
     display: none;
+  }
+}
+
+/* Opt-in sample-first panel study: the regular storefront retains its layout. */
+.experience[data-sample-panel-layout] .stageSelectors {
+  display: grid;
+  gap: 0.625rem;
+  align-items: stretch;
+}
+
+/* Compare simultaneous entrances without changing canonical selection. */
+.experience[data-sample-entry-direction] .stageSelectors {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.625rem;
+}
+.experience[data-sample-entry-direction="connected"] .stageSelectors {
+  grid-template-columns: minmax(9rem, 1.1fr) minmax(0, 3fr);
+  align-items: stretch;
+}
+.sampleEntryInformation {
+  margin-bottom: 1.25rem;
+}
+.sampleEntryInformation[data-sample-information-placement="after"] {
+  margin: 1.25rem 0 0;
+}
+.sampleRightDock {
+  flex: none;
+  min-width: 0;
+  padding-top: 1rem;
+}
+.sampleRightHeader {
+  flex: none;
+  min-width: 0;
+  margin-bottom: 1.25rem;
+}
+@media (min-width: 761px) and (max-height: 650px) {
+  .experience[data-embedded="true"]:is(
+      [data-sample-right-entry="invitation"],
+      [data-sample-right-entry="alongside"]
+    )
+    .controlArea {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+    padding-right: 0.5rem;
+  }
+  .experience[data-embedded="true"]:is(
+      [data-sample-right-entry="invitation"],
+      [data-sample-right-entry="alongside"]
+    )
+    .controlScroll {
+    flex: none;
+    min-height: 10rem;
+    overflow: visible;
+    scrollbar-gutter: auto;
+  }
+  .sampleRightHeader {
+    margin-bottom: 0.75rem;
+  }
+}
+@media (max-width: 760px) {
+  .sampleRightHeader {
+    order: 0;
+    margin-bottom: 0.875rem;
+  }
+  .sampleRightDock {
+    order: 3;
+    padding: 0 0 1.25rem;
+  }
+}
+@media (min-width: 761px) {
+  .experience[data-sample-entry-direction="featured"] .workspace {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+  .experience[data-sample-entry-direction="featured"] .controlArea {
+    grid-row: 1 / 3;
+  }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .experience[data-sample-entry-direction="connected"] .stageSelectors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .experience[data-sample-entry-direction="connected"] .stageSelectors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .experience[data-sample-entry-direction="connected"]
+    .stageSelectors
+    > :global([data-visual-product-selectors]) {
+    display: contents;
+  }
+}
+.experience[data-sample-panel-layout]
+  .stageSelectors
+  > :global([data-visual-product-selectors]) {
+  margin-bottom: 0;
+}
+.experience[data-sample-panel-layout="lead"] .stageSelectors {
+  grid-template-columns: minmax(12rem, 1.6fr) minmax(0, 3fr);
+}
+.experience[data-sample-panel-layout="equal"] .stageSelectors {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+}
+.experience[data-sample-panel-layout="split"] .stageSelectors {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+}
+.experience[data-sample-panel-layout="split"]
+  .stageSelectors
+  > :global([data-visual-product-selectors]) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.experience[data-embedded="true"][data-sample-focused="true"]
+  :is(.stageArea, .controlArea) {
+  display: none;
+}
+.sampleStage {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  min-height: 0;
+  padding-right: clamp(1.5rem, 4vw, 4rem);
+}
+.sampleInformation {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  min-width: 0;
+  min-height: 0;
+  padding-left: clamp(1.5rem, 4vw, 4rem);
+  border-left: 1px solid var(--line);
+}
+.experience :is(.sampleStage, .sampleInformation)[hidden] {
+  display: none;
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .experience[data-sample-panel-layout="lead"] .stageSelectors,
+  .experience[data-sample-panel-layout="equal"] .stageSelectors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sampleStage {
+    padding-right: 1.5rem;
+  }
+  .sampleInformation {
+    padding-left: 1.5rem;
+  }
+}
+@media (max-width: 760px) {
+  .experience[data-sample-panel-layout] .stageSelectors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .experience[data-sample-panel-layout="equal"] .stageSelectors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .experience[data-sample-panel-layout="equal"]
+    .stageSelectors
+    > :global([data-visual-product-selectors]) {
+    display: contents;
+  }
+  .experience[data-sample-panel-layout="split"] .stageSelectors {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  }
+  .sampleStage {
+    order: 1;
+    min-height: 18rem;
+    padding: 0;
+  }
+  .sampleInformation {
+    order: 2;
+    padding: 0;
+    border-left: 0;
+  }
+}
+
+/* An in-place set reader, opened from the existing left selection rail. */
+.sampleStartNavigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+.sampleStartNavigation button {
+  min-height: 2.75rem;
+  padding: 0.625rem 0;
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  font: inherit;
+  font-size: calc(
+    var(--tab-label-size, 0.625rem) + var(--locale-font-increment, 0px)
+  );
+  line-height: 1.6;
+  cursor: pointer;
+}
+.sampleStartNavigation button:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+}
+.sampleStartNavigation button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.sampleStartNavigation .sampleStartClose {
+  font-size: 1.375rem;
+  width: 2.75rem;
+  flex: none;
+}
+.sampleStartBody {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+  padding-inline: 3px 0.5rem;
+}
+.experience .controlArea > [hidden] {
+  display: none !important;
+}
+@media (max-width: 760px) {
+  .sampleStartBody {
+    overflow: visible;
+    padding: 0;
+  }
+  .sampleStartNavigation {
+    order: -2;
+  }
+}
+
+/* Retain measurable bounds so the tea renderer can finish the Explore handoff. */
+.experience[data-embedded="true"][data-sample-imagery-active="true"]
+  .stageArea {
+  visibility: hidden;
+  /* Shop's bag layer declares visibility: visible; hide the entire paint group. */
+  opacity: 0;
+  pointer-events: none;
+}
+@media (max-width: 760px) {
+  /* The phone's sample panel contains its own interactive pouch trio. */
+  .experience[data-embedded="true"][data-mobile-sample-packages][data-sample-start-active="true"]
+    .sampleStage:global([data-sample-imagery-stage]) {
+    display: none;
+  }
+  .experience[data-sample-imagery-active="true"] .workspace {
+    position: relative;
+  }
+  .experience[data-embedded="true"][data-sample-imagery-active="true"]
+    .stageArea {
+    position: absolute;
+    inset: 0 0 auto;
+    width: 100%;
   }
 }

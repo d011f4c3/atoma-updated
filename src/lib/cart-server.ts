@@ -41,8 +41,25 @@ import {
   type CartSessionSecret,
 } from "./cart-session";
 import type { CartLoadResult } from "./cart-types";
+import {
+  readStorefrontDestination,
+  persistStorefrontDestination,
+} from "./storefront-destination-server";
+import { readShopifyDestination } from "./storefront-market-server";
+import {
+  SHIPPING_COUNTRIES,
+  type DestinationContext,
+  type ShippingCountryCode,
+} from "./storefront-destination";
+import {
+  readProductPurchaseOptions,
+  sellingPlansEnabled as readSellingPlansEnabled,
+} from "./selling-plan-policy";
 
-const STOREFRONT_CURRENCY = "JPY" as const;
+type DestinationMetadata = {
+  readonly destination?: DestinationContext | null;
+  readonly destinationReviewRequired?: boolean;
+};
 
 interface CartCookieStore {
   get(name: string): { readonly value: string } | undefined;
@@ -54,63 +71,161 @@ interface CartCookieStore {
 }
 
 interface CartRuntime {
+  readonly destination: DestinationContext;
   readonly application: CartApplication;
   readonly environment: StorefrontEnvironment;
   readonly secret: CartSessionSecret;
   readonly sellingPlansEnabled: boolean;
 }
 
-export async function loadCurrentCart(): Promise<CartLoadResult> {
-  const cookieStore: CartCookieStore = await cookies();
-  const sealed = cookieStore.get(
-    cartSessionCookieName(process.env.NODE_ENV === "production"),
-  )?.value;
+export async function loadCurrentCart(): Promise<
+  CartLoadResult & DestinationMetadata
+> {
+  const context = await createActionContext();
+  const result = await context.runtime.application.loadCart(context.reference);
+  return withDestination(result, context.runtime.destination);
+}
 
-  if (sealed === undefined) {
-    return Object.freeze({ kind: "empty" });
+export async function loadCurrentDestination() {
+  let preference = await readStorefrontDestination();
+  try {
+    const result = await loadCurrentCart();
+    if (!["ready", "empty", "missing"].includes(result.kind))
+      throw new Error("Destination unavailable.");
+    const destination = result.destination ?? null;
+    // A timed-out country write may have committed. Reconcile the preference
+    // only from an authoritative read; never replay the Shopify mutation.
+    if (destination && destination.countryCode !== preference.countryCode) {
+      await persistStorefrontDestination(destination.countryCode);
+      preference = { countryCode: destination.countryCode, source: "manual" };
+    }
+    const expected = destination
+      ? await readShopifyDestination(destination.countryCode)
+      : null;
+    return {
+      kind: "ready" as const,
+      preference,
+      destination,
+      countries: SHIPPING_COUNTRIES,
+      reviewRequired:
+        destination === null || destination.currency !== expected?.currency,
+    };
+  } catch {
+    return {
+      kind: "unavailable" as const,
+      preference,
+      destination: null,
+      countries: SHIPPING_COUNTRIES,
+      reviewRequired: true,
+    };
   }
+}
 
-  const runtime = createRuntime();
-  const reference = openReference(sealed, runtime);
-
-  if (reference === null) {
-    return Object.freeze({ kind: "empty" });
+export async function changeCurrentDestination(
+  countryCode: ShippingCountryCode,
+) {
+  const context = await createActionContext(countryCode);
+  const result =
+    context.reference === null
+      ? { kind: "success" as const }
+      : await context.runtime.application.updateDestination(
+          context.reference,
+          countryCode,
+        );
+  const persisted =
+    "sessionReference" in result
+      ? persistAuthoritativeCart(result, context)
+      : result;
+  if (
+    persisted.kind === "success" ||
+    persisted.kind === "warning" ||
+    persisted.kind === "missing"
+  ) {
+    try {
+      await persistStorefrontDestination(countryCode);
+    } catch {
+      return { kind: "ambiguous" as const };
+    }
+    return withDestination(
+      persisted.kind === "missing" ? { kind: "success" as const } : persisted,
+      context.runtime.destination,
+    );
   }
+  // A rejected result may include the old authoritative Cart; never claim the
+  // requested destination merely because the request was made.
+  return "cart" in persisted
+    ? withDestination(persisted, context.runtime.destination)
+    : persisted;
+}
 
-  return runtime.application.loadCart(reference);
+function withDestination<
+  T extends {
+    kind: string;
+    cart?: { destination?: DestinationContext | null };
+    destination?: DestinationContext | null;
+  },
+>(result: T, expected: DestinationContext): T & DestinationMetadata {
+  const destination = result.cart
+    ? (result.cart.destination ?? null)
+    : Object.hasOwn(result, "destination")
+      ? (result.destination ?? null)
+      : ["empty", "missing", "success"].includes(result.kind)
+        ? expected
+        : undefined;
+  return {
+    ...result,
+    ...(destination === undefined
+      ? {}
+      : {
+          destination,
+          destinationReviewRequired:
+            !destination ||
+            destination.countryCode !== expected.countryCode ||
+            destination.currency !== expected.currency,
+        }),
+  };
 }
 
 export async function addCurrentCartLine(
   command: AddCartLineCommand,
-): Promise<CartCommandResult> {
+): Promise<CartCommandResult & DestinationMetadata> {
   const context = await createActionContext();
   const result = await context.runtime.application.addLine(
     context.reference,
     command,
   );
-  return persistAuthoritativeCart(result, context);
+  return withDestination(
+    persistAuthoritativeCart(result, context),
+    context.runtime.destination,
+  );
 }
 
 export async function updateCurrentCartLine(
   command: UpdateCartLineCommand,
-): Promise<CartCommandResult> {
+): Promise<CartCommandResult & DestinationMetadata> {
   const context = await createActionContext();
   const result = await context.runtime.application.updateLine(
     context.reference,
     command,
   );
-  return persistAuthoritativeCart(result, context);
+  return withDestination(
+    persistAuthoritativeCart(result, context),
+    context.runtime.destination,
+  );
 }
 
 export async function removeCurrentCartLine(
   command: RemoveCartLineCommand,
-): Promise<CartCommandResult> {
+): Promise<CartCommandResult & DestinationMetadata> {
   const context = await createActionContext();
   const result = await context.runtime.application.removeLine(
     context.reference,
     command,
   );
-  return persistAuthoritativeCart(result, context);
+  return withDestination(
+    persistAuthoritativeCart(result, context),
+    context.runtime.destination,
+  );
 }
 
 export async function prepareCurrentCheckout(): Promise<CheckoutResult> {
@@ -121,6 +236,7 @@ export async function prepareCurrentCheckout(): Promise<CheckoutResult> {
 export function createPublishedVariantActionKey(
   reference: CatalogVariantReference,
   sellingPlanReference?: CatalogSellingPlanReference,
+  destination?: DestinationContext,
 ): string {
   const environment = readStorefrontEnvironment();
   if (environment.storeDomain !== CATALOG_SHOP_DOMAIN)
@@ -133,10 +249,28 @@ export function createPublishedVariantActionKey(
       ? "product_variant"
       : "product_subscription",
     purchaseReference(reference, sellingPlanReference),
+    destination,
   );
 }
 
-async function createActionContext(): Promise<{
+export function createCatalogSelectionKey(
+  reference: CatalogVariantReference,
+  sellingPlanReference?: CatalogSellingPlanReference,
+): string {
+  const environment = readStorefrontEnvironment();
+  if (environment.storeDomain !== CATALOG_SHOP_DOMAIN)
+    throw new Error("Invalid storefront.");
+  return createBoundActionKey(
+    environment,
+    readCartSessionSecret(),
+    sellingPlanReference === undefined
+      ? "selection_variant"
+      : "selection_subscription",
+    purchaseReference(reference, sellingPlanReference),
+  );
+}
+
+async function createActionContext(countryCode?: ShippingCountryCode): Promise<{
   readonly cookieName: string;
   readonly cookieStore: CartCookieStore;
   readonly isProduction: boolean;
@@ -144,7 +278,7 @@ async function createActionContext(): Promise<{
   readonly runtime: CartRuntime;
 }> {
   const cookieStore: CartCookieStore = await cookies();
-  const runtime = createRuntime();
+  const runtime = await createRuntime(countryCode);
   const isProduction = process.env.NODE_ENV === "production";
   const cookieName = cartSessionCookieName(isProduction);
   const sealed = cookieStore.get(cookieName)?.value;
@@ -159,24 +293,41 @@ async function createActionContext(): Promise<{
   });
 }
 
-function createRuntime(): CartRuntime {
+async function createRuntime(
+  countryCode?: ShippingCountryCode,
+): Promise<CartRuntime> {
+  const destination = await readShopifyDestination(
+    countryCode ?? (await readStorefrontDestination()).countryCode,
+  );
+  const requestContext = { countryCode: destination.countryCode };
   const environment = readStorefrontEnvironment();
   if (environment.storeDomain !== CATALOG_SHOP_DOMAIN)
     throw new Error("Cart store configuration is invalid.");
   const secret = readCartSessionSecret();
-  const sellingPlansEnabled = false;
+  const sellingPlansEnabled = readSellingPlansEnabled(process.env);
   const cartClient = createStorefrontCartClient({
+    discountCodesEnabled: true,
+    destinationContextEnabled: true,
     environment,
-    currency: STOREFRONT_CURRENCY,
+    currency: destination.currency,
     sellingPlansEnabled,
   });
   const catalogClient = createStorefrontCatalogClient({
     environment,
-    currency: STOREFRONT_CURRENCY,
+    currency: destination.currency,
     sellingPlansEnabled,
   });
+  const oneTimeCatalogClient = sellingPlansEnabled
+    ? createStorefrontCatalogClient({
+        environment,
+        currency: destination.currency,
+        sellingPlansEnabled: false,
+      })
+    : catalogClient;
   const cartSource: CartSource = {
-    createCart: (input) => cartClient.createCart(input),
+    createCart: (input) => cartClient.createCart(input, requestContext),
+    updateBuyerCountry: (reference, country) =>
+      cartClient.updateBuyerCountry(reference, country),
     readCart: (reference) => cartClient.readCart(reference),
     addCartLine: (reference, input) => cartClient.addCartLine(reference, input),
     updateCartLine: (reference, input) =>
@@ -188,13 +339,30 @@ function createRuntime(): CartRuntime {
   };
   const catalogSource: FreshCatalogSource = {
     readPublishedProductByHandle: (handle) =>
-      catalogClient.readPublishedProductByHandle(handle),
+      readProductPurchaseOptions(
+        handle,
+        sellingPlansEnabled,
+        (value) =>
+          oneTimeCatalogClient.readPublishedProductByHandle(
+            value,
+            requestContext,
+          ),
+        (value) =>
+          catalogClient.readPublishedProductByHandle(value, requestContext),
+      ),
   };
   const application = createCartApplication({
+    destination,
     cartSource: Object.freeze(cartSource),
     catalogSource: Object.freeze(catalogSource),
     createLineActionKey: (reference) =>
-      createBoundActionKey(environment, secret, "cart_line", reference),
+      createBoundActionKey(
+        environment,
+        secret,
+        "cart_line",
+        reference,
+        destination,
+      ),
     matchesLineActionKey: (actionKey, reference) =>
       matchesBoundActionKey(
         actionKey,
@@ -202,6 +370,7 @@ function createRuntime(): CartRuntime {
         secret,
         "cart_line",
         reference,
+        destination,
       ),
     matchesVariantActionKey: (actionKey, reference, sellingPlanReference) =>
       matchesBoundActionKey(
@@ -212,6 +381,7 @@ function createRuntime(): CartRuntime {
           ? "product_variant"
           : "product_subscription",
         purchaseReference(reference, sellingPlanReference),
+        destination,
       ),
     classifyError(error) {
       if (!isStorefrontError(error)) {
@@ -227,6 +397,7 @@ function createRuntime(): CartRuntime {
   });
 
   return Object.freeze({
+    destination,
     application,
     environment,
     secret,
@@ -239,12 +410,19 @@ function createBoundActionKey(
   secret: CartSessionSecret,
   kind: CartActionKind,
   reference: string,
+  destination?: DestinationContext,
 ): string {
   return createCartActionKey(
     {
       storeDomain: environment.storeDomain,
       kind,
-      reference,
+      reference: destination
+        ? JSON.stringify([
+            destination.countryCode,
+            destination.currency,
+            reference,
+          ])
+        : reference,
     },
     secret,
   );
@@ -256,13 +434,20 @@ function matchesBoundActionKey(
   secret: CartSessionSecret,
   kind: CartActionKind,
   reference: string,
+  destination?: DestinationContext,
 ): boolean {
   return matchesCartActionKey(
     actionKey,
     {
       storeDomain: environment.storeDomain,
       kind,
-      reference,
+      reference: destination
+        ? JSON.stringify([
+            destination.countryCode,
+            destination.currency,
+            reference,
+          ])
+        : reference,
     },
     secret,
   );

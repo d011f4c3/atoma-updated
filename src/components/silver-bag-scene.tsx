@@ -4,13 +4,15 @@ import { useStorefrontLocale } from "./storefront-locale-provider";
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { LabelCard, type LabelCardProps } from "./label-card";
+import type { LabelCardProps } from "./label-card";
+import { PouchSticker } from "./pouch-sticker";
 import styles from "./silver-bag-scene.module.css";
 
 export type SilverBagSceneProps = Omit<
   LabelCardProps,
   "presentation" | "annotation"
 > & {
+  productHandle?: string;
   onReady?: () => void;
   interactive?: boolean;
   appearance?: "product" | "hero";
@@ -20,10 +22,9 @@ export type SilverBagSceneProps = Omit<
 export function SilverBagScene({
   title,
   application,
+  productHandle,
   format,
-  quantity,
   reference,
-  profile,
   showReference = false,
   visible = true,
   expanded = false,
@@ -71,14 +72,10 @@ export function SilverBagScene({
       <div className={styles.object}>
         {failed && <div className={styles.fallbackBag} aria-hidden="true" />}
         <Image
-          src={
-            appearance === "hero"
-              ? "/images/product-exploration/silver-bag-hero-v3.png"
-              : "/images/product-exploration/silver-bag.png"
-          }
+          src="/images/samples/foil-pouch-sticker-v3.png"
           alt=""
           fill
-          priority
+          preload
           sizes="(max-width: 760px) 80vw, 48vw"
           className={styles.photograph}
           draggable={false}
@@ -89,19 +86,13 @@ export function SilverBagScene({
           }}
         />
         <div className={styles.ink}>
-          <LabelCard
-            presentation="ink"
+          <PouchSticker
+            attached={!failed}
             title={title}
             application={application}
+            productHandle={productHandle}
             format={format}
-            quantity={quantity}
-            annotation={t("Matcha")}
-            reference={reference}
-            profile={profile}
-            showReference={showReference}
-            visible={visible}
-            expanded={expanded}
-            tone={tone}
+            reference={showReference ? reference : undefined}
             onEditReference={
               interactive && showReference ? onEditReference : undefined
             }

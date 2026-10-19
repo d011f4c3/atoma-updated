@@ -7,6 +7,7 @@ import { OriginsProvider } from "@/components/origins-provider";
 import { SmoothScrollProvider } from "@/components/smooth-scroll";
 import { StorefrontThemeProvider } from "@/components/storefront-theme-provider";
 import { StorefrontLocaleProvider } from "@/components/storefront-locale-provider";
+import { HomepageJourneyProvider } from "@/components/homepage-journey-provider";
 import { readStorefrontLocale } from "@/lib/i18n/server";
 import { localizedMetadata } from "@/lib/i18n/metadata";
 import "lenis/dist/lenis.css";
@@ -97,7 +98,9 @@ export default async function RootLayout({
           <SmoothScrollProvider>
             <StorefrontThemeProvider initialTone={initialTone}>
               <CartProvider>
-                <OriginsProvider>{children}</OriginsProvider>
+                <HomepageJourneyProvider>
+                  <OriginsProvider>{children}</OriginsProvider>
+                </HomepageJourneyProvider>
               </CartProvider>
             </StorefrontThemeProvider>
           </SmoothScrollProvider>

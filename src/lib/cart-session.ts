@@ -47,7 +47,11 @@ export type CartActionKey = string & {
 };
 
 export type CartActionKind =
-  "product_variant" | "product_subscription" | "cart_line";
+  | "product_variant"
+  | "product_subscription"
+  | "cart_line"
+  | "selection_variant"
+  | "selection_subscription";
 
 export interface CartActionKeyInput {
   readonly kind: CartActionKind;
@@ -367,7 +371,9 @@ function validateActionKind(value: CartActionKind): CartActionKind {
   if (
     value !== "product_variant" &&
     value !== "product_subscription" &&
-    value !== "cart_line"
+    value !== "cart_line" &&
+    value !== "selection_variant" &&
+    value !== "selection_subscription"
   ) {
     throw new Error();
   }

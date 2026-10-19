@@ -86,9 +86,57 @@
   text-align: right;
 }
 
+.commerceLoader {
+  position: fixed;
+  z-index: 90;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  width: calc(14rem + 2px);
+  max-width: calc(100vw - 2rem);
+  padding: 1rem;
+  border: 1px solid var(--color-line, rgb(38 59 52 / 20%));
+  background: var(--color-raised, #f8faf6);
+  color: var(--color-ink, #263b34);
+  font-family: var(--font-atoma-mono), monospace;
+  font-weight: 400;
+  pointer-events: none;
+}
+
+/* The opening hero already owns the full-screen readiness feedback. */
+:global(body:has([data-hero-loader])) .commerceLoader:not([data-in-cart]) {
+  visibility: hidden;
+}
+
+.commerceLoader[data-in-cart] {
+  position: static;
+  width: auto;
+  max-width: none;
+  padding: 0.375rem 0 1.25rem;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+.fill[data-indeterminate] {
+  clip-path: inset(0 70% 0 0);
+  animation: waiting-ticks 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes waiting-ticks {
+  to {
+    clip-path: inset(0 0 0 70%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .loader,
   .fill {
     transition: none;
+  }
+
+  .fill[data-indeterminate] {
+    animation: none;
+    clip-path: none;
+    opacity: 0.65;
   }
 }

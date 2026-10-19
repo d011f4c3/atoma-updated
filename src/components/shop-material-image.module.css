@@ -27,7 +27,7 @@
   transition: opacity 180ms ease;
 }
 
-.root[data-pending="true"] .image {
+.root[data-pending="true"]:not([data-show-while-preparing="true"]) .image {
   opacity: 0;
 }
 

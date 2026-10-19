@@ -14,10 +14,15 @@ const powderPhotographs = new Set([
 type ShopMaterialImageProps = {
   src: string;
   alt: string;
+  showWhilePreparing?: boolean;
 };
 
 /** A static material photograph, sized by its surrounding product card. */
-export function ShopMaterialImage({ src, alt }: ShopMaterialImageProps) {
+export function ShopMaterialImage({
+  src,
+  alt,
+  showWhilePreparing = false,
+}: ShopMaterialImageProps) {
   const [mask, setMask] = useState<{
     source: string;
     url: string | null;
@@ -42,6 +47,7 @@ export function ShopMaterialImage({ src, alt }: ShopMaterialImageProps) {
       className={styles.root}
       data-masked={Boolean(currentMask)}
       data-pending={pending}
+      data-show-while-preparing={showWhilePreparing || undefined}
     >
       <Image
         src={src}

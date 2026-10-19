@@ -1,0 +1,620 @@
+.page {
+  --ink: var(--color-ink);
+  --muted: var(--color-muted);
+  --line: var(--color-line);
+  --surface: transparent;
+  --gutter: clamp(1.25rem, 3.3vw, 4rem);
+  min-height: 100svh;
+  color: var(--ink);
+  background: var(--color-background);
+  background-attachment: fixed;
+  font-family: var(--font-atoma-mono), monospace;
+}
+.content {
+  width: 100%;
+  margin-inline: auto;
+}
+.page a {
+  color: inherit;
+  text-decoration: none;
+}
+.page :is(a, button, select):focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 5px;
+}
+.page [aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: wait;
+}
+.topline {
+  margin-inline: var(--gutter);
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  min-height: 3.5rem;
+}
+.topline nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.topline nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--muted);
+}
+.purchase {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+.eyebrow {
+  font-size: 0.625rem;
+  line-height: 1.6;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+.purchase h2 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  margin: 2rem 0 0.8rem;
+}
+.setLine {
+  font-size: 0.875rem;
+  margin: 0;
+}
+.setLine span {
+  color: var(--muted);
+  font-size: 0.6875rem;
+}
+.status {
+  margin-top: 2rem;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.8;
+}
+.status > p {
+  margin: 0 0 1rem;
+}
+.status > button:last-child {
+  margin-top: 1rem;
+}
+.detail {
+  font-size: calc(0.75rem + var(--locale-font-increment));
+  line-height: 1.8;
+  color: var(--muted);
+}
+.textButton {
+  min-height: 2.75rem;
+  padding: 0.5rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.textButton:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+.order {
+  margin-top: 1.5rem;
+}
+.purchase .valueNote {
+  max-width: 44ch;
+  margin: 0.75rem 0 0;
+}
+.price {
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  padding-bottom: 0.5rem;
+}
+.purchase .creditLink {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+.purchase .creditLink:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
+}
+.purchase .creditLink[aria-disabled="true"] {
+  cursor: wait;
+  opacity: 0.5;
+}
+.format {
+  display: grid;
+  gap: 0.75rem;
+  font-size: calc(0.75rem + var(--locale-font-increment));
+}
+.format select {
+  max-width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  background: var(--color-background);
+  color: inherit;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+}
+.orderLine {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--line);
+  padding-block: 1.5rem;
+  margin-top: 1rem;
+}
+.quantity,
+.total {
+  display: grid;
+  gap: 0.65rem;
+  font-size: 0.625rem;
+}
+.quantity > span,
+.total > span {
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.total {
+  text-align: right;
+}
+.total output {
+  font-size: 1rem;
+  align-self: center;
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+}
+.stepper button {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  min-height: 2.75rem;
+  width: 2.75rem;
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.stepper output {
+  min-width: 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
+.stepper button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.error {
+  font-size: calc(0.75rem + var(--locale-font-increment));
+  line-height: 1.7;
+}
+
+/* The in-place homepage reader shares the real set order controls. */
+.purchase:is([data-presentation="entry"], [data-presentation="study"]) {
+  padding-top: 0.875rem;
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"]) h3 {
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"])
+  h3:focus {
+  outline: none;
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"]) .status {
+  margin-top: 0.75rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"])
+  .status
+  > p {
+  margin-bottom: 0.75rem;
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"]) .order {
+  margin-top: 0.625rem;
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"]) .price {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"])
+  .price
+  .eyebrow {
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"]) .format {
+  gap: 0.375rem;
+  margin-top: 0.5rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"])
+  .orderLine {
+  margin-top: 0;
+  padding-block: 0.5rem 0.875rem;
+  border-top: 0;
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"])
+  :is(.quantity, .total) {
+  gap: 0.5rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"])
+  :is(.stepper, .total)
+  output {
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"]) .detail {
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"]) .error {
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"])
+  .orderDetails {
+  margin-top: 0.75rem;
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"])
+  .orderDetails
+  summary {
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+}
+.purchase:is([data-presentation="entry"], [data-presentation="study"])
+  .stepper
+  button:focus-visible,
+.purchase:is([data-presentation="entry"], [data-presentation="study"])
+  .format
+  select:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
+}
+
+/* The opening keeps a direct purchase beside a single, generous set visual. */
+.coverTrack {
+  position: relative;
+}
+.setLayout {
+  width: min(100% - var(--gutter) * 2, 80rem);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(17rem, 0.8fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "intro purchase" "visual purchase";
+  align-items: center;
+  column-gap: clamp(2rem, 6vw, 6rem);
+  row-gap: 2rem;
+  padding-block: 2.5rem 4rem;
+}
+.setIntroduction {
+  grid-area: intro;
+  align-self: end;
+}
+.setIntroduction h1 {
+  margin: 0;
+  font-size: calc(
+    clamp(1.5rem, 2.1vw, 1.875rem) + var(--locale-font-increment, 0px)
+  );
+  line-height: 1.35;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+.setDescription {
+  max-width: 44ch;
+  margin: 0.75rem 0 0;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+.setVisual {
+  grid-area: visual;
+  min-width: 0;
+  transform-origin: 50% 40%;
+}
+.setPurchase {
+  grid-area: purchase;
+  align-self: center;
+  min-width: 0;
+  padding-block: 1.5rem;
+  scroll-margin-top: 2rem;
+}
+.orderSummary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.7;
+}
+.orderSummary span + span {
+  font-size: 0.75rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.purchase[data-presentation="page"] {
+  border-top: 1px solid var(--line);
+  padding-top: 1.25rem;
+}
+.purchase[data-presentation="page"] h2 {
+  margin: 0;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.7;
+}
+.purchase[data-presentation="page"] .status {
+  margin-top: 1rem;
+}
+.purchase[data-presentation="page"] .status > p:first-child {
+  margin-bottom: 0.5rem;
+}
+.purchase[data-presentation="page"] .detail {
+  max-width: 44ch;
+}
+.purchase[data-presentation="page"] .price {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 1.25rem;
+}
+.contentsLink,
+.nextAction,
+.returnAction,
+.retryAction {
+  composes: action from "./hero-study-introduction.module.css";
+  width: 100%;
+  background: transparent;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.contentsLink {
+  margin-top: 1.25rem;
+}
+.journey {
+  position: relative;
+  z-index: 2;
+  background: var(--color-background);
+  background-attachment: fixed;
+}
+.next {
+  padding-block: 1.5rem 4rem;
+}
+.preparationImage {
+  position: relative;
+  margin: 0;
+  height: 65svh;
+  min-height: 24rem;
+  overflow: clip;
+  clip-path: inset(0 var(--sample-photo-inset, 0%));
+}
+.preparationImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 55%;
+}
+.nextCopy {
+  width: min(100% - var(--gutter) * 2, 80rem);
+  margin: 2.5rem auto 0;
+  display: grid;
+  grid-template-columns: 1fr 1.25fr 1fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+}
+.next h2 {
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.035em;
+  margin: 0.75rem 0 0;
+}
+.nextMeasure {
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 1.7;
+}
+.next p {
+  max-width: 44ch;
+  margin: 0;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.85;
+  color: var(--muted);
+}
+.returnLine {
+  width: min(100% - var(--gutter) * 2, 80rem);
+  margin-inline: auto;
+  padding-block: 2rem 4rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.returnLine > span {
+  font-size: calc(0.75rem + var(--locale-font-increment));
+  color: var(--muted);
+  line-height: 1.8;
+}
+.returnAction {
+  width: min(100%, 20rem);
+}
+
+@media (min-width: 900px) and (min-height: 650px) and (prefers-reduced-motion: no-preference) {
+  .coverTrack {
+    padding-bottom: 35svh;
+    margin-bottom: -35svh;
+  }
+  .setLayout {
+    position: sticky;
+    top: 0;
+    min-height: max(32rem, calc(100svh - 9rem));
+  }
+  .setVisual {
+    transform: translateY(calc(var(--sample-cover-progress, 0) * -3rem))
+      scale(calc(1 - var(--sample-cover-progress, 0) * 0.12));
+  }
+}
+@media (max-width: 1000px) {
+  .setLayout,
+  .setIntroduction {
+    column-gap: 2rem;
+  }
+  .nextCopy {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 3rem;
+  }
+  .nextAction {
+    grid-column: 2;
+  }
+}
+@media (max-width: 760px) {
+  .topline {
+    gap: 1rem;
+  }
+  .topline nav {
+    gap: 0.5rem;
+  }
+  .setLayout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "intro" "visual" "purchase";
+    row-gap: 1.25rem;
+    padding-block: 1.25rem 3rem;
+  }
+  .setIntroduction {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+  .setIntroduction h1 {
+    font-size: calc(
+      clamp(1.375rem, 6vw, 1.625rem) + var(--locale-font-increment, 0px)
+    );
+    margin-top: 0.5rem;
+  }
+  .setPurchase {
+    padding-top: 0;
+  }
+  .orderSummary {
+    padding-bottom: 1rem;
+  }
+  .purchase[data-presentation="page"] {
+    padding-top: 1rem;
+  }
+  .purchase[data-presentation="page"] .status {
+    margin-top: 0.75rem;
+  }
+  .contentsLink {
+    margin-top: 1rem;
+  }
+  .preparationImage {
+    height: 48svh;
+    min-height: 18rem;
+  }
+  .nextCopy {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    margin-top: 1.75rem;
+  }
+  .nextAction {
+    grid-column: auto;
+    margin-top: 0.25rem;
+  }
+  .next {
+    padding-bottom: 3rem;
+  }
+  .returnLine {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-block: 1.5rem 3rem;
+  }
+  .returnAction {
+    width: 100%;
+  }
+  .purchase h2 {
+    margin: 1rem 0 0.65rem;
+    font-size: 1.375rem;
+  }
+  .status {
+    margin-top: 1.5rem;
+  }
+}
+
+.orderDetails {
+  margin-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.orderDetails summary {
+  min-height: 2.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  list-style: none;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+.orderDetails summary::-webkit-details-marker {
+  display: none;
+}
+.orderDetails summary > span {
+  position: relative;
+  width: 0.75rem;
+  height: 0.75rem;
+  flex: none;
+}
+.orderDetails summary > span::before,
+.orderDetails summary > span::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+.orderDetails summary > span::before {
+  width: 0.75rem;
+  height: 1px;
+  top: calc(50% - 0.5px);
+}
+.orderDetails summary > span::after {
+  width: 1px;
+  height: 0.75rem;
+  left: calc(50% - 0.5px);
+}
+.orderDetails[open] summary > span::after {
+  display: none;
+}
+.orderDetails summary:hover {
+  color: var(--ink);
+}
+.orderDetails summary:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
+}
+.orderDetails .detail {
+  margin: 0;
+  padding-block: 0.25rem 1rem;
+}
+.retryAction {
+  margin-top: 1rem;
+  text-align: left;
+  cursor: pointer;
+}

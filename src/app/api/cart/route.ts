@@ -2,6 +2,7 @@ import { isLocalTestCheckoutRequest } from "@/lib/cart-config";
 import { parseCartRequest } from "@/lib/cart-input";
 import {
   addCurrentCartLine,
+  changeCurrentDestination,
   loadCurrentCart,
   removeCurrentCartLine,
   updateCurrentCartLine,
@@ -19,7 +20,10 @@ function respond(
   return Response.json(
     {
       ...result,
-      checkoutEnabled: isLocalTestCheckoutRequest(request, process.env),
+      checkoutEnabled:
+        isLocalTestCheckoutRequest(request, process.env) &&
+        result.destinationReviewRequired !== true &&
+        result.destination !== null,
     },
     { status, headers: { "Cache-Control": "no-store" } },
   );
@@ -70,11 +74,13 @@ export async function POST(request: Request) {
   if (!parsed) return respond(request, { kind: "rejected" }, 400);
   try {
     const result =
-      parsed.action === "add"
-        ? await addCurrentCartLine(parsed.command)
-        : parsed.action === "update"
-          ? await updateCurrentCartLine(parsed.command)
-          : await removeCurrentCartLine(parsed.command);
+      parsed.action === "destination"
+        ? await changeCurrentDestination(parsed.countryCode)
+        : parsed.action === "add"
+          ? await addCurrentCartLine(parsed.command)
+          : parsed.action === "update"
+            ? await updateCurrentCartLine(parsed.command)
+            : await removeCurrentCartLine(parsed.command);
     return respond(request, result, result.kind === "unavailable" ? 503 : 200);
   } catch {
     // A dispatched write may have committed. Never imply a failed write is safe

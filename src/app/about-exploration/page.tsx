@@ -3,17 +3,22 @@ import {
   AboutVariations,
   type AboutDirection,
 } from "@/components/about-variations";
+import { AboutStories } from "@/components/about-stories";
+import { AboutFlow } from "@/components/about-flow";
 
 export const metadata: Metadata = {
   title: "About explorations — ATOMA",
-  description: "Three directions for About ATOMA: Studio, Atlas and Notes.",
+  description:
+    "An introduction to ATOMA, its approach to matcha, and the people and places behind the work.",
   robots: { index: false, follow: false },
 };
 
 export default async function AboutExplorationPage({
   searchParams,
 }: {
-  searchParams: Promise<{ direction?: string | string[] }>;
+  searchParams: Promise<{
+    direction?: string | string[];
+  }>;
 }) {
   const { direction } = await searchParams;
   const options: readonly AboutDirection[] = [
@@ -22,9 +27,31 @@ export default async function AboutExplorationPage({
     "notes",
     "original",
   ];
-  return (
-    <AboutVariations
-      direction={options.find((value) => value === direction) ?? "studio"}
+  const archived = options.find((value) => value === direction);
+  const earlier = [
+    "company",
+    "sequence",
+    "relationships",
+    "desk",
+    "method",
+    "connections",
+    "film",
+    "material",
+  ].some((value) => value === direction);
+  return archived ? (
+    <AboutVariations direction={archived} />
+  ) : earlier ? (
+    <AboutStories
+      direction={
+        direction === "relationships" ||
+        direction === "desk" ||
+        direction === "method" ||
+        direction === "connections"
+          ? "relationships"
+          : "sequence"
+      }
     />
+  ) : (
+    <AboutFlow />
   );
 }

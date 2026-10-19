@@ -52,7 +52,10 @@ export function OriginsProvider({ children }: { children: ReactNode }) {
   const [opening, setOpening] = useState<Opening | null>(null);
   const regularStorefront =
     pathname === "/" ||
+    pathname === "/about" ||
+    pathname === "/samples" ||
     pathname === "/origins" ||
+    pathname.startsWith("/field-notes/") ||
     /^\/shop(?:\/[^/]+)?$/.test(pathname);
   // History restores the reader's place; appearance remains the current choice.
   // Saved concepts and studies retain the tone supplied when opening the reader.

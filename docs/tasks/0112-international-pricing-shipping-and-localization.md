@@ -8,6 +8,18 @@ Activation scope: Bounded implementation slices; no Shopify configuration or rel
 
 ## Current delivery
 
+### Country switch update, 2026-10-18
+
+[Task 0171](0171-destination-switch.md) supersedes the interim JPY-only decision
+below: the owner explicitly approved USD for the US and SGD for Singapore,
+then narrowed this pass to the switch functionality. Both Shopify markets now
+use their approved currency with Shopify-managed dynamic conversion and rounding.
+The country selector, contextual catalog and existing-cart buyer-country update
+are implemented under [ADR 0008](../adr/0008-destination-context.md).
+Language remains independent. Shipping rates, packing bands, dispatch/transit
+estimates, live payment-provider review and publication remain separate work.
+The earlier configuration and capability notes below are historical snapshots.
+
 The owner requested implementation on 2026-10-07. Start with
 [Task 0116 — Stable product identity](0116-localization-product-identity.md),
 which preserves the English UI while removing title-language dependence from
@@ -25,14 +37,14 @@ four full language browser profiles and six retail regressions pass. Translation
 phrasing was reviewed for naturalness and script consistency; independent native
 or client terminology sign-off remains available before release.
 
-| Launch decision                                              | Status                                                           |
-| ------------------------------------------------------------ | ---------------------------------------------------------------- |
-| Storefront languages                                         | English, Simplified Chinese, Traditional Chinese, Japanese       |
-| Shipping scope                                               | US and Singapore initially; further destinations later           |
-| Interim currency                                             | JPY for both destinations, confirmed by owner                    |
-| Future currency changes                                      | **Pending client decision**; do not enable USD/SGD automatically |
-| Shipping services/rates, packing bands, dispatch/transit     | Pending confirmed commercial inputs                              |
-| Actual market/shipping configuration and checkout activation | Pending separate implementation and approved release             |
+| Launch decision                                          | Status                                                     |
+| -------------------------------------------------------- | ---------------------------------------------------------- |
+| Storefront languages                                     | English, Simplified Chinese, Traditional Chinese, Japanese |
+| Shipping scope                                           | US and Singapore initially; further destinations later     |
+| Current currency                                         | USD for US; SGD for Singapore, approved 2026-10-18         |
+| Country switch                                           | Implemented under Task 0171; Shopify owns conversion       |
+| Shipping services/rates, packing bands, dispatch/transit | Pending confirmed commercial inputs                        |
+| Market configuration / shipping and release              | USD/SGD configured; shipping and release remain separate   |
 
 Task 0116 is now locally verified: known product names, content and imagery
 retain the approved English presentation across translated upstream titles.
@@ -40,11 +52,12 @@ All 90 unit tests, the production build and four desktop/mobile browser cases
 passed. Translations proceed under Task 0117. Destination selling still needs
 confirmed shipping inputs and shop configuration; this parent task remains open.
 
-The reviewed adapter currently supports only JPY and buyer-IP context. It does
-not yet expose country/language-contextual catalog queries, localization options,
-cart buyer-country changes or delivery operations. Those require a reviewed
-source change and rebuilt snapshot with updated provenance under ADR 0003;
-changing a frontend selector or formatter alone would not implement them.
+At the time of the original plan, the reviewed adapter supported only JPY and buyer-IP context. It did
+not expose country/language-contextual catalog queries, localization options,
+cart buyer-country changes or delivery operations. Task 0171 now extends the
+reviewed adapter for country-contextual catalog/localization and cart country
+changes through a reproducible patch under ADR 0008. Delivery operations remain
+outside that switch task; changing a formatter alone would not implement them.
 
 ### Verified shop configuration, 2026-10-07
 

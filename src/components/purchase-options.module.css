@@ -71,6 +71,47 @@
   font-size: calc(0.625rem + var(--locale-font-increment, 0px));
 }
 
+.choice:has(input:enabled) {
+  cursor: pointer;
+}
+
+.terms {
+  margin: 0.625rem 0 0;
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+
+.management {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  line-height: 1.7;
+}
+
+.management a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  color: var(--ink);
+  text-underline-offset: 0.3em;
+}
+
+.management a:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.management a[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: wait;
+}
+
 :global([data-tone="dark"]) .choice {
   border-color: transparent;
   background: var(--night-control);

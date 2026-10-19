@@ -1,7 +1,7 @@
 import { translate } from "./index.ts";
 import type { Locale } from "./types.ts";
 
-export type StorefrontPage = "home" | "shop" | "product";
+export type StorefrontPage = "home" | "shop" | "product" | "about" | "samples";
 const metadata = {
   home: {
     title: "ATOMA — Matcha",
@@ -17,6 +17,16 @@ const metadata = {
     title: "ATOMA — Matcha selection",
     description:
       "Explore the matcha, its specifications and origins. Choose your format and quantity.",
+  },
+  about: {
+    title: "ATOMA — About",
+    description:
+      "Our approach to matcha, and the people, places and work behind it.",
+  },
+  samples: {
+    title: "ATOMA — Matcha samples",
+    description:
+      "Explore three matcha in one Sample Set: 20 g each of Ceremonial, Barista and Culinary. Find the matcha for your preparation.",
   },
 };
 

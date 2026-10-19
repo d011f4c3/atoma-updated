@@ -66,6 +66,18 @@
 .comparison > p > span {
   flex: none;
 }
+.newDirections {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: inherit;
+  font-size: 0.625rem;
+  text-underline-offset: 0.2em;
+}
+.newDirections:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+}
 @media (max-width: 760px) {
   .comparison {
     padding-top: 0.4rem;

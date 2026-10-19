@@ -1,6 +1,61 @@
 import type { TranslationTable } from "./types.ts";
 
 export const originTranslations = {
+  "Kyoto Prefecture → Uji tea-growing region → Wazuka": {
+    "zh-Hans": "京都府 → 宇治茶产区 → 和束",
+    "zh-Hant": "京都府 → 宇治茶產區 → 和束",
+    ja: "京都府 → 宇治茶の産地 → 和束",
+  },
+  "Kyoto is a prefecture in Japan. Wazuka is part of its Uji tea-growing region; Wazuka Town and Uji City are separate municipalities.":
+    {
+      "zh-Hans":
+        "京都府是日本的一级行政区。和束属于府内的宇治茶产区；和束町与宇治市是不同的行政区。",
+      "zh-Hant":
+        "京都府是日本的一級行政區。和束屬於府內的宇治茶產區；和束町與宇治市是不同的行政區。",
+      ja: "京都府は日本の都道府県の一つです。和束町は府内の宇治茶の産地で、宇治市とは別の自治体です。",
+    },
+  "Wazuka Town is part of the Uji tea-growing region in Kyoto Prefecture, Japan. Our Ceremonial matcha is grown here.":
+    {
+      "zh-Hans":
+        "和束町位于日本京都府的宇治茶产区。我们的纯饮用抹茶采用这里种植的茶叶。",
+      "zh-Hant":
+        "和束町位於日本京都府的宇治茶產區。我們的純飲用抹茶採用這裡種植的茶葉。",
+      ja: "和束町は、日本の京都府にある宇治茶の産地です。点てて飲む抹茶の茶葉は、ここで栽培されています。",
+    },
+  "Wazuka belongs to the Uji tea-growing region of Kyoto Prefecture. Wazuka Town and Uji City are separate municipalities.":
+    {
+      "zh-Hans": "和束属于京都府的宇治茶产区。和束町与宇治市是不同的行政区。",
+      "zh-Hant": "和束屬於京都府的宇治茶產區。和束町與宇治市是不同的行政區。",
+      ja: "和束は京都府の宇治茶の産地に含まれます。和束町と宇治市はそれぞれ別の自治体です。",
+    },
+  "Wazuka sits within the Uji tea-growing region of Kyoto Prefecture. Tea fields follow the slopes of the Wazuka River valley, surrounded by wooded hills.":
+    {
+      "zh-Hans":
+        "和束位于京都府的宇治茶产区。茶园沿和束川河谷的山坡延伸，四周环绕着林木覆盖的丘陵。",
+      "zh-Hant":
+        "和束位於京都府的宇治茶產區。茶園沿和束川河谷的山坡延伸，四周環繞著林木覆蓋的丘陵。",
+      ja: "京都府の宇治茶の産地、和束。森林に囲まれた和束川の谷の斜面に、茶畑が広がっています。",
+    },
+  "Harvest · Wazuka, Uji tea region, Kyoto": {
+    "zh-Hans": "采收 · 京都府宇治茶产区・和束",
+    "zh-Hant": "採收 · 京都府宇治茶產區・和束",
+    ja: "収穫 · 京都府・宇治茶の産地・和束",
+  },
+  "Field work · Wazuka, Uji tea region, Kyoto": {
+    "zh-Hans": "茶园作业 · 京都府宇治茶产区・和束",
+    "zh-Hant": "茶園作業 · 京都府宇治茶產區・和束",
+    ja: "茶畑の仕事 · 京都府・宇治茶の産地・和束",
+  },
+  "Tea leaves · Wazuka, Uji tea region, Kyoto": {
+    "zh-Hans": "茶叶 · 京都府宇治茶产区・和束",
+    "zh-Hant": "茶葉 · 京都府宇治茶產區・和束",
+    ja: "茶葉 · 京都府・宇治茶の産地・和束",
+  },
+  "FPV in the fields · Wazuka, Uji tea region, Kyoto": {
+    "zh-Hans": "茶园中的 FPV · 京都府宇治茶产区・和束",
+    "zh-Hant": "茶園中的 FPV · 京都府宇治茶產區・和束",
+    ja: "茶畑のFPV · 京都府・宇治茶の産地・和束",
+  },
   Japan: {
     "zh-Hans": "日本",
     "zh-Hant": "日本",
@@ -626,5 +681,55 @@ export const originTranslations = {
     "zh-Hans": "相关田间记录",
     "zh-Hant": "相關田間記錄",
     ja: "関連する畑の記録",
+  },
+  "Harvest work among the tea rows in Wazuka.": {
+    "zh-Hans": "和束茶垄间的采收作业。",
+    "zh-Hant": "和束茶壟間的採收作業。",
+    ja: "和束の茶畝の間で行う収穫作業。",
+  },
+  "In Wazuka.": {
+    "zh-Hans": "在和束。",
+    "zh-Hant": "在和束。",
+    ja: "和束にて。",
+  },
+  "Harvest work, tea leaves and a view from the fields in Wazuka.": {
+    "zh-Hans": "和束的采收作业、茶叶与茶园中的视角。",
+    "zh-Hant": "和束的採收作業、茶葉與茶園中的視角。",
+    ja: "和束での収穫作業、茶葉、そして茶畑からの視点。",
+  },
+  "Harvest · Wazuka, Kyoto": {
+    "zh-Hans": "采收 · 京都和束",
+    "zh-Hant": "採收 · 京都和束",
+    ja: "収穫 · 京都・和束",
+  },
+  "People guide a harvester and collection bag along the hillside.": {
+    "zh-Hans": "人们沿着山坡操作采茶机和集叶袋。",
+    "zh-Hant": "人們沿著山坡操作採茶機和集葉袋。",
+    ja: "斜面に沿って摘採機と集葉袋を扱う人々。",
+  },
+  "Field work · Wazuka, Kyoto": {
+    "zh-Hans": "茶园作业 · 京都和束",
+    "zh-Hant": "茶園作業 · 京都和束",
+    ja: "茶畑の仕事 · 京都・和束",
+  },
+  "Tea leaves · Wazuka, Kyoto": {
+    "zh-Hans": "茶叶 · 京都和束",
+    "zh-Hant": "茶葉 · 京都和束",
+    ja: "茶葉 · 京都・和束",
+  },
+  "04 / A different viewpoint": {
+    "zh-Hans": "04 / 另一个视角",
+    "zh-Hant": "04 / 另一個視角",
+    ja: "04 / もう一つの視点",
+  },
+  "An FPV pilot looks across the tea fields through a headset.": {
+    "zh-Hans": "一位 FPV 操控者通过头显看向茶园。",
+    "zh-Hant": "一位 FPV 操控者透過頭顯看向茶園。",
+    ja: "FPV操縦者がヘッドセットを通して茶畑を見渡す。",
+  },
+  "FPV in the fields · Wazuka, Kyoto": {
+    "zh-Hans": "茶园中的 FPV · 京都和束",
+    "zh-Hant": "茶園中的 FPV · 京都和束",
+    ja: "茶畑のFPV · 京都・和束",
   },
 } satisfies TranslationTable;

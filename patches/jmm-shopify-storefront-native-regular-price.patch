@@ -1,0 +1,738 @@
+--- a/dist/cart-client.d.ts
++++ b/dist/cart-client.d.ts
+@@ -9,8 +9,12 @@
+     readonly timeoutMs?: number;
+     /** Requires approved selling-plan read capability and subscription rollout. */
+     readonly sellingPlansEnabled?: boolean;
++    readonly destinationContextEnabled?: boolean;
++    readonly discountCodesEnabled?: boolean;
+ }
+ export interface StorefrontCartClient {
++    updateDiscountCodes(cartId: string, codes: readonly string[], context?: StorefrontRequestContext): Promise<CartMutationResult>;
++    updateBuyerCountry(cartId: string, countryCode: "JP" | "US" | "SG", context?: StorefrontRequestContext): Promise<CartMutationResult>;
+     createCart(line: CartMerchandiseInput, context?: StorefrontRequestContext): Promise<CartMutationResult>;
+     readCart(cartId: string, context?: StorefrontRequestContext): Promise<Readonly<CartSnapshot> | null>;
+     addCartLine(cartId: string, line: CartMerchandiseInput, context?: StorefrontRequestContext): Promise<CartMutationResult>;
+--- a/dist/cart-client.js
++++ b/dist/cart-client.js
+@@ -1,6 +1,6 @@
+ import { mapCartCheckout, mapCartMutation, mapCartRead, validateCheckoutHost, } from "./cart-mapper.js";
+ import { createCartQueries, CART_LINES_QUERY_LIMIT } from "./cart-query.js";
+-import { resolveStorefrontCurrency, } from "./config.js";
++import { resolveStorefrontCurrency, validateRequestContext, } from "./config.js";
+ import { StorefrontError, mutationOutcomeUnknownError } from "./errors.js";
+ import { createStorefrontTransport, defaultTransportDependencies, } from "./transport.js";
+ const MAX_GRAPHQL_INT = 2_147_483_647;
+@@ -13,19 +13,46 @@
+     const currency = resolveStorefrontCurrency(options.currency);
+     const transport = createStorefrontTransport(options, dependencies);
+     const sellingPlansEnabled = options.sellingPlansEnabled === true;
+-    const queries = createCartQueries(sellingPlansEnabled);
++    const destinationContextEnabled = options.destinationContextEnabled === true;
++    const discountCodesEnabled = options.discountCodesEnabled === true;
++    const queries = createCartQueries(sellingPlansEnabled, destinationContextEnabled, discountCodesEnabled);
+     return Object.freeze({
+         async createCart(lineInput, context) {
+             const line = validateMerchandiseInput(lineInput, sellingPlansEnabled);
++            const destination = validateRequestContext(context);
+             const data = await transport.executeMutation({
+                 query: queries.CART_CREATE_MUTATION,
+                 variables: {
+-                    input: { lines: [line] },
+-                    linesFirst: CART_LINES_QUERY_LIMIT,
+-                },
+-                context,
+-            });
+-            return mapDispatchedMutation(data, "cartCreate", currency, null, sellingPlansEnabled, line);
++                    input: { lines: [line], ...(destinationContextEnabled && destination.countryCode !== undefined ? { buyerIdentity: { countryCode: destination.countryCode } } : {}) },
++                    linesFirst: CART_LINES_QUERY_LIMIT,
++                },
++                context,
++            });
++            return mapDispatchedMutation(data, "cartCreate", currency, null, sellingPlansEnabled, line, destinationContextEnabled, discountCodesEnabled);
++        },
++        async updateBuyerCountry(cartIdInput, countryCode, context) {
++            if (!destinationContextEnabled || !["JP", "US", "SG"].includes(countryCode)) throw invalidInputError();
++            const cartId = validateOpaqueInput(cartIdInput);
++            const data = await transport.executeMutation({
++                query: queries.CART_BUYER_COUNTRY_UPDATE_MUTATION,
++                variables: { cartId, buyerIdentity: { countryCode }, linesFirst: CART_LINES_QUERY_LIMIT }, context,
++            });
++            return mapDispatchedMutation(data, "cartBuyerIdentityUpdate", currency, null, sellingPlansEnabled, undefined, destinationContextEnabled, discountCodesEnabled);
++        },
++        async updateDiscountCodes(cartIdInput, codesInput, context) {
++            if (!discountCodesEnabled) throw invalidInputError();
++            const cartId = validateOpaqueInput(cartIdInput);
++            if (!Array.isArray(codesInput) || codesInput.length > 250) throw invalidInputError();
++            const codes = codesInput.map((code) => {
++                if (typeof code !== "string" || code.length < 1 || code.length > 255 || code.trim() !== code || /[\u0000-\u001f\u007f]/.test(code)) throw invalidInputError();
++                return code;
++            });
++            if (new Set(codes.map((code) => code.toUpperCase())).size !== codes.length) throw invalidInputError();
++            const data = await transport.executeMutation({
++                query: queries.CART_DISCOUNT_CODES_UPDATE_MUTATION,
++                variables: { cartId, discountCodes: codes, linesFirst: CART_LINES_QUERY_LIMIT }, context,
++            });
++            return mapDispatchedMutation(data, "cartDiscountCodesUpdate", currency, cartId, sellingPlansEnabled, undefined, destinationContextEnabled, discountCodesEnabled);
+         },
+         async readCart(cartIdInput, context) {
+             const cartId = validateOpaqueInput(cartIdInput);
+@@ -34,7 +61,7 @@
+                 variables: { cartId, linesFirst: CART_LINES_QUERY_LIMIT },
+                 context,
+             });
+-            return mapCartRead(data, currency, cartId, sellingPlansEnabled);
++            return mapCartRead(data, currency, cartId, sellingPlansEnabled, destinationContextEnabled, discountCodesEnabled);
+         },
+         async addCartLine(cartIdInput, lineInput, context) {
+             const cartId = validateOpaqueInput(cartIdInput);
+@@ -48,7 +75,7 @@
+                 },
+                 context,
+             });
+-            return mapDispatchedMutation(data, "cartLinesAdd", currency, null, sellingPlansEnabled, line);
++            return mapDispatchedMutation(data, "cartLinesAdd", currency, null, sellingPlansEnabled, line, destinationContextEnabled, discountCodesEnabled);
+         },
+         async updateCartLine(cartIdInput, lineInput, context) {
+             const cartId = validateOpaqueInput(cartIdInput);
+@@ -62,7 +89,7 @@
+                 },
+                 context,
+             });
+-            return mapDispatchedMutation(data, "cartLinesUpdate", currency, null, sellingPlansEnabled);
++            return mapDispatchedMutation(data, "cartLinesUpdate", currency, null, sellingPlansEnabled, undefined, destinationContextEnabled, discountCodesEnabled);
+         },
+         async removeCartLine(cartIdInput, lineInput, context) {
+             const cartId = validateOpaqueInput(cartIdInput);
+@@ -76,7 +103,7 @@
+                 },
+                 context,
+             });
+-            return mapDispatchedMutation(data, "cartLinesRemove", currency, null, sellingPlansEnabled);
++            return mapDispatchedMutation(data, "cartLinesRemove", currency, null, sellingPlansEnabled, undefined, destinationContextEnabled, discountCodesEnabled);
+         },
+         async readCheckout(cartIdInput, expectedCheckoutHostInput, context) {
+             const cartId = validateOpaqueInput(cartIdInput);
+@@ -86,13 +113,13 @@
+                 variables: { cartId, linesFirst: CART_LINES_QUERY_LIMIT },
+                 context,
+             });
+-            return mapCartCheckout(data, currency, cartId, expectedCheckoutHost, sellingPlansEnabled);
+-        },
+-    });
+-}
+-function mapDispatchedMutation(data, field, currency, expectedCartReference, sellingPlansEnabled, requestedLine) {
++            return mapCartCheckout(data, currency, cartId, expectedCheckoutHost, sellingPlansEnabled, destinationContextEnabled, discountCodesEnabled);
++        },
++    });
++}
++function mapDispatchedMutation(data, field, currency, expectedCartReference, sellingPlansEnabled, requestedLine, destinationContextEnabled, discountCodesEnabled) {
+     try {
+-        const result = mapCartMutation(data, field, currency, expectedCartReference, sellingPlansEnabled);
++        const result = mapCartMutation(data, field, currency, expectedCartReference, sellingPlansEnabled, destinationContextEnabled, discountCodesEnabled);
+         if (result.kind === "success" && requestedLine !== undefined) {
+             const returnedLine = result.cart.lines.find((line) => line.merchandise.reference === requestedLine.merchandiseId &&
+                 (line.sellingPlan?.reference ?? null) ===
+--- a/dist/cart-contracts.d.ts
++++ b/dist/cart-contracts.d.ts
+@@ -40,6 +40,10 @@
+     readonly sellingPlan: CatalogSellingPlan | null;
+ }
+ export interface CartSnapshot {
++    readonly discountCodes?: readonly Readonly<{ code: string; applicable: boolean }>[];
++    /** Matching code allocations from Cart and its lines; not an inferred total. */
++    readonly discountAllocations?: readonly Readonly<{ code: string; discountedAmount: CatalogMoney }>[];
++    readonly buyerCountryCode?: string | null;
+     /** Non-enumerable at runtime because the complete value is a bearer credential. */
+     readonly reference: CartReference;
+     readonly totalQuantity: number;
+@@ -71,6 +75,8 @@
+     warnings: readonly CartWarningCode[];
+ }>;
+ export interface CartCheckout {
++    readonly buyerCountryCode?: string | null;
++    readonly currency?: string;
+     /** Non-enumerable at runtime; use only for the immediate hosted redirect. */
+     readonly checkoutUrl: string;
+     readonly totalQuantity: number;
+--- a/dist/cart-mapper.d.ts
++++ b/dist/cart-mapper.d.ts
+@@ -1,8 +1,8 @@
+ import type { CartCheckout, CartMutationResult, CartSnapshot } from "./cart-contracts.js";
+ import type { StorefrontCurrencyPolicy } from "./config.js";
+-export type CartMutationField = "cartCreate" | "cartLinesAdd" | "cartLinesUpdate" | "cartLinesRemove";
+-export declare function mapCartRead(data: unknown, currencyPolicy: StorefrontCurrencyPolicy, expectedCartReference: string, sellingPlansEnabled?: boolean): Readonly<CartSnapshot> | null;
+-export declare function mapCartMutation(data: unknown, field: CartMutationField, currencyPolicy: StorefrontCurrencyPolicy, expectedCartReference: string | null, sellingPlansEnabled?: boolean): CartMutationResult;
+-export declare function mapCartCheckout(data: unknown, currencyPolicy: StorefrontCurrencyPolicy, expectedCartReference: string, expectedCheckoutHost: string, sellingPlansEnabled?: boolean): Readonly<CartCheckout> | null;
++export type CartMutationField = "cartCreate" | "cartLinesAdd" | "cartLinesUpdate" | "cartLinesRemove" | "cartBuyerIdentityUpdate" | "cartDiscountCodesUpdate";
++export declare function mapCartRead(data: unknown, currencyPolicy: StorefrontCurrencyPolicy, expectedCartReference: string, sellingPlansEnabled?: boolean, destinationContextEnabled?: boolean, discountCodesEnabled?: boolean): Readonly<CartSnapshot> | null;
++export declare function mapCartMutation(data: unknown, field: CartMutationField, currencyPolicy: StorefrontCurrencyPolicy, expectedCartReference: string | null, sellingPlansEnabled?: boolean, destinationContextEnabled?: boolean, discountCodesEnabled?: boolean): CartMutationResult;
++export declare function mapCartCheckout(data: unknown, currencyPolicy: StorefrontCurrencyPolicy, expectedCartReference: string, expectedCheckoutHost: string, sellingPlansEnabled?: boolean, destinationContextEnabled?: boolean, discountCodesEnabled?: boolean): Readonly<CartCheckout> | null;
+ export declare function validateCheckoutHost(value: string): string;
+ //# sourceMappingURL=cart-mapper.d.ts.map
+\ No newline at end of file
+--- a/dist/cart-mapper.js
++++ b/dist/cart-mapper.js
+@@ -1,4 +1,5 @@
+ import { StorefrontError, invalidResponseError } from "./errors.js";
++import { resolveStorefrontCurrency } from "./config.js";
+ import { mapCatalogMoney } from "./money.js";
+ import { MAX_CART_LINES } from "./cart-query.js";
+ import { mapSellingPlanAllocation } from "./selling-plans.js";
+@@ -8,21 +9,21 @@
+ const MAX_MUTATION_MESSAGES = 20;
+ const MAX_SELECTED_OPTIONS = 100;
+ const CHECKOUT_HOST_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+(?:\:(?:[1-9]\d{0,4}))?$/;
+-export function mapCartRead(data, currencyPolicy, expectedCartReference, sellingPlansEnabled = false) {
++export function mapCartRead(data, currencyPolicy, expectedCartReference, sellingPlansEnabled = false, destinationContextEnabled = false, discountCodesEnabled = false) {
+     const root = readRecord(data, "data");
+     if (root.cart === null) {
+         return null;
+     }
+-    return mapCart(root.cart, currencyPolicy, expectedCartReference, "data.cart", sellingPlansEnabled);
+-}
+-export function mapCartMutation(data, field, currencyPolicy, expectedCartReference, sellingPlansEnabled = false) {
++    return mapCart(root.cart, currencyPolicy, expectedCartReference, "data.cart", sellingPlansEnabled, destinationContextEnabled, discountCodesEnabled);
++}
++export function mapCartMutation(data, field, currencyPolicy, expectedCartReference, sellingPlansEnabled = false, destinationContextEnabled = false, discountCodesEnabled = false) {
+     const root = readRecord(data, "data");
+     const payload = readRecord(root[field], `data.${field}`);
+     const reasons = mapRejections(payload.userErrors, `data.${field}.userErrors`);
+     const warnings = mapWarnings(payload.warnings, `data.${field}.warnings`);
+     const cart = payload.cart === null
+         ? null
+-        : mapCart(payload.cart, currencyPolicy, expectedCartReference, `data.${field}.cart`, sellingPlansEnabled);
++        : mapCart(payload.cart, currencyPolicy, expectedCartReference, `data.${field}.cart`, sellingPlansEnabled, destinationContextEnabled, discountCodesEnabled);
+     if (reasons.length > 0) {
+         return Object.freeze({
+             kind: "rejected",
+@@ -36,15 +37,15 @@
+     }
+     return Object.freeze({ kind: "success", cart, warnings });
+ }
+-export function mapCartCheckout(data, currencyPolicy, expectedCartReference, expectedCheckoutHost, sellingPlansEnabled = false) {
++export function mapCartCheckout(data, currencyPolicy, expectedCartReference, expectedCheckoutHost, sellingPlansEnabled = false, destinationContextEnabled = false, discountCodesEnabled = false) {
+     const root = readRecord(data, "data");
+     if (root.cart === null) {
+         return null;
+     }
+     const cart = readRecord(root.cart, "data.cart");
+-    const snapshot = mapCart(cart, currencyPolicy, expectedCartReference, "data.cart", sellingPlansEnabled);
++    const snapshot = mapCart(cart, currencyPolicy, expectedCartReference, "data.cart", sellingPlansEnabled, destinationContextEnabled, discountCodesEnabled);
+     const checkoutUrl = readCheckoutUrl(cart.checkoutUrl, expectedCheckoutHost, "data.cart.checkoutUrl");
+-    const result = { totalQuantity: snapshot.totalQuantity };
++    const result = { totalQuantity: snapshot.totalQuantity, ...(destinationContextEnabled ? { buyerCountryCode: snapshot.buyerCountryCode, currency: snapshot.cost.totalAmount.currency } : {}) };
+     defineHiddenReadonly(result, "checkoutUrl", checkoutUrl);
+     return Object.freeze(result);
+ }
+@@ -63,8 +64,18 @@
+     }
+     return value;
+ }
+-function mapCart(value, currencyPolicy, expectedCartReference, path, sellingPlansEnabled) {
++function mapCart(value, currencyPolicy, expectedCartReference, path, sellingPlansEnabled, destinationContextEnabled, discountCodesEnabled) {
+     const cart = readRecord(value, path);
++    let buyerCountryCode;
++    if (destinationContextEnabled) {
++        const buyer = readRecord(cart.buyerIdentity, `${path}.buyerIdentity`);
++        buyerCountryCode = buyer.countryCode;
++        if (buyerCountryCode !== null && (typeof buyerCountryCode !== "string" || !/^[A-Z]{2}$/.test(buyerCountryCode))) {
++            throw invalidResponseError(`${path}.buyerIdentity.countryCode`);
++        }
++        const total = readRecord(readRecord(cart.cost, `${path}.cost`).totalAmount, `${path}.cost.totalAmount`);
++        currencyPolicy = resolveStorefrontCurrency(total.currencyCode);
++    }
+     const reference = readOpaqueReference(cart.id, `${path}.id`);
+     if (expectedCartReference !== null && reference !== expectedCartReference) {
+         throw invalidResponseError(`${path}.id`);
+@@ -103,11 +114,48 @@
+     });
+     const result = {
+         totalQuantity,
++        ...(destinationContextEnabled ? { buyerCountryCode } : {}),
++        ...(discountCodesEnabled ? {
++            discountCodes: mapDiscountCodes(cart.discountCodes, `${path}.discountCodes`),
++            discountAllocations: Object.freeze([
++                ...mapCodeAllocations(cart.discountAllocations, currencyPolicy, `${path}.discountAllocations`),
++                ...nodes.flatMap((node, index) => mapCodeAllocations(node.discountAllocations, currencyPolicy, `${path}.lines.nodes[${index}].discountAllocations`)),
++            ]),
++        } : {}),
+         cost: mappedCost,
+         lines: Object.freeze(lines),
+     };
+     defineHiddenReadonly(result, "reference", reference);
+     return Object.freeze(result);
++}
++function readDiscountCode(value, path) {
++    if (typeof value !== "string" || value.length < 1 || value.length > 255 || value.trim() !== value || /[\u0000-\u001f\u007f]/.test(value)) throw invalidResponseError(path);
++    return value;
++}
++function mapDiscountCodes(value, path) {
++    const values = readArray(value, path);
++    if (values.length > 250) throw invalidResponseError(path);
++    const seen = new Set();
++    return Object.freeze(values.map((value, index) => {
++        const record = readRecord(value, `${path}[${index}]`);
++        const code = readDiscountCode(record.code, `${path}[${index}].code`);
++        if (seen.has(code.toUpperCase())) throw invalidResponseError(path);
++        seen.add(code.toUpperCase());
++        return Object.freeze({ code, applicable: readBoolean(record.applicable, `${path}[${index}].applicable`) });
++    }));
++}
++function mapCodeAllocations(value, currencyPolicy, path) {
++    const values = readArray(value, path);
++    if (values.length > 250) throw invalidResponseError(path);
++    return values.flatMap((value, index) => {
++        const record = readRecord(value, `${path}[${index}]`);
++        if (["CartAutomaticDiscountAllocation", "CartCustomDiscountAllocation"].includes(record.__typename)) return [];
++        if (record.__typename !== "CartCodeDiscountAllocation") throw invalidResponseError(path);
++        return [Object.freeze({
++            code: readDiscountCode(record.code, `${path}[${index}].code`),
++            discountedAmount: mapCatalogMoney(record.discountedAmount, currencyPolicy, `${path}[${index}].discountedAmount`),
++        })];
++    });
+ }
+ function mapLine(value, currencyPolicy, path, sellingPlansEnabled) {
+     const line = readRecord(value, path);
+--- a/dist/cart-query.d.ts
++++ b/dist/cart-query.d.ts
+@@ -1,178 +1,4 @@
+-export declare const MAX_CART_LINES: 100;
+-export declare const CART_LINES_QUERY_LIMIT: 101;
+-export declare function createCartQueries(sellingPlansEnabled?: boolean): Readonly<{
+-    CART_CREATE_MUTATION: `#graphql
+-  mutation JmmCartCreate($input: CartInput!, $linesFirst: Int!) {
+-    cartCreate(input: $input) {
+-      
+-    cart {
+-      ...JmmCartFields
+-    }
+-    userErrors {
+-      code
+-    }
+-    warnings {
+-      code
+-    }
+-
+-    }
+-  }
+-  ${string}
+-`;
+-    CART_READ_QUERY: `#graphql
+-  query JmmCartRead($cartId: ID!, $linesFirst: Int!) {
+-    cart(id: $cartId) {
+-      ...JmmCartFields
+-    }
+-  }
+-  ${string}
+-`;
+-    CART_LINES_ADD_MUTATION: `#graphql
+-  mutation JmmCartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!, $linesFirst: Int!) {
+-    cartLinesAdd(cartId: $cartId, lines: $lines) {
+-      
+-    cart {
+-      ...JmmCartFields
+-    }
+-    userErrors {
+-      code
+-    }
+-    warnings {
+-      code
+-    }
+-
+-    }
+-  }
+-  ${string}
+-`;
+-    CART_LINES_UPDATE_MUTATION: `#graphql
+-  mutation JmmCartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!, $linesFirst: Int!) {
+-    cartLinesUpdate(cartId: $cartId, lines: $lines) {
+-      
+-    cart {
+-      ...JmmCartFields
+-    }
+-    userErrors {
+-      code
+-    }
+-    warnings {
+-      code
+-    }
+-
+-    }
+-  }
+-  ${string}
+-`;
+-    CART_LINES_REMOVE_MUTATION: `#graphql
+-  mutation JmmCartLinesRemove($cartId: ID!, $lineIds: [ID!]!, $linesFirst: Int!) {
+-    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+-      
+-    cart {
+-      ...JmmCartFields
+-    }
+-    userErrors {
+-      code
+-    }
+-    warnings {
+-      code
+-    }
+-
+-    }
+-  }
+-  ${string}
+-`;
+-    CART_CHECKOUT_QUERY: `#graphql
+-  query JmmCartCheckout($cartId: ID!, $linesFirst: Int!) {
+-    cart(id: $cartId) {
+-      ...JmmCartFields
+-      checkoutUrl
+-    }
+-  }
+-  ${string}
+-`;
+-}>;
+-export declare const CART_CREATE_MUTATION: `#graphql
+-  mutation JmmCartCreate($input: CartInput!, $linesFirst: Int!) {
+-    cartCreate(input: $input) {
+-      
+-    cart {
+-      ...JmmCartFields
+-    }
+-    userErrors {
+-      code
+-    }
+-    warnings {
+-      code
+-    }
+-
+-    }
+-  }
+-  ${string}
+-`, CART_READ_QUERY: `#graphql
+-  query JmmCartRead($cartId: ID!, $linesFirst: Int!) {
+-    cart(id: $cartId) {
+-      ...JmmCartFields
+-    }
+-  }
+-  ${string}
+-`, CART_LINES_ADD_MUTATION: `#graphql
+-  mutation JmmCartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!, $linesFirst: Int!) {
+-    cartLinesAdd(cartId: $cartId, lines: $lines) {
+-      
+-    cart {
+-      ...JmmCartFields
+-    }
+-    userErrors {
+-      code
+-    }
+-    warnings {
+-      code
+-    }
+-
+-    }
+-  }
+-  ${string}
+-`, CART_LINES_UPDATE_MUTATION: `#graphql
+-  mutation JmmCartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!, $linesFirst: Int!) {
+-    cartLinesUpdate(cartId: $cartId, lines: $lines) {
+-      
+-    cart {
+-      ...JmmCartFields
+-    }
+-    userErrors {
+-      code
+-    }
+-    warnings {
+-      code
+-    }
+-
+-    }
+-  }
+-  ${string}
+-`, CART_LINES_REMOVE_MUTATION: `#graphql
+-  mutation JmmCartLinesRemove($cartId: ID!, $lineIds: [ID!]!, $linesFirst: Int!) {
+-    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+-      
+-    cart {
+-      ...JmmCartFields
+-    }
+-    userErrors {
+-      code
+-    }
+-    warnings {
+-      code
+-    }
+-
+-    }
+-  }
+-  ${string}
+-`, CART_CHECKOUT_QUERY: `#graphql
+-  query JmmCartCheckout($cartId: ID!, $linesFirst: Int!) {
+-    cart(id: $cartId) {
+-      ...JmmCartFields
+-      checkoutUrl
+-    }
+-  }
+-  ${string}
+-`;
+-//# sourceMappingURL=cart-query.d.ts.map
+\ No newline at end of file
++export declare const MAX_CART_LINES = 100;
++export declare const CART_LINES_QUERY_LIMIT = 101;
++export declare function createCartQueries(sellingPlansEnabled?: boolean, destinationContextEnabled?: boolean, discountCodesEnabled?: boolean): Readonly<Record<"CART_CREATE_MUTATION" | "CART_READ_QUERY" | "CART_LINES_ADD_MUTATION" | "CART_LINES_UPDATE_MUTATION" | "CART_LINES_REMOVE_MUTATION" | "CART_CHECKOUT_QUERY" | "CART_BUYER_COUNTRY_UPDATE_MUTATION" | "CART_DISCOUNT_CODES_UPDATE_MUTATION", string>>;
++export declare const CART_CREATE_MUTATION: string, CART_READ_QUERY: string, CART_LINES_ADD_MUTATION: string, CART_LINES_UPDATE_MUTATION: string, CART_LINES_REMOVE_MUTATION: string, CART_CHECKOUT_QUERY: string;
+--- a/dist/cart-query.js
++++ b/dist/cart-query.js
+@@ -1,11 +1,17 @@
+ import { SELLING_PLAN_ALLOCATION_FIELDS } from "./selling-plans.js";
+ export const MAX_CART_LINES = 100;
+ export const CART_LINES_QUERY_LIMIT = 101;
+-function cartFields(sellingPlansEnabled) {
++const CODE_ALLOCATION_FIELDS = `discountAllocations {
++    __typename
++    ... on CartCodeDiscountAllocation { code discountedAmount { amount currencyCode } }
++  }`;
++function cartFields(sellingPlansEnabled, destinationContextEnabled, discountCodesEnabled) {
+     return `
+   fragment JmmCartFields on Cart {
+     id
+     totalQuantity
++    ${discountCodesEnabled ? `discountCodes { code applicable } ${CODE_ALLOCATION_FIELDS}` : ""}
++    ${destinationContextEnabled ? "buyerIdentity { countryCode }" : ""}
+     cost {
+       subtotalAmount {
+         amount
+@@ -24,6 +30,7 @@
+         __typename
+         id
+         quantity
++        ${discountCodesEnabled ? CODE_ALLOCATION_FIELDS : ""}
+         ${sellingPlansEnabled ? `sellingPlanAllocation { ${SELLING_PLAN_ALLOCATION_FIELDS} }` : ""}
+         cost {
+           amountPerQuantity {
+@@ -91,8 +98,8 @@
+       code
+     }
+ `;
+-export function createCartQueries(sellingPlansEnabled = false) {
+-    const fields = cartFields(sellingPlansEnabled);
++export function createCartQueries(sellingPlansEnabled = false, destinationContextEnabled = false, discountCodesEnabled = false) {
++    const fields = cartFields(sellingPlansEnabled, destinationContextEnabled, discountCodesEnabled);
+     const CART_CREATE_MUTATION = `#graphql
+   mutation JmmCartCreate($input: CartInput!, $linesFirst: Int!) {
+     cartCreate(input: $input) {
+@@ -142,7 +149,21 @@
+   }
+   ${fields}
+ `;
++    const CART_BUYER_COUNTRY_UPDATE_MUTATION = `#graphql
++  mutation JmmCartBuyerCountryUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!, $linesFirst: Int!) {
++    cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) { ${MUTATION_RESULT_FIELDS} }
++  }
++  ${fields}
++`;
++    const CART_DISCOUNT_CODES_UPDATE_MUTATION = `#graphql
++  mutation JmmCartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!, $linesFirst: Int!) {
++    cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) { ${MUTATION_RESULT_FIELDS} }
++  }
++  ${fields}
++`;
+     return Object.freeze({
++        CART_DISCOUNT_CODES_UPDATE_MUTATION,
++        CART_BUYER_COUNTRY_UPDATE_MUTATION,
+         CART_CREATE_MUTATION,
+         CART_READ_QUERY,
+         CART_LINES_ADD_MUTATION,
+--- a/dist/client.d.ts
++++ b/dist/client.d.ts
+@@ -10,6 +10,7 @@
+     readonly sellingPlansEnabled?: boolean;
+ }
+ export interface StorefrontCatalogClient {
++    readMarketContext(context: StorefrontRequestContext): Promise<Readonly<{countryCode: "JP" | "US" | "SG"; currency: SupportedStorefrontCurrencyCode}>>;
+     readPublishedCatalog(context?: StorefrontRequestContext): Promise<Readonly<CatalogSnapshot>>;
+     /** Reads by a canonical 1-255 character Shopify route locator, never JMM identity. */
+     readPublishedProductByHandle(handle: string, context?: StorefrontRequestContext): Promise<Readonly<CatalogProductSummary> | null>;
+--- a/dist/client.js
++++ b/dist/client.js
+@@ -1,4 +1,4 @@
+-import { resolveStorefrontCurrency, } from "./config.js";
++import { resolveStorefrontCurrency, validateRequestContext, } from "./config.js";
+ import { StorefrontError, invalidResponseError } from "./errors.js";
+ import { mapCatalogPage, mapPublishedProduct } from "./mapper.js";
+ import { CATALOG_PAGE_SIZE, MAX_CATALOG_PAGE_REQUESTS, MAX_CATALOG_PRODUCTS, MAX_VARIANTS_PER_PRODUCT, createPublishedProductQuery, PUBLISHED_CATALOG_QUERY, } from "./query.js";
+@@ -14,7 +14,24 @@
+     const transport = createStorefrontTransport(options, dependencies);
+     const sellingPlansEnabled = options.sellingPlansEnabled === true;
+     return Object.freeze({
++        async readMarketContext(requestContext) {
++            const context = validateRequestContext(requestContext);
++            if (context.countryCode === undefined) throw invalidResponseError("market country");
++            const data = await transport.executeRead({
++                query: `query JmmMarketContext($country: CountryCode!) @inContext(country: $country) { localization { country { isoCode currency { isoCode } } availableCountries { isoCode } } }`,
++                variables: { country: context.countryCode }, context,
++            });
++            const country = data?.localization?.country;
++            const available = data?.localization?.availableCountries;
++            if (country?.isoCode !== context.countryCode || !Array.isArray(available) || available.length > 300 ||
++                !available.some((entry) => entry?.isoCode === context.countryCode)) {
++                throw invalidResponseError("localization.country");
++            }
++            const currency = resolveStorefrontCurrency(country?.currency?.isoCode);
++            return Object.freeze({ countryCode: country.isoCode, currency: currency.code });
++        },
+         async readPublishedCatalog(requestContext) {
++            const context = validateRequestContext(requestContext);
+             const products = [];
+             const seenCursors = new Set();
+             const seenProductReferences = new Set();
+@@ -29,6 +46,7 @@
+                         first: CATALOG_PAGE_SIZE,
+                         after: cursor,
+                         variantsFirst: MAX_VARIANTS_PER_PRODUCT,
++                        country: context.countryCode ?? null,
+                     },
+                     context: requestContext,
+                 });
+@@ -70,11 +88,13 @@
+         },
+         async readPublishedProductByHandle(handleInput, requestContext) {
+             const handle = validateProductHandle(handleInput);
++            const context = validateRequestContext(requestContext);
+             const data = await transport.executeRead({
+                 query: createPublishedProductQuery(sellingPlansEnabled),
+                 variables: {
+                     handle,
+                     variantsFirst: MAX_VARIANTS_PER_PRODUCT,
++                        country: context.countryCode ?? null,
+                 },
+                 context: requestContext,
+             });
+--- a/dist/config.d.ts
++++ b/dist/config.d.ts
+@@ -2,6 +2,8 @@
+ export declare const SHOPIFY_STOREFRONT_PRIVATE_TOKEN_ENV: "SHOPIFY_STOREFRONT_PRIVATE_TOKEN";
+ declare const CURRENCY_MINOR_UNIT_EXPONENTS: Readonly<{
+     readonly JPY: 0;
++    readonly USD: 2;
++    readonly SGD: 2;
+ }>;
+ export type SupportedStorefrontCurrencyCode = keyof typeof CURRENCY_MINOR_UNIT_EXPONENTS;
+ export interface StorefrontEnvironment {
+@@ -15,6 +17,7 @@
+ export interface StorefrontRequestContext {
+     /** A trusted buyer IP for buyer-originated private-token requests. */
+     readonly buyerIp?: string;
++    readonly countryCode?: "JP" | "US" | "SG";
+ }
+ export declare function readStorefrontEnvironment(environment?: NodeJS.ProcessEnv): StorefrontEnvironment;
+ /** Revalidates manually constructed options at the network boundary. */
+--- a/dist/config.js
++++ b/dist/config.js
+@@ -4,7 +4,7 @@
+ export const SHOPIFY_STORE_DOMAIN_ENV = "SHOPIFY_STORE_DOMAIN";
+ export const SHOPIFY_STOREFRONT_PRIVATE_TOKEN_ENV = "SHOPIFY_STOREFRONT_PRIVATE_TOKEN";
+ const STORE_DOMAIN_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.myshopify\.com$/;
+-const CURRENCY_MINOR_UNIT_EXPONENTS = Object.freeze({ JPY: 0 });
++const CURRENCY_MINOR_UNIT_EXPONENTS = Object.freeze({ JPY: 0, USD: 2, SGD: 2 });
+ export function readStorefrontEnvironment(environment = process.env) {
+     return createStorefrontEnvironment(environment[SHOPIFY_STORE_DOMAIN_ENV], environment[SHOPIFY_STOREFRONT_PRIVATE_TOKEN_ENV]);
+ }
+@@ -32,13 +32,16 @@
+     return defineCurrencyPolicy(code, exponent);
+ }
+ export function validateRequestContext(context) {
+-    if (context?.buyerIp === undefined) {
+-        return Object.freeze({});
++    if (context?.countryCode !== undefined && !["JP", "US", "SG"].includes(context.countryCode)) {
++        throw configurationError("country code");
+     }
+-    if (isIP(context.buyerIp) === 0) {
++    if (context?.buyerIp !== undefined && isIP(context.buyerIp) === 0) {
+         throw configurationError("buyer IP");
+     }
+-    return Object.freeze({ buyerIp: context.buyerIp });
++    return Object.freeze({
++        ...(context?.buyerIp === undefined ? {} : { buyerIp: context.buyerIp }),
++        ...(context?.countryCode === undefined ? {} : { countryCode: context.countryCode }),
++    });
+ }
+ function parseStoreDomain(value) {
+     const normalized = value?.trim().toLowerCase();
+--- a/dist/query.d.ts
++++ b/dist/query.d.ts
+@@ -1,8 +1,7 @@
+-export declare const CATALOG_PAGE_SIZE: 25;
+-export declare const MAX_CATALOG_PRODUCTS: 100;
+-export declare const MAX_VARIANTS_PER_PRODUCT: 100;
++export declare const CATALOG_PAGE_SIZE = 25;
++export declare const MAX_CATALOG_PRODUCTS = 100;
++export declare const MAX_VARIANTS_PER_PRODUCT = 100;
+ export declare const MAX_CATALOG_PAGE_REQUESTS: number;
+-export declare const PUBLISHED_CATALOG_QUERY: "#graphql\n  query JmmPublishedCatalog($first: Int!, $after: String, $variantsFirst: Int!) {\n    products(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      nodes {\n        id\n        handle\n        title\n        description\n        requiresSellingPlan\n        availableForSale\n        featuredImage {\n          url\n          altText\n          width\n          height\n        }\n        variants(first: $variantsFirst) {\n          pageInfo {\n            hasNextPage\n          }\n          nodes {\n            id\n            sku\n            title\n            availableForSale\n            selectedOptions {\n              name\n              value\n            }\n            price {\n              amount\n              currencyCode\n            }\n            compareAtPrice {\n              amount\n              currencyCode\n            }\n            quantityRule {\n              minimum\n              maximum\n              increment\n            }\n            image {\n              url\n              altText\n              width\n              height\n            }\n          }\n        }\n      }\n    }\n  }\n";
++export declare const PUBLISHED_CATALOG_QUERY: string;
+ export declare function createPublishedProductQuery(sellingPlansEnabled?: boolean): string;
+ export declare const PUBLISHED_PRODUCT_QUERY: string;
+-//# sourceMappingURL=query.d.ts.map
+\ No newline at end of file
+--- a/dist/query.js
++++ b/dist/query.js
+@@ -4,7 +4,7 @@
+ export const MAX_VARIANTS_PER_PRODUCT = 100;
+ export const MAX_CATALOG_PAGE_REQUESTS = MAX_CATALOG_PRODUCTS / CATALOG_PAGE_SIZE;
+ export const PUBLISHED_CATALOG_QUERY = `#graphql
+-  query JmmPublishedCatalog($first: Int!, $after: String, $variantsFirst: Int!) {
++  query JmmPublishedCatalog($first: Int!, $after: String, $variantsFirst: Int!, $country: CountryCode) @inContext(country: $country) {
+     products(first: $first, after: $after) {
+       pageInfo {
+         hasNextPage
+@@ -63,7 +63,7 @@
+ `;
+ export function createPublishedProductQuery(sellingPlansEnabled = false) {
+     return `#graphql
+-  query JmmPublishedProduct($handle: String!, $variantsFirst: Int!) {
++  query JmmPublishedProduct($handle: String!, $variantsFirst: Int!, $country: CountryCode) @inContext(country: $country) {
+     product(handle: $handle) {
+       id
+       handle
+--- a/dist/selling-plans.js
++++ b/dist/selling-plans.js
+@@ -76,18 +76,23 @@
+     const initial = mapCatalogMoney(allocation.checkoutChargeAmount, currency, "sellingPlan.checkoutCharge");
+     const remaining = mapCatalogMoney(allocation.remainingBalanceChargeAmount, currency, "sellingPlan.remainingBalance");
+     const amount = prices[0];
++    // Shopify's native regular-price plan has no adjustment or future schedule.
++    // With matched billing/delivery and no balance, its authoritative checkout
++    // charge is the price for one delivery. Never manufacture a discount entry.
++    const unadjusted = prices.length === 0 && orderCounts.length === 0;
+     if (!plan.recurringDeliveries ||
+         billing === null ||
+         delivery === null ||
+         billing.interval !== delivery.interval ||
+         billing.count !== delivery.count ||
+-        prices.length !== 1 ||
+-        amount === undefined ||
+-        orderCounts.length > 1 ||
+-        orderCounts.some((count) => count !== null) ||
+-        amount.price.minorUnits !== amount.perDeliveryPrice.minorUnits ||
+-        initial.minorUnits !== amount.price.minorUnits ||
+-        remaining.minorUnits !== 0)
++        remaining.minorUnits !== 0 ||
++        (!unadjusted &&
++            (prices.length !== 1 ||
++                amount === undefined ||
++                orderCounts.length > 1 ||
++                orderCounts.some((count) => count !== null) ||
++                amount.price.minorUnits !== amount.perDeliveryPrice.minorUnits ||
++                initial.minorUnits !== amount.price.minorUnits)))
+         return null;
+     return Object.freeze({
+         reference,
+@@ -95,7 +100,7 @@
+         description,
+         deliveryInterval: delivery.interval,
+         deliveryIntervalCount: delivery.count,
+-        price: amount.price,
++        price: unadjusted ? initial : amount.price,
+     });
+ }
+ function policy(value, expected) {

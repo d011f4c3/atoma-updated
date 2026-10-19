@@ -48,8 +48,7 @@ export function HomepageProductInformation({
   const root = useRef<HTMLElement>(null);
   const { busy } = useCart();
   const { openOrigins } = useOrigins();
-  const { catalog, loading, product, retry } = model;
-  const products = catalog?.products ?? [];
+  const { catalog, products, loading, product, retry } = model;
   const unavailable = !catalog || catalog.status === "unavailable";
   const ready = !loading && !unavailable && products.length > 0;
   const content =

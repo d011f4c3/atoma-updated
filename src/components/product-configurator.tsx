@@ -32,6 +32,7 @@ import {
   type VisualSectionVariant,
 } from "./visual-product-selectors";
 import { useProductSelection } from "./use-product-selection";
+import { useHomepageJourney } from "./homepage-journey-provider";
 import { useOrigins } from "./origins-provider";
 import { useCart } from "./cart-drawer";
 import { ProductInformation } from "./product-information";
@@ -44,6 +45,30 @@ import { PowderScene } from "./powder-scene";
 import { LabelCard } from "./label-card";
 import { SilverBagScene } from "./silver-bag-scene";
 import { ReferenceEditor } from "./reference-editor";
+import {
+  SampleExperienceEntry,
+  type SampleEntrancePlacement,
+} from "./sample-experience-entry";
+import {
+  SampleSelectionPanel,
+  type SampleSelectionPanelVariant,
+} from "./sample-selection-panel";
+import {
+  SampleSelectionMaterial,
+  SampleSelectionInformation,
+} from "./sample-selection-content";
+import type {
+  SampleEntryDirection,
+  SampleRightEntry,
+} from "@/lib/sample-entry-directions";
+import { SampleEntryLink } from "./sample-entry-link";
+import { SampleStartEntry } from "./sample-start-entry";
+import type { SampleOrderLayout } from "@/lib/sample-order-layouts";
+import {
+  SampleSetImagery,
+  type SampleImageryVariant,
+} from "./sample-set-imagery";
+import { SampleRightEntry as SampleRightEntryPreview } from "./sample-right-entry";
 import styles from "./product-configurator.module.css";
 
 type BuilderStep = 0 | 1;
@@ -53,6 +78,7 @@ type ShoppingMode = "builder" | "standard" | HomepageInformationView;
 export type ProductLabelSnapshot = {
   title: string;
   application: string;
+  productHandle?: string;
   format: string;
   quantity: number;
   reference: string;
@@ -95,6 +121,7 @@ export function ProductConfigurator({
   sectionSelectorVariant = "current",
   selectorPlacement = "right",
   initialProductHandle,
+  preserveJourney = false,
   originPreviewVariant = "current",
   overviewStudyVariant = "current",
   shopPreviewVariant = "current",
@@ -102,6 +129,14 @@ export function ProductConfigurator({
   productCodePlacement,
   initialView = "overview",
   materialObject = "powder",
+  sampleEntrancePlacement,
+  samplePanelVariant,
+  sampleEntryDirection,
+  sampleEntryScope = "all",
+  sampleRightEntry = "default",
+  sampleImageryVariant,
+  sampleOrderLayout,
+  contextVisible = true,
 }: {
   packaging?: "label" | "bag" | "canister";
   tone?: "dark" | "light";
@@ -119,6 +154,7 @@ export function ProductConfigurator({
   sectionSelectorVariant?: "current" | VisualSectionVariant;
   selectorPlacement?: "left" | "right";
   initialProductHandle?: string;
+  preserveJourney?: boolean;
   originPreviewVariant?: "current" | OriginPreviewVariant;
   overviewStudyVariant?: OverviewStudyVariant;
   shopPreviewVariant?: "current" | "refined" | ShopPreviewVariant;
@@ -126,12 +162,21 @@ export function ProductConfigurator({
   productCodePlacement?: ProductCodePlacement;
   initialView?: HomepageInformationView | "builder";
   materialObject?: "powder" | "silver-bag";
+  sampleEntrancePlacement?: SampleEntrancePlacement;
+  samplePanelVariant?: SampleSelectionPanelVariant;
+  sampleEntryDirection?: SampleEntryDirection;
+  sampleEntryScope?: "all" | "left";
+  sampleRightEntry?: SampleRightEntry;
+  sampleImageryVariant?: SampleImageryVariant;
+  sampleOrderLayout?: SampleOrderLayout;
+  contextVisible?: boolean;
 }) {
   const { locale, t } = useStorefrontLocale();
   const silverBag = materialObject === "silver-bag";
   const PackagingScene = packaging === "bag" ? BagScene : VesselScene;
   const Container = embedded ? "div" : "main";
-  const model = useProductSelection(initialProductHandle);
+  const model = useProductSelection(initialProductHandle, preserveJourney);
+  const { journey, rememberJourney } = useHomepageJourney();
   const { setSelectedMatcha } = useOrigins();
   const cart = useCart();
   const mobileViewport = useSyncExternalStore(
@@ -142,21 +187,74 @@ export function ProductConfigurator({
   const mobileEmbedded = embedded && mobileViewport;
   const [hasEntered, setEntered] = useState(false);
   const entered = embedded ? active : hasEntered;
-  const [mode, setMode] = useState<ShoppingMode>(
-    embedded ? initialView : "standard",
+  const samplePanelEnabled = Boolean(
+    samplePanelVariant &&
+    embedded &&
+    selectorPlacement === "left" &&
+    selectorVariant !== "current",
   );
+  const [sampleFocused, setSampleFocused] = useState(
+    Boolean(samplePanelVariant),
+  );
+  const sampleActive = samplePanelEnabled && entered && sampleFocused;
+  const sampleStartEnabled =
+    embedded && sampleRightEntry === "start" && !samplePanelEnabled;
+  const [sampleStartContext, setSampleStartContext] = useState({
+    productHandle: initialProductHandle,
+    dismissed:
+      Boolean(initialProductHandle) ||
+      (preserveJourney && journey.sampleRightFocus !== "set"),
+  });
+  // A new explicit tea link takes precedence over the previously opened set.
+  // Choosing the set again records the current URL without changing the tea.
+  const sampleStartDismissed =
+    sampleStartContext.dismissed ||
+    sampleStartContext.productHandle !== initialProductHandle;
+  function setSampleStartDismissed(dismissed: boolean) {
+    setSampleStartContext({ productHandle: initialProductHandle, dismissed });
+  }
+  const sampleStartActive = sampleStartEnabled && !sampleStartDismissed;
+  const sampleImageryActive = Boolean(
+    sampleImageryVariant && sampleStartActive,
+  );
+  const mobileSamplePackages =
+    (preserveJourney || Boolean(sampleOrderLayout)) &&
+    sampleImageryVariant === "sachets";
+  const [mode, setMode] = useState<ShoppingMode>(
+    preserveJourney ? journey.view : embedded ? initialView : "standard",
+  );
+  useEffect(() => {
+    if (preserveJourney && sampleStartEnabled)
+      rememberJourney({
+        sampleRightFocus: sampleStartDismissed ? "tea" : "set",
+      });
+  }, [
+    preserveJourney,
+    sampleStartEnabled,
+    sampleStartDismissed,
+    rememberJourney,
+  ]);
   const [step, setStep] = useState<BuilderStep>(0);
   const builderStep = embedded ? 1 : step;
   const [openedVessel, setOpenedVessel] = useState(false);
-  const [labelText, setLabelText] = useState("");
+  const [labelText, setLabelText] = useState(
+    preserveJourney ? journey.reference : "",
+  );
   const [editingReference, setEditingReference] = useState(false);
   const referenceEditorOpen = editingReference && !mobileEmbedded && !silverBag;
   const referenceTriggerRef = useRef<HTMLElement | null>(null);
   const referenceTriggerKind = useRef<string | undefined>(undefined);
   const restoreReferenceFocus = useRef(false);
   const [labelHasQuantity, setLabelHasQuantity] = useState(
-    embedded && initialView === "builder",
+    preserveJourney
+      ? journey.labelHasQuantity
+      : embedded && initialView === "builder",
   );
+  useEffect(() => {
+    if (preserveJourney) {
+      rememberJourney({ view: mode, reference: labelText, labelHasQuantity });
+    }
+  }, [preserveJourney, mode, labelText, labelHasQuantity, rememberJourney]);
   const entryTriggerRef = useRef<HTMLElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -174,17 +272,14 @@ export function ProductConfigurator({
     [model.product, locale],
   );
   useEffect(() => {
-    if (!entered || !model.product) return;
+    if (!entered || !model.product || sampleActive || !contextVisible) return;
     setSelectedMatcha(model.product.title, model.product.handle);
     return () => setSelectedMatcha(null);
-  }, [entered, model.product, setSelectedMatcha]);
-  const products =
-    model.catalog?.status === "ready" ? model.catalog.products : [];
+  }, [entered, model.product, setSelectedMatcha, sampleActive, contextVisible]);
+  const products = model.products;
   const index = Math.max(
     0,
-    model.catalog?.products.findIndex(
-      (product) => product.id === model.product?.id,
-    ) ?? 0,
+    products.findIndex((product) => product.id === model.product?.id),
   );
   const format =
     model.variant?.title === "Default Title"
@@ -220,6 +315,7 @@ export function ProductConfigurator({
     () => ({
       title: content.name,
       application: content.labelUse,
+      productHandle: model.product?.handle,
       format: model.variant ? format : "",
       quantity: model.variant ? model.quantity : 0,
       reference: labelText,
@@ -233,6 +329,7 @@ export function ProductConfigurator({
       content.labelUse,
       content.materialProfile,
       content.profileKind,
+      model.product?.handle,
       model.variant,
       model.quantity,
       format,
@@ -260,6 +357,7 @@ export function ProductConfigurator({
   function browseMaterial(direction: -1 | 1) {
     const next = products[index + direction];
     if (!next || entryPending || !entrySettled || cart.busy) return;
+    setSampleStartDismissed(true);
     model.selectProduct(next.id);
     setOpenedVessel(false);
   }
@@ -318,7 +416,22 @@ export function ProductConfigurator({
     setEditingReference(false);
   }
   useEffect(() => {
-    if (!entered || referenceEditorOpen) return;
+    if (!entered || referenceEditorOpen || sampleActive || !contextVisible)
+      return;
+    if (
+      sampleEntryDirection &&
+      document.activeElement instanceof HTMLElement &&
+      document.activeElement.closest("[data-sample-entry-study-controls]")
+    )
+      return;
+    // Switching the study's material choice should leave keyboard focus on
+    // that choice, just as moving between individual teas does.
+    if (
+      samplePanelEnabled &&
+      document.activeElement instanceof HTMLElement &&
+      document.activeElement.closest("[data-stage-selectors]")
+    )
+      return;
     const frame = requestAnimationFrame(() => {
       if (restoreReferenceFocus.current) {
         restoreReferenceFocus.current = false;
@@ -361,14 +474,16 @@ export function ProductConfigurator({
       )
         return;
       const heading =
-        (model.loading
+        (model.loading && !sampleStartActive
           ? panelRef.current?.querySelector<HTMLElement>(
               "[data-homepage-product-information]",
             )
           : null) ??
         Array.from(
           panelRef.current?.querySelectorAll<HTMLElement>(
-            entryLoading ? "button[data-back-to-overview]" : "h2",
+            entryLoading
+              ? "button[data-back-to-overview]"
+              : 'h2[tabindex="-1"]',
           ) ?? [],
         ).find((element) => element.getClientRects().length > 0);
       heading?.focus({ preventScroll: true });
@@ -386,6 +501,11 @@ export function ProductConfigurator({
     mobileEmbedded,
     model.loading,
     silverBag,
+    sampleActive,
+    samplePanelEnabled,
+    contextVisible,
+    sampleEntryDirection,
+    sampleStartActive,
   ]);
 
   const referenceAction = silverBag ? null : (
@@ -415,7 +535,9 @@ export function ProductConfigurator({
     embedded && products.length > 0 && selectorVariant !== "current" ? (
       <VisualProductSelectors
         products={products}
-        selectedId={model.product?.id}
+        selectedId={
+          sampleActive || sampleStartActive ? undefined : model.product?.id
+        }
         variant={selectorVariant}
         productCodePlacement={productCodePlacement}
         tone={tone}
@@ -423,6 +545,8 @@ export function ProductConfigurator({
           entryPending || !entrySettled || cart.busy || referenceEditorOpen
         }
         onSelect={(id) => {
+          setSampleStartDismissed(true);
+          setSampleFocused(false);
           if (id !== model.product?.id) {
             model.selectProduct(id);
             setOpenedVessel(false);
@@ -431,10 +555,69 @@ export function ProductConfigurator({
       />
     ) : null;
 
+  const multipleSampleEntries =
+    placeSelectorLeft && entered && !samplePanelEnabled
+      ? sampleEntryDirection
+      : undefined;
+  const sampleEntriesDisabled =
+    entryPending || !entrySettled || cart.busy || referenceEditorOpen;
+  const defaultRightEntry =
+    sampleEntryScope === "all" && sampleRightEntry === "default";
+  const sampleInformationView =
+    !referenceEditorOpen && (mode === "overview" || mode === "builder");
+  const richRightEntry =
+    multipleSampleEntries &&
+    sampleRightEntry !== "start" &&
+    !referenceEditorOpen &&
+    (((sampleRightEntry === "folio" || sampleRightEntry === "spotlight") &&
+      mode === "overview") ||
+      ((sampleRightEntry === "compare" || sampleRightEntry === "preparation") &&
+        sampleInformationView) ||
+      sampleRightEntry === "companion" ||
+      sampleRightEntry === "invitation" ||
+      sampleRightEntry === "alongside")
+      ? sampleRightEntry
+      : undefined;
+  const rightSamplePlacement =
+    richRightEntry === "invitation"
+      ? "header"
+      : richRightEntry === "companion" || richRightEntry === "alongside"
+        ? "dock"
+        : richRightEntry
+          ? "information"
+          : undefined;
+  const topSampleEntry =
+    multipleSampleEntries && !referenceEditorOpen
+      ? defaultRightEntry && multipleSampleEntries !== "featured"
+        ? multipleSampleEntries === "connected"
+          ? "note"
+          : "panel"
+        : sampleRightEntry === "note" && sampleInformationView
+          ? "note"
+          : sampleRightEntry === "panel" && mode === "overview"
+            ? "panel"
+            : undefined
+      : undefined;
+  const sampleEntrance =
+    embedded &&
+    entered &&
+    sampleEntrancePlacement &&
+    !samplePanelEnabled &&
+    !multipleSampleEntries ? (
+      <SampleExperienceEntry
+        placement={sampleEntrancePlacement}
+        disabled={
+          entryPending || !entrySettled || cart.busy || referenceEditorOpen
+        }
+      />
+    ) : null;
+
   return (
     <Container
       className={styles.experience}
       data-embedded={embedded}
+      data-preserve-journey={preserveJourney || undefined}
+      data-sample-order-layout={sampleOrderLayout}
       data-tone={tone}
       data-exploring={entered}
       data-mode={mode}
@@ -455,6 +638,20 @@ export function ProductConfigurator({
       data-label-expanded={labelExpanded}
       data-material-browsing={materialBrowsing}
       data-entry-settled={entrySettled}
+      data-sample-placement={
+        sampleEntrance ? sampleEntrancePlacement : undefined
+      }
+      data-sample-panel-layout={
+        samplePanelEnabled ? samplePanelVariant : undefined
+      }
+      data-sample-focused={samplePanelEnabled ? sampleActive : undefined}
+      data-sample-start-active={sampleStartActive || undefined}
+      data-sample-imagery-active={sampleImageryActive || undefined}
+      data-mobile-sample-packages={mobileSamplePackages || undefined}
+      data-sample-entry-direction={multipleSampleEntries}
+      data-sample-right-entry={
+        multipleSampleEntries ? sampleRightEntry : undefined
+      }
       onKeyDown={(event) => {
         if (
           event.key === "Escape" &&
@@ -475,13 +672,54 @@ export function ProductConfigurator({
       >
         {placeSelectorLeft && (
           <div className={styles.stageSelectors} data-stage-selectors>
+            {multipleSampleEntries && (
+              <SampleEntryLink
+                variant={
+                  multipleSampleEntries === "connected"
+                    ? "card"
+                    : multipleSampleEntries === "featured"
+                      ? "feature"
+                      : "rail"
+                }
+                point="selection"
+                disabled={sampleEntriesDisabled}
+                onSelect={
+                  sampleStartEnabled
+                    ? () => setSampleStartDismissed(false)
+                    : undefined
+                }
+                selected={sampleStartActive}
+                controls={
+                  sampleStartEnabled ? "sample-set-information" : undefined
+                }
+              />
+            )}
+            {samplePanelEnabled && samplePanelVariant && (
+              <SampleSelectionPanel
+                variant={samplePanelVariant}
+                active={sampleActive}
+                onSelect={() => setSampleFocused(true)}
+                disabled={
+                  entryPending ||
+                  !entrySettled ||
+                  cart.busy ||
+                  referenceEditorOpen
+                }
+              />
+            )}
             {visualProductSelector}
+            {(sampleEntrancePlacement === "selector" ||
+              sampleEntrancePlacement === "tile") &&
+              sampleEntrance}
           </div>
         )}
         <div
           className={styles.stageArea}
           key="material-stage"
           data-brand-part="material-stage"
+          data-tea-material
+          inert={sampleActive || sampleImageryActive}
+          aria-hidden={sampleActive || sampleImageryActive || undefined}
         >
           <div
             className={styles.stageHeading}
@@ -495,7 +733,7 @@ export function ProductConfigurator({
             />
             <span>
               {String(index + 1).padStart(2, "0")} /{" "}
-              {String(model.catalog?.products.length ?? 3).padStart(2, "0")}
+              {String(products.length).padStart(2, "0")}
             </span>
           </div>
           <div
@@ -738,6 +976,39 @@ export function ProductConfigurator({
             )}
           </div>
         </div>
+        {sampleImageryVariant && (
+          <div
+            className={styles.sampleStage}
+            data-sample-imagery-stage
+            hidden={!sampleImageryActive}
+            inert={!sampleImageryActive}
+          >
+            <SampleSetImagery
+              variant={sampleImageryVariant}
+              disabled={sampleEntriesDisabled}
+            />
+          </div>
+        )}
+        {samplePanelEnabled && (
+          <div
+            className={styles.sampleStage}
+            data-sample-stage
+            hidden={!sampleActive}
+            inert={!sampleActive}
+          >
+            <SampleSelectionMaterial />
+          </div>
+        )}
+        {samplePanelEnabled && (
+          <div
+            className={styles.sampleInformation}
+            data-sample-information
+            hidden={!sampleActive}
+            inert={!sampleActive}
+          >
+            <SampleSelectionInformation onClose={close} />
+          </div>
+        )}
         <div className={styles.entry} hidden={entered || embedded}>
           <span className={styles.eyebrow}>
             <ScrambleText
@@ -787,8 +1058,67 @@ export function ProductConfigurator({
             className={styles.controlArea}
             data-selection-controls
             data-brand-part="selection-controls"
+            inert={sampleActive}
+            aria-hidden={sampleActive || undefined}
           >
-            <div className={embedded ? styles.homepageControls : undefined}>
+            {sampleStartEnabled && (
+              <>
+                <div
+                  className={styles.sampleStartNavigation}
+                  data-sample-start-navigation
+                  hidden={!sampleStartActive}
+                  inert={!sampleStartActive}
+                >
+                  <button
+                    type="button"
+                    disabled={sampleEntriesDisabled}
+                    onClick={() => setSampleStartDismissed(true)}
+                  >
+                    <span aria-hidden="true">← </span>
+                    {t("Explore individual matcha")}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.sampleStartClose}
+                    data-back-to-overview
+                    onClick={close}
+                    disabled={cart.busy}
+                    aria-label={t("Back to overview")}
+                  >
+                    ×
+                  </button>
+                </div>
+                <div
+                  className={styles.sampleStartBody}
+                  id="sample-set-information"
+                  hidden={!sampleStartActive}
+                  inert={!sampleStartActive}
+                >
+                  <SampleStartEntry
+                    disabled={sampleEntriesDisabled}
+                    packagesOnMobile={mobileSamplePackages}
+                    studyLayout={sampleOrderLayout}
+                  />
+                </div>
+              </>
+            )}
+            {richRightEntry && rightSamplePlacement === "header" && (
+              <div
+                className={styles.sampleRightHeader}
+                data-sample-right-placement="header"
+              >
+                <SampleRightEntryPreview
+                  treatment={richRightEntry}
+                  selectedHandle={model.product?.handle}
+                  disabled={sampleEntriesDisabled}
+                />
+              </div>
+            )}
+            <div
+              className={embedded ? styles.homepageControls : undefined}
+              hidden={sampleStartActive}
+              inert={sampleStartActive}
+            >
               {embedded &&
                 products.length > 0 &&
                 !placeSelectorLeft &&
@@ -829,6 +1159,7 @@ export function ProductConfigurator({
                             referenceEditorOpen
                           }
                           onClick={() => {
+                            setSampleStartDismissed(true);
                             if (product.id !== model.product?.id) {
                               model.selectProduct(product.id);
                               setOpenedVessel(false);
@@ -847,6 +1178,10 @@ export function ProductConfigurator({
                     })}
                   </div>
                 ))}
+              {!placeSelectorLeft &&
+                (sampleEntrancePlacement === "selector" ||
+                  sampleEntrancePlacement === "tile") &&
+                sampleEntrance}
               <div className={styles.modeHeader}>
                 {embedded && sectionSelectorVariant !== "current" ? (
                   <VisualSectionSelectors
@@ -935,8 +1270,31 @@ export function ProductConfigurator({
               ref={scrollRef}
               className={styles.controlScroll}
               data-selection-scroll
+              hidden={sampleStartActive}
+              inert={sampleStartActive}
               data-brand-part="selection-scroll"
             >
+              {richRightEntry && rightSamplePlacement === "information" && (
+                <div
+                  className={styles.sampleEntryInformation}
+                  data-sample-right-placement="information"
+                >
+                  <SampleRightEntryPreview
+                    treatment={richRightEntry}
+                    selectedHandle={model.product?.handle}
+                    disabled={sampleEntriesDisabled}
+                  />
+                </div>
+              )}
+              {topSampleEntry && (
+                <div className={styles.sampleEntryInformation}>
+                  <SampleEntryLink
+                    variant={topSampleEntry}
+                    point="information"
+                    disabled={sampleEntriesDisabled}
+                  />
+                </div>
+              )}
               {referenceEditorOpen ? (
                 <ReferenceEditor
                   value={labelText}
@@ -1089,79 +1447,75 @@ export function ProductConfigurator({
                               disabled={cart.busy}
                             >
                               <legend>{t("Choose a matcha")}</legend>
-                              {model.catalog.products.map(
-                                (product, position) => {
-                                  const details = getProductContent(
-                                    product,
-                                    locale,
-                                  );
-                                  return (
-                                    <label
-                                      key={product.id}
-                                      data-selected={
-                                        product.id === model.product?.id
-                                      }
+                              {products.map((product, position) => {
+                                const details = getProductContent(
+                                  product,
+                                  locale,
+                                );
+                                return (
+                                  <label
+                                    key={product.id}
+                                    data-selected={
+                                      product.id === model.product?.id
+                                    }
+                                  >
+                                    <input
+                                      type="radio"
+                                      name="builder-matcha"
+                                      checked={product.id === model.product?.id}
+                                      onChange={() => {
+                                        model.selectProduct(product.id);
+                                        setOpenedVessel(false);
+                                      }}
+                                    />
+                                    <span className={styles.choiceIndex}>
+                                      {String(position + 1).padStart(2, "0")}
+                                    </span>
+                                    <span>
+                                      <strong>
+                                        <ScrambleText
+                                          text={
+                                            getProductContent(product)
+                                              .application ===
+                                            "Matcha selection"
+                                              ? productName(
+                                                  product.title,
+                                                  product.handle,
+                                                  locale,
+                                                )
+                                              : details.application
+                                          }
+                                          interactive
+                                          wrap
+                                        />
+                                      </strong>
+                                      <small>
+                                        <ScrambleText
+                                          text={productName(
+                                            product.title,
+                                            product.handle,
+                                            locale,
+                                          )}
+                                          interactive
+                                          periodic
+                                          wrap
+                                        />
+                                        {!product.variants.some(
+                                          (variant) => variant.available,
+                                        ) && ` / ${t("UNAVAILABLE")}`}
+                                      </small>
+                                    </span>
+                                    <span
+                                      className={styles.choiceMark}
+                                      aria-hidden="true"
                                     >
-                                      <input
-                                        type="radio"
-                                        name="builder-matcha"
-                                        checked={
-                                          product.id === model.product?.id
-                                        }
-                                        onChange={() => {
-                                          model.selectProduct(product.id);
-                                          setOpenedVessel(false);
-                                        }}
-                                      />
-                                      <span className={styles.choiceIndex}>
-                                        {String(position + 1).padStart(2, "0")}
-                                      </span>
-                                      <span>
-                                        <strong>
-                                          <ScrambleText
-                                            text={
-                                              getProductContent(product)
-                                                .application ===
-                                              "Matcha selection"
-                                                ? productName(
-                                                    product.title,
-                                                    product.handle,
-                                                    locale,
-                                                  )
-                                                : details.application
-                                            }
-                                            interactive
-                                            wrap
-                                          />
-                                        </strong>
-                                        <small>
-                                          <ScrambleText
-                                            text={productName(
-                                              product.title,
-                                              product.handle,
-                                              locale,
-                                            )}
-                                            interactive
-                                            periodic
-                                            wrap
-                                          />
-                                          {!product.variants.some(
-                                            (variant) => variant.available,
-                                          ) && ` / ${t("UNAVAILABLE")}`}
-                                        </small>
-                                      </span>
-                                      <span
-                                        className={styles.choiceMark}
-                                        aria-hidden="true"
-                                      >
-                                        {product.id === model.product?.id
-                                          ? "●"
-                                          : "○"}
-                                      </span>
-                                    </label>
-                                  );
-                                },
-                              )}
+                                      {product.id === model.product?.id
+                                        ? "●"
+                                        : "○"}
+                                    </span>
+                                  </label>
+                                );
+                              })}
                             </fieldset>
                             <div className={styles.materialNote}>
                               <p>
@@ -1293,7 +1647,10 @@ export function ProductConfigurator({
                           referenceAction}
                         {builderStep > 0 && (
                           <div className={styles.purchase}>
-                            <PurchaseOptions />
+                            <PurchaseOptions
+                              model={model}
+                              disabled={cart.busy}
+                            />
                             <div className={styles.purchaseFacts}>
                               <span>
                                 {format} × {model.quantity}
@@ -1310,13 +1667,23 @@ export function ProductConfigurator({
                               </strong>
                             </div>
                             <AddToCartButton
-                              available={Boolean(model.variant?.available)}
+                              updating={model.refreshing}
+                              available={Boolean(
+                                model.purchaseVariant?.available,
+                              )}
+                              disabled={
+                                cart.busy || !model.purchaseVariant?.available
+                              }
                               pending={cart.adding}
                               onAdd={() => {
-                                if (model.product && model.variant)
+                                if (
+                                  !cart.busy &&
+                                  model.product &&
+                                  model.purchaseVariant?.available
+                                )
                                   void cart.addItem(
                                     model.product.handle,
-                                    model.variant.id,
+                                    model.purchaseVariant.id,
                                     model.quantity,
                                   );
                               }}
@@ -1329,7 +1696,46 @@ export function ProductConfigurator({
                   </div>
                 </>
               )}
+              {sampleEntrancePlacement === "panel" && sampleEntrance}
+              {multipleSampleEntries &&
+                sampleRightEntry === "footnote" &&
+                sampleInformationView && (
+                  <div
+                    className={styles.sampleEntryInformation}
+                    data-sample-information-placement="after"
+                  >
+                    <SampleEntryLink
+                      variant="note"
+                      point="information-footnote"
+                      disabled={sampleEntriesDisabled}
+                    />
+                  </div>
+                )}
             </div>
+            {richRightEntry && rightSamplePlacement === "dock" && (
+              <div
+                className={styles.sampleRightDock}
+                data-sample-right-placement="dock"
+              >
+                <SampleRightEntryPreview
+                  treatment={richRightEntry}
+                  selectedHandle={model.product?.handle}
+                  disabled={sampleEntriesDisabled}
+                />
+              </div>
+            )}
+          </div>
+        )}
+        {sampleEntrancePlacement === "footer" && sampleEntrance && (
+          <div className={styles.sampleFooter}>{sampleEntrance}</div>
+        )}
+        {multipleSampleEntries === "featured" && defaultRightEntry && (
+          <div className={styles.sampleFooter}>
+            <SampleEntryLink
+              variant="bar"
+              point="workspace"
+              disabled={sampleEntriesDisabled}
+            />
           </div>
         )}
       </section>

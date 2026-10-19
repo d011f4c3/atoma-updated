@@ -1,0 +1,227 @@
+.approach {
+  --application-reveal: clamp(0, (var(--approach-progress, 0) - 0.2) * 4, 1);
+  --origin-reveal: clamp(0, (var(--approach-progress, 0) - 0.65) * 4, 1);
+  padding-block: 2rem 4rem;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-line);
+}
+.heading > span {
+  color: var(--color-muted);
+  font-size: var(--about-label);
+  letter-spacing: 0.04em;
+}
+.sequence {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr);
+  align-items: start;
+  gap: clamp(3rem, 8vw, 8rem);
+  padding-top: 2rem;
+}
+.principles {
+  min-width: 0;
+}
+.step {
+  display: grid;
+  align-content: center;
+  min-height: 60svh;
+  padding-block: 3rem;
+}
+.step + .step {
+  border-top: 1px solid var(--color-line);
+}
+.copy {
+  max-width: 36ch;
+}
+.number {
+  display: block;
+  color: var(--color-muted);
+  font-size: var(--about-label);
+  line-height: 1.7;
+}
+.step h3 {
+  margin: 1.5rem 0 0;
+  font-size: var(--about-body);
+  line-height: 1.5;
+  letter-spacing: -0.035em;
+  font-weight: 400;
+}
+.step p {
+  margin: 1rem 0 0;
+  color: var(--color-muted);
+  font-size: var(--about-body);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+.inlineImage {
+  display: none;
+}
+.stage {
+  position: sticky;
+  top: 10svh;
+  min-width: 0;
+}
+.labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: var(--color-muted);
+  font-size: var(--about-label);
+  line-height: 1.7;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+.labels > span {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.labels > span:last-child {
+  justify-content: end;
+}
+.labels > span[data-approach-label="character"] {
+  color: var(--color-ink);
+}
+.approach[data-step="application"] .labels > span,
+.approach[data-step="origin"] .labels > span {
+  color: var(--color-muted);
+}
+.approach[data-step="application"]
+  .labels
+  > span[data-approach-label="application"],
+.approach[data-step="origin"] .labels > span[data-approach-label="origin"] {
+  color: var(--color-ink);
+}
+.frame {
+  position: relative;
+  height: min(62svh, 40rem);
+  min-height: 23rem;
+  overflow: clip;
+  background: var(--color-surface);
+}
+.plane {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+}
+.plane img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.character img {
+  object-position: 50% 50%;
+}
+.application {
+  clip-path: inset(0 calc((1 - var(--application-reveal)) * 100%) 0 0);
+  transform: translateX(calc((1 - var(--application-reveal)) * 24px));
+}
+.application img {
+  object-position: 50% 55%;
+}
+.origin {
+  clip-path: inset(calc((1 - var(--origin-reveal)) * 100%) 0 0 0);
+  transform: translateY(calc((1 - var(--origin-reveal)) * 24px));
+}
+.origin img {
+  object-position: 50% 54%;
+}
+.track {
+  height: 1px;
+  margin-top: 1rem;
+  background: var(--color-line);
+}
+.track > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--color-muted);
+  transform: scaleX(var(--approach-progress, 0));
+  transform-origin: left;
+}
+@media (max-width: 899px),
+  (max-height: 649px),
+  (prefers-reduced-motion: reduce) {
+  .approach {
+    padding-block: 0 3.5rem;
+  }
+  .heading {
+    padding-bottom: 1.5rem;
+  }
+  .sequence {
+    display: block;
+    padding-top: 0;
+  }
+  .stage {
+    display: none;
+  }
+  .step {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-content: initial;
+    align-items: center;
+    gap: 2rem;
+    min-height: 0;
+    padding-block: 2rem;
+  }
+  .step h3 {
+    margin-top: 1rem;
+  }
+  .step p {
+    margin-top: 0.75rem;
+  }
+  .inlineImage {
+    display: block;
+    position: relative;
+    aspect-ratio: 1;
+    overflow: clip;
+  }
+  .inlineImage img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+@media (max-width: 760px) {
+  .approach {
+    padding-bottom: 2rem;
+  }
+  .heading {
+    padding-bottom: 1rem;
+  }
+  .step {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 1.25rem;
+  }
+  .copy {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.75rem 0.5rem;
+    max-width: none;
+  }
+  .step h3 {
+    margin-top: 0;
+  }
+  .step p {
+    grid-column: 1 / -1;
+    margin-top: 0;
+  }
+  .inlineImage {
+    aspect-ratio: 3 / 2;
+  }
+  .step[data-approach-step="application"] .inlineImage {
+    aspect-ratio: 4 / 3;
+  }
+  .step[data-approach-step="application"] .inlineImage img {
+    object-position: 50% 58%;
+  }
+}

@@ -18,8 +18,9 @@ import { translate, type Locale } from "./i18n/index.ts";
 // and from the Kyoto photographs' editorial coverage. Town landscape plan,
 // April 2026, chapter 1, section 1 (PDF page 4).
 // Source: https://www.town.wazuka.lg.jp/material/files/group/3/wazuka-keikankeikakuhenkou.pdf
+// Tea-region context: https://www.kyototourism.org/en/column/36234/
 const wazukaContext = {
-  text: "Tea fields occupy the slopes around the Wazuka River valley, surrounded by wooded hills.",
+  text: "Wazuka sits within the Uji tea-growing region of Kyoto Prefecture. Tea fields follow the slopes of the Wazuka River valley, surrounded by wooded hills.",
 };
 
 export function getOriginPreview(

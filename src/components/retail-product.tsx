@@ -18,34 +18,43 @@ import { RetailProductInformation } from "./retail-product-information";
 import styles from "./retail-product.module.css";
 import { useStorefrontTheme } from "./storefront-theme-provider";
 
-export function RetailProduct({ handle }: { handle: string }) {
+export function RetailProduct({
+  handle,
+  initialFormat,
+}: {
+  handle: string;
+  initialFormat?: "1kg";
+}) {
   const { locale, t } = useStorefrontLocale();
   const { tone } = useStorefrontTheme();
-  const model = useProductSelection(handle);
+  const model = useProductSelection(handle, false, "matcha", initialFormat);
   const cart = useCart();
   const { setSelectedMatcha } = useOrigins();
   const [pending, setPending] = useState(false);
   const submitting = useRef(false);
-  const { catalog, loading, variant, quantity } = model;
+  const { catalog, loading, variant, purchaseVariant, quantity } = model;
   // The shared homepage hook can fall back to its first matcha; a retail URL
   // must match exactly so an unknown handle can never purchase that fallback.
   const product = model.product?.handle === handle ? model.product : undefined;
   const content = product ? getProductContent(product, locale) : undefined;
   const unavailable = !catalog || catalog.status === "unavailable";
-  const locked = pending || cart.busy;
-  const available = Boolean(product && variant?.available);
+  const locked = pending || cart.busy || model.refreshing;
+  const available = Boolean(product && purchaseVariant?.available);
   const purchasable = Boolean(
-    product && canPurchaseQuantity(variant, quantity),
+    product && canPurchaseQuantity(purchaseVariant, quantity),
   );
+  const requestedFormatUnavailable =
+    initialFormat === "1kg" && Boolean(product) && !variant;
   const total =
-    product && variant && Number.isSafeInteger(variant.priceMinor * quantity)
-      ? money(variant.priceMinor * quantity, variant.currency)
+    product &&
+    purchaseVariant &&
+    Number.isSafeInteger(purchaseVariant.priceMinor * quantity)
+      ? money(purchaseVariant.priceMinor * quantity, purchaseVariant.currency)
       : "—";
   const collectionHref = "/shop";
   const productHref = (nextHandle: string) =>
     `/shop/${encodeURIComponent(nextHandle)}`;
-  const related =
-    catalog?.products.filter((item) => item.handle !== handle) ?? [];
+  const related = model.products.filter((item) => item.handle !== handle);
 
   useEffect(() => {
     setSelectedMatcha(product?.title ?? null, product?.handle);
@@ -53,12 +62,18 @@ export function RetailProduct({ handle }: { handle: string }) {
   }, [product?.title, product?.handle, setSelectedMatcha]);
 
   async function addToCart() {
-    if (submitting.current || locked || !product || !variant || !purchasable)
+    if (
+      submitting.current ||
+      locked ||
+      !product ||
+      !purchaseVariant ||
+      !purchasable
+    )
       return;
     submitting.current = true;
     setPending(true);
     try {
-      await cart.addItem(product.handle, variant.id, quantity);
+      await cart.addItem(product.handle, purchaseVariant.id, quantity);
     } finally {
       submitting.current = false;
       setPending(false);
@@ -128,14 +143,29 @@ export function RetailProduct({ handle }: { handle: string }) {
                       data-available={available}
                     >
                       <span aria-hidden="true" />
-                      {available ? t("Available") : t("Currently unavailable")}
+                      {model.refreshing
+                        ? t("Updating prices…")
+                        : available
+                          ? t("Available")
+                          : t("Currently unavailable")}
                     </p>
                   </div>
                   <p className={styles.purpose}>{content.purpose}</p>
                   <p className={styles.unitPrice}>
-                    {variant
-                      ? money(variant.priceMinor, variant.currency)
-                      : t("No published format")}
+                    {model.refreshing
+                      ? t("Updating prices…")
+                      : purchaseVariant
+                        ? money(
+                            purchaseVariant.priceMinor,
+                            purchaseVariant.currency,
+                          )
+                        : t(
+                            requestedFormatUnavailable
+                              ? "1 kg selection unavailable"
+                              : model.selectedSellingPlanKey
+                                ? "Selected subscription unavailable"
+                                : "No published format",
+                          )}
                     {variant && (
                       <span>
                         {" "}
@@ -150,8 +180,20 @@ export function RetailProduct({ handle }: { handle: string }) {
                     {content.materialSummary}
                   </p>
 
-                  <fieldset className={styles.formats} disabled={locked}>
+                  <fieldset
+                    className={styles.formats}
+                    disabled={locked}
+                    data-requested-format-unavailable={
+                      requestedFormatUnavailable || undefined
+                    }
+                  >
                     <legend>{t("Format")}</legend>
+                    {requestedFormatUnavailable &&
+                      product.variants.length > 0 && (
+                        <p role="status">
+                          {t("Choose a published format below to continue.")}
+                        </p>
+                      )}
                     <div>
                       {product.variants.map((item) => (
                         <button
@@ -222,15 +264,22 @@ export function RetailProduct({ handle }: { handle: string }) {
                     )}
                   <details className={styles.purchaseOptions}>
                     <summary>
-                      <span>{t("One-time purchase")}</span>
+                      <span>
+                        {model.selectedSellingPlanKey
+                          ? model.selectedSellingPlan
+                            ? `${t("Subscribe")} · ${t("Every 4 weeks")}`
+                            : t("Selected subscription unavailable")
+                          : t("One-time purchase")}
+                      </span>
                       <span>
                         {t("Purchase options")}{" "}
                         <span aria-hidden="true">+</span>
                       </span>
                     </summary>
-                    <PurchaseOptions />
+                    <PurchaseOptions model={model} disabled={locked} />
                   </details>
                   <AddToCartButton
+                    updating={model.refreshing}
                     available={available}
                     pending={pending}
                     disabled={locked || !purchasable}

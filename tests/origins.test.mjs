@@ -60,9 +60,11 @@ function fixture() {
 
 test("regional photography alone cannot establish product origins without independent confirmation", () => {
   const graphWithoutProvenance = { ...ORIGINS_GRAPH, provenance: [] };
-  assert.equal(FIELD_ENTRIES.length, 1);
+  assert.deepEqual(
+    FIELD_ENTRIES.map((entry) => entry.placeIds),
+    [["kyoto"], ["wazuka"]],
+  );
   for (const entry of FIELD_ENTRIES) {
-    assert.deepEqual(entry.placeIds, ["kyoto"]);
     assert.equal("productHandles" in entry, false);
     assert.match(entry.imageCaption, /Kyoto/);
     assert.deepEqual(
@@ -105,7 +107,8 @@ test("only Ceremonial retains a product connection to the Kyoto photographs", ()
   for (const product of launchProducts.slice(0, 2))
     assert.deepEqual(getProductFieldEntries(product.handle), []);
   assert.deepEqual(getProductFieldEntries("another-kyoto-matcha"), []);
-  assert.deepEqual(getFieldEntriesForPlace("wazuka"), []);
+  assert.deepEqual(getFieldEntriesForPlace("wazuka"), [FIELD_ENTRIES[1]]);
+  assert.deepEqual(getFieldEntriesForPlace("uji-city"), []);
   assert.deepEqual(FIELD_ENTRIES[0].placeIds, ["kyoto"]);
   assert.match(FIELD_ENTRIES[0].imageCaption, /Kyoto/);
   assert.equal(
@@ -200,20 +203,22 @@ test("current documentary sections retain unique identities and factual captions
   }
 });
 
-test("Uji's display photograph differs while the Kyoto collection and Wazuka image stay unchanged", () => {
-  assert.equal(FIELD_ENTRIES.length, 1);
+test("Wazuka and Uji use their own display photographs while the Kyoto collection stays unchanged", () => {
+  assert.equal(FIELD_ENTRIES.length, 2);
   const entry = FIELD_ENTRIES[0];
   const before = structuredClone(entry);
   const uji = getFieldEntryPhotograph(entry, "uji-city");
   const wazuka = getFieldEntryPhotograph(entry, "wazuka");
+  const kyoto = getFieldEntryPhotograph(entry, "kyoto");
   assert.equal(uji.image, "/images/origins/uji-context-landscape.jpg");
-  assert.equal(wazuka.image, "/images/origins/field-landscape.webp");
+  assert.equal(wazuka.image, "/images/about/wazuka/harvest-community.webp");
+  assert.equal(kyoto.image, "/images/origins/field-landscape.webp");
   assert.notEqual(uji.image, wazuka.image);
   assert.equal(uji.imageCaption, "Tea fields · Kyoto");
   assert.doesNotMatch(uji.imageAlt, /Uji|Wazuka/);
   assert.deepEqual(entry, before);
   assert.deepEqual(entry.placeIds, ["kyoto"]);
-  assert.deepEqual(getFieldEntryPhotograph(entry, "unknown"), wazuka);
-  assert.deepEqual(getFieldEntryPhotograph(entry, "constructor"), wazuka);
-  assert.deepEqual(getFieldEntryPhotograph(entry), wazuka);
+  assert.deepEqual(getFieldEntryPhotograph(entry, "unknown"), kyoto);
+  assert.deepEqual(getFieldEntryPhotograph(entry, "constructor"), kyoto);
+  assert.deepEqual(getFieldEntryPhotograph(entry), kyoto);
 });

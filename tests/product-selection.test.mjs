@@ -5,6 +5,7 @@ import {
   initialSelection,
   money,
   quantityCeiling,
+  restoredSelection,
 } from "../src/lib/product-selection.ts";
 
 const variant = (overrides = {}) => ({
@@ -65,6 +66,38 @@ test("purchase quantity enforces minimum, increment and published maximum", () =
   }
 });
 
+test("returning to a matcha restores its format and quantity from current catalog data", () => {
+  const first = variant({ id: "first-format" });
+  const chosen = variant({ id: "chosen-format" });
+  const item = product([first, chosen]);
+  const saved = { productId: item.id, variantId: chosen.id, quantity: 6 };
+  assert.deepEqual(restoredSelection(item, saved), saved);
+  assert.deepEqual(restoredSelection(item, null), initialSelection(item));
+  assert.deepEqual(
+    restoredSelection({ ...item, id: "explicit-other-matcha" }, saved),
+    initialSelection({ ...item, id: "explicit-other-matcha" }),
+  );
+});
+
+test("restoring a selection rechecks missing formats, availability and quantity limits", () => {
+  const first = variant({ id: "first-format" });
+  const chosen = variant({ id: "chosen-format" });
+  const saved = { productId: "matcha-one", variantId: chosen.id, quantity: 8 };
+  for (const formats of [[first], [first, { ...chosen, available: false }]]) {
+    const item = product(formats);
+    assert.deepEqual(restoredSelection(item, saved), initialSelection(item));
+  }
+  const limited = product([first, { ...chosen, maximum: 4 }]);
+  assert.deepEqual(restoredSelection(limited, saved), {
+    ...saved,
+    quantity: 2,
+  });
+  assert.equal(
+    restoredSelection(product([chosen]), { ...saved, quantity: 3 }).quantity,
+    chosen.minimum,
+  );
+});
+
 test("unbounded and free products still respect the GraphQL integer limit", () => {
   const free = variant({
     priceMinor: 0,
@@ -110,6 +143,79 @@ test("an initial minimum beyond the transport ceiling is never purchasable", () 
 
 test("money formats minor units using the currency's fraction digits", () => {
   assert.equal(money(1200, "JPY"), "¥1,200");
-  assert.equal(money(1200, "USD"), "$12.00");
+  assert.equal(money(1200, "USD").replace(/\s/g, " "), "USD 12.00");
   assert.equal(money(0, "JPY"), "¥0");
+});
+
+test("a destination refresh replaces purchase keys and preserves one-time choice and quantity", async () => {
+  const { refreshedSelection } =
+    await import("../src/lib/product-selection.ts");
+  const next = variant({
+    id: "sg-key",
+    selectionId: "same-format",
+    currency: "SGD",
+  });
+  const saved = {
+    productId: "matcha-one",
+    variantId: "us-key",
+    variantSelectionId: "same-format",
+    quantity: 6,
+  };
+  assert.deepEqual(
+    refreshedSelection(product([variant({ id: "other-format" }), next]), saved),
+    { ...saved, variantId: "sg-key" },
+  );
+});
+
+test("a destination refresh preserves recurring intent when a plan is absent", async () => {
+  const { refreshedSelection, resolvePurchaseVariant } =
+    await import("../src/lib/product-selection.ts");
+  const next = variant({ id: "sg-key", selectionId: "same-format" });
+  const saved = {
+    productId: "matcha-one",
+    variantId: "us-key",
+    variantSelectionId: "same-format",
+    quantity: 6,
+    sellingPlanKey: "us-plan",
+    sellingPlanSelectionId: "same-plan",
+  };
+  const refreshed = refreshedSelection(product([next]), saved);
+  assert.equal(refreshed.quantity, 6);
+  assert.equal(refreshed.sellingPlanKey, "us-plan");
+  assert.equal(
+    resolvePurchaseVariant(next, refreshed.sellingPlanKey),
+    undefined,
+  );
+  const plan = {
+    id: "sg-plan",
+    selectionId: "same-plan",
+    available: true,
+    priceMinor: 1600,
+    currency: "SGD",
+  };
+  assert.equal(
+    refreshedSelection(product([{ ...next, sellingPlans: [plan] }]), saved)
+      .sellingPlanKey,
+    "sg-plan",
+  );
+});
+
+test("a destination refresh never substitutes a missing format or silently lowers quantity", async () => {
+  const { refreshedSelection } =
+    await import("../src/lib/product-selection.ts");
+  const saved = {
+    productId: "matcha-one",
+    variantId: "us-key",
+    variantSelectionId: "same-format",
+    quantity: 8,
+  };
+  assert.deepEqual(refreshedSelection(product([variant()]), saved), saved);
+  const next = variant({
+    id: "sg-key",
+    selectionId: "same-format",
+    maximum: 4,
+  });
+  const refreshed = refreshedSelection(product([next]), saved);
+  assert.equal(refreshed.quantity, 8);
+  assert.equal(canPurchaseQuantity(next, refreshed.quantity), false);
 });

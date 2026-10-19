@@ -1,0 +1,153 @@
+.entry {
+  min-width: 0;
+  padding: 1.25rem 0 0.5rem;
+  font-family: var(--font-atoma-mono), monospace;
+  color: var(--ink);
+}
+.heading > span {
+  font-size: calc(
+    var(--tab-label-size, 0.625rem) + var(--locale-font-increment, 0px)
+  );
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.heading h2 {
+  margin: 0.5rem 0 0;
+  font-size: calc(
+    var(--tab-heading-size, 0.875rem) + var(--locale-font-increment, 0px)
+  );
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+.heading p {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: calc(
+    var(--tab-body-size, 0.6875rem) + var(--locale-font-increment, 0px)
+  );
+  line-height: 1.7;
+}
+.contents {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.875rem 0;
+}
+.mobilePackages {
+  display: none;
+}
+.contents li {
+  min-width: 0;
+  text-align: center;
+}
+.material {
+  position: relative;
+  height: clamp(5rem, 11vh, 6.5rem);
+  overflow: clip;
+}
+.material > div {
+  position: absolute;
+  left: 50%;
+  width: 10rem;
+  transform: translateX(-50%);
+}
+.name,
+.use {
+  display: block;
+  font-size: calc(
+    var(--tab-label-size, 0.625rem) + var(--locale-font-increment, 0px)
+  );
+  line-height: 1.6;
+}
+.name {
+  margin-top: 0.5rem;
+}
+.use {
+  margin-top: 0.25rem;
+  color: var(--muted);
+}
+.summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--line);
+  padding: 0.75rem 0;
+  font-size: calc(
+    var(--tab-label-size, 0.625rem) + var(--locale-font-increment, 0px)
+  );
+  line-height: 1.6;
+  color: var(--muted);
+}
+.summary > span:last-child {
+  white-space: nowrap;
+}
+.progression {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  line-height: 1.7;
+}
+.progression a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  color: var(--ink);
+  text-underline-offset: 0.3em;
+}
+.progression a:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+.progression a[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: wait;
+}
+.action {
+  composes: action from "./hero-study-introduction.module.css";
+  width: 100%;
+  background: transparent;
+  font-weight: 400;
+  color: inherit;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.entry .action {
+  margin: 0.75rem 0 0;
+  grid-row: auto;
+}
+.action[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: wait;
+}
+@media (max-width: 760px) {
+  .entry {
+    padding-top: 1rem;
+  }
+  .material {
+    height: 5.5rem;
+  }
+  .contents {
+    gap: 0.5rem;
+  }
+  .entry[data-mobile-packages] .contents {
+    display: none;
+  }
+  .mobilePackages {
+    display: block;
+    margin-top: 0.75rem;
+  }
+}
+
+.heading h2:focus {
+  outline: none;
+}

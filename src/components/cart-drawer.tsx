@@ -15,6 +15,15 @@ import {
   type ReactNode,
 } from "react";
 import type { CartData, CartLine, CartResponse } from "@/lib/cart-types";
+import {
+  SHIPPING_COUNTRIES,
+  parseShippingCountry,
+  type DestinationContext,
+  type DestinationPreference,
+  type ShippingCountryCode,
+} from "@/lib/storefront-destination";
+import { DestinationSelector } from "./destination-selector";
+import { CommerceLoader } from "./hero-loader";
 import { productName } from "@/lib/product-name";
 import { ScrambleText } from "./scramble-text";
 import { useDialogDismiss } from "./use-dialog-dismiss";
@@ -28,7 +37,8 @@ type CartAction =
       quantity: number;
     }
   | { action: "update"; lineKey: string; quantity: number }
-  | { action: "remove"; lineKey: string };
+  | { action: "remove"; lineKey: string }
+  | { action: "destination"; countryCode: ShippingCountryCode };
 
 type CartContextValue = {
   addItem: (
@@ -38,6 +48,7 @@ type CartContextValue = {
   ) => Promise<void>;
   openCart: () => void;
   refreshCart: () => Promise<void>;
+  beginCatalogRead: () => () => void;
   itemCount: number;
   adding: boolean;
   busy: boolean;
@@ -45,13 +56,24 @@ type CartContextValue = {
   error: string | null;
   isOpen: boolean;
   dialogId: string;
+  destination: DestinationContext | null;
+  destinationPreference: DestinationPreference | null;
+  destinationCountries: readonly ShippingCountryCode[];
+  destinationRevision: number;
+  destinationBusy: boolean;
+  destinationChanging: boolean;
+  destinationReviewRequired: boolean;
+  changeDestination: (countryCode: ShippingCountryCode) => Promise<void>;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-async function readCart(
-  signal?: AbortSignal,
-): Promise<{ cart: CartData | null; checkoutEnabled: boolean }> {
+async function readCart(signal?: AbortSignal): Promise<{
+  cart: CartData | null;
+  checkoutEnabled: boolean;
+  destination?: DestinationContext | null;
+  destinationReviewRequired?: boolean;
+}> {
   const response = await fetch("/api/cart", {
     cache: "no-store",
     credentials: "same-origin",
@@ -74,7 +96,38 @@ async function readCart(
   return {
     cart: value.kind === "ready" ? (value.cart ?? null) : null,
     checkoutEnabled: value.checkoutEnabled === true,
+    ...(Object.hasOwn(value, "destination")
+      ? { destination: value.destination ?? null }
+      : {}),
+    destinationReviewRequired: value.destinationReviewRequired,
   };
+}
+
+type DestinationResponse = {
+  kind: "ready" | "unavailable";
+  preference: DestinationPreference;
+  destination: DestinationContext | null;
+  countries: readonly ShippingCountryCode[];
+  reviewRequired: boolean;
+};
+
+async function readDestination(
+  signal?: AbortSignal,
+): Promise<DestinationResponse> {
+  const response = await fetch("/api/destination", {
+    cache: "no-store",
+    credentials: "same-origin",
+    signal,
+  });
+  const value: DestinationResponse = await response.json();
+  if (
+    !response.ok ||
+    !["ready", "unavailable"].includes(value.kind) ||
+    !parseShippingCountry(value.preference?.countryCode) ||
+    !Array.isArray(value.countries)
+  )
+    throw new Error("Destination unavailable");
+  return value;
 }
 
 export function useCart() {
@@ -136,6 +189,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [cart, setCart] = useState<CartData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [catalogReads, setCatalogReads] = useState(0);
   const [checkoutEnabled, setCheckoutEnabled] = useState(false);
   const [checkingOut, setCheckingOut] = useState(false);
   const [popupOpened, setPopupOpened] = useState(false);
@@ -147,34 +201,108 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [reviewRequired, setReviewRequired] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [destination, setDestination] = useState<DestinationContext | null>(
+    null,
+  );
+  const destinationRef = useRef<DestinationContext | null>(null);
+  const [destinationPreference, setDestinationPreference] =
+    useState<DestinationPreference | null>(null);
+  const [destinationCountries, setDestinationCountries] =
+    useState<readonly ShippingCountryCode[]>(SHIPPING_COUNTRIES);
+  const [destinationRevision, setDestinationRevision] = useState(0);
+  const [destinationLoading, setDestinationLoading] = useState(true);
+  const [destinationReviewRequired, setDestinationReviewRequired] =
+    useState(false);
 
-  const loadCart = useCallback(async (signal?: AbortSignal) => {
-    if (mutationRef.current || checkoutRef.current) return;
-    const request = ++requestRef.current;
-    try {
-      const value = await readCart(signal);
-      if (request !== requestRef.current || signal?.aborted) return;
-      if (checkoutRetryRef.current) setIsOpen(true);
-      setCart(value.cart);
-      setCheckoutEnabled(value.checkoutEnabled);
-      setError(
-        checkoutRetryRef.current
-          ? "Checkout couldn’t be opened. Reload your selection and try again."
-          : null,
-      );
-      checkoutRetryRef.current = false;
-      reviewRef.current = false;
-      setReviewRequired(false);
-      setNotice(null);
-    } catch {
-      if (request !== requestRef.current || signal?.aborted) return;
-      if (checkoutRetryRef.current) setIsOpen(true);
-      setCheckoutEnabled(false);
-      setError("Your selection couldn’t be loaded. Please try again.");
-    } finally {
-      if (request === requestRef.current && !signal?.aborted) setLoading(false);
-    }
+  const beginCatalogRead = useCallback(() => {
+    let finished = false;
+    setCatalogReads((count) => count + 1);
+    return () => {
+      // Cleanup and finally both release a request. Only the first counts.
+      if (finished) return;
+      finished = true;
+      setCatalogReads((count) => count - 1);
+    };
   }, []);
+
+  const confirmDestination = useCallback(
+    (value: DestinationContext | null, needsReview = false) => {
+      const previous = destinationRef.current;
+      if (
+        previous?.countryCode !== value?.countryCode ||
+        previous?.currency !== value?.currency
+      ) {
+        destinationRef.current = value;
+        setDestination(value);
+        setDestinationRevision((current) => current + 1);
+      }
+      setDestinationReviewRequired(needsReview || value === null);
+    },
+    [],
+  );
+
+  const reconcileDestination = useCallback(
+    async (
+      value: Awaited<ReturnType<typeof readCart>>,
+      signal?: AbortSignal,
+      request?: number,
+    ) => {
+      const settings = await readDestination(signal);
+      if (
+        signal?.aborted ||
+        (request !== undefined && request !== requestRef.current)
+      )
+        return;
+      setDestinationPreference(settings.preference);
+      setDestinationCountries(
+        settings.countries.filter((country) =>
+          SHIPPING_COUNTRIES.includes(country),
+        ),
+      );
+      confirmDestination(
+        Object.hasOwn(value, "destination")
+          ? (value.destination ?? null)
+          : settings.destination,
+        value.destinationReviewRequired ?? settings.reviewRequired,
+      );
+      setDestinationLoading(false);
+    },
+    [confirmDestination],
+  );
+
+  const loadCart = useCallback(
+    async (signal?: AbortSignal) => {
+      if (mutationRef.current || checkoutRef.current) return;
+      const request = ++requestRef.current;
+      try {
+        const value = await readCart(signal);
+        await reconcileDestination(value, signal, request);
+        if (request !== requestRef.current || signal?.aborted) return;
+        if (checkoutRetryRef.current) setIsOpen(true);
+        setCart(value.cart);
+        setCheckoutEnabled(value.checkoutEnabled);
+        setError(
+          checkoutRetryRef.current
+            ? "Checkout couldn’t be opened. Reload your selection and try again."
+            : null,
+        );
+        checkoutRetryRef.current = false;
+        reviewRef.current = false;
+        setReviewRequired(false);
+        setNotice(null);
+      } catch {
+        if (request !== requestRef.current || signal?.aborted) return;
+        if (checkoutRetryRef.current) setIsOpen(true);
+        setCheckoutEnabled(false);
+        setDestinationLoading(false);
+        setError("Your selection couldn’t be loaded. Please try again.");
+      } finally {
+        if (request === requestRef.current && !signal?.aborted)
+          setLoading(false);
+      }
+    },
+    [reconcileDestination],
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -189,8 +317,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       );
     }
     const request = ++requestRef.current;
-    void readCart(controller.signal).then(
-      (value) => {
+    async function readInitialCart() {
+      try {
+        const value = await readCart(controller.signal);
+        await reconcileDestination(value, controller.signal, request);
         if (controller.signal.aborted || request !== requestRef.current) return;
         setCart(value.cart);
         setCheckoutEnabled(value.checkoutEnabled);
@@ -201,18 +331,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
           );
           checkoutRetryRef.current = false;
         }
-        setLoading(false);
-      },
-      () => {
+      } catch {
         if (controller.signal.aborted || request !== requestRef.current) return;
         if (checkoutRetryRef.current) setIsOpen(true);
+        setDestinationLoading(false);
         setCheckoutEnabled(false);
         setError("Your selection couldn’t be loaded. Please try again.");
-        setLoading(false);
-      },
-    );
+      } finally {
+        if (!controller.signal.aborted && request === requestRef.current)
+          setLoading(false);
+      }
+    }
+    void readInitialCart();
     return () => controller.abort();
-  }, []);
+  }, [reconcileDestination]);
 
   useEffect(() => {
     function refreshAfterCheckout(event: PageTransitionEvent) {
@@ -276,6 +408,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         // The checkout lock still blocks writes and another payment attempt.
         // Read the public projection directly, without unlocking loadCart.
         const value = await readCart(controller.signal);
+        await reconcileDestination(value, controller.signal, request);
         if (
           !isCurrentAttempt() ||
           controller.signal.aborted ||
@@ -354,7 +487,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("pageshow", refreshOnReturn);
       document.removeEventListener("visibilitychange", visibilityChanged);
     };
-  }, [popupOpened]);
+  }, [popupOpened, reconcileDestination]);
 
   useEffect(() => {
     // A dialog can inherit focus-visible when it opens after an async add.
@@ -416,91 +549,134 @@ export function CartProvider({ children }: { children: ReactNode }) {
     await loadCart();
   }, [loadCart]);
 
-  const mutate = useCallback(async (action: CartAction) => {
-    if (mutationRef.current || checkoutRef.current) return;
-    if (reviewRef.current) {
-      triggerRef.current =
+  const mutate = useCallback(
+    async (action: CartAction) => {
+      if (mutationRef.current || checkoutRef.current) return;
+      if (
+        reviewRef.current ||
+        (action.action !== "destination" && !destinationRef.current)
+      ) {
+        triggerRef.current =
+          document.activeElement instanceof HTMLElement
+            ? document.activeElement
+            : null;
+        setIsOpen(true);
+        return;
+      }
+      mutationRef.current = true;
+      const request = ++requestRef.current;
+      const trigger =
         document.activeElement instanceof HTMLElement
           ? document.activeElement
           : null;
-      setIsOpen(true);
-      return;
-    }
-    mutationRef.current = true;
-    const request = ++requestRef.current;
-    const trigger =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
-    setPendingAction(action.action);
-    setError(null);
-    setNotice(null);
-    try {
-      const response = await fetch("/api/cart", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(action),
-      });
-      const value: CartResponse = await response.json();
-      if (request !== requestRef.current) return;
-      setCheckoutEnabled(value.checkoutEnabled === true);
-      if (value.cart) setCart(value.cart);
-      if (value.kind === "missing") setCart(null);
-      const needsReview =
-        Boolean(value.reviewRequired) || value.kind === "ambiguous";
-      reviewRef.current = needsReview;
-      setReviewRequired(needsReview);
-      if (needsReview && action.action === "add") {
-        triggerRef.current = trigger;
-        setIsOpen(true);
-      }
-      if (!response.ok || !["success", "warning"].includes(value.kind)) {
-        if (needsReview) {
-          setError(
-            value.kind === "ambiguous"
-              ? "The update couldn’t be confirmed. Reload your selection before trying again."
-              : "Your selection changed. Reload your selection before trying again.",
+      setPendingAction(action.action);
+      setError(null);
+      setNotice(null);
+      try {
+        const response = await fetch("/api/cart", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(action),
+        });
+        const value: CartResponse = await response.json();
+        if (request !== requestRef.current) return;
+        setCheckoutEnabled(value.checkoutEnabled === true);
+        if (value.cart) setCart(value.cart);
+        if (value.kind === "missing") setCart(null);
+        const destinationAction = action.action === "destination";
+        const needsReview =
+          Boolean(value.reviewRequired) ||
+          Boolean(value.destinationReviewRequired) ||
+          value.kind === "ambiguous" ||
+          (destinationAction &&
+            ["success", "warning"].includes(value.kind) &&
+            !value.destination);
+        if (destinationAction && needsReview)
+          setDestinationReviewRequired(true);
+        if (
+          !needsReview &&
+          response.ok &&
+          ["success", "warning"].includes(value.kind) &&
+          value.destination
+        ) {
+          confirmDestination(
+            value.destination,
+            value.destinationReviewRequired,
           );
-        } else {
-          setError(
-            value.kind === "rejected"
-              ? "This selection couldn’t be updated. Check its availability and quantity."
-              : "Your selection couldn’t be updated. Please try again.",
-          );
+          if (destinationAction)
+            setDestinationPreference({
+              countryCode: value.destination.countryCode,
+              source: "manual",
+            });
         }
-        return;
+        reviewRef.current = needsReview;
+        setReviewRequired(needsReview);
+        if (needsReview && (action.action === "add" || destinationAction)) {
+          triggerRef.current = trigger;
+          setIsOpen(true);
+        }
+        if (
+          !response.ok ||
+          !["success", "warning"].includes(value.kind) ||
+          (destinationAction && needsReview)
+        ) {
+          if (destinationAction) {
+            triggerRef.current = trigger;
+            setIsOpen(true);
+          }
+          if (needsReview) {
+            setError(
+              value.kind === "ambiguous"
+                ? "The update couldn’t be confirmed. Reload your selection before trying again."
+                : "Your selection changed. Reload your selection before trying again.",
+            );
+          } else {
+            setError(
+              destinationAction
+                ? "Shipping country couldn’t be updated. Please try again."
+                : value.kind === "rejected"
+                  ? "This selection couldn’t be updated. Check its availability and quantity."
+                  : "Your selection couldn’t be updated. Please try again.",
+            );
+          }
+          return;
+        }
+        setNotice(
+          value.kind === "warning" || value.reviewRequired
+            ? "Your selection changed. Review the quantities and total below."
+            : action.action === "add"
+              ? "Added to your selection."
+              : action.action === "remove"
+                ? "Item removed."
+                : action.action === "destination"
+                  ? "Shipping country updated."
+                  : "Quantity updated.",
+        );
+        if (action.action === "add") {
+          triggerRef.current = trigger;
+          setIsOpen(true);
+        }
+      } catch {
+        // A failed connection may follow an accepted write. Never replay it.
+        reviewRef.current = true;
+        setReviewRequired(true);
+        setError(
+          "The update couldn’t be confirmed. Reload your selection before trying again.",
+        );
+        if (action.action === "destination") setDestinationReviewRequired(true);
+        if (action.action === "add" || action.action === "destination") {
+          triggerRef.current = trigger;
+          setIsOpen(true);
+        }
+      } finally {
+        mutationRef.current = false;
+        setPendingAction(null);
+        setLoading(false);
       }
-      setNotice(
-        value.kind === "warning" || value.reviewRequired
-          ? "Your selection changed. Review the quantities and total below."
-          : action.action === "add"
-            ? "Added to your selection."
-            : action.action === "remove"
-              ? "Item removed."
-              : "Quantity updated.",
-      );
-      if (action.action === "add") {
-        triggerRef.current = trigger;
-        setIsOpen(true);
-      }
-    } catch {
-      // A failed connection may follow an accepted write. Never replay it.
-      reviewRef.current = true;
-      setReviewRequired(true);
-      setError(
-        "The update couldn’t be confirmed. Reload your selection before trying again.",
-      );
-      if (action.action === "add") {
-        triggerRef.current = trigger;
-        setIsOpen(true);
-      }
-    } finally {
-      mutationRef.current = false;
-      setPendingAction(null);
-      setLoading(false);
-    }
-  }, []);
+    },
+    [confirmDestination],
+  );
 
   const addItem = useCallback(
     (productHandle: string, variantKey: string, quantity: number) =>
@@ -508,12 +684,32 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [mutate],
   );
 
-  const busy = pendingAction !== null || checkingOut;
+  const changeDestination = useCallback(
+    (countryCode: ShippingCountryCode) =>
+      mutate({ action: "destination", countryCode }),
+    [mutate],
+  );
+  const operationBusy = pendingAction !== null || checkingOut;
+  const busy = operationBusy || destinationLoading;
+  const commerceLoadingLabel =
+    pendingAction === "destination"
+      ? "Updating prices…"
+      : pendingAction === "add"
+        ? "Adding…"
+        : pendingAction !== null
+          ? "Updating your selection…"
+          : loading || destinationLoading || catalogReads > 0
+            ? "Loading prices and availability…"
+            : checkingOut && !popupOpened
+              ? "Opening checkout…"
+              : null;
   const canCheckout =
     checkoutEnabled &&
     !busy &&
     !loading &&
     !reviewRequired &&
+    !destinationReviewRequired &&
+    destination !== null &&
     !error &&
     cart !== null &&
     cart.lines.length > 0 &&
@@ -524,6 +720,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       addItem,
       openCart,
       refreshCart,
+      beginCatalogRead,
       itemCount,
       adding: pendingAction === "add",
       busy,
@@ -531,11 +728,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
       error: error ? t(error) : null,
       isOpen,
       dialogId,
+      destination,
+      destinationPreference,
+      destinationCountries,
+      destinationRevision,
+      destinationBusy: operationBusy || destinationLoading || loading,
+      destinationChanging:
+        pendingAction === "destination" || destinationLoading,
+      destinationReviewRequired:
+        destinationReviewRequired || destination === null,
+      changeDestination,
     }),
     [
       addItem,
       openCart,
       refreshCart,
+      beginCatalogRead,
       itemCount,
       pendingAction,
       busy,
@@ -544,6 +752,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
       t,
       isOpen,
       dialogId,
+      destination,
+      destinationPreference,
+      destinationCountries,
+      destinationRevision,
+      operationBusy,
+      loading,
+      destinationLoading,
+      destinationReviewRequired,
+      changeDestination,
     ],
   );
 
@@ -593,7 +810,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   function containFocus(event: KeyboardEvent<HTMLDialogElement>) {
     if (event.key !== "Tab") return;
     const controls = event.currentTarget.querySelectorAll<HTMLElement>(
-      'button:not(:disabled), a[href], input:not(:disabled), [tabindex="0"]',
+      'button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), [tabindex="0"]',
     );
     const first = controls[0];
     const last = controls[controls.length - 1];
@@ -610,6 +827,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   return (
     <CartContext.Provider value={context}>
       {children}
+      {commerceLoadingLabel && !isOpen && (
+        <CommerceLoader label={commerceLoadingLabel} />
+      )}
       <dialog
         {...dismissCart}
         ref={dialogRef}
@@ -650,7 +870,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
               {t("selection.")}
             </h2>
           </div>
+          {commerceLoadingLabel && isOpen && (
+            <CommerceLoader label={commerceLoadingLabel} inCart />
+          )}
           <div className={styles.content} aria-busy={loading || busy}>
+            <DestinationSelector />
             {error && (
               <div className={styles.message} role="alert">
                 <p>{t(error)}</p>
@@ -684,18 +908,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 </button>
               </div>
             )}
-            {loading && !cart ? (
-              <div className={styles.message} role="status">
-                <p>{t("Opening your selection…")}</p>
-              </div>
-            ) : cart?.lines.length ? (
+            {loading && !cart ? null : cart?.lines.length ? (
               <ol className={styles.lines}>
                 {cart.lines.map((line, index) => (
                   <CartLineItem
                     key={line.lineKey}
                     line={line}
                     index={index}
-                    disabled={busy || loading || reviewRequired}
+                    disabled={
+                      busy ||
+                      loading ||
+                      reviewRequired ||
+                      destinationReviewRequired
+                    }
                     onUpdate={(quantity) =>
                       void mutate({
                         action: "update",
@@ -799,6 +1024,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 </span>
                 <strong>{cart?.subtotalLabel}</strong>
               </p>
+
               <p
                 id={`${id}-checkout-status`}
                 className={styles.checkoutNote}
@@ -907,7 +1133,9 @@ function CartLineItem({
         </p>
         {line.sellingPlan && (
           <p className={styles.format}>
-            {t(line.sellingPlan.name)} · {t(line.sellingPlan.deliveryLabel)}
+            {t(line.sellingPlan.name)}
+            {t(line.sellingPlan.name) !== t(line.sellingPlan.deliveryLabel) &&
+              ` · ${t(line.sellingPlan.deliveryLabel)}`}
             <br />
             {line.sellingPlan.priceLabel} {t("/ unit, per delivery")}
           </p>

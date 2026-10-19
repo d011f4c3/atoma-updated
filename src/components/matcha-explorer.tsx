@@ -17,9 +17,8 @@ export function MatchaExplorer({
 }) {
   const id = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const { catalog, loading, product, selectProduct, retry } = model;
+  const { catalog, products, loading, product, selectProduct, retry } = model;
   const unavailable = !catalog || catalog.status === "unavailable";
-  const products = catalog?.products ?? [];
   const ready = !loading && !unavailable && products.length > 0;
   const content = ready && product ? getProductContent(product) : undefined;
 

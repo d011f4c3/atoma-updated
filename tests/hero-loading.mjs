@@ -107,7 +107,7 @@ async function setup(browser, options = {}) {
         assert.fail(`Unexpected API request: ${url.pathname}`);
       }
       const asset = url.searchParams.get("url") ?? url.pathname;
-      if (asset.endsWith("/product-exploration/silver-bag-hero-v3.png")) {
+      if (asset.endsWith("/samples/foil-pouch-sticker-v3.png")) {
         state.imageRequests++;
         if (imageGate) await imageGate.promise;
         if (failImage) return route.abort("failed");

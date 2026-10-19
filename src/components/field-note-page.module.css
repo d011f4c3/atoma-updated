@@ -1,0 +1,334 @@
+.page {
+  --ink: var(--color-ink);
+  --muted: var(--color-muted);
+  --line: var(--color-line);
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  background: var(--color-background);
+  color: var(--ink);
+  font-family: var(--font-atoma-mono), monospace;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.main {
+  width: min(100% - var(--gutter) * 2, 80rem);
+  margin-inline: auto;
+}
+
+.page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page a:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 5px;
+}
+
+.page a[aria-disabled="true"] {
+  opacity: 0.5;
+}
+
+.edition {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  min-height: 3.5rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.625rem;
+  line-height: 1.65;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.edition > span {
+  color: var(--muted);
+}
+
+.edition > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  margin-left: auto;
+}
+
+.edition > a:hover,
+.storyNavigation a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+}
+
+.heading {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  gap: 2rem;
+  padding: 2.5rem 0;
+}
+
+.label {
+  display: block;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.heading h1 {
+  max-width: 24ch;
+  margin: 0.85rem 0 0;
+  font-size: clamp(1.25rem, 2.1vw, 1.875rem);
+  line-height: 1.4;
+  letter-spacing: -0.035em;
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+.introduction,
+.observationText {
+  margin: 0;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+.introduction {
+  max-width: 48ch;
+  justify-self: end;
+}
+
+.photograph {
+  min-width: 0;
+  margin: 0;
+}
+
+.photograph img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.photograph figcaption {
+  padding-top: 0.65rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 1.8;
+}
+
+.chapter {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+  align-items: start;
+  gap: clamp(2rem, 5vw, 5rem);
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+
+.observation {
+  max-width: 36ch;
+}
+
+.observation h2 {
+  margin: 0.9rem 0 0;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  letter-spacing: -0.035em;
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+.observationText {
+  margin-top: 1rem;
+}
+
+.placePhotographs,
+.toolsPhotographs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  align-items: end;
+  gap: 1.25rem;
+}
+
+.placePhotographs > :last-child,
+.toolsPhotographs > :last-child {
+  padding-bottom: 2.75rem;
+}
+
+.harvestDetails {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.45fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding: 3.5rem 0 0;
+}
+
+.portraitPhotograph {
+  width: 70%;
+  margin-left: auto;
+}
+
+.viewpointPair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(2rem, 5vw, 5rem);
+  width: 83%;
+  margin: 3.5rem auto 0;
+}
+
+.closingPhotograph {
+  width: 83%;
+  margin-top: 3.5rem;
+}
+
+.recordNote {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  padding: 1.5rem 0 2rem;
+  margin-top: 3.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.recordNote p {
+  max-width: 67ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.85;
+}
+
+.storyNavigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.75rem 0 2.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.storyNavigation a {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 2.75rem;
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+
+.relatedStory > span:first-child {
+  display: grid;
+  gap: 0.45rem;
+}
+
+@media (max-width: 1000px) {
+  .chapter,
+  .recordNote {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+    gap: 2rem;
+  }
+
+  .placePhotographs,
+  .toolsPhotographs {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .portraitPhotograph,
+  .viewpointPair,
+  .closingPhotograph {
+    width: 100%;
+  }
+
+  .viewpointPair {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .closingPhotograph {
+    margin-top: 1.5rem;
+  }
+  .edition {
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    padding-block: 0.4rem;
+  }
+
+  .edition > span {
+    margin-right: auto;
+  }
+
+  .edition > a {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .heading {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1.5rem 0 2rem;
+  }
+
+  .heading h1 {
+    font-size: clamp(1.25rem, 5.125vw, 1.5rem);
+  }
+
+  .introduction {
+    max-width: 45ch;
+    justify-self: start;
+  }
+
+  .chapter {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 2.25rem;
+    padding-top: 1.5rem;
+  }
+
+  .observation {
+    max-width: 45ch;
+  }
+
+  .placePhotographs,
+  .toolsPhotographs,
+  .harvestDetails {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .placePhotographs > :last-child,
+  .toolsPhotographs > :last-child {
+    padding-bottom: 0;
+  }
+
+  .harvestDetails {
+    padding-top: 1.5rem;
+  }
+
+  .recordNote {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+  }
+
+  .storyNavigation {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  .storyNavigation .relatedStory {
+    justify-content: space-between;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+}

@@ -1,0 +1,600 @@
+.page {
+  --about-hero: calc(
+    clamp(1.25rem, 2.1vw, 1.875rem) + var(--locale-font-increment, 0px)
+  );
+  --about-heading: 1.25rem;
+  --about-body: calc(0.875rem + var(--locale-font-increment, 0px));
+  --about-label: calc(0.625rem + var(--locale-font-increment, 0px));
+  --ink: var(--color-ink);
+  --muted: var(--color-muted);
+  --line: var(--color-line);
+  --gutter: clamp(1.25rem, 3.3vw, 4rem);
+  color: var(--ink);
+  background: var(--color-background);
+  background-attachment: fixed;
+  font-family: var(--font-atoma-mono), monospace;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.main {
+  min-width: 0;
+}
+.main section {
+  scroll-margin-top: 1rem;
+}
+.main figure {
+  margin: 0;
+}
+.main h1,
+.main h2,
+.main h3 {
+  font-weight: 400;
+}
+.main h2 {
+  margin: 0;
+  font-size: var(--about-heading);
+  line-height: 1.5;
+  letter-spacing: -0.035em;
+}
+.page a {
+  color: inherit;
+  text-decoration: none;
+}
+.page a:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 5px;
+}
+.page [aria-disabled="true"] {
+  opacity: 0.5;
+}
+.label,
+.sectionLabel,
+.edition,
+.imageNote,
+.railCount,
+.fieldFoot,
+.photoIndex {
+  font-size: var(--about-label);
+  line-height: 1.7;
+  letter-spacing: 0.035em;
+}
+.label,
+.sectionLabel {
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.edition {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  min-height: 3.5rem;
+  margin-inline: var(--gutter);
+  border-top: 1px solid var(--line);
+  text-transform: uppercase;
+}
+.edition > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 2.75rem;
+  margin-left: auto;
+}
+.communityLabel {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+}
+.coverTrack {
+  position: relative;
+}
+.opening {
+  margin-inline: var(--gutter);
+  padding: 1.5rem 0 3rem;
+}
+.openingCopy {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr auto;
+  align-items: center;
+  gap: 2rem;
+  padding-bottom: 2rem;
+}
+.opening h1 {
+  margin: 0.75rem 0 0;
+  font-size: var(--about-hero);
+  line-height: 1.4;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+.openingStatement {
+  max-width: 42ch;
+}
+.openingStatement p {
+  margin: 0;
+  font-size: var(--about-body);
+  line-height: 1.85;
+}
+.openingStatement p + p {
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+.approachLink {
+  composes: action from "./hero-study-introduction.module.css";
+  background: transparent;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.openingImage {
+  position: relative;
+  height: 52svh;
+  min-height: 20rem;
+  overflow: clip;
+}
+.openingImage img {
+  object-fit: cover;
+  object-position: 50% 20%;
+}
+.imageNote {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.75rem;
+  color: var(--muted);
+}
+.journey {
+  position: relative;
+  z-index: 2;
+  background: var(--color-background);
+  background-attachment: fixed;
+  border-top: 1px solid var(--line);
+}
+.journey > section:not(.fieldNotes) {
+  width: min(100% - var(--gutter) * 2, 80rem);
+  margin-inline: auto;
+}
+.purpose {
+  display: grid;
+  grid-template-columns: 0.45fr 1fr 1fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding-block: 4rem;
+}
+.purposeStatement h2 {
+  max-width: 23ch;
+}
+.purpose p {
+  font-size: var(--about-body);
+  line-height: 1.85;
+  max-width: 43ch;
+  text-wrap: pretty;
+}
+.purposeStatement p {
+  margin: 1.5rem 0 0;
+}
+.purposeDetail {
+  color: var(--muted);
+  margin: 0;
+}
+.sectionLabel {
+  padding-top: 0.35rem;
+}
+.fieldNotes {
+  position: relative;
+  margin-top: 3rem;
+}
+.fieldSticky {
+  padding-block: 2rem;
+}
+.fieldHeading {
+  display: flex;
+  align-items: end;
+  gap: 2rem;
+  margin: 0 var(--gutter) 1.5rem;
+}
+.fieldHeading h2 {
+  margin-top: 0.4rem;
+}
+.fieldHeading p {
+  margin: 0 auto 0 4rem;
+  color: var(--muted);
+  font-size: var(--about-body);
+  line-height: 1.8;
+}
+.railCount {
+  flex: 0 0 auto;
+}
+.fieldViewport {
+  overflow: clip;
+  padding: 0.5rem var(--gutter);
+}
+.entries {
+  display: grid;
+  gap: 3rem;
+}
+.entry {
+  min-width: 0;
+}
+.entryLink {
+  display: block;
+}
+.entryImage {
+  position: relative;
+  height: 55svh;
+  min-height: 20rem;
+  overflow: clip;
+}
+.entryImage img {
+  object-fit: cover;
+  object-position: 50% 50%;
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (min-width: 761px) {
+  .entry[data-about-story="harvest"] .entryImage img {
+    object-position: 50% 50%;
+  }
+}
+.entryLink:is(:hover, :focus-visible) .entryImage img {
+  transform: scale(1.025);
+}
+.photoIndex {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: var(--color-surface);
+  padding: 0.4rem 0.75rem;
+}
+.entryCopy {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  padding-top: 1.25rem;
+}
+.entryCopy h3 {
+  font-size: var(--about-heading);
+  line-height: 1.5;
+  letter-spacing: -0.035em;
+  margin: 0.5rem 0 0;
+}
+.entryCopy p {
+  font-size: var(--about-body);
+  line-height: 1.8;
+  color: var(--muted);
+  margin: 0;
+  max-width: 39ch;
+}
+.entryAction {
+  composes: action from "./hero-study-introduction.module.css";
+  background: transparent;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.fieldFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4rem;
+  margin: 1.5rem var(--gutter) 0;
+  color: var(--muted);
+}
+.fieldFoot p {
+  margin: 0;
+  max-width: 78ch;
+}
+.railProgress {
+  width: 12rem;
+  height: 1px;
+  background: var(--line);
+  flex: 0 0 auto;
+}
+.railProgress > span {
+  display: block;
+  width: 50%;
+  height: 1px;
+  background: var(--ink);
+  transform: translateX(calc(var(--field-progress, 0) * 100%));
+}
+.readingProgress {
+  position: fixed;
+  z-index: 40;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--ink);
+  transform: scaleX(var(--about-progress, 0));
+  transform-origin: left;
+  pointer-events: none;
+}
+.review {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem var(--gutter);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--about-label);
+  line-height: 1.8;
+}
+.review p {
+  margin: 0;
+}
+.review a {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+@media (min-width: 900px) and (min-height: 650px) and (prefers-reduced-motion: no-preference) {
+  .coverTrack {
+    min-height: 135svh;
+    margin-bottom: -35svh;
+  }
+  .opening {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  .openingCopy {
+    flex: 0 0 auto;
+  }
+  .openingPhotograph {
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    transform: scale(calc(1 - var(--cover-progress, 0) * 0.075));
+    transform-origin: 50% 20%;
+  }
+  .openingImage {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+  }
+  .journey {
+    box-shadow: 0 -18px 40px -30px rgb(0 0 0 / 35%);
+  }
+  .fieldNotes {
+    min-height: 180svh;
+  }
+  .fieldSticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+  }
+  .fieldHeading,
+  .fieldFoot {
+    flex: 0 0 auto;
+  }
+  .fieldViewport {
+    min-height: 0;
+    flex: 1;
+  }
+  .entries {
+    display: flex;
+    gap: 3rem;
+    height: 100%;
+    width: max-content;
+    transform: translate3d(calc(-1 * var(--field-offset, 0px)), 0, 0);
+  }
+  .entry {
+    width: min(80vw, 72rem);
+    height: 100%;
+    flex: 0 0 auto;
+  }
+  .entryLink {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .entryImage {
+    height: auto;
+    min-height: 0;
+    flex: 1;
+  }
+  .entryCopy {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 0.5rem 2rem;
+  }
+  .entryAction {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    max-width: 16rem;
+    margin-top: 0.5rem;
+  }
+  .entryCopy p {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+@media (max-width: 1100px) {
+  .openingCopy {
+    grid-template-columns: 0.8fr 1.2fr;
+  }
+  .openingCopy .approachLink {
+    display: none;
+  }
+  .purpose {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  .sectionLabel {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 899px) {
+  .entryCopy {
+    grid-template-columns: 1fr 1fr;
+  }
+  .entryAction {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: none;
+  }
+  .fieldHeading p {
+    margin-left: auto;
+    font-size: var(--about-label);
+    max-width: 28ch;
+  }
+  .railCount,
+  .railProgress {
+    display: none;
+  }
+  .fieldFoot {
+    margin-top: 2rem;
+  }
+}
+@media (max-width: 760px) {
+  .page {
+    --about-hero: calc(
+      clamp(1.25rem, 5.125vw, 1.5rem) + var(--locale-font-increment, 0px)
+    );
+    --about-heading: calc(1.125rem + var(--locale-font-increment, 0px));
+    background-attachment: scroll;
+  }
+  .journey {
+    background-attachment: scroll;
+  }
+  .edition {
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .edition > a {
+    gap: 0.5rem;
+  }
+  .openingCopy {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+  }
+  .opening h1 {
+    line-height: 1.3;
+  }
+  .openingStatement {
+    max-width: 40ch;
+  }
+  .openingImage {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 3 / 2;
+  }
+  .opening {
+    padding-block: 1.25rem 2rem;
+  }
+  .imageNote {
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    padding-top: 0.625rem;
+  }
+  .purpose {
+    grid-template-columns: 1fr;
+    padding-block: 2rem;
+    gap: 1rem;
+  }
+  .sectionLabel {
+    padding-top: 0;
+  }
+  .purpose p {
+    max-width: 46ch;
+  }
+  .purposeStatement p {
+    margin-top: 0.75rem;
+  }
+  .fieldNotes {
+    margin-top: 2rem;
+  }
+  .fieldSticky {
+    padding-block: 1.5rem 2rem;
+    border-top: 1px solid var(--line);
+  }
+  .fieldHeading {
+    display: block;
+    margin-bottom: 1.25rem;
+  }
+  .fieldHeading p {
+    max-width: none;
+    margin-top: 0.75rem;
+    font-size: var(--about-body);
+    line-height: 1.75;
+  }
+  .entries {
+    gap: 2.5rem;
+  }
+  .entryLink {
+    -webkit-tap-highlight-color: transparent;
+  }
+  .entryImage {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 3 / 2;
+  }
+  .entryImage img,
+  .entryLink:is(:hover, :focus-visible) .entryImage img {
+    transform: none;
+    transition: none;
+  }
+  .photoIndex {
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  .entryCopy {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding-top: 1rem;
+  }
+  .entryCopy h3 {
+    margin-top: 0.375rem;
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+  .entryCopy p {
+    max-width: none;
+  }
+  .entryAction {
+    min-height: 2.75rem;
+    padding: 0.625rem 0.75rem;
+    margin-top: 0.25rem;
+  }
+  .entryAction svg {
+    transition: none;
+  }
+  .fieldFoot {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--about-label);
+  }
+  .review {
+    display: block;
+  }
+}
+@media (max-width: 380px) {
+  .edition {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0 0.75rem;
+    padding-block: 0.5rem;
+  }
+  .edition > span:first-child {
+    grid-column: 1 / -1;
+  }
+  .edition > a {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+    margin-left: 0;
+  }
+  .edition > [data-appearance-controls] {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .entryImage img {
+    transition: none;
+    transform: none !important;
+  }
+}

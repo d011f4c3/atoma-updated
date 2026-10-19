@@ -92,6 +92,10 @@
 .control[aria-current="page"] {
   border-color: var(--ink, #e6e5e1);
 }
+.control[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: wait;
+}
 .control > * {
   pointer-events: none;
 }
@@ -935,4 +939,15 @@
   background: var(--nav-surface);
   box-shadow: var(--nav-shadow, none);
   text-decoration: none;
+}
+
+.destination {
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 760px) {
+  .destination {
+    padding: 0.125rem 0.75rem;
+    border-top: 1px solid var(--line);
+  }
 }

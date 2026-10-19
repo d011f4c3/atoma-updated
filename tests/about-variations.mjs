@@ -510,17 +510,17 @@ try {
       "?direction=notes&direction=atlas",
     ]) {
       await page.goto(`${baseURL}/about-exploration${suffix}`);
-      await page
-        .locator('[data-about-variations="studio"] [data-scale="compact"]')
-        .waitFor();
-      assert.equal(
-        await page
-          .getByRole("navigation", { name: "About direction", exact: true })
-          .getByRole("link", { name: labels.studio, exact: true })
-          .getAttribute("aria-current"),
-        "page",
+      const about = page.locator("[data-about-flow]");
+      await about.waitFor();
+      assert.match(
+        await about.getByRole("heading", { level: 1 }).innerText(),
+        /^Matcha,\s+in detail\.$/i,
       );
     }
+    await page.goto(`${baseURL}/about-exploration?direction=studio`);
+    await page
+      .locator('[data-about-variations="studio"] [data-scale="compact"]')
+      .waitFor();
     await page.getByRole("link", { name: "Original", exact: false }).click();
     await page
       .locator('[data-about-variations="original"] [data-scale="original"]')

@@ -1,3 +1,7 @@
+import {
+  parseShippingCountry,
+  type ShippingCountryCode,
+} from "./storefront-destination.ts";
 import type {
   AddCartLineCommand,
   RemoveCartLineCommand,
@@ -186,6 +190,7 @@ function parsePositiveGraphqlInt(value: string | undefined): number | null {
 }
 
 export type CartRequest =
+  | { action: "destination"; countryCode: ShippingCountryCode }
   | { action: "add"; command: AddCartLineCommand }
   | { action: "update"; command: UpdateCartLineCommand }
   | { action: "remove"; command: RemoveCartLineCommand };
@@ -197,6 +202,15 @@ export function parseCartRequest(value: unknown): CartRequest | null {
   }
   const input = value as Record<string, unknown>;
   const action = input.action;
+  if (action === "destination") {
+    const countryCode = parseShippingCountry(input.countryCode);
+    return countryCode &&
+      Object.keys(input).length === 2 &&
+      Object.hasOwn(input, "action") &&
+      Object.hasOwn(input, "countryCode")
+      ? { action, countryCode }
+      : null;
+  }
   const names =
     action === "add"
       ? ["action", "productHandle", "variantKey", "quantity"]

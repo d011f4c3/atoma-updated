@@ -239,3 +239,193 @@ test("checkout fails closed when its fresh read is missing, empty, changed or re
   assert.deepEqual(await s.app.prepareCheckout("cart"), { kind: "error" });
   assert.equal(s.checkoutReads(), 1);
 });
+
+const SUBSCRIPTION_KEY = `v1_${"s".repeat(43)}`;
+const RECURRING_LINE_KEY = `v1_${"r".repeat(43)}`;
+const recurringPlan = {
+  reference: "private-plan-reference",
+  name: "Every 4 weeks",
+  description: null,
+  deliveryInterval: "week",
+  deliveryIntervalCount: 4,
+  price: money(10000),
+};
+function mixedCart(oneTime, recurring) {
+  const value = cart(0);
+  for (const [quantity, plan, reference] of [
+    [oneTime, null, "one-time-line"],
+    [recurring, recurringPlan, "recurring-line"],
+  ]) {
+    if (!quantity) continue;
+    value.lines.push({
+      ...cart(quantity).lines[0],
+      reference,
+      sellingPlan: plan,
+    });
+  }
+  value.totalQuantity = oneTime + recurring;
+  value.cost = {
+    subtotalAmount: money(value.totalQuantity * 10000),
+    totalAmount: money(value.totalQuantity * 10000),
+  };
+  return value;
+}
+function recurringSetup({
+  before = mixedCart(0, 0),
+  plans = [recurringPlan],
+  requiresPlan = false,
+  wrongResponse = false,
+} = {}) {
+  const writes = [];
+  const currentProduct = product();
+  currentProduct.requiresSellingPlan = requiresPlan;
+  currentProduct.variants[0].sellingPlans = plans;
+  const amounts = () => [
+    before.lines.find((line) => line.sellingPlan === null)?.quantity ?? 0,
+    before.lines.find((line) => line.sellingPlan !== null)?.quantity ?? 0,
+  ];
+  const addPurchase = async (input) => {
+    writes.push({ action: "add", input });
+    const [once, recurring] = amounts();
+    const selectedRecurring =
+      !wrongResponse && input.sellingPlanId === recurringPlan.reference;
+    return {
+      kind: "success",
+      warnings: [],
+      cart: mixedCart(
+        once + (selectedRecurring ? 0 : input.quantity),
+        recurring + (selectedRecurring ? input.quantity : 0),
+      ),
+    };
+  };
+  const app = createCartApplication({
+    cartSource: {
+      readCart: async () => before,
+      createCart: addPurchase,
+      addCartLine: async (_reference, input) => addPurchase(input),
+      updateCartLine: async (_reference, input) => {
+        writes.push({ action: "update", input });
+        const [once] = amounts();
+        return {
+          kind: "success",
+          warnings: [],
+          cart: wrongResponse
+            ? mixedCart(once + input.quantity, 0)
+            : mixedCart(once, input.quantity),
+        };
+      },
+      removeCartLine: async () => {
+        throw new Error("Unexpected removal");
+      },
+      readCheckout: async () => {
+        throw new Error("Unexpected checkout");
+      },
+    },
+    catalogSource: { readPublishedProductByHandle: async () => currentProduct },
+    createLineActionKey: (reference) =>
+      reference === "recurring-line" ? RECURRING_LINE_KEY : LINE_KEY,
+    matchesLineActionKey: (key, reference) =>
+      key === RECURRING_LINE_KEY && reference === "recurring-line",
+    matchesVariantActionKey: (key, reference, plan) =>
+      reference === "variant-reference" &&
+      (plan === undefined
+        ? key === VARIANT_KEY
+        : plan === recurringPlan.reference && key === SUBSCRIPTION_KEY),
+    classifyError: () => null,
+  });
+  return { app, writes };
+}
+
+test("real recurring selection sends its resolved plan and exposes only recurring terms", async () => {
+  const s = recurringSetup();
+  const result = await s.app.addLine(null, {
+    ...add,
+    variantKey: SUBSCRIPTION_KEY,
+  });
+  assert.equal(result.kind, "success");
+  assert.deepEqual(s.writes[0].input, {
+    merchandiseId: "variant-reference",
+    quantity: 1,
+    sellingPlanId: recurringPlan.reference,
+  });
+  assert.equal(result.cart.lines[0].sellingPlan.deliveryLabel, "Every 4 weeks");
+  assert.equal(result.cart.lines[0].sellingPlan.priceLabel, "¥10,000");
+  assert.doesNotMatch(
+    JSON.stringify(result),
+    /private-plan-reference|variant-reference|cart-bearer-secret/,
+  );
+});
+
+test("removed plan, tampered key and prohibited one-time purchase reject without a write", async () => {
+  for (const [options, variantKey] of [
+    [{ plans: [] }, SUBSCRIPTION_KEY],
+    [{}, `v1_${"z".repeat(43)}`],
+    [{ requiresPlan: true }, VARIANT_KEY],
+  ]) {
+    const s = recurringSetup(options);
+    assert.equal(
+      (await s.app.addLine(null, { ...add, variantKey })).kind,
+      "rejected",
+    );
+    assert.equal(s.writes.length, 0);
+  }
+});
+
+test("mixed-cart additions and quantity updates preserve the recurring identity", async () => {
+  const s = recurringSetup({ before: mixedCart(1, 1) });
+  const added = await s.app.addLine("cart", {
+    ...add,
+    variantKey: SUBSCRIPTION_KEY,
+    quantity: 2,
+  });
+  assert.equal(added.kind, "success");
+  assert.deepEqual(
+    added.cart.lines.map((line) => [line.quantity, Boolean(line.sellingPlan)]),
+    [
+      [1, false],
+      [3, true],
+    ],
+  );
+  const updated = await s.app.updateLine("cart", {
+    lineKey: RECURRING_LINE_KEY,
+    quantity: 4,
+  });
+  assert.equal(updated.kind, "success");
+  assert.deepEqual(s.writes[1].input, {
+    lineId: "recurring-line",
+    quantity: 4,
+  });
+  assert.deepEqual(
+    updated.cart.lines.map((line) => [
+      line.quantity,
+      Boolean(line.sellingPlan),
+    ]),
+    [
+      [1, false],
+      [4, true],
+    ],
+  );
+});
+
+test("a mutation response that substitutes one-time for recurring is ambiguous and is never retried", async () => {
+  const s = recurringSetup({ wrongResponse: true });
+  assert.equal(
+    (await s.app.addLine(null, { ...add, variantKey: SUBSCRIPTION_KEY })).kind,
+    "ambiguous",
+  );
+  assert.equal(s.writes.length, 1);
+  const update = recurringSetup({
+    before: mixedCart(1, 1),
+    wrongResponse: true,
+  });
+  assert.equal(
+    (
+      await update.app.updateLine("cart", {
+        lineKey: RECURRING_LINE_KEY,
+        quantity: 2,
+      })
+    ).kind,
+    "ambiguous",
+  );
+  assert.equal(update.writes.length, 1);
+});

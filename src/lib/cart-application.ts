@@ -4,7 +4,6 @@ import type {
   CartMutationResult as AdapterCartMutationResult,
   CartReference,
   CartSnapshot,
-  CatalogMoney,
   CatalogProductSummary,
   CatalogVariantReference,
   CatalogSellingPlanReference,
@@ -24,7 +23,15 @@ import type {
   CartLoadResult,
   CartViewModel,
 } from "./cart-types";
-
+import {
+  parseShippingCountry,
+  type DestinationContext,
+  type ShippingCountryCode,
+} from "./storefront-destination.ts";
+import {
+  formatStorefrontMoney,
+  isStorefrontCurrency,
+} from "./storefront-money.ts";
 const MAX_GRAPHQL_INT = 2_147_483_647;
 const MAX_PRODUCT_HANDLE_LENGTH = 255;
 const PRODUCT_HANDLE_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -40,6 +47,10 @@ const ERROR_RESULT = Object.freeze({ kind: "error" } as const);
 const AMBIGUOUS_RESULT = Object.freeze({ kind: "ambiguous" } as const);
 
 export interface CartSource {
+  updateBuyerCountry?(
+    reference: CartReference,
+    countryCode: ShippingCountryCode,
+  ): Promise<AdapterCartMutationResult>;
   readCart(reference: CartReference): Promise<Readonly<CartSnapshot> | null>;
   createCart(input: {
     readonly merchandiseId: CatalogVariantReference;
@@ -80,6 +91,7 @@ export type CartErrorClassification =
   "retryable" | "nonretryable" | "ambiguous" | null;
 
 export interface CartApplicationDependencies {
+  readonly destination?: DestinationContext;
   readonly cartSource: CartSource;
   readonly catalogSource: FreshCatalogSource;
   readonly createLineActionKey: (reference: CartLineReference) => string;
@@ -140,6 +152,10 @@ export type CheckoutResult =
   | typeof ERROR_RESULT;
 
 export interface CartApplication {
+  updateDestination(
+    reference: CartReference,
+    countryCode: ShippingCountryCode,
+  ): Promise<CartCommandResult>;
   loadCart(reference: CartReference | null): Promise<CartLoadResult>;
   addLine(
     reference: CartReference | null,
@@ -160,6 +176,45 @@ export function createCartApplication(
   dependencies: CartApplicationDependencies,
 ): CartApplication {
   const application: CartApplication = {
+    async updateDestination(reference, countryCode) {
+      if (
+        !parseShippingCountry(countryCode) ||
+        dependencies.destination?.countryCode !== countryCode ||
+        !dependencies.cartSource.updateBuyerCountry
+      )
+        return REJECTED_RESULT;
+      const before = await readCart(reference, dependencies);
+      if (isFailureResult(before)) return before;
+      if (before === null) return MISSING_RESULT;
+      if (matchesDestination(before, dependencies))
+        return mapMutationResult(
+          { kind: "success", cart: before, warnings: [] },
+          dependencies,
+        );
+      try {
+        const result = await dependencies.cartSource.updateBuyerCountry(
+          reference,
+          countryCode,
+        );
+        if (result.kind === "success") {
+          const oldPurchases = purchaseQuantities(before.lines);
+          const newPurchases = purchaseQuantities(result.cart.lines);
+          if (
+            !matchesDestination(result.cart, dependencies) ||
+            !oldPurchases ||
+            !newPurchases ||
+            oldPurchases.size !== newPurchases.size ||
+            [...oldPurchases].some(
+              ([identity, quantity]) => newPurchases.get(identity) !== quantity,
+            )
+          )
+            return AMBIGUOUS_RESULT;
+        }
+        return mapMutationResult(result, dependencies);
+      } catch (error) {
+        return classifyFailure(error, dependencies.classifyError, true);
+      }
+    },
     async loadCart(reference): Promise<CartLoadResult> {
       if (reference === null) {
         return EMPTY_RESULT;
@@ -176,7 +231,9 @@ export function createCartApplication(
       }
 
       if (cart.lines.length === 0) {
-        return EMPTY_RESULT;
+        return dependencies.destination
+          ? { kind: "empty", destination: cartDestination(cart) }
+          : EMPTY_RESULT;
       }
 
       return Object.freeze({
@@ -293,6 +350,9 @@ export function createCartApplication(
         }
       }
 
+      if (beforeCart && !matchesDestination(beforeCart, dependencies))
+        return REJECTED_WITH_REVIEW_RESULT;
+
       try {
         const result =
           currentReference === null
@@ -340,6 +400,8 @@ export function createCartApplication(
         return MISSING_RESULT;
       }
 
+      if (!matchesDestination(cart, dependencies))
+        return REJECTED_WITH_REVIEW_RESULT;
       const line = resolveLine(cart, command.lineKey, dependencies);
 
       if (
@@ -386,6 +448,8 @@ export function createCartApplication(
         return MISSING_RESULT;
       }
 
+      if (!matchesDestination(cart, dependencies))
+        return REJECTED_WITH_REVIEW_RESULT;
       const line = resolveLine(cart, command.lineKey, dependencies);
 
       if (line === null || !line.instructions.canRemove) {
@@ -411,6 +475,7 @@ export function createCartApplication(
         const cart = await dependencies.cartSource.readCart(reference);
         if (cart === null) return MISSING_RESULT;
         if (cart.totalQuantity === 0) return EMPTY_RESULT;
+        if (!matchesDestination(cart, dependencies)) return ERROR_RESULT;
         if (
           cart.lines.some(
             (line) =>
@@ -432,6 +497,12 @@ export function createCartApplication(
           return EMPTY_RESULT;
         }
         if (checkout.totalQuantity !== cart.totalQuantity) return ERROR_RESULT;
+        if (
+          dependencies.destination &&
+          (checkout.buyerCountryCode !== dependencies.destination.countryCode ||
+            checkout.currency !== dependencies.destination.currency)
+        )
+          return ERROR_RESULT;
 
         const result = {
           kind: "ready" as const,
@@ -538,6 +609,11 @@ function mapConfirmedMutationResult(
   try {
     if (
       result.kind === "success" &&
+      !matchesDestination(result.cart, dependencies)
+    )
+      return AMBIGUOUS_RESULT;
+    if (
+      result.kind === "success" &&
       expectedPurchase !== undefined &&
       !confirmsPurchaseMutation(
         result.cart,
@@ -629,9 +705,10 @@ function mapCart(
   dependencies: CartApplicationDependencies,
 ): CartViewModel {
   return Object.freeze({
+    ...(dependencies.destination ? { destination: cartDestination(cart) } : {}),
     totalQuantity: cart.totalQuantity,
-    subtotalLabel: formatJpy(cart.cost.subtotalAmount),
-    totalLabel: formatJpy(cart.cost.totalAmount),
+    subtotalLabel: formatStorefrontMoney(cart.cost.subtotalAmount),
+    totalLabel: formatStorefrontMoney(cart.cost.totalAmount),
     lines: Object.freeze(
       cart.lines.map<CartLineViewModel>((line) =>
         Object.freeze({
@@ -645,8 +722,8 @@ function mapCart(
             ),
           ),
           quantity: line.quantity,
-          unitPriceLabel: formatJpy(line.cost.amountPerQuantity),
-          lineTotalLabel: formatJpy(line.cost.totalAmount),
+          unitPriceLabel: formatStorefrontMoney(line.cost.amountPerQuantity),
+          lineTotalLabel: formatStorefrontMoney(line.cost.totalAmount),
           sellingPlan:
             line.sellingPlan === null
               ? null
@@ -654,7 +731,7 @@ function mapCart(
                   name: line.sellingPlan.name,
                   description: line.sellingPlan.description,
                   deliveryLabel: formatDeliveryInterval(line.sellingPlan),
-                  priceLabel: formatJpy(line.sellingPlan.price),
+                  priceLabel: formatStorefrontMoney(line.sellingPlan.price),
                 }),
           purchaseState: line.merchandise.purchaseStatus,
           quantityRule: Object.freeze({ ...line.merchandise.quantityRule }),
@@ -751,10 +828,24 @@ function satisfiesQuantityRule(
   );
 }
 
-function formatJpy(money: Readonly<CatalogMoney>): string {
-  if (money.currency !== "JPY") {
-    throw new Error("Unsupported storefront currency.");
-  }
+export function cartDestination(
+  cart: Pick<CartSnapshot, "buyerCountryCode" | "cost">,
+): DestinationContext | null {
+  const countryCode = parseShippingCountry(cart.buyerCountryCode);
+  const currency = cart.cost.totalAmount.currency;
+  return countryCode && isStorefrontCurrency(currency)
+    ? { countryCode, currency }
+    : null;
+}
 
-  return `¥${money.minorUnits.toLocaleString("en-US")}`;
+function matchesDestination(
+  cart: CartSnapshot,
+  dependencies: CartApplicationDependencies,
+): boolean {
+  if (!dependencies.destination) return true;
+  const actual = cartDestination(cart);
+  return (
+    actual?.countryCode === dependencies.destination.countryCode &&
+    actual?.currency === dependencies.destination.currency
+  );
 }

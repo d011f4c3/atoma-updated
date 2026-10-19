@@ -78,6 +78,16 @@ export function AboutVariations({ direction }: { direction: AboutDirection }) {
             "The original large-scale exploration, kept here for comparison."}
           <span>English design studies</span>
         </p>
+        <Link
+          className={styles.newDirections}
+          href="/about-exploration?direction=about"
+          aria-disabled={busy || undefined}
+          onNavigate={(event) => {
+            if (busy) event.preventDefault();
+          }}
+        >
+          Current About page ↗
+        </Link>
       </aside>
       {direction === "atlas" ? (
         <AboutAtlas />

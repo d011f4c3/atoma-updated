@@ -1,0 +1,605 @@
+.main {
+  font-family: var(--font-atoma-mono), monospace;
+  font-weight: 400;
+}
+.main h1,
+.main h2,
+.main h3 {
+  font-weight: 400;
+}
+.main h1 {
+  margin: 1.2rem 0 0;
+  font-size: clamp(1.25rem, 2.1vw, 1.875rem);
+  line-height: 1.4;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+.main h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.55;
+  letter-spacing: -0.025em;
+}
+.main h3 {
+  margin: 1.5rem 0;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+.main section {
+  scroll-margin-top: 2rem;
+}
+.main figure {
+  margin: 0;
+}
+.eyebrow,
+.sectionHead,
+.definitionHead,
+.stageLabel,
+.stageEnd,
+.photoIndex {
+  font-size: 0.625rem;
+  line-height: 1.6;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+.eyebrow {
+  color: var(--muted);
+}
+.opening {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100svh - var(--header-height) - var(--comparison-height));
+}
+.openingHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.75rem 0 2rem;
+}
+.operator {
+  font-size: 0.625rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.companyOpening {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 0;
+  flex: 1;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.companyStatement {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.5rem clamp(2rem, 4vw, 4rem) 2rem 1.25rem;
+  position: relative;
+}
+.statementMark {
+  color: var(--muted);
+  font-size: 0.625rem;
+  margin-bottom: 2rem;
+}
+.companyStatement h2 {
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+.companyStatement > p {
+  font-size: 0.875rem;
+  line-height: 1.85;
+  max-width: 43ch;
+  margin: 1.75rem 0 2rem;
+}
+.companyTopics {
+  margin-top: auto;
+}
+.companyTopics > a {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  gap: 1rem;
+  min-height: 2.75rem;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+}
+.companyTopics > a > span:first-child {
+  color: var(--muted);
+  font-size: 0.5625rem;
+}
+.companyPortrait {
+  border-left: 1px solid var(--line);
+  padding: 1.25rem 0 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+.companyPortrait > div {
+  position: relative;
+  flex: 1;
+  min-height: 25rem;
+}
+.companyPortrait img {
+  object-fit: cover;
+  object-position: 50% 37%;
+}
+.openingFoot {
+  min-height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  font-size: 0.625rem;
+}
+.openingFoot > a {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  min-height: 2.75rem;
+  text-transform: uppercase;
+}
+.depth {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 0.5625rem;
+}
+.depth i {
+  width: 2rem;
+  height: 1px;
+  background: var(--line);
+}
+.sectionHead {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid var(--line);
+  padding: 1rem 0;
+  color: var(--muted);
+}
+.sectionHead > span:first-child {
+  color: var(--ink);
+}
+.approach {
+  padding: 6rem 0 8rem;
+}
+.approachGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(4rem, 9vw, 9rem);
+  padding-top: 3rem;
+  align-items: center;
+}
+.approachCopy h2 {
+  margin-bottom: 2rem;
+}
+.body {
+  max-width: 52ch;
+  font-size: 0.875rem;
+  line-height: 1.85;
+}
+.body p {
+  margin: 0 0 1.1rem;
+}
+.body p:last-child {
+  margin: 0;
+}
+.inlineShop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: min(100%, 19rem);
+  border-bottom: 1px solid var(--line);
+  min-height: 3.5rem;
+  margin-top: 2rem;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+}
+.definition {
+  position: relative;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--color-raised) 70%, transparent);
+  padding: 1.5rem 2rem 2rem;
+  box-shadow: 0 12px 35px -25px color-mix(in srgb, var(--ink) 25%, transparent);
+}
+.definition::before,
+.definition::after {
+  content: "+";
+  position: absolute;
+  font-size: 0.875rem;
+  color: var(--muted);
+  top: -0.8em;
+}
+.definition::before {
+  left: -0.35em;
+}
+.definition::after {
+  right: -0.35em;
+}
+.definitionHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.definitionHead > span:first-child {
+  color: var(--ink);
+}
+.definitionHead > span:last-child {
+  color: var(--muted);
+  font-size: 0.5625rem;
+}
+.name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 2rem;
+  font-size: clamp(1.25rem, 2.1vw, 1.875rem);
+  letter-spacing: -0.04em;
+}
+.name i {
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-style: normal;
+}
+.nameMeaning {
+  font-size: 0.75rem;
+  line-height: 1.8;
+  margin: 1.25rem 0 2rem;
+}
+.definition dl {
+  margin: 0;
+  font-size: 0.625rem;
+  line-height: 1.75;
+}
+.definition dl > div {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-top: 1px solid var(--line);
+}
+.definition dt {
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 0.5625rem;
+}
+.definition dd {
+  margin: 0;
+}
+.company {
+  margin: 1.5rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+.harvest {
+  padding-bottom: 8rem;
+}
+.fieldTitle {
+  display: flex;
+  justify-content: space-between;
+  gap: 3rem;
+  padding: 3rem 0;
+  align-items: end;
+}
+.fieldTitle > span {
+  font-size: 0.625rem;
+  line-height: 1.8;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.fieldRecord {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.fieldPhoto {
+  padding: 1.25rem 1.25rem 0 0;
+}
+.fieldPhoto > div {
+  position: relative;
+  aspect-ratio: 1.02;
+}
+.fieldPhoto img {
+  object-fit: cover;
+  object-position: 50% 42%;
+}
+.photoIndex {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: var(--color-surface);
+  color: var(--ink);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.5625rem;
+}
+.main figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding: 0.8rem 0;
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 1.7;
+}
+.main figcaption > span:last-child {
+  font-size: 0.5625rem;
+}
+.fieldCopy {
+  align-content: center;
+  padding: 2rem clamp(1.5rem, 3vw, 3rem);
+  border-left: 1px solid var(--line);
+}
+.fieldNext {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.fieldNext > span {
+  font-size: 0.5625rem;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.fieldNext p {
+  font-size: 0.75rem;
+  line-height: 1.8;
+  margin: 0.75rem 0 0;
+}
+.fieldFooter {
+  display: flex;
+  align-items: start;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  font-size: 0.625rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.fieldFooter p {
+  max-width: 65ch;
+  margin: 0;
+}
+.fieldFooter > span:last-child {
+  margin-left: auto;
+  font-size: 0.5625rem;
+  text-align: right;
+}
+.technology {
+  padding-bottom: 7rem;
+}
+.technologyIntro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  padding: 3rem 0;
+}
+.technologyPair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4rem minmax(0, 1fr);
+}
+.toolPhoto {
+  position: relative;
+  aspect-ratio: 1;
+}
+.toolPhoto img {
+  object-fit: cover;
+  object-position: 50% 43%;
+}
+.toolPhoto > span {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.5625rem;
+  text-transform: uppercase;
+  line-height: 1.6;
+  background: var(--color-surface);
+}
+.pairAxis {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem 0 4rem;
+  font-size: 0.5625rem;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.pairAxis i {
+  flex: 1;
+  width: 1px;
+  background: var(--line);
+}
+.pairAxis > span {
+  writing-mode: vertical-rl;
+}
+.preparation {
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 1.8;
+  margin-top: 1.5rem;
+}
+.closing {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr auto;
+  gap: 3rem;
+  align-items: center;
+  padding: 3.5rem 0;
+  border-top: 1px solid var(--line);
+}
+.closing > a {
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  padding: 0 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+}
+@media (max-width: 1000px) {
+  .depth {
+    display: none;
+  }
+  .approachGrid {
+    gap: 3rem;
+  }
+  .fieldCopy {
+    padding: 1.5rem;
+  }
+  .closing {
+    grid-template-columns: 1fr 1fr;
+  }
+  .closing > .eyebrow {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 760px) {
+  .main h1 {
+    font-size: clamp(1.25rem, 5.125vw, 1.5rem);
+  }
+  .openingFoot {
+    min-height: 3.75rem;
+  }
+  .openingFoot > [data-appearance-controls] {
+    display: none;
+  }
+  .sectionHead {
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0.6rem;
+    font-size: 0.5625rem;
+  }
+  .sectionHead > span:last-child {
+    grid-column: 2;
+    font-size: 0.5rem;
+  }
+  .approach {
+    padding: 4rem 0 5rem;
+  }
+  .approachGrid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding-top: 2rem;
+  }
+  .definition {
+    padding: 1rem 1.25rem 1.5rem;
+  }
+  .name {
+    font-size: 1.25rem;
+  }
+  .harvest {
+    padding-bottom: 5rem;
+  }
+  .fieldTitle {
+    padding: 2rem 0;
+    flex-direction: column;
+    align-items: start;
+    gap: 1rem;
+  }
+  .fieldRecord {
+    grid-template-columns: 1fr;
+  }
+  .fieldPhoto {
+    padding: 1rem 0 0;
+  }
+  .fieldCopy {
+    padding: 1.5rem 0 2rem;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .fieldCopy h3 {
+    margin: 1rem 0 1.5rem;
+  }
+  .fieldFooter {
+    flex-wrap: wrap;
+  }
+  .fieldFooter p {
+    flex: 1;
+  }
+  .fieldFooter > span:last-child {
+    width: 100%;
+    text-align: left;
+    margin-left: 1.6rem;
+  }
+  .technology {
+    padding-bottom: 5rem;
+  }
+  .technologyIntro {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding: 2rem 0;
+  }
+  .technologyPair {
+    grid-template-columns: minmax(0, 1fr) 1rem minmax(0, 1fr);
+  }
+  .pairAxis {
+    padding: 0;
+  }
+  .pairAxis > span {
+    display: none;
+  }
+  .toolPhoto {
+    aspect-ratio: 0.65;
+  }
+  .toolPhoto > span {
+    top: 0.5rem;
+    left: 0.5rem;
+    padding: 0.3rem;
+    font-size: 0.5rem;
+  }
+  .main figcaption {
+    font-size: 0.5625rem;
+  }
+  .closing {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding: 2.5rem 0;
+  }
+  .closing > a {
+    justify-content: space-between;
+    min-height: 3.5rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .openingHeading {
+    padding: 1.5rem 0;
+    align-items: start;
+  }
+  .operator {
+    font-size: 0.5rem;
+    max-width: 9ch;
+    line-height: 1.8;
+    text-align: right;
+  }
+  .companyOpening {
+    grid-template-columns: 1fr;
+  }
+  .companyStatement {
+    padding: 1.5rem 0 2rem;
+  }
+  .statementMark {
+    margin-bottom: 1.25rem;
+  }
+  .companyStatement > p {
+    margin: 1.25rem 0 1.5rem;
+  }
+  .companyPortrait {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding: 1rem 0 0;
+  }
+  .companyPortrait > div {
+    min-height: 0;
+    aspect-ratio: 1.1;
+  }
+}

@@ -1,0 +1,60 @@
+{% comment %} Repository example: replace CONFIGURED-SAMPLE-CREDIT-CODE with the private code configured in Shopify before using this fragment. {% endcomment %}
+<style>
+    /* ATOMA notification identity — 2026-10-19 */
+    body, .body { background: #f6f7f6; color: #20272c; }
+    body, td, p { font-family: Arial, Helvetica, sans-serif; }
+    p { color: #58636b; font-size: 15px; line-height: 1.65; }
+    a, a:hover, a:active, a:visited { color: #263b46; }
+    .header { margin: 0; }
+    .header__cell { padding: 40px 0 28px; }
+    .shop-name__text { margin: 0; }
+    .shop-name__text a { color: #20272c; font-family: Arial, Helvetica, sans-serif; font-size: 27px; font-weight: 400; letter-spacing: 1px; text-transform: uppercase; }
+    .order-number__text, .po-number__text { color: #69747b; font-family: Menlo, Consolas, monospace; font-size: 12px; letter-spacing: .6px; }
+    .content__cell { padding: 8px 0 34px; }
+    h2 { color: #20272c; font-size: 26px; font-weight: 400; line-height: 1.35; letter-spacing: -.4px; margin: 0 0 16px; }
+    h3 { color: #20272c; font-family: Menlo, Consolas, monospace; font-size: 15px; font-weight: 400; letter-spacing: .7px; text-transform: uppercase; }
+    h4 { color: #58636b; font-family: Menlo, Consolas, monospace; font-size: 12px; font-weight: 400; letter-spacing: .4px; text-transform: uppercase; }
+    .section__cell { padding: 28px 0; }
+    .section, .footer { border-top-color: #d9dfe1; }
+    .button__cell, .actions-buttons .button__cell--primary { background: #243640; border: 1px solid #243640; border-radius: 6px; }
+    .button__text { text-transform: uppercase; color: #ffffff; font-family: Menlo, Consolas, monospace; font-size: 13px; font-weight: 400; letter-spacing: .4px; padding: 17px 25px; }
+    .actions-buttons .button__cell--outlined { border: 1px solid #aeb9bf; border-radius: 6px; background: transparent; }
+    .actions-buttons .button__cell--outlined .button__text { color: #243640; }
+    .link__cell { font-size: 13px; }
+    .order-list__item-title { color: #20272c; font-size: 14px; font-weight: 500; line-height: 1.5; }
+    .order-list__item-variant, .order-list__item-property { color: #69747b; font-size: 12px; line-height: 1.6; }
+    .order-list__product-image { border-radius: 4px; border-color: #d9dfe1; }
+    .order-list__item-price, .subtotal-line__value { color: #20272c; }
+    .subtotal-line__title, .subtotal-line__value { font-size: 14px; }
+    .subtotal-line--total .subtotal-line__value { font-size: 22px; }
+    .customer-info__item-content { font-size: 14px; line-height: 1.6; color: #58636b; }
+    .footer__cell { padding: 28px 0 40px; }
+    .disclaimer__subtext { color: #69747b; font-size: 12px; line-height: 1.6; }
+    @media only screen and (max-width: 600px) {
+      .header__cell { padding: 28px 0 22px; }
+      h2 { font-size: 23px; }
+      .button__text { padding: 17px 18px; }
+    }
+  </style>
+
+{% comment %} ATOMA sample credit — 2026-10-19 {% endcomment %}
+            {% assign atoma_sample_credit_order = false %}
+            {% for atoma_line in line_items %}
+              {% if atoma_line.variant.id == 62997353136209 and atoma_line.quantity > 0 %}
+                {% assign atoma_sample_credit_order = true %}
+              {% endif %}
+            {% endfor %}
+            {% if atoma_sample_credit_order %}
+              <table role="presentation" width="100%" style="margin:28px 0;border:1px solid #d9dfe1;border-radius:6px;background:#edf1f2;">
+                <tr><td style="padding:24px;">
+                  <h3 style="margin:0 0 12px;">Try your samples. Choose your matcha.</h3>
+                  <p>Compare the three varieties in your own drinks and recipes before choosing a 1 kg pouch. Keep this email for when you are ready.</p>
+                  <p style="margin:18px 0 8px;"><strong>¥4,500 credit toward your first eligible wholesale order of 1 kg or more.</strong></p>
+                  <p style="font-family:Menlo,Consolas,monospace;font-size:18px;letter-spacing:1px;margin:14px 0;color:#20272c;">CONFIGURED-SAMPLE-CREDIT-CODE</p>
+                  <p>Enter this code at checkout and use the same email address as your Sample Set order. Shopify confirms eligibility and the final total before payment.</p>
+                  <p style="font-size:12px;line-height:1.6;color:#69747b;">Approximately US$29. The credit is set in JPY and converted by Shopify at checkout. One use per customer, on one eligible order after purchasing samples. One-time purchases only; excludes subscriptions and cannot be combined with other discounts. Shipping is calculated separately.</p>
+                  <p style="margin:18px 0 0;"><a href="https://atoma-updated.vercel.app/samples#samples-next">Choose your 1 kg matcha &rarr;</a></p>
+                </td></tr>
+              </table>
+            {% endif %}
+            {% comment %} End ATOMA sample credit {% endcomment %}

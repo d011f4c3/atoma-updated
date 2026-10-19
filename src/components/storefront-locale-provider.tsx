@@ -48,16 +48,22 @@ export function StorefrontLocaleProvider({
     if (
       pathname !== "/" &&
       pathname !== "/origins" &&
+      pathname !== "/about" &&
+      pathname !== "/samples" &&
       pathname !== "/shop" &&
       !pathname.startsWith("/shop/")
     )
       return;
     const metadata = localizedMetadata(
-      pathname === "/shop"
-        ? "shop"
-        : pathname.startsWith("/shop/")
-          ? "product"
-          : "home",
+      pathname === "/about"
+        ? "about"
+        : pathname === "/samples"
+          ? "samples"
+          : pathname === "/shop"
+            ? "shop"
+            : pathname.startsWith("/shop/")
+              ? "product"
+              : "home",
       locale,
     );
     document.title = metadata.title;

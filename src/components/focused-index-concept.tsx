@@ -16,9 +16,11 @@ type Story = "origins" | "people";
 export function FocusedIndexConcept() {
   const selection = useProductSelection();
   const { busy } = useCart();
-  const { product, catalog, loading } = selection;
+  const { product, products, catalog, loading } = selection;
   const content = getProductContent(product);
-  const products = catalog?.products ?? [];
+  const empty =
+    catalog?.status === "empty" ||
+    (catalog?.status === "ready" && products.length === 0);
   const [view, setView] = useState<ProductView>("specifications");
   const [story, setStory] = useState<Story>("origins");
   const id = useId();
@@ -202,11 +204,11 @@ export function FocusedIndexConcept() {
               <span>
                 {loading
                   ? "Loading the collection…"
-                  : catalog?.status === "empty"
+                  : empty
                     ? "No matcha is currently listed."
                     : "The collection could not be loaded."}
               </span>
-              {!loading && catalog?.status !== "empty" && (
+              {!loading && !empty && (
                 <button type="button" onClick={selection.retry}>
                   Try again
                 </button>

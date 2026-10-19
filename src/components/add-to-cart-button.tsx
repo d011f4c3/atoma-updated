@@ -10,6 +10,7 @@ type AddToCartButtonProps = {
   available: boolean;
   pending: boolean;
   disabled?: boolean;
+  updating?: boolean;
   onAdd: () => void;
 };
 
@@ -17,6 +18,7 @@ export function AddToCartButton({
   available,
   pending,
   disabled = false,
+  updating = false,
   onAdd,
 }: AddToCartButtonProps) {
   const { t } = useStorefrontLocale();
@@ -39,8 +41,8 @@ export function AddToCartButton({
     <button
       className={styles.button}
       type="button"
-      disabled={!available || pending || disabled}
-      aria-busy={pending}
+      disabled={!available || pending || disabled || updating}
+      aria-busy={pending || updating}
       data-pending={pending}
       data-available={available}
       onClick={onAdd}
@@ -50,14 +52,16 @@ export function AddToCartButton({
       <span className={styles.label}>
         <ScrambleText
           text={t(
-            pending
-              ? "Adding…"
-              : available
-                ? "Add to cart"
-                : "Currently unavailable",
+            updating
+              ? "Updating prices…"
+              : pending
+                ? "Adding…"
+                : available
+                  ? "Add to cart"
+                  : "Currently unavailable",
           )}
           interactive
-          paused={pending || !available || disabled}
+          paused={pending || updating || !available || disabled}
           wrap
         />
       </span>

@@ -33,7 +33,11 @@ function entry(placeId, imageCaption) {
   };
 }
 
-test("origin preview keeps confirmed growing place separate from broader photographic context", () => {
+test("origin preview uses the supplied Wazuka photograph without changing growing provenance", () => {
+  const before = structuredClone(ORIGINS_GRAPH);
+  const photograph = FIELD_ENTRIES.find((entry) =>
+    entry.placeIds.includes("wazuka"),
+  );
   for (const link of ORIGINS_GRAPH.products.slice(2)) {
     const preview = getOriginPreview(product(link.productHandle));
     assert.equal(preview.places.length, 1);
@@ -43,12 +47,14 @@ test("origin preview keeps confirmed growing place separate from broader photogr
       place.path.map((ancestor) => ancestor.name),
       ["Japan", "Kyoto", "Wazuka"],
     );
-    assert.equal(place.photograph.image, FIELD_ENTRIES[0].image);
-    assert.equal(place.photograph.imageAlt, FIELD_ENTRIES[0].imageAlt);
-    assert.equal(place.photograph.imageCaption, FIELD_ENTRIES[0].imageCaption);
-    assert.match(place.photograph.imageCaption, /Kyoto/);
-    assert.doesNotMatch(place.photograph.imageCaption, /Wazuka/);
+    assert.equal(place.photograph.image, photograph.image);
+    assert.equal(place.photograph.imageAlt, photograph.imageAlt);
+    assert.equal(place.photograph.imageCaption, photograph.imageCaption);
+    assert.equal(place.photograph.observation, photograph.sections[0].body[0]);
+    assert.equal(place.photograph.slug, photograph.slug);
+    assert.match(place.photograph.imageCaption, /Wazuka/);
   }
+  assert.deepEqual(ORIGINS_GRAPH, before);
 });
 
 test("origin preview does not infer provenance from a familiar product title, place text or photographs", () => {

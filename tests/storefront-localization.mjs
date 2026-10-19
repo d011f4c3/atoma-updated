@@ -111,6 +111,16 @@ async function setup(browser, width, tone) {
           "",
           "UI language must not invent country/currency commerce context",
         );
+        if (url.pathname === "/api/destination")
+          return route.fulfill({
+            json: {
+              kind: "ready",
+              preference: { countryCode: "US", source: "default" },
+              destination: { countryCode: "US", currency: "JPY" },
+              countries: ["US", "SG"],
+              reviewRequired: false,
+            },
+          });
         if (url.pathname === "/api/catalog")
           return route.fulfill({
             contentType: "application/json",

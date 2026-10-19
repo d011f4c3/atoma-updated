@@ -1,0 +1,21 @@
+.gallery {
+  min-width: 0;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-atoma-mono), monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.caption {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  line-height: 1.8;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .caption {
+    margin-top: 0.875rem;
+  }
+}

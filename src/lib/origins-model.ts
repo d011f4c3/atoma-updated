@@ -84,7 +84,7 @@ export const ORIGINS_GRAPH: OriginsGraph = {
       kind: "region",
       parentId: "japan",
       description:
-        "Kyoto is a prefecture in Japan. Uji City and Wazuka Town are separate municipalities within it.",
+        "Kyoto is a prefecture in Japan. Wazuka is part of its Uji tea-growing region; Wazuka Town and Uji City are separate municipalities.",
       publication: "published",
     },
     {
@@ -94,7 +94,7 @@ export const ORIGINS_GRAPH: OriginsGraph = {
       kind: "locality",
       parentId: "kyoto",
       description:
-        "Our Ceremonial matcha is grown in Wazuka Town, Kyoto Prefecture, Japan.",
+        "Wazuka Town is part of the Uji tea-growing region in Kyoto Prefecture, Japan. Our Ceremonial matcha is grown here.",
       publication: "published",
     },
     {
@@ -150,7 +150,7 @@ export const ORIGINS_GRAPH: OriginsGraph = {
       summary: "A tea designation with a wider reach than Uji City.",
       explanation: [
         "Uji tea can use leaves grown in Kyoto, Nara, Shiga or Mie, processed in Kyoto using methods developed in the Uji region.",
-        "Kyoto Prefecture contains both Uji City and Wazuka Town. They are separate municipalities; Wazuka is not within Uji City.",
+        "Wazuka belongs to the Uji tea-growing region of Kyoto Prefecture. Wazuka Town and Uji City are separate municipalities.",
       ],
       productNote:
         "Barista and Culinary belong to our UJI series. Their specific growing and processing locations have not yet been published.",

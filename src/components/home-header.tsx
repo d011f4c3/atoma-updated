@@ -4,10 +4,11 @@ import { useStorefrontLocale } from "./storefront-locale-provider";
 
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
-import { CartButton } from "./cart-drawer";
+import { CartButton, useCart } from "./cart-drawer";
 import { AboutContent } from "./about-content";
 import { ScrambleText } from "./scramble-text";
 import { ThemeSwitcher } from "./theme-switcher";
+import { DestinationSelector } from "./destination-selector";
 import { useOrigins } from "./origins-provider";
 import { useDialogDismiss, useDialogScrollLock } from "./use-dialog-dismiss";
 import styles from "./home-header.module.css";
@@ -31,10 +32,13 @@ export type HomeHeaderProps = {
   tone?: "dark" | "light";
   onExplore?: () => void;
   exploring?: boolean;
-  activePage?: "shop" | "origins";
+  activePage?: "shop" | "origins" | "about" | "samples";
+  originsReturnLabel?: string;
   navigationVariant?: NavigationVariant;
   onOverview?: () => void;
   persistentTheme?: boolean;
+  storefrontNavigation?: boolean;
+  samplesEntry?: boolean;
 };
 
 export function HomeHeader({
@@ -42,11 +46,16 @@ export function HomeHeader({
   onExplore,
   exploring = false,
   activePage,
+  originsReturnLabel,
   navigationVariant = "default",
   onOverview,
   persistentTheme = false,
+  storefrontNavigation = false,
+  samplesEntry = false,
 }: HomeHeaderProps) {
   const { t } = useStorefrontLocale();
+  const { busy } = useCart();
+  const siteNavigation = persistentTheme || storefrontNavigation;
   const id = useId();
   const { openOrigins } = useOrigins();
   const dialogId = `${id}-about`;
@@ -78,6 +87,8 @@ export function HomeHeader({
     navigationVariant === "stack" ||
     navigationVariant === "shutter";
   const hasResponsiveMenu = navigationVariant === "default";
+  const showSamples =
+    siteNavigation || (samplesEntry && (!onExplore || exploring));
   const homeHref = "/";
 
   function closeIndex() {
@@ -169,6 +180,34 @@ export function HomeHeader({
     closeRef.current?.focus({ preventScroll: true });
   }
 
+  const aboutLabel = (
+    <>
+      <span className={styles.index} data-nav-index aria-hidden="true">
+        {navigationVariant === "default" || navigationVariant === "quiet"
+          ? showSamples
+            ? "05"
+            : "04"
+          : "03"}
+      </span>
+      <ScrambleText text={t("ABOUT")} delay={290} interactive />
+      <span
+        className={siteNavigation ? styles.shopMark : styles.plus}
+        aria-hidden="true"
+      >
+        {siteNavigation ? "↗" : "+"}
+      </span>
+      {hasDescriptions && (
+        <span
+          className={styles.linkDescriptor}
+          data-nav-description
+          aria-hidden="true"
+        >
+          {t("A closer look at ATOMA")}
+        </span>
+      )}
+    </>
+  );
+
   const mainLinks = (
     <>
       {onExplore ? (
@@ -221,6 +260,27 @@ export function HomeHeader({
           </span>
         )}
       </Link>
+      {showSamples && (
+        <Link
+          className={styles.control}
+          data-nav-action="samples"
+          href="/samples"
+          aria-current={activePage === "samples" ? "page" : undefined}
+          aria-disabled={busy || undefined}
+          onClick={(event) => {
+            if (busy) event.preventDefault();
+            else closeIndex();
+          }}
+        >
+          <span className={styles.index} data-nav-index aria-hidden="true">
+            03
+          </span>
+          <ScrambleText text={t("SAMPLES")} delay={240} interactive />
+          <span className={styles.shopMark} aria-hidden="true">
+            ↗
+          </span>
+        </Link>
+      )}
       {(navigationVariant === "default" || navigationVariant === "quiet") && (
         <Link
           className={styles.control}
@@ -232,11 +292,20 @@ export function HomeHeader({
             event.preventDefault();
             closeIndex();
             focusIndexTrigger();
-            openOrigins({ tone });
+            openOrigins({
+              tone,
+              returnLabel:
+                originsReturnLabel ??
+                (activePage === "about"
+                  ? "Back to About"
+                  : activePage === "samples"
+                    ? "Back to samples"
+                    : undefined),
+            });
           }}
         >
           <span className={styles.index} data-nav-index aria-hidden="true">
-            03
+            {showSamples ? "04" : "03"}
           </span>
           <ScrambleText text={t("ORIGINS")} delay={260} interactive />
           <span className={styles.shopMark} aria-hidden="true">
@@ -244,36 +313,36 @@ export function HomeHeader({
           </span>
         </Link>
       )}
-      <button
-        ref={triggerRef}
-        className={styles.control}
-        data-nav-action="about"
-        type="button"
-        aria-label={t("About ATOMA")}
-        aria-haspopup="dialog"
-        aria-controls={dialogId}
-        aria-expanded={open}
-        onClick={openAbout}
-      >
-        <span className={styles.index} data-nav-index aria-hidden="true">
-          {navigationVariant === "default" || navigationVariant === "quiet"
-            ? "04"
-            : "03"}
-        </span>
-        <ScrambleText text={t("ABOUT")} delay={290} interactive />
-        <span className={styles.plus} aria-hidden="true">
-          +
-        </span>
-        {hasDescriptions && (
-          <span
-            className={styles.linkDescriptor}
-            data-nav-description
-            aria-hidden="true"
-          >
-            {t("A closer look at ATOMA")}
-          </span>
-        )}
-      </button>
+      {siteNavigation ? (
+        <Link
+          className={styles.control}
+          data-nav-action="about"
+          href="/about"
+          aria-label={t("About ATOMA")}
+          aria-current={activePage === "about" ? "page" : undefined}
+          aria-disabled={busy || undefined}
+          onClick={(event) => {
+            if (busy) event.preventDefault();
+            else closeIndex();
+          }}
+        >
+          {aboutLabel}
+        </Link>
+      ) : (
+        <button
+          ref={triggerRef}
+          className={styles.control}
+          data-nav-action="about"
+          type="button"
+          aria-label={t("About ATOMA")}
+          aria-haspopup="dialog"
+          aria-controls={dialogId}
+          aria-expanded={open}
+          onClick={openAbout}
+        >
+          {aboutLabel}
+        </button>
+      )}
     </>
   );
 
@@ -378,6 +447,11 @@ export function HomeHeader({
                 </div>
               )}
               {mainLinks}
+              {siteNavigation && (
+                <div className={styles.destination}>
+                  <DestinationSelector compact />
+                </div>
+              )}
               {hasResponsiveMenu && persistentTheme && (
                 <div className={styles.mobileTheme}>
                   <span>{t("Appearance")}</span>

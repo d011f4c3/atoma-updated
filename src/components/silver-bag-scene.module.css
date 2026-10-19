@@ -51,34 +51,13 @@
 .ink {
   position: absolute;
   z-index: 1;
-  top: 33%;
-  right: 19%;
-  left: 19%;
-  mix-blend-mode: multiply;
-  transform: rotate(0.1deg);
-  transform-origin: center top;
+  top: 45.18%;
+  left: 22.25%;
+  width: 56.64%;
 }
 
 .scene[data-interactive="false"] .ink {
   pointer-events: none;
-}
-
-/* The entrance uses the same quiet record as Shop, with more bare foil. */
-.scene[data-appearance="hero"] .ink {
-  top: 37%;
-  right: 22%;
-  left: 22%;
-  text-transform: uppercase;
-}
-
-.scene[data-appearance="hero"] .ink [data-label-ink="format"] {
-  text-transform: none;
-}
-
-/* Keep the printed record settled when the hero or its handoff mounts. */
-.scene[data-appearance="hero"] .ink [data-label-ink],
-.scene[data-appearance="hero"] .ink [data-label-ink] > span {
-  animation: none;
 }
 
 .fallbackBag {

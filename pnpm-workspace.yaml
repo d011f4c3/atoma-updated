@@ -12,3 +12,7 @@ allowBuilds:
 
 overrides:
   "@jmm/domain-contracts": file:vendor/jmm-domain-contracts-0.0.0.tgz
+
+# Tasks 0170/0171: native subscriptions and destination context; see ADRs 0007/0008.
+patchedDependencies:
+  "@jmm/shopify-storefront@0.0.0": patches/jmm-shopify-storefront-native-regular-price.patch

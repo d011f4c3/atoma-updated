@@ -1,6 +1,50 @@
 import type { TranslationTable } from "./types.ts";
 
 export const commerceTranslations = {
+  "Loading prices and availability…": {
+    ja: "価格と在庫を確認中…",
+    "zh-Hans": "正在加载价格和库存…",
+    "zh-Hant": "正在載入價格和庫存…",
+  },
+  "Updating your selection…": {
+    ja: "カートを更新中…",
+    "zh-Hans": "正在更新购物车…",
+    "zh-Hant": "正在更新購物車…",
+  },
+  "Updating prices…": {
+    ja: "価格を更新中…",
+    "zh-Hans": "正在更新价格…",
+    "zh-Hant": "正在更新價格…",
+  },
+  "Shipping country couldn’t be updated. Please try again.": {
+    ja: "配送先の国を更新できませんでした。もう一度お試しください。",
+    "zh-Hans": "无法更新配送国家。请重试。",
+    "zh-Hant": "無法更新配送國家。請重試。",
+  },
+  "Ship to": { ja: "配送先", "zh-Hans": "配送至", "zh-Hant": "配送至" },
+  "Shipping country": {
+    ja: "配送先の国",
+    "zh-Hans": "配送国家",
+    "zh-Hant": "配送國家",
+  },
+  "United States": { ja: "米国", "zh-Hans": "美国", "zh-Hant": "美國" },
+  Singapore: { ja: "シンガポール", "zh-Hans": "新加坡", "zh-Hant": "新加坡" },
+  "Prices in {currency}": {
+    ja: "価格の通貨：{currency}",
+    "zh-Hans": "价格币种：{currency}",
+    "zh-Hant": "價格幣別：{currency}",
+  },
+  "Confirm country": {
+    ja: "配送先を確定",
+    "zh-Hans": "确认国家",
+    "zh-Hant": "確認國家",
+  },
+  "Shipping country updated.": {
+    ja: "配送先の国を更新しました。",
+    "zh-Hans": "配送国家已更新。",
+    "zh-Hant": "配送國家已更新。",
+  },
+
   "/ UNIT": {
     "zh-Hans": "/ 件",
     "zh-Hant": "/ 件",

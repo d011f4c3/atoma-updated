@@ -9,7 +9,14 @@ import {
 import { localizedMetadata } from "../src/lib/i18n/metadata.ts";
 
 const translatedLocales = ["zh-Hans", "zh-Hant", "ja"];
-const dictionaryNames = ["shell", "products", "commerce", "origins"];
+const dictionaryNames = [
+  "shell",
+  "products",
+  "commerce",
+  "origins",
+  "about",
+  "samples",
+];
 
 function placeholders(text) {
   return [...text.matchAll(/\{(\w+)\}/g)].map((match) => match[1]).sort();
@@ -165,6 +172,16 @@ test("localized metadata preserves the English baseline and only changes present
       title: "ATOMA — Matcha selection",
       description:
         "Explore the matcha, its specifications and origins. Choose your format and quantity.",
+    },
+    about: {
+      title: "ATOMA — About",
+      description:
+        "Our approach to matcha, and the people, places and work behind it.",
+    },
+    samples: {
+      title: "ATOMA — Matcha samples",
+      description:
+        "Explore three matcha in one Sample Set: 20 g each of Ceremonial, Barista and Culinary. Find the matcha for your preparation.",
     },
   };
   for (const [page, english] of Object.entries(baseline)) {

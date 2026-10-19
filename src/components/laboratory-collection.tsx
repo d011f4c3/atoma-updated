@@ -20,21 +20,28 @@ export function LaboratoryCollection({
   const cart = useCart();
   const submitting = useRef(false);
   const [pending, setPending] = useState(false);
-  const { product, variant, quantity } = selection;
+  const { product, variant, purchaseVariant, quantity } = selection;
   const content = getProductContent(product);
   const locked = pending || cart.busy;
-  const purchasable = canPurchaseQuantity(variant, quantity);
+  const purchasable = canPurchaseQuantity(purchaseVariant, quantity);
   const safeTotal =
-    variant && Number.isSafeInteger(variant.priceMinor * quantity);
+    purchaseVariant &&
+    Number.isSafeInteger(purchaseVariant.priceMinor * quantity);
 
   async function add() {
-    if (!product || !variant || !purchasable || locked || submitting.current)
+    if (
+      !product ||
+      !purchaseVariant ||
+      !purchasable ||
+      locked ||
+      submitting.current
+    )
       return;
     submitting.current = true;
     setPending(true);
     onPendingChange(true);
     try {
-      await cart.addItem(product.handle, variant.id, quantity);
+      await cart.addItem(product.handle, purchaseVariant.id, quantity);
     } finally {
       submitting.current = false;
       setPending(false);
@@ -53,10 +60,10 @@ export function LaboratoryCollection({
           <span>{content.application}</span>
           <span
             className={styles.availability}
-            data-available={Boolean(variant?.available)}
+            data-available={Boolean(purchaseVariant?.available)}
           >
             <i aria-hidden="true" />
-            {variant?.available ? "Available" : "Unavailable"}
+            {purchaseVariant?.available ? "Available" : "Unavailable"}
           </span>
         </div>
       </header>
@@ -99,7 +106,10 @@ export function LaboratoryCollection({
             <button
               type="button"
               aria-label="Decrease quantity"
-              disabled={!variant?.available || quantity <= variant.minimum}
+              disabled={
+                !purchaseVariant?.available ||
+                quantity <= purchaseVariant.minimum
+              }
               onClick={selection.decrementQuantity}
             >
               −
@@ -110,7 +120,7 @@ export function LaboratoryCollection({
             <button
               type="button"
               aria-label="Increase quantity"
-              disabled={!variant?.available || !selection.canIncrement}
+              disabled={!purchaseVariant?.available || !selection.canIncrement}
               onClick={selection.incrementQuantity}
             >
               +
@@ -130,21 +140,29 @@ export function LaboratoryCollection({
       <div className={styles.total}>
         <div>
           <span>Selection total</span>
-          <small>One-time purchase</small>
+          <small>
+            {selection.selectedSellingPlanKey
+              ? "Subscribe"
+              : "One-time purchase"}
+          </small>
         </div>
         <output aria-live="polite" aria-label="Selection total">
-          {variant && safeTotal
-            ? money(variant.priceMinor * quantity, variant.currency)
+          {purchaseVariant && safeTotal
+            ? money(
+                purchaseVariant.priceMinor * quantity,
+                purchaseVariant.currency,
+              )
             : "—"}
         </output>
       </div>
       <AddToCartButton
-        available={Boolean(variant?.available)}
+        updating={selection.refreshing}
+        available={Boolean(purchaseVariant?.available)}
         pending={pending}
         disabled={locked || !purchasable}
         onAdd={() => void add()}
       />
-      {variant?.available && !purchasable && (
+      {purchaseVariant?.available && !purchasable && (
         <p className={styles.quantityNote}>
           This quantity is currently unavailable.
         </p>
@@ -158,7 +176,7 @@ export function LaboratoryCollection({
         <summary>
           Purchase options <span aria-hidden="true">+</span>
         </summary>
-        <PurchaseOptions />
+        <PurchaseOptions model={selection} disabled={locked} />
       </details>
     </section>
   );

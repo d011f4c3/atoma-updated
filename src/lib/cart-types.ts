@@ -1,3 +1,5 @@
+import type { DestinationContext } from "./storefront-destination";
+
 export type CartPurchaseState = "purchasable" | "not_purchasable";
 
 export interface CartImageViewModel {
@@ -42,18 +44,20 @@ export interface CartLineViewModel {
 }
 
 export interface CartViewModel {
+  readonly destination?: DestinationContext | null;
   readonly totalQuantity: number;
   readonly subtotalLabel: string;
   readonly totalLabel: string;
   readonly lines: readonly CartLineViewModel[];
 }
 
-export type CartLoadResult =
+export type CartLoadResult = (
   | Readonly<{ kind: "empty" }>
   | Readonly<{ kind: "ready"; cart: CartViewModel }>
   | Readonly<{ kind: "missing" }>
   | Readonly<{ kind: "unavailable" }>
-  | Readonly<{ kind: "error" }>;
+  | Readonly<{ kind: "error" }>
+) & { readonly destination?: DestinationContext | null };
 
 export type CartViewState = Readonly<{ kind: "loading" }> | CartLoadResult;
 
@@ -62,6 +66,8 @@ export type CartNotice =
 
 /** API projection; opaque Cart references and checkout URLs never serialize. */
 export interface CartResponse {
+  destination?: DestinationContext | null;
+  destinationReviewRequired?: boolean;
   kind:
     | "empty"
     | "ready"

@@ -1,0 +1,240 @@
+.connections {
+  padding-block: clamp(3rem, 6vw, 6rem) 2rem;
+}
+
+.heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  align-items: baseline;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.label {
+  color: var(--color-muted);
+  font-size: var(--about-label);
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.connections .heading h2 {
+  max-width: 28ch;
+  font-size: var(--about-heading);
+  line-height: 1.5;
+  letter-spacing: -0.035em;
+}
+
+.perspectives {
+  --window-height: clamp(12rem, 21vw, 20rem);
+  --stage-gap: clamp(1rem, 2.5vw, 2rem);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--stage-gap);
+}
+
+.perspective {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+}
+
+.photograph {
+  position: relative;
+  height: var(--window-height);
+  overflow: clip;
+}
+
+.photograph img {
+  object-fit: cover;
+}
+
+.perspective:nth-of-type(2) .photograph img {
+  object-position: 54% 50%;
+}
+
+.horizontalLine,
+.verticalLine {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.horizontalLine {
+  top: calc(var(--window-height) + 1.25rem);
+  left: calc((100% - var(--stage-gap) * 2) / 6);
+  width: calc((100% + var(--stage-gap)) * 2 / 3);
+  height: 1px;
+}
+
+.verticalLine {
+  display: none;
+}
+
+.track,
+.connection {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1;
+}
+
+.track {
+  stroke: var(--color-line);
+}
+
+.connection {
+  stroke: var(--color-ink);
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--connections-progress, 1));
+}
+
+.node {
+  position: absolute;
+  top: calc(var(--window-height) + 1.25rem - 3px);
+  left: calc(50% - 3px);
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--color-ink);
+  border-radius: 50%;
+  background: var(--color-background);
+}
+
+.caption {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.75rem;
+  padding-top: 2.5rem;
+  font-size: var(--about-label);
+  line-height: 1.7;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.caption > span {
+  color: var(--color-muted);
+}
+
+.observation {
+  max-width: 72ch;
+  margin: 2.5rem auto 0;
+  color: var(--color-muted);
+  font-size: var(--about-body);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+@media (max-width: 760px) {
+  .connections {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: 1.5rem 0;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .heading {
+    grid-row: 1;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .perspectives {
+    --stage-gap: clamp(1rem, 4vw, 1.5rem);
+    --window-height: calc(
+      (100vw - var(--gutter) * 2 - var(--stage-gap)) * 0.375 * 0.75
+    );
+    --caption-height: calc(var(--about-label) * 1.7 + 0.625rem);
+    grid-row: 3;
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+    gap: 1.25rem var(--stage-gap);
+  }
+
+  .perspective {
+    display: flex;
+    flex-direction: column;
+    grid-column: 1;
+  }
+
+  .perspective:nth-of-type(2) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .perspective:nth-of-type(2) .photograph {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+  }
+
+  .perspective:nth-of-type(3) {
+    grid-row: 2;
+  }
+
+  .perspective:nth-of-type(3) .photograph img {
+    object-position: 50% 48%;
+  }
+
+  .perspective::before {
+    position: absolute;
+    top: calc(var(--window-height) / 2);
+    right: calc(var(--stage-gap) / -2);
+    width: calc(var(--stage-gap) / 2);
+    height: 1px;
+    background: var(--color-line);
+    content: "";
+  }
+
+  .perspective:nth-of-type(2)::before {
+    top: calc((100% - var(--caption-height)) / 2);
+    right: auto;
+    left: calc(var(--stage-gap) / -2);
+  }
+
+  .horizontalLine {
+    display: none;
+  }
+
+  .verticalLine {
+    display: block;
+    top: calc(var(--window-height) / 2);
+    left: calc((100% - var(--stage-gap)) * 0.375 + var(--stage-gap) / 2);
+    width: 1px;
+    height: calc(100% - var(--window-height) - var(--caption-height));
+  }
+
+  .node {
+    top: calc(var(--window-height) / 2 - 3px);
+    right: calc(var(--stage-gap) / -2 - 3px);
+    left: auto;
+  }
+
+  .perspective:nth-of-type(2) .node {
+    top: calc((100% - var(--caption-height)) / 2 - 3px);
+    right: auto;
+    left: calc(var(--stage-gap) / -2 - 3px);
+  }
+
+  .caption {
+    justify-content: start;
+    gap: 0.375rem;
+    min-height: var(--caption-height);
+    padding-top: 0.625rem;
+    letter-spacing: 0.02em;
+  }
+
+  .caption > span {
+    flex: none;
+  }
+
+  .observation {
+    grid-row: 2;
+    margin: 0 0 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .connection {
+    stroke-dashoffset: 0;
+  }
+}

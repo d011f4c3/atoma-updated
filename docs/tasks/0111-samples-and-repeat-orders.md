@@ -5,6 +5,11 @@ Status: Deferred by owner to a later task; commercial inputs/setup required
 Source: [Feedback §1](../briefs/2026-10-06-client-feedback.md)
 Dependencies: Task 0114 launch decision; Task 0112 destination/checkout work
 
+Task 0150 now implements the owner-requested presentation studies, a sample
+entrance after Explore matcha and a dedicated `/samples` page. Commercial setup,
+pricing, fulfillment, incentives and repeat-order mechanisms remain deferred;
+the page cannot order without an exact reviewed Sample Set offer.
+
 ## Outcome
 
 Offer one Sample Set with 30 g each of Ceremonial, Barista and Culinary, leading

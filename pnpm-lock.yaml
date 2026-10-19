@@ -7,6 +7,9 @@ settings:
 overrides:
   '@jmm/domain-contracts': file:vendor/jmm-domain-contracts-0.0.0.tgz
 
+patchedDependencies:
+  '@jmm/shopify-storefront@0.0.0': 4e3e6f081996f65be5a66b6ac78bb50e9c995678036cc53b13804ed4f473b8b5
+
 importers:
 
   .:
@@ -16,7 +19,7 @@ importers:
         version: file:vendor/jmm-domain-contracts-0.0.0.tgz
       '@jmm/shopify-storefront':
         specifier: file:vendor/jmm-shopify-storefront-0.0.0.tgz
-        version: file:vendor/jmm-shopify-storefront-0.0.0.tgz
+        version: file:vendor/jmm-shopify-storefront-0.0.0.tgz(patch_hash=4e3e6f081996f65be5a66b6ac78bb50e9c995678036cc53b13804ed4f473b8b5)
       '@shopify/checkout-kit':
         specifier: 4.0.0-alpha.4
         version: 4.0.0-alpha.4
@@ -2193,7 +2196,7 @@ snapshots:
 
   '@jmm/domain-contracts@file:vendor/jmm-domain-contracts-0.0.0.tgz': {}
 
-  '@jmm/shopify-storefront@file:vendor/jmm-shopify-storefront-0.0.0.tgz':
+  '@jmm/shopify-storefront@file:vendor/jmm-shopify-storefront-0.0.0.tgz(patch_hash=4e3e6f081996f65be5a66b6ac78bb50e9c995678036cc53b13804ed4f473b8b5)':
     dependencies:
       '@jmm/domain-contracts': file:vendor/jmm-domain-contracts-0.0.0.tgz
       '@shopify/storefront-api-client': 2.0.0

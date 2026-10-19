@@ -61,15 +61,10 @@ function OriginsReader({
   const place = ORIGINS_GRAPH.places.find(
     (item) => item.id === selectedPlace && item.publication === "published",
   );
-  const { catalog, loading, retry } = useProductSelection();
+  const { catalog, products, loading, retry } = useProductSelection();
   const entry = FIELD_ENTRIES.find((item) => item.slug === selectedSlug);
   const home = "/";
-  const related = entry
-    ? getRelatedMatchas(
-        entry,
-        catalog?.status === "ready" ? catalog.products : [],
-      )
-    : [];
+  const related = entry ? getRelatedMatchas(entry, products) : [];
   const entryPlaces = entry
     ? entry.placeIds
         .map((placeId) => getPlacePath(placeId).at(-1))
@@ -372,7 +367,7 @@ function OriginsReader({
           placeId={place?.id ?? null}
           onPlaceChange={setSelectedPlace}
           onRead={openEntry}
-          products={catalog?.status === "ready" ? catalog.products : []}
+          products={products}
           loading={loading}
           catalogUnavailable={!catalog || catalog.status === "unavailable"}
           onRetry={retry}

@@ -24,18 +24,24 @@ export function ConceptProductDetails({
   const cart = useCart();
   const submitting = useRef(false);
   const [pending, setPending] = useState(false);
-  const { product, variant, quantity, priceLabel } = selection;
+  const { product, variant, purchaseVariant, quantity, priceLabel } = selection;
   const content = getProductContent(product);
   const locked = pending || cart.busy;
-  const available = canPurchaseQuantity(variant, quantity);
+  const available = canPurchaseQuantity(purchaseVariant, quantity);
 
   async function add() {
-    if (!product || !variant || !available || locked || submitting.current)
+    if (
+      !product ||
+      !purchaseVariant ||
+      !available ||
+      locked ||
+      submitting.current
+    )
       return;
     submitting.current = true;
     setPending(true);
     try {
-      await cart.addItem(product.handle, variant.id, quantity);
+      await cart.addItem(product.handle, purchaseVariant.id, quantity);
     } finally {
       submitting.current = false;
       setPending(false);
@@ -136,9 +142,9 @@ export function ConceptProductDetails({
             <p className={styles.eyebrow}>Make your selection</p>
             <span
               className={styles.availability}
-              data-available={Boolean(variant?.available)}
+              data-available={Boolean(purchaseVariant?.available)}
             >
-              {variant?.available ? "Available" : "Unavailable"}
+              {purchaseVariant?.available ? "Available" : "Unavailable"}
             </span>
           </div>
           <h3 id={`${id}-shop`}>{content.name}</h3>
@@ -167,7 +173,10 @@ export function ConceptProductDetails({
                 <button
                   type="button"
                   aria-label="Decrease quantity"
-                  disabled={!variant?.available || quantity <= variant.minimum}
+                  disabled={
+                    !purchaseVariant?.available ||
+                    quantity <= purchaseVariant.minimum
+                  }
                   onClick={selection.decrementQuantity}
                 >
                   −
@@ -178,7 +187,9 @@ export function ConceptProductDetails({
                 <button
                   type="button"
                   aria-label="Increase quantity"
-                  disabled={!variant?.available || !selection.canIncrement}
+                  disabled={
+                    !purchaseVariant?.available || !selection.canIncrement
+                  }
                   onClick={selection.incrementQuantity}
                 >
                   +
@@ -189,13 +200,17 @@ export function ConceptProductDetails({
           {view === "shop" ? (
             <details className={styles.purchaseOptions}>
               <summary>
-                <span>One-time purchase</span>
+                <span>
+                  {selection.selectedSellingPlanKey
+                    ? "Subscribe"
+                    : "One-time purchase"}
+                </span>
                 <span>Options +</span>
               </summary>
-              <PurchaseOptions />
+              <PurchaseOptions model={selection} disabled={locked} />
             </details>
           ) : (
-            <PurchaseOptions />
+            <PurchaseOptions model={selection} disabled={locked} />
           )}
           <div className={styles.total}>
             <span>Selection total</span>
@@ -203,12 +218,14 @@ export function ConceptProductDetails({
               {priceLabel || "—"}
             </output>
           </div>
-          {variant && (
+          {purchaseVariant && (
             <p className={styles.unitPrice}>
-              {money(variant.priceMinor, variant.currency)} per selected format
+              {money(purchaseVariant.priceMinor, purchaseVariant.currency)} per
+              selected format
             </p>
           )}
           <AddToCartButton
+            updating={selection.refreshing}
             available={available}
             pending={pending}
             disabled={locked}

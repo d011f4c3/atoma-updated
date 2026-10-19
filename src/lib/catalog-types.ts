@@ -1,6 +1,21 @@
-/** Public, display-only projection. No credentials or purchase authorization. */
+/** Public projection; opaque action keys still require server revalidation. */
+import type { DestinationContext } from "./storefront-destination";
+
+export interface CatalogSellingPlan {
+  id: string;
+  selectionId?: string;
+  name: string;
+  description: string | null;
+  deliveryInterval: "week";
+  deliveryIntervalCount: 4;
+  priceMinor: number;
+  currency: string;
+  available: boolean;
+}
+
 export interface CatalogVariant {
   id: string;
+  selectionId?: string;
   title: string;
   available: boolean;
   priceMinor: number;
@@ -9,6 +24,7 @@ export interface CatalogVariant {
   minimum: number;
   increment: number;
   maximum: number | null;
+  sellingPlans?: CatalogSellingPlan[];
 }
 
 export interface CatalogProduct {
@@ -29,4 +45,5 @@ export interface Catalog {
   status: "ready" | "unavailable" | "empty";
   products: CatalogProduct[];
   shopUrl: string;
+  destination?: DestinationContext;
 }

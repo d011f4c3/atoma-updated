@@ -26,18 +26,28 @@ import type {
   VisualSectionVariant,
 } from "./visual-product-selectors";
 import { ThemeSwitcher } from "./theme-switcher";
+import type { SampleEntrancePlacement } from "./sample-experience-entry";
+import type { SampleSelectionPanelVariant } from "./sample-selection-panel";
+import type {
+  SampleEntryDirection,
+  SampleRightEntry,
+} from "@/lib/sample-entry-directions";
+import { useCart } from "./cart-drawer";
 import { HomeHeader, type NavigationVariant } from "./home-header";
 import { ScrambleText } from "./scramble-text";
 import { SpecimenField } from "./specimen-field";
 import { SilverBagScene } from "./silver-bag-scene";
 import { usePeriodicGlitch } from "./use-periodic-glitch";
 import { useStorefrontTheme } from "./storefront-theme-provider";
+import { useHomepageJourney } from "./homepage-journey-provider";
 import { HeroLoader } from "./hero-loader";
 import { useHeroLoading } from "./use-hero-loading";
 import {
   HeroStudyIntroduction,
   type HeroIntroductionDirection,
 } from "./hero-study-introduction";
+import type { SampleImageryVariant } from "./sample-set-imagery";
+import type { SampleOrderLayout } from "@/lib/sample-order-layouts";
 import styles from "./specimen-hero.module.css";
 import {
   HeroStudy2Introduction,
@@ -72,6 +82,14 @@ export function SpecimenHero({
   materialObject = "powder",
   introductionVariant = "current",
   introductionStudy2Variant,
+  sampleEntrancePlacement,
+  samplePanelVariant,
+  sampleEntryDirection,
+  sampleEntryScope = "all",
+  sampleRightEntry = "default",
+  sampleImageryVariant,
+  sampleOrderLayout,
+  contextVisible = true,
 }: {
   tone?: "dark" | "light";
   storefrontTheme?: boolean;
@@ -92,21 +110,34 @@ export function SpecimenHero({
   materialObject?: "powder" | "silver-bag";
   introductionVariant?: "current" | HeroIntroductionDirection;
   introductionStudy2Variant?: HeroStudy2Direction;
+  sampleEntrancePlacement?: SampleEntrancePlacement;
+  samplePanelVariant?: SampleSelectionPanelVariant;
+  sampleEntryDirection?: SampleEntryDirection;
+  sampleEntryScope?: "all" | "left";
+  sampleRightEntry?: SampleRightEntry;
+  sampleImageryVariant?: SampleImageryVariant;
+  sampleOrderLayout?: SampleOrderLayout;
+  contextVisible?: boolean;
 }) {
   const { t } = useStorefrontLocale();
+  const { busy } = useCart();
   const theme = useStorefrontTheme();
   const persistentTheme = storefrontTheme && !onToneChange;
+  const { journey, rememberJourney } = useHomepageJourney();
+  const [resumeSelection] = useState(
+    startAtSelection || (persistentTheme && journey.exploring),
+  );
   const tone = persistentTheme ? theme.tone : initialTone;
   const heroRef = useRef<HTMLElement>(null);
   const [heroAssetReady, setHeroAssetReady] = useState(false);
   const markHeroReady = useCallback(() => setHeroAssetReady(true), []);
   const intro = useHeroLoading(
-    initialLoader && !startAtSelection,
+    initialLoader && !resumeSelection,
     heroAssetReady,
     heroRef,
   );
-  const [exploring, setExploring] = useState(startAtSelection);
-  const [opened, setOpened] = useState(startAtSelection);
+  const [exploring, setExploring] = useState(resumeSelection);
+  const [opened, setOpened] = useState(resumeSelection);
   const [bagLabel, setBagLabel] = useState<ProductLabelSnapshot>({
     title: "Matcha",
     application: "",
@@ -115,10 +146,13 @@ export function SpecimenHero({
     reference: "",
   });
   const productRequest = useRef(initialProductHandle);
-  const [enterPowder, setEnterPowder] = useState(startAtSelection);
+  const [enterPowder, setEnterPowder] = useState(resumeSelection);
   const [handoff, setHandoff] = useState<
     "idle" | "loading" | "moving" | "revealing" | "complete"
-  >(startAtSelection ? "complete" : "idle");
+  >(resumeSelection ? "complete" : "idle");
+  useEffect(() => {
+    if (persistentTheme) rememberJourney({ exploring });
+  }, [exploring, persistentTheme, rememberJourney]);
   const [trayFrame, setTrayFrame] = useState<{
     left: number;
     top: number;
@@ -491,6 +525,11 @@ export function SpecimenHero({
       >
         <HomeHeader
           persistentTheme={persistentTheme}
+          storefrontNavigation={Boolean(sampleOrderLayout)}
+          samplesEntry={Boolean(
+            sampleEntryDirection &&
+            (sampleEntryScope === "all" || sampleRightEntry === "start"),
+          )}
           tone={tone}
           onExplore={openSelection}
           onOverview={closeSelection}
@@ -731,6 +770,18 @@ export function SpecimenHero({
             {opened && (
               <ProductConfigurator
                 initialProductHandle={initialProductHandle}
+                preserveJourney={persistentTheme}
+                samplePanelVariant={samplePanelVariant}
+                sampleEntryDirection={sampleEntryDirection}
+                sampleEntryScope={sampleEntryScope}
+                sampleRightEntry={sampleRightEntry}
+                sampleImageryVariant={sampleImageryVariant}
+                sampleOrderLayout={sampleOrderLayout}
+                contextVisible={contextVisible}
+                sampleEntrancePlacement={
+                  sampleEntrancePlacement ??
+                  (persistentTheme ? "selector" : undefined)
+                }
                 packaging="label"
                 materialObject={materialObject}
                 tone={tone}
@@ -788,12 +839,33 @@ export function SpecimenHero({
           </div>
         )}
 
-        <footer className={styles.footer} data-brand-part="hero-footer">
+        <footer
+          className={styles.footer}
+          data-brand-part="hero-footer"
+          data-sample-entry-footer={
+            Boolean(
+              sampleEntryDirection && sampleEntryScope === "all" && exploring,
+            ) || undefined
+          }
+        >
           <span className={styles.footerMark} aria-hidden="true">
             <ScrambleText text="ATOMA" periodic />
             <span className={styles.footerDivider}> / </span>
             <ScrambleText text={t("MATCHA")} periodic />
           </span>
+          {sampleEntryDirection && sampleEntryScope === "all" && exploring && (
+            <Link
+              href="/samples"
+              className={styles.samplesFooterLink}
+              data-sample-entry-point="footer"
+              aria-disabled={busy || undefined}
+              onClick={(event) => {
+                if (busy) event.preventDefault();
+              }}
+            >
+              {t("Samples")} <span aria-hidden="true">↗</span>
+            </Link>
+          )}
           {persistentTheme && <ThemeSwitcher />}
           {!persistentTheme && (
             <nav

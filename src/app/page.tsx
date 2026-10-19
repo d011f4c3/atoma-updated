@@ -23,6 +23,11 @@ export default async function HomePage({
         shopPreviewVariant="refined"
         shopExplorationLayout="compact"
         productCodePlacement="register"
+        sampleEntryDirection="quiet"
+        sampleEntryScope="left"
+        sampleRightEntry="start"
+        sampleImageryVariant="sachets"
+        sampleOrderLayout="essentials"
         startAtSelection={Boolean(handle)}
         initialProductHandle={handle}
       />

@@ -1,0 +1,153 @@
+.material {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+}
+.triptych {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+}
+.triptych figure {
+  min-width: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.powder {
+  min-height: 0;
+  flex: 1;
+  position: relative;
+}
+.powder > div {
+  position: absolute;
+  inset: 0;
+}
+.triptych figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 1rem 0.75rem;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  color: var(--muted);
+}
+.triptych figcaption span:last-child {
+  white-space: nowrap;
+}
+.caption {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--line);
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  color: var(--muted);
+}
+.information {
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 3.75rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+}
+.topline button {
+  background: transparent;
+  color: inherit;
+  border: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  font: inherit;
+  font-size: 1.375rem;
+  cursor: pointer;
+}
+.topline button:focus-visible,
+.link:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+}
+.scroll {
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  padding: 1.5rem 0.25rem 1.5rem 0;
+}
+.intro {
+  max-width: 48ch;
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.85;
+  margin: 0 0 1.5rem;
+}
+.contents {
+  margin-bottom: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+.contents > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 1rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+.contents > div > span:not(:first-child) {
+  color: var(--muted);
+}
+.contents > div > span:last-child {
+  white-space: nowrap;
+}
+.information .purchase {
+  border-top: 0;
+  padding-top: 0;
+}
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.75rem;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 0.625rem;
+  color: inherit;
+  text-decoration: none;
+}
+.link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+@media (max-width: 760px) {
+  .material {
+    min-height: 18rem;
+  }
+  .powder {
+    min-height: 12rem;
+  }
+  .triptych figcaption {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-inline: 0.25rem;
+  }
+  .scroll {
+    overflow: visible;
+    padding-bottom: 1.5rem;
+  }
+  .intro {
+    font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
+  }
+  .contents > div {
+    gap: 0.5rem;
+    font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  }
+}

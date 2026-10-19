@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function ShopPage() {
   return (
     <>
-      <Shop />
+      <Shop sampleEntryDirection="connected" />
       <StorefrontFooter year={new Date().getUTCFullYear()} />
     </>
   );

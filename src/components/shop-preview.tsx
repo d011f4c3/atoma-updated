@@ -44,23 +44,31 @@ export function ShopPreview({
   const id = useId();
   const heading = useRef<HTMLHeadingElement>(null);
   const cart = useCart();
-  const { catalog, loading, product, variant, quantity } = model;
+  const {
+    catalog,
+    products,
+    loading,
+    product,
+    variant,
+    purchaseVariant,
+    quantity,
+  } = model;
   const content = getProductContent(product, locale);
   const ready = !loading && catalog?.status === "ready" && product;
   const empty =
     catalog?.status === "empty" ||
-    (catalog?.status === "ready" && catalog.products.length === 0);
+    (catalog?.status === "ready" && products.length === 0);
   const validPrice = Boolean(
-    variant &&
-    Number.isSafeInteger(variant.priceMinor) &&
-    variant.priceMinor >= 0,
+    purchaseVariant &&
+    Number.isSafeInteger(purchaseVariant.priceMinor) &&
+    purchaseVariant.priceMinor >= 0,
   );
   const validTotal = Boolean(
-    variant &&
+    purchaseVariant &&
     validPrice &&
-    Number.isSafeInteger(variant.priceMinor * quantity),
+    Number.isSafeInteger(purchaseVariant.priceMinor * quantity),
   );
-  const eligible = validPrice && canPurchaseQuantity(variant, quantity);
+  const eligible = validPrice && canPurchaseQuantity(purchaseVariant, quantity);
   const showOrderSummary = presentation === "split";
   const priceFirst = presentation === "price";
   const showFormatOptions =
@@ -85,8 +93,8 @@ export function ShopPreview({
   }
 
   function addToCart() {
-    if (cart.busy || !product || !variant || !eligible) return;
-    void cart.addItem(product.handle, variant.id, quantity);
+    if (cart.busy || !product || !purchaseVariant || !eligible) return;
+    void cart.addItem(product.handle, purchaseVariant.id, quantity);
   }
 
   return (
@@ -238,9 +246,12 @@ export function ShopPreview({
                       {format}
                     </p>
                   )}
-                  {variant && validPrice && !showFormatOptions && (
+                  {purchaseVariant && validPrice && !showFormatOptions && (
                     <p className={styles.unitPrice} data-shop-unit-price>
-                      {money(variant.priceMinor, variant.currency)}
+                      {money(
+                        purchaseVariant.priceMinor,
+                        purchaseVariant.currency,
+                      )}
                       <span> {t("/ unit")}</span>
                     </p>
                   )}
@@ -261,13 +272,14 @@ export function ShopPreview({
                     type="button"
                     aria-label={t("Decrease quantity")}
                     disabled={
-                      !variant?.available || quantity <= variant.minimum
+                      !purchaseVariant?.available ||
+                      quantity <= purchaseVariant.minimum
                     }
                     onClick={() => {
                       if (
                         !cart.busy &&
-                        variant?.available &&
-                        quantity > variant.minimum
+                        purchaseVariant?.available &&
+                        quantity > purchaseVariant.minimum
                       )
                         onDecrement();
                     }}
@@ -280,11 +292,13 @@ export function ShopPreview({
                   <button
                     type="button"
                     aria-label={t("Increase quantity")}
-                    disabled={!variant?.available || !model.canIncrement}
+                    disabled={
+                      !purchaseVariant?.available || !model.canIncrement
+                    }
                     onClick={() => {
                       if (
                         !cart.busy &&
-                        variant?.available &&
+                        purchaseVariant?.available &&
                         model.canIncrement
                       )
                         onIncrement();
@@ -317,11 +331,15 @@ export function ShopPreview({
                       03
                     </span>
                   )}
-                  {t("One-time purchase")}
+                  {model.selectedSellingPlanKey
+                    ? model.selectedSellingPlan
+                      ? `${t("Subscribe")} · ${t("Every 4 weeks")}`
+                      : t("Selected subscription unavailable")
+                    : t("One-time purchase")}
                 </span>
                 <span aria-hidden="true">+</span>
               </summary>
-              <PurchaseOptions />
+              <PurchaseOptions model={model} disabled={cart.busy} />
             </details>
 
             <div
@@ -340,7 +358,8 @@ export function ShopPreview({
               {!priceFirst && orderTotal}
               <div className={styles.add}>
                 <AddToCartButton
-                  available={Boolean(variant?.available)}
+                  updating={model.refreshing}
+                  available={Boolean(purchaseVariant?.available)}
                   pending={cart.adding}
                   disabled={cart.busy || !eligible}
                   onAdd={addToCart}

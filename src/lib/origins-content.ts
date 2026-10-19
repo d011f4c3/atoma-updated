@@ -80,6 +80,13 @@ export const FIELD_ENTRIES: FieldEntry[] = [
     ],
     placeIds: ["kyoto"],
     photographsByPlace: {
+      wazuka: {
+        image: "/images/about/wazuka/harvest-community.webp",
+        imageAlt:
+          "Three people working with a tea harvester and collection bag on a hillside of tea rows in Wazuka.",
+        imageCaption: "Working together in Wazuka",
+        observation: "Harvest work among the tea rows in Wazuka.",
+      },
       "uji-city": {
         image: "/images/origins/uji-context-landscape.jpg",
         imageAlt:
@@ -89,6 +96,56 @@ export const FIELD_ENTRIES: FieldEntry[] = [
           "Shade cloth stretches across the foreground, with tea rows and wooded hills beyond.",
       },
     },
+  },
+  {
+    slug: "wazuka-field-observations",
+    region: "Kyoto Prefecture → Uji tea-growing region → Wazuka",
+    title: "In Wazuka.",
+    dek: "Harvest work, tea leaves and a view from the fields in Wazuka.",
+    image: "/images/about/wazuka/harvest-community.webp",
+    imageAlt:
+      "Three people working with a tea harvester and collection bag on a hillside of tea rows in Wazuka.",
+    imageCaption: "Harvest · Wazuka, Uji tea region, Kyoto",
+    sections: [
+      {
+        id: "landscape",
+        label: "01 / The fields",
+        title: "The fields.",
+        body: ["Harvest work among the tea rows in Wazuka."],
+      },
+      {
+        id: "work",
+        label: "02 / Field work",
+        title: "Field work.",
+        body: [
+          "People guide a harvester and collection bag along the hillside.",
+        ],
+        image: "/images/about/wazuka/harvest-on-the-slope.webp",
+        imageAlt:
+          "Two people guiding a tea harvester and collection bag on a slope, with tea fields and wooded hills beyond.",
+        imageCaption: "Field work · Wazuka, Uji tea region, Kyoto",
+      },
+      {
+        id: "leaf",
+        label: "03 / The leaf",
+        title: "The leaf.",
+        body: ["A close view of tea leaves in the field."],
+        image: "/images/about/wazuka/tea-leaf-detail.webp",
+        imageAlt: "A close view of tea leaves in the field.",
+        imageCaption: "Tea leaves · Wazuka, Uji tea region, Kyoto",
+      },
+      {
+        id: "viewpoint",
+        label: "04 / A different viewpoint",
+        title: "A different viewpoint",
+        body: ["An FPV pilot looks across the tea fields through a headset."],
+        image: "/images/about/wazuka/fpv-in-the-fields.webp",
+        imageAlt:
+          "A person wearing FPV goggles beside collection bags, with rows of tea across the hillside.",
+        imageCaption: "FPV in the fields · Wazuka, Uji tea region, Kyoto",
+      },
+    ],
+    placeIds: ["wazuka"],
   },
 ];
 

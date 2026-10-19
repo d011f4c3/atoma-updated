@@ -12,12 +12,16 @@ import styles from "./product-folio-concept.module.css";
 
 export function ProductFolioConcept() {
   const selection = useProductSelection();
-  const { catalog, loading, product } = selection;
+  const { catalog, products, loading, product } = selection;
   const content = getProductContent(product);
-  const selectedIndex = catalog?.products.findIndex(
-    (item) => item.id === product?.id,
+  const selectedIndex = products.findIndex((item) => item.id === product?.id);
+  const selectedNumber = String(Math.max(0, selectedIndex) + 1).padStart(
+    2,
+    "0",
   );
-  const selectedNumber = String((selectedIndex ?? 0) + 1).padStart(2, "0");
+  const empty =
+    catalog?.status === "empty" ||
+    (catalog?.status === "ready" && products.length === 0);
 
   return (
     <main className={styles.root} data-tone="light" data-concept="folio">
@@ -124,7 +128,7 @@ export function ProductFolioConcept() {
         ) : !product ? (
           <div className={styles.catalogState} role="status">
             <p>
-              {catalog?.status === "empty"
+              {empty
                 ? "The collection is not published yet."
                 : "The collection couldn’t be loaded."}
             </p>
@@ -141,7 +145,7 @@ export function ProductFolioConcept() {
                 role="group"
                 aria-label="Choose matcha"
               >
-                {catalog?.products.map((item, index) => {
+                {products.map((item, index) => {
                   const itemContent = getProductContent(item);
                   const selected = item.id === product.id;
                   return (

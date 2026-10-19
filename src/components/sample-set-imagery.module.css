@@ -1,0 +1,294 @@
+.imagery {
+  --surface: transparent;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding-block: 1.5rem 1rem;
+  color: var(--ink);
+  font-family: var(--font-atoma-mono), monospace;
+  font-weight: 400;
+}
+
+.heading {
+  display: flex;
+  flex: none;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  line-height: 1.7;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.scene {
+  position: relative;
+  flex: 1;
+  min-height: 17rem;
+  margin-block: 1rem;
+  overflow: clip;
+  isolation: isolate;
+}
+
+.material {
+  position: absolute;
+  inset: 12% auto 12% 0;
+  width: calc(100% / 3);
+  pointer-events: none;
+}
+
+.material:nth-child(2) {
+  left: calc(100% / 3);
+}
+
+.material:nth-child(3) {
+  left: calc(100% * 2 / 3);
+}
+
+.photograph {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: max(350%, 28rem);
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.recordLabel {
+  display: none;
+}
+
+.imagery[data-concept] .material {
+  visibility: hidden;
+}
+
+.conceptImage {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.conceptImage[data-active] {
+  visibility: visible;
+}
+
+.conceptImage img {
+  object-fit: contain;
+}
+
+.conceptImage[data-concept-image="sachets"] {
+  inset: -18% 0;
+}
+
+.conceptImage[data-concept-image="box"] {
+  inset: 0 1%;
+}
+
+.conceptImage[data-concept-image="landscape"] {
+  inset: 50% 0 auto;
+  width: 100%;
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+}
+
+.conceptDisclosure {
+  display: grid;
+  flex: none;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  align-items: start;
+  gap: 1rem;
+  min-height: 3.75rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  line-height: 1.7;
+}
+
+.conceptDisclosure > span {
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
+}
+
+.conceptDisclosure p {
+  margin: 0;
+  max-width: 34ch;
+}
+
+.labels {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+
+.labels[hidden] {
+  display: none;
+}
+
+.labels li {
+  min-width: 0;
+}
+
+.label,
+.labels button {
+  display: flex;
+  min-height: 3.75rem;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.375rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+
+.label > span:first-child,
+.labels button > span:first-child,
+.recordLabel > span:first-child {
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  letter-spacing: 0.035em;
+}
+
+.labels button {
+  width: 100%;
+  padding: 0.5rem 0.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button, 6px);
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.labels button:is(:hover, [aria-pressed="true"]) {
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+
+.labels button:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.labels button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.imagery[data-variant="focus"] .material {
+  inset: 0;
+  width: 100%;
+  visibility: hidden;
+}
+
+.imagery[data-variant="focus"] .material[data-active] {
+  visibility: visible;
+}
+
+.imagery[data-variant="focus"] .photograph {
+  width: 150%;
+  transform: translateX(-50%) rotate(-7deg);
+}
+
+.imagery[data-variant="spread"] .material {
+  top: 13%;
+  bottom: 13%;
+}
+
+.imagery[data-variant="spread"] .material:nth-child(1) .photograph {
+  transform: translate(-45%, 2%) rotate(-24deg);
+}
+
+.imagery[data-variant="spread"] .material:nth-child(2) .photograph {
+  transform: translate(-50%, -5%) rotate(9deg);
+}
+
+.imagery[data-variant="spread"] .material:nth-child(3) .photograph {
+  transform: translate(-55%, 3%) rotate(24deg);
+}
+
+.imagery[data-variant="register"] .material {
+  inset: 0 0 auto;
+  width: 100%;
+  height: calc(100% / 3);
+  border-bottom: 1px solid var(--line);
+}
+
+.imagery[data-variant="register"] .material:nth-child(2) {
+  top: calc(100% / 3);
+}
+
+.imagery[data-variant="register"] .material:nth-child(3) {
+  top: calc(100% * 2 / 3);
+  border-bottom: 0;
+}
+
+.imagery[data-variant="register"] .photograph {
+  top: 50%;
+  left: 35%;
+  width: 110%;
+  height: 400%;
+  transform: translate(-50%, -50%) rotate(90deg) scale(0.7);
+}
+
+.imagery[data-variant="register"] .recordLabel {
+  position: absolute;
+  inset: 0 0 0 auto;
+  display: flex;
+  width: 28%;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+
+.imagery[data-variant="register"] .labels {
+  visibility: hidden;
+}
+
+@media (max-width: 760px) {
+  .imagery {
+    height: auto;
+    padding-block: 1rem;
+  }
+
+  .scene {
+    flex: none;
+    height: clamp(16rem, 72vw, 23rem);
+    min-height: 0;
+    margin-block: 0.75rem;
+  }
+
+  .photograph {
+    width: max(350%, 24rem);
+  }
+
+  .imagery[data-variant="register"] .scene {
+    height: clamp(17rem, 72vw, 23rem);
+  }
+
+  .imagery[data-variant="register"] .photograph {
+    left: 33%;
+    width: 116%;
+  }
+
+  .imagery[data-variant="register"] .recordLabel {
+    width: 31%;
+  }
+
+  .conceptDisclosure {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+    gap: 0.75rem;
+  }
+}

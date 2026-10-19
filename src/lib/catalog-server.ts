@@ -9,46 +9,97 @@ import {
   projectCatalog,
   unavailableCatalog,
 } from "./catalog-model";
-import { createPublishedVariantActionKey } from "./cart-server";
+import {
+  createPublishedVariantActionKey,
+  createCatalogSelectionKey,
+} from "./cart-server";
 import type { Catalog } from "./catalog-types";
+import {
+  readProductPurchaseOptions,
+  sellingPlansEnabled,
+} from "./selling-plan-policy";
+import { readStorefrontDestination } from "./storefront-destination-server";
+import { readShopifyDestination } from "./storefront-market-server";
+import type { DestinationContext } from "./storefront-destination";
 
 const CACHE_MS = 30_000;
-let cached: { catalog: Catalog; expiresAt: number } | null = null;
-let pending: Promise<Catalog> | null = null;
+const cached = new Map<string, { catalog: Catalog; expiresAt: number }>();
+const pending = new Map<string, Promise<Catalog>>();
 
-/** Local preview, default JPY market, no buyer context or commerce mutations. */
+/** Every shared result is isolated by destination, actual currency and capability. */
 export async function readCatalog(): Promise<Catalog> {
-  if (cached && cached.expiresAt > Date.now()) return cached.catalog;
-  if (pending) return pending;
-  pending = loadCatalog();
   try {
-    return await pending;
-  } finally {
-    pending = null;
+    const destination = await readShopifyDestination(
+      (await readStorefrontDestination()).countryCode,
+    );
+    const enabled = sellingPlansEnabled(process.env);
+    const key = JSON.stringify([
+      destination.countryCode,
+      destination.currency,
+      enabled,
+    ]);
+    const previous = cached.get(key);
+    if (previous && previous.expiresAt > Date.now()) return previous.catalog;
+    const inFlight = pending.get(key);
+    if (inFlight) return inFlight;
+    const request = loadCatalog(destination, enabled);
+    pending.set(key, request);
+    try {
+      const catalog = await request;
+      if (catalog.status !== "unavailable")
+        cached.set(key, { catalog, expiresAt: Date.now() + CACHE_MS });
+      return catalog;
+    } finally {
+      if (pending.get(key) === request) pending.delete(key);
+    }
+  } catch {
+    return unavailableCatalog();
   }
 }
 
-async function loadCatalog(): Promise<Catalog> {
+async function loadCatalog(
+  destination: DestinationContext,
+  enabled: boolean,
+): Promise<Catalog> {
   try {
     const environment = readStorefrontEnvironment();
-    if (environment.storeDomain !== CATALOG_SHOP_DOMAIN) {
+    if (environment.storeDomain !== CATALOG_SHOP_DOMAIN)
       return unavailableCatalog();
-    }
+    const context = { countryCode: destination.countryCode };
     const client = createStorefrontCatalogClient({
       environment,
-      currency: "JPY",
+      currency: destination.currency,
       sellingPlansEnabled: false,
       timeoutMs: 15_000,
-      // This operation is a read. Permit one bounded transient retry; cart
-      // mutations retain their separate no-replay contract.
       maxRetries: 1,
     });
-    const catalog = projectCatalog(
-      await client.readPublishedCatalog(),
-      createPublishedVariantActionKey,
+    const snapshot = await client.readPublishedCatalog(context);
+    const planClient = enabled
+      ? createStorefrontCatalogClient({
+          environment,
+          currency: destination.currency,
+          sellingPlansEnabled: true,
+          timeoutMs: 15_000,
+          maxRetries: 0,
+        })
+      : client;
+    const products = await Promise.all(
+      snapshot.products.map((product) =>
+        readProductPurchaseOptions(
+          product.handle,
+          enabled,
+          async () => product,
+          (handle) => planClient.readPublishedProductByHandle(handle, context),
+        ),
+      ),
     );
-    cached = { catalog, expiresAt: Date.now() + CACHE_MS };
-    return catalog;
+    return projectCatalog(
+      { products: products.filter((product) => product !== null) },
+      (reference, plan) =>
+        createPublishedVariantActionKey(reference, plan, destination),
+      destination,
+      createCatalogSelectionKey,
+    );
   } catch {
     // Never expose vendor responses, private configuration, or transport errors.
     return unavailableCatalog();

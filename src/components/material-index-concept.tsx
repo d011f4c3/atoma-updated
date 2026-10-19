@@ -26,6 +26,7 @@ export function MaterialIndexConcept() {
   const selection = useProductSelection();
   const {
     catalog,
+    products,
     loading,
     product,
     variant,
@@ -34,7 +35,6 @@ export function MaterialIndexConcept() {
     retry,
   } = selection;
   const content = getProductContent(product);
-  const products = catalog?.products ?? [];
   const position = products.findIndex((item) => item.id === product?.id);
   const unavailable = catalog?.status === "unavailable";
 
