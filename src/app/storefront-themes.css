@@ -140,6 +140,19 @@ body:has([data-storefront-theme]) [data-origins-directory] {
 }
 
 @media (max-width: 760px) {
+  :root {
+    /* Shared phone roles, consumed by canonical page styles only. Keep rem
+       sizing and the locale adjustment so text can still scale with the user. */
+    --mobile-type-title: calc(1.5rem + var(--locale-font-increment, 0px));
+    --mobile-type-section: calc(1.25rem + var(--locale-font-increment, 0px));
+    --mobile-type-heading: calc(1rem + var(--locale-font-increment, 0px));
+    --mobile-type-body: calc(0.875rem + var(--locale-font-increment, 0px));
+    --mobile-type-support: calc(0.75rem + var(--locale-font-increment, 0px));
+    --mobile-type-label: calc(0.6875rem + var(--locale-font-increment, 0px));
+    --mobile-type-action: calc(0.75rem + var(--locale-font-increment, 0px));
+    --mobile-type-input: calc(1rem + var(--locale-font-increment, 0px));
+  }
+
   body:has([data-storefront-theme="dark"]) {
     --color-background:
       radial-gradient(

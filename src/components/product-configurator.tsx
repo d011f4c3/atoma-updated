@@ -3,6 +3,7 @@
 import { useStorefrontLocale } from "./storefront-locale-provider";
 
 import type { ProductCodePlacement } from "@/lib/product-display-index";
+import type { SampleMobileLayout } from "@/lib/sample-mobile-layouts";
 
 import Link from "next/link";
 import {
@@ -136,6 +137,7 @@ export function ProductConfigurator({
   sampleRightEntry = "default",
   sampleImageryVariant,
   sampleOrderLayout,
+  sampleMobileLayout,
   contextVisible = true,
 }: {
   packaging?: "label" | "bag" | "canister";
@@ -169,6 +171,7 @@ export function ProductConfigurator({
   sampleRightEntry?: SampleRightEntry;
   sampleImageryVariant?: SampleImageryVariant;
   sampleOrderLayout?: SampleOrderLayout;
+  sampleMobileLayout?: SampleMobileLayout;
   contextVisible?: boolean;
 }) {
   const { locale, t } = useStorefrontLocale();
@@ -1098,6 +1101,9 @@ export function ProductConfigurator({
                     disabled={sampleEntriesDisabled}
                     packagesOnMobile={mobileSamplePackages}
                     studyLayout={sampleOrderLayout}
+                    sampleMobileLayout={
+                      mobileEmbedded ? sampleMobileLayout : undefined
+                    }
                   />
                 </div>
               </>

@@ -6,6 +6,22 @@
   );
   line-height: 1.5;
 }
+@media (max-width: 760px) {
+  :global([data-concept="01"][data-storefront-theme]) .dialog h2 {
+    font-size: var(--mobile-type-section);
+    line-height: 1.35;
+  }
+
+  :global([data-concept="01"][data-storefront-theme]) .dialogTop {
+    font-size: var(--mobile-type-label);
+  }
+
+  :global([data-concept="01"][data-storefront-theme]) .explanation {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+}
 
 .heading h2 {
   margin: 0;

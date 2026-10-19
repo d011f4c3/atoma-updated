@@ -203,6 +203,31 @@
 }
 
 @media (max-width: 760px) {
+  :global([data-concept="01"][data-storefront-theme]) .root,
+  :global([data-retail-product]) .root {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+
+  :global([data-concept="01"][data-storefront-theme])
+    .root[data-presentation="inline"]
+    .section
+    h3,
+  :global([data-retail-product]) .section h3 {
+    font-size: var(--mobile-type-heading);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+  }
+
+  :global([data-concept="01"][data-storefront-theme])
+    .root[data-presentation="inline"]
+    :is(.options, .availability, .facts dt),
+  :global([data-retail-product]) :is(.options, .availability, .facts dt) {
+    font-size: var(--mobile-type-label);
+    line-height: 1.5;
+  }
+
   .body {
     padding-inline: 0;
   }

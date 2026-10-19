@@ -93,7 +93,11 @@ export function AboutFlow({
       data-tone={tone}
       data-storefront-theme={tone}
     >
-      <div className={styles.readingProgress} aria-hidden="true" />
+      <div
+        className={styles.readingProgress}
+        data-about-reading-progress
+        aria-hidden="true"
+      />
       <HomeHeader
         tone={tone}
         persistentTheme
@@ -141,6 +145,7 @@ export function AboutFlow({
               <div
                 className={styles.openingImage}
                 data-about-opening-photographs
+                data-about-mobile-visual
               >
                 <Image
                   src={aboutFarmPhotographs.contours.src}
@@ -226,7 +231,10 @@ export function AboutFlow({
                           openStory(entry.slug);
                         }}
                       >
-                        <figure className={styles.entryImage}>
+                        <figure
+                          className={styles.entryImage}
+                          data-about-mobile-visual
+                        >
                           <Image
                             src={entry.photographs[0].src}
                             alt={t(entry.photographs[0].alt)}

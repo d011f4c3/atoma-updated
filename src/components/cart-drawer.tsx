@@ -477,24 +477,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [popupOpened, reconcileDestination]);
 
   useEffect(() => {
-    // A dialog can inherit focus-visible when it opens after an async add.
-    // Remember the actual input method without removing focus from Close.
-    function onPointerDown() {
-      dialogRef.current?.setAttribute("data-input-modality", "pointer");
-    }
-    function onKeyDown(event: globalThis.KeyboardEvent) {
-      if (event.altKey || event.ctrlKey || event.metaKey) return;
-      dialogRef.current?.setAttribute("data-input-modality", "keyboard");
-    }
-    document.addEventListener("pointerdown", onPointerDown, true);
-    document.addEventListener("keydown", onKeyDown, true);
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown, true);
-      document.removeEventListener("keydown", onKeyDown, true);
-    };
-  }, []);
-
-  useEffect(() => {
     const dialog = dialogRef.current;
     if (!isOpen || !dialog) return;
     if (!dialog.open) dialog.showModal();

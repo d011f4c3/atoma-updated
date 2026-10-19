@@ -393,3 +393,22 @@ button.entry {
     transform: none;
   }
 }
+@media (max-width: 760px) {
+  :global([data-canonical-shop]) .entry .title {
+    font-size: var(--mobile-type-heading);
+    line-height: 1.45;
+    letter-spacing: -0.015em;
+  }
+  :global([data-canonical-shop]) .entry :is(.detail, .total, .materialName) {
+    font-size: var(--mobile-type-support);
+    line-height: 1.7;
+  }
+  :global([data-canonical-shop]) .entry :is(.eyebrow, .topline) {
+    font-size: var(--mobile-type-label);
+    line-height: 1.6;
+  }
+  :global([data-canonical-shop]) .entry .action {
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
+  }
+}

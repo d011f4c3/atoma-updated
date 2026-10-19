@@ -1,6 +1,31 @@
 import type { TranslationTable } from "./types.ts";
 
 export const sampleTranslations = {
+  "Close order": {
+    ja: "注文を閉じる",
+    "zh-Hans": "收起订购",
+    "zh-Hant": "收合訂購",
+  },
+  Order: {
+    ja: "注文",
+    "zh-Hans": "订购",
+    "zh-Hant": "訂購",
+  },
+  "Sample Set view": {
+    ja: "サンプルセットの表示",
+    "zh-Hans": "试用套装视图",
+    "zh-Hant": "試用套裝檢視",
+  },
+  "Try three matcha in your own recipes.": {
+    ja: "いつものレシピで、3種類の抹茶をお試しください。",
+    "zh-Hans": "在您自己的配方中试用三款抹茶。",
+    "zh-Hant": "在您自己的配方中試用三款抹茶。",
+  },
+  "¥4,500 credit toward your first eligible wholesale order of 1 kg or more.": {
+    ja: "初回の対象卸売注文（1 kg以上）に使える¥4,500分のクレジット。",
+    "zh-Hans": "¥4,500 抵扣额度，可用于首次符合条件的 1 kg 及以上批发订单。",
+    "zh-Hant": "¥4,500 折抵額度，可用於首次符合條件的 1 kg 及以上批發訂單。",
+  },
   "Close details": {
     ja: "詳細を閉じる",
     "zh-Hans": "关闭详情",

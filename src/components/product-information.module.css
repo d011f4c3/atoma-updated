@@ -252,6 +252,45 @@
   text-transform: none;
 }
 
+@media (max-width: 760px) {
+  :global([data-concept="01"][data-storefront-theme]) .dialog,
+  :global([data-retail-product]) .dialog {
+    --material-font-size: 0.875rem;
+    --material-label-size: 0.6875rem;
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+  }
+
+  :global([data-concept="01"][data-storefront-theme]) .body h2,
+  :global([data-retail-product]) .body h2 {
+    font-size: var(--mobile-type-title);
+    line-height: 1.25;
+  }
+
+  :global([data-concept="01"][data-storefront-theme])
+    :is(.introduction, .preparationBody p, .preparationBody li),
+  :global([data-retail-product])
+    :is(.introduction, .preparationBody p, .preparationBody li) {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+
+  :global([data-concept="01"][data-storefront-theme]) :is(.header, .eyebrow),
+  :global([data-retail-product]) :is(.header, .eyebrow) {
+    font-size: var(--mobile-type-label);
+  }
+
+  :global([data-concept="01"][data-storefront-theme])
+    :is(.preparation summary, .preparationBody h3),
+  :global([data-retail-product])
+    :is(.preparation summary, .preparationBody h3) {
+    font-size: var(--mobile-type-heading);
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dialog[open] {
     animation: none;

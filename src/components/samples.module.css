@@ -618,3 +618,80 @@
   text-align: left;
   cursor: pointer;
 }
+@media (max-width: 760px) {
+  .page .setIntroduction h1 {
+    font-size: var(--mobile-type-title);
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+  }
+  .page .purchase[data-presentation="page"] h2 {
+    font-size: var(--mobile-type-section);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+  }
+  .page :is(.setDescription, .detail, .status) {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+  .page :is(.topline nav, .eyebrow, .quantity > span, .total > span) {
+    font-size: var(--mobile-type-label);
+    line-height: 1.6;
+  }
+  .page :is(.orderSummary, .returnLine > span, .orderDetails summary) {
+    font-size: var(--mobile-type-support);
+    line-height: 1.7;
+  }
+  .page .orderSummary span + span {
+    font-size: var(--mobile-type-support);
+  }
+  .page .purchase[data-presentation="page"] .price,
+  .page .total output {
+    font-size: var(--mobile-type-section);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+  }
+  .page .stepper output {
+    font-size: var(--mobile-type-heading);
+  }
+  .page .format {
+    font-size: var(--mobile-type-label);
+    line-height: 1.6;
+  }
+  .page .format select {
+    font-size: var(--mobile-type-input);
+  }
+  .page :is(.contentsLink, .returnAction, .retryAction) {
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
+  }
+  :global([data-concept="01"][data-storefront-theme])
+    .purchase:is([data-presentation="entry"], [data-presentation="study"])
+    h3 {
+    font-size: var(--mobile-type-heading);
+    line-height: 1.45;
+    letter-spacing: -0.015em;
+  }
+  :global([data-concept="01"][data-storefront-theme])
+    .purchase:is([data-presentation="entry"], [data-presentation="study"])
+    :is(.price, .total output) {
+    font-size: var(--mobile-type-heading);
+    line-height: 1.5;
+  }
+  :global([data-concept="01"][data-storefront-theme])
+    .purchase:is([data-presentation="entry"], [data-presentation="study"])
+    :is(.eyebrow, .quantity, .total, .price .eyebrow, .format) {
+    font-size: var(--mobile-type-label);
+    line-height: 1.6;
+  }
+  :global([data-concept="01"][data-storefront-theme])
+    .purchase:is([data-presentation="entry"], [data-presentation="study"])
+    :is(.status, .detail, .error, .orderDetails summary) {
+    font-size: var(--mobile-type-support);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+  :global([data-concept="01"][data-storefront-theme]) .purchase .format select {
+    font-size: var(--mobile-type-input);
+  }
+}

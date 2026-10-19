@@ -275,3 +275,174 @@
     gap: 0 0.75rem;
   }
 }
+@media (max-width: 760px) {
+  :global([data-concept="01"][data-storefront-theme]) .panel .heading h2 {
+    font-size: var(--mobile-type-section);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+  }
+  :global([data-concept="01"][data-storefront-theme]) .panel .introduction {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+  :global([data-concept="01"][data-storefront-theme])
+    .panel
+    :is(.eyebrow, .number, .weight) {
+    font-size: var(--mobile-type-label);
+    line-height: 1.6;
+  }
+  :global([data-concept="01"][data-storefront-theme])
+    .panel
+    :is(.measure, .name, .use, .benefit, .included summary, .detailsLink) {
+    font-size: var(--mobile-type-support);
+    line-height: 1.7;
+  }
+  :global([data-concept="01"][data-storefront-theme]) .panel .detailsLink {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+}
+.purchasePane {
+  display: contents;
+}
+
+@media (max-width: 760px) {
+  .panel[data-sample-mobile-layout]:not([data-sample-mobile-layout="current"])
+    .heading
+    .eyebrow,
+  .panel[data-sample-mobile-layout="compact"] .mobileSummary > p:first-child {
+    display: none;
+  }
+
+  .panel[data-sample-mobile-layout]:not([data-sample-mobile-layout="current"])
+    .titleLine {
+    margin-top: 0;
+  }
+
+  .panel[data-sample-mobile-layout] .mobileViews {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .panel[data-sample-mobile-layout] .mobileViews button {
+    min-width: 0;
+    min-height: 2.75rem;
+    padding: 0.5rem 0;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  .panel[data-sample-mobile-layout] .mobileViews button[aria-pressed="true"] {
+    border-bottom-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .panel[data-sample-mobile-layout] .mobileSummary {
+    margin-top: 1rem;
+  }
+
+  .panel[data-sample-mobile-layout] .mobileSummary > p {
+    margin: 0;
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+
+  .panel[data-sample-mobile-layout] .mobileSummary .mobileCredit {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: var(--mobile-type-support);
+  }
+
+  .panel[data-sample-mobile-layout="compact"] .mobileSummary .mobileCredit {
+    margin-top: 0;
+  }
+
+  .panel[data-sample-mobile-layout] .mobileOrderAction,
+  .panel[data-sample-mobile-layout] .mobileReveal {
+    display: flex;
+    width: 100%;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-button, 6px);
+    padding: 0.75rem;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .panel[data-sample-mobile-layout] .mobileReveal {
+    border-inline: 0;
+    border-radius: 0;
+    padding-inline: 0;
+    font-size: var(--mobile-type-heading);
+    line-height: 1.45;
+  }
+
+  .panel[data-sample-mobile-layout] .mobileOrderAction > span:last-child,
+  .panel[data-sample-mobile-layout] .mobileReveal > span:last-child {
+    flex: none;
+    font-size: var(--mobile-type-heading);
+  }
+
+  .panel[data-sample-mobile-layout="compact"] .purchasePane,
+  .panel[data-sample-mobile-layout="reveal"] .purchasePane {
+    display: block;
+    margin-top: 1rem;
+  }
+
+  .panel[data-sample-mobile-layout="reveal"]
+    .purchasePane
+    > :global([data-sample-purchase]) {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .panel[data-sample-mobile-layout="tabs"]
+    .mobilePackages
+    :global([data-foil-trio])
+    > ul {
+    display: none;
+  }
+
+  .panel[data-sample-mobile-layout] .detailsLink {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+
+  .panel[data-sample-mobile-layout]
+    :is(.mobileViews button, .mobileOrderAction, .mobileReveal):focus-visible {
+    outline: 1px solid var(--ink);
+    outline-offset: 4px;
+  }
+
+  .panel[data-sample-mobile-layout]
+    :is(.mobileViews button, .mobileOrderAction, .mobileReveal):disabled {
+    opacity: 0.5;
+    cursor: wait;
+  }
+
+  .panel[data-sample-mobile-layout] [hidden] {
+    display: none;
+  }
+}

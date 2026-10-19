@@ -427,6 +427,18 @@
 }
 
 @media (max-width: 760px) {
+  :global([data-concept="01"][data-storefront-theme])
+    :is(.purpose, .summary, .state > p) {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+
+  :global([data-concept="01"][data-storefront-theme]) :is(.secondary, .shop) {
+    font-size: var(--mobile-type-action);
+    letter-spacing: 0.02em;
+  }
+
   .identity {
     margin-bottom: 1.25rem;
   }

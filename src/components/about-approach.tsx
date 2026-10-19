@@ -71,7 +71,11 @@ export function AboutApproach({ t }: { t: (source: string) => string }) {
                 <h3>{t(principle.title)}</h3>
                 <p>{t(principle.text)}</p>
               </div>
-              <figure className={styles.inlineImage} data-approach-inline>
+              <figure
+                className={styles.inlineImage}
+                data-approach-inline
+                data-about-mobile-visual
+              >
                 <Image
                   src={principle.photograph.src}
                   alt={t(principle.photograph.alt)}

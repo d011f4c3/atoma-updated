@@ -46,6 +46,24 @@
   overflow: hidden;
   background: transparent;
 }
+@media (max-width: 760px) {
+  :global([data-concept="01"][data-storefront-theme])
+    .experience[data-embedded="true"] {
+    /* Tab consumers apply the locale increment themselves. */
+    --tab-heading-size: calc(
+      var(--mobile-type-section) - var(--locale-font-increment, 0px)
+    );
+    --tab-place-heading-size: calc(
+      var(--mobile-type-title) - var(--locale-font-increment, 0px)
+    );
+    --tab-body-size: calc(
+      var(--mobile-type-body) - var(--locale-font-increment, 0px)
+    );
+    --tab-label-size: calc(
+      var(--mobile-type-label) - var(--locale-font-increment, 0px)
+    );
+  }
+}
 .experience[data-embedded="true"] .workspace {
   min-height: 0;
   height: 100%;

@@ -695,3 +695,25 @@
     opacity: 1;
   }
 }
+@media (max-width: 760px) {
+  :global([data-concept="01"][data-storefront-theme])
+    .root[data-direction="specimen"]
+    .heading {
+    font-size: var(--mobile-type-title);
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+  }
+  :global([data-concept="01"][data-storefront-theme])
+    .root[data-direction="specimen"]
+    :is(.attributes, .application) {
+    font-size: var(--mobile-type-support);
+    line-height: 1.7;
+    letter-spacing: 0.025em;
+  }
+  :global([data-concept="01"][data-storefront-theme])
+    .root[data-direction="specimen"]
+    .action {
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
+  }
+}

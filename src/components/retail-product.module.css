@@ -560,3 +560,67 @@
     transition: none !important;
   }
 }
+@media (max-width: 760px) {
+  .page {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+  }
+  .identity h1,
+  .state h1 {
+    font-size: var(--mobile-type-title);
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+  }
+  .overview h2,
+  .related h2 {
+    font-size: var(--mobile-type-section);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+  }
+  .purpose,
+  .materialSummary,
+  .overview > p:last-child,
+  .state p {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+  .breadcrumb,
+  .gallery figcaption,
+  .eyebrow,
+  .sectionLabel,
+  .availability,
+  .formats legend,
+  .formats button small,
+  .quantityGroup > span,
+  .total > span {
+    font-size: var(--mobile-type-label);
+    line-height: 1.6;
+    letter-spacing: 0.025em;
+  }
+  .unitPrice,
+  .total strong {
+    font-size: var(--mobile-type-section);
+  }
+  .unitPrice span,
+  .quantityNote,
+  .relatedText small {
+    font-size: var(--mobile-type-support);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+  .formats button,
+  .purchaseOptions > summary,
+  .related header > a,
+  .state a,
+  .state button {
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
+    letter-spacing: 0.025em;
+  }
+  .stepper output,
+  .relatedText {
+    font-size: var(--mobile-type-heading);
+    line-height: 1.5;
+  }
+}

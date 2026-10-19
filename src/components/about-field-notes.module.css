@@ -669,6 +669,58 @@
   }
 }
 
+@media (max-width: 760px) {
+  :global([data-about-page]) .readerHeader .navigation {
+    font-size: var(--mobile-type-label);
+    line-height: 1.5;
+    letter-spacing: 0.025em;
+  }
+
+  :global([data-about-page]) .readerHeader .navigation button,
+  :global([data-about-page]) .chapterNavigation button {
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
+  }
+
+  :global([data-about-page])
+    .dialog[data-presentation="field-record"]
+    .heading
+    h2 {
+    font-size: var(--mobile-type-title);
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+  }
+
+  :global([data-about-page])
+    .dialog[data-presentation="field-record"]
+    .category {
+    font-size: var(--mobile-type-label);
+    line-height: 1.5;
+    letter-spacing: 0.025em;
+  }
+
+  :global([data-about-page])
+    .dialog[data-presentation="field-record"]
+    .introduction,
+  :global([data-about-page]) .observationText,
+  :global([data-about-page]) .recordNote > p {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+
+  :global([data-about-page]) .recordPhotograph figcaption {
+    font-size: var(--mobile-type-support);
+    line-height: 1.6;
+    letter-spacing: 0;
+  }
+
+  :global([data-about-page]) .observation h3 {
+    font-size: var(--mobile-type-section);
+    line-height: 1.35;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dialog[data-presentation="field-record"][open],
   .dialog[data-presentation="field-record"][data-closing="true"],

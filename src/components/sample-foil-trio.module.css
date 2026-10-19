@@ -391,6 +391,13 @@
   .trio[data-compact] .legend > span {
     display: none;
   }
+  :global([data-concept="01"][data-storefront-theme])
+    :global([data-preserve-journey="true"])
+    .trio[data-compact]
+    .legend
+    > button {
+    display: none;
+  }
   .desktopHint {
     display: none;
   }

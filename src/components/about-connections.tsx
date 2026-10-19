@@ -26,7 +26,7 @@ export function AboutConnections({ t }: { t: (source: string) => string }) {
         <span className={styles.label}>{t("Connections")}</span>
         <h2 id="connections-title">{t("Understanding is shared.")}</h2>
       </header>
-      <div className={styles.perspectives}>
+      <div className={styles.perspectives} data-about-connections-stage>
         <svg
           className={styles.horizontalLine}
           viewBox="0 0 1000 1"
@@ -49,7 +49,7 @@ export function AboutConnections({ t }: { t: (source: string) => string }) {
         </svg>
         {perspectives.map(({ label, photograph }, index) => (
           <figure className={styles.perspective} key={label}>
-            <div className={styles.photograph}>
+            <div className={styles.photograph} data-about-mobile-visual>
               <Image
                 src={photograph.src}
                 alt={t(photograph.alt)}

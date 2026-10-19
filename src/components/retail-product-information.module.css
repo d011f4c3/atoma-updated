@@ -264,3 +264,27 @@
     transition: none;
   }
 }
+@media (max-width: 760px) {
+  :global([data-retail-product]) .root {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+  }
+  :global([data-retail-product]) .root :is(.trigger, .action) {
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
+  }
+  :global([data-retail-product])
+    .root
+    :is(.caption, .propertyLabel, .placePath) {
+    font-size: var(--mobile-type-label);
+    line-height: 1.6;
+  }
+  :global([data-retail-product]) .root :is(.propertyValue, .entryDescription) {
+    font-size: var(--mobile-type-support);
+    line-height: 1.7;
+  }
+  :global([data-retail-product]) .prose h3 {
+    font-size: var(--mobile-type-heading);
+    line-height: 1.45;
+  }
+}

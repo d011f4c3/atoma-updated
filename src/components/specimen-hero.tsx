@@ -48,6 +48,7 @@ import {
 } from "./hero-study-introduction";
 import type { SampleImageryVariant } from "./sample-set-imagery";
 import type { SampleOrderLayout } from "@/lib/sample-order-layouts";
+import type { SampleMobileLayout } from "@/lib/sample-mobile-layouts";
 import styles from "./specimen-hero.module.css";
 import {
   HeroStudy2Introduction,
@@ -89,6 +90,7 @@ export function SpecimenHero({
   sampleRightEntry = "default",
   sampleImageryVariant,
   sampleOrderLayout,
+  sampleMobileLayout,
   contextVisible = true,
 }: {
   tone?: "dark" | "light";
@@ -117,6 +119,7 @@ export function SpecimenHero({
   sampleRightEntry?: SampleRightEntry;
   sampleImageryVariant?: SampleImageryVariant;
   sampleOrderLayout?: SampleOrderLayout;
+  sampleMobileLayout?: SampleMobileLayout;
   contextVisible?: boolean;
 }) {
   const { t } = useStorefrontLocale();
@@ -777,6 +780,7 @@ export function SpecimenHero({
                 sampleRightEntry={sampleRightEntry}
                 sampleImageryVariant={sampleImageryVariant}
                 sampleOrderLayout={sampleOrderLayout}
+                sampleMobileLayout={sampleMobileLayout}
                 contextVisible={contextVisible}
                 sampleEntrancePlacement={
                   sampleEntrancePlacement ??

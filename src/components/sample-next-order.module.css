@@ -293,3 +293,27 @@
     gap: 0.25rem;
   }
 }
+@media (max-width: 760px) {
+  :global([data-samples-page]) .nextOrder h2 {
+    font-size: var(--mobile-type-section);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+  }
+  :global([data-samples-page]) .nextOrder .purpose {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+  :global([data-samples-page])
+    :is(.guidance, .choiceName, .save, .clear, .action),
+  :global([data-samples-page])
+    .nextOrder
+    :is(.availability, .deviceNote, .savedStatus p) {
+    font-size: var(--mobile-type-support);
+    line-height: 1.7;
+  }
+  :global([data-samples-page]) :is(.progression, .application) {
+    font-size: var(--mobile-type-label);
+    line-height: 1.6;
+  }
+}

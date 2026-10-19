@@ -269,3 +269,32 @@
     max-width: none;
   }
 }
+@media (max-width: 760px) {
+  :global([data-samples-page]) .range .heading h2 {
+    font-size: var(--mobile-type-section);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+  }
+  :global([data-samples-page]) .range .sample h3 {
+    font-size: var(--mobile-type-heading);
+    line-height: 1.45;
+    letter-spacing: -0.015em;
+  }
+  :global([data-samples-page]) :is(.heading p, .guidance p) {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+  :global([data-samples-page]) .application {
+    font-size: var(--mobile-type-support);
+    line-height: 1.7;
+  }
+  :global([data-samples-page]) .register {
+    font-size: var(--mobile-type-label);
+    line-height: 1.6;
+  }
+  :global([data-samples-page]) .index a {
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
+  }
+}

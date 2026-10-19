@@ -1,5 +1,7 @@
 "use client";
 
+import { useId, useRef, useState } from "react";
+import type { SampleMobileLayout } from "@/lib/sample-mobile-layouts";
 import type { SampleOrderLayout } from "@/lib/sample-order-layouts";
 import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
 import { SampleFoilTrio } from "./sample-foil-trio";
@@ -35,14 +37,38 @@ export function SampleOrderPanel({
   purchase,
   disabled,
   packagesOnMobile = false,
+  sampleMobileLayout,
 }: {
   layout: SampleOrderLayout;
   purchase: ReturnType<typeof useSampleSetPurchase>;
   disabled: boolean;
   packagesOnMobile?: boolean;
+  sampleMobileLayout?: SampleMobileLayout;
 }) {
   const { t } = useStorefrontLocale();
   const locked = disabled || purchase.locked;
+  const id = useId();
+  const [view, setView] = useState<"overview" | "contents" | "order">(
+    "overview",
+  );
+  const [orderOpen, setOrderOpen] = useState(false);
+  const orderViewButton = useRef<HTMLButtonElement>(null);
+  const activeLayout = packagesOnMobile ? sampleMobileLayout : undefined;
+  const mobileLayout = activeLayout ?? "current";
+  const alternative = mobileLayout !== "current";
+  const tabbed = mobileLayout === "tabs";
+  const purchaseHidden =
+    (tabbed && view !== "order") || (mobileLayout === "reveal" && !orderOpen);
+  const contentsHidden = tabbed
+    ? view !== "contents"
+    : alternative || layout === "purchase";
+  const summaryHidden = !alternative || (tabbed && view !== "overview");
+
+  function openOrder() {
+    if (locked) return;
+    setView("order");
+    orderViewButton.current?.focus({ preventScroll: true });
+  }
 
   return (
     <section
@@ -50,6 +76,7 @@ export function SampleOrderPanel({
       data-sample-start-entry
       data-sample-order-panel
       data-layout={layout}
+      data-sample-mobile-layout={activeLayout}
       aria-labelledby="sample-start-heading"
     >
       {packagesOnMobile && (
@@ -65,24 +92,113 @@ export function SampleOrderPanel({
           </h2>
           <span className={styles.measure}>3 × 20 g</span>
         </div>
-        <p className={styles.introduction}>
+        <p className={styles.introduction} hidden={alternative}>
           {t(
             "Compare flavour and texture in your own drinks and recipes. Your set includes ¥4,500 credit toward your first eligible wholesale order of 1 kg or more.",
           )}
         </p>
       </header>
-      <div className={styles.overview} hidden={layout === "purchase"}>
-        <SetContents numbered={layout === "index"} />
+      <div
+        className={styles.mobileViews}
+        role="group"
+        aria-label={t("Sample Set view")}
+        data-sample-mobile-nav
+        hidden={!tabbed}
+        inert={!tabbed}
+      >
+        {(
+          [
+            ["overview", "Overview"],
+            ["contents", "In the set"],
+            ["order", "Order"],
+          ] as const
+        ).map(([value, label]) => (
+          <button
+            key={value}
+            ref={value === "order" ? orderViewButton : undefined}
+            type="button"
+            data-sample-mobile-view={value}
+            aria-pressed={view === value}
+            aria-controls={`${id}-${value}`}
+            disabled={locked}
+            onClick={() => {
+              if (!locked) setView(value);
+            }}
+          >
+            {t(label)}
+          </button>
+        ))}
       </div>
-      {/* Keep the real order surface mounted while its surrounding study changes. */}
-      <SampleSetPurchase
-        purchase={purchase}
-        presentation="study"
-        headingId="sample-start-purchase"
-        showValueNote={false}
-        disabled={disabled}
-      />
-      <details className={styles.included} hidden={layout !== "purchase"}>
+      <div
+        id={`${id}-overview`}
+        className={styles.mobileSummary}
+        data-sample-mobile-overview
+        hidden={summaryHidden}
+        inert={summaryHidden}
+      >
+        <p>{t("Try three matcha in your own recipes.")}</p>
+        <p className={styles.mobileCredit}>
+          {t(
+            "¥4,500 credit toward your first eligible wholesale order of 1 kg or more.",
+          )}
+        </p>
+        <button
+          type="button"
+          className={styles.mobileOrderAction}
+          data-sample-mobile-open-order
+          aria-controls={`${id}-order`}
+          hidden={!tabbed}
+          disabled={locked}
+          onClick={openOrder}
+        >
+          <span>{t("Order the set")}</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+      <div
+        id={`${id}-contents`}
+        className={styles.overview}
+        data-sample-mobile-contents
+        hidden={contentsHidden}
+        inert={contentsHidden}
+      >
+        <SetContents numbered={layout === "index" || tabbed} />
+      </div>
+      <button
+        type="button"
+        className={styles.mobileReveal}
+        data-sample-mobile-reveal
+        aria-expanded={orderOpen}
+        aria-controls={`${id}-order`}
+        hidden={mobileLayout !== "reveal"}
+        disabled={locked}
+        onClick={() => {
+          if (!locked) setOrderOpen((open) => !open);
+        }}
+      >
+        <span>{t(orderOpen ? "Close order" : "Order the set")}</span>
+        <span aria-hidden="true">{orderOpen ? "−" : "+"}</span>
+      </button>
+      {/* Keep the real order surface mounted while its surrounding layout changes. */}
+      <div
+        id={`${id}-order`}
+        className={styles.purchasePane}
+        data-sample-mobile-purchase
+        hidden={purchaseHidden}
+        inert={purchaseHidden}
+      >
+        <SampleSetPurchase
+          purchase={purchase}
+          presentation="study"
+          headingId="sample-start-purchase"
+          showValueNote={false}
+          disabled={disabled}
+        />
+      </div>
+      <details
+        className={styles.included}
+        hidden={alternative || layout !== "purchase"}
+      >
         <summary>
           {t("See what's included")}
           <span aria-hidden="true" />

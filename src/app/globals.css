@@ -100,6 +100,14 @@ a:focus-visible {
   outline-offset: 7px;
 }
 
+/* Native dialogs may indicate automatic focus even after a tap. Override only
+   pointer-origin action outlines, including more specific component rules.
+   Keyboard use restores those rules; text-entry focus and borders stay intact. */
+:root[data-input-modality="pointer"]
+  :is(button, a[href], summary, [role="button"]):focus:not(:read-write) {
+  outline: none !important;
+}
+
 button:disabled {
   cursor: default;
 }

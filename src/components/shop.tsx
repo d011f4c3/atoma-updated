@@ -60,6 +60,7 @@ export function Shop({
       className={styles.shop}
       data-tone={tone}
       data-storefront-theme={tone}
+      data-canonical-shop={!localTheme || undefined}
       data-sample-entry-shop={sampleEntryDirection}
     >
       <HomeHeader

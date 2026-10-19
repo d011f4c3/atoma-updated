@@ -596,6 +596,38 @@
   }
 }
 
+@media (max-width: 760px) {
+  :global([data-concept="01"][data-storefront-theme]) .root {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+  }
+
+  :global([data-concept="01"][data-storefront-theme]) .identity h2 {
+    font-size: var(--mobile-type-section);
+    line-height: 1.4;
+  }
+
+  :global([data-concept="01"][data-storefront-theme])
+    :is(.label, .identity p, .availability, .quantityNote) {
+    font-size: var(--mobile-type-label);
+    line-height: 1.5;
+  }
+
+  :global([data-concept="01"][data-storefront-theme])
+    :is(.unitPrice, .optionPrice, .purchaseChoices label) {
+    font-size: var(--mobile-type-support);
+    line-height: 1.6;
+  }
+
+  :global([data-concept="01"][data-storefront-theme]) .total strong {
+    font-size: var(--mobile-type-section);
+  }
+
+  :global([data-concept="01"][data-storefront-theme]) .formatSelect {
+    font-size: var(--mobile-type-input);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .formatOption,
   .stepper button {

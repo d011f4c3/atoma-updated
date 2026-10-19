@@ -248,6 +248,16 @@
   }
 }
 
+@media (max-width: 760px) {
+  :global([data-concept="01"][data-storefront-theme]) .button,
+  :global([data-canonical-shop]) .button,
+  :global([data-retail-product]) .button,
+  :global([data-samples-page]) .button {
+    font-size: var(--mobile-type-action);
+    letter-spacing: 0.02em;
+  }
+}
+
 @media (max-width: 380px) {
   .button {
     gap: 0.625rem;

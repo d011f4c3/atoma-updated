@@ -576,3 +576,54 @@
     gap: 0 1rem;
   }
 }
+/* A single reading hierarchy for the canonical phone collection. */
+@media (max-width: 760px) {
+  .shop[data-canonical-shop] .intro h1 {
+    font-size: var(--mobile-type-title);
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+  }
+  .shop[data-canonical-shop] :is(.introCopy, .purpose, .state p) {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+  .shop[data-canonical-shop]
+    :is(.productBody h2, .savedIdentity, .price, .state h2) {
+    font-size: var(--mobile-type-heading);
+    line-height: 1.45;
+    letter-spacing: -0.015em;
+  }
+  .shop[data-canonical-shop]
+    :is(
+      .eyebrow,
+      .collectionHeader,
+      .productTopline,
+      .productCode,
+      .formatCount,
+      .savedLabel,
+      .savedIdentity > span:last-child
+    ) {
+    font-size: var(--mobile-type-label);
+    line-height: 1.6;
+    letter-spacing: 0.025em;
+  }
+  .shop[data-canonical-shop]
+    :is(
+      .samplesLink,
+      .viewProduct,
+      .explore a,
+      .savedActions a,
+      .savedActions button,
+      .retry
+    ) {
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
+    letter-spacing: 0.025em;
+  }
+  .shop[data-canonical-shop] :is(.explore, .savedError) {
+    font-size: var(--mobile-type-support);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+}

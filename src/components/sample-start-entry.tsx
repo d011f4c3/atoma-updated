@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
 import type { SampleOrderLayout } from "@/lib/sample-order-layouts";
+import type { SampleMobileLayout } from "@/lib/sample-mobile-layouts";
 import { SampleOrderPanel } from "./sample-order-panel";
 import { ShopMaterialImage } from "./shop-material-image";
 import { SampleFoilTrio } from "./sample-foil-trio";
@@ -14,10 +15,12 @@ export function SampleStartEntry({
   disabled,
   packagesOnMobile = false,
   studyLayout,
+  sampleMobileLayout,
 }: {
   disabled: boolean;
   packagesOnMobile?: boolean;
   studyLayout?: SampleOrderLayout;
+  sampleMobileLayout?: SampleMobileLayout;
 }) {
   const { t } = useStorefrontLocale();
   const purchase = useSampleSetPurchase();
@@ -29,6 +32,7 @@ export function SampleStartEntry({
         purchase={purchase}
         disabled={disabled}
         packagesOnMobile={packagesOnMobile}
+        sampleMobileLayout={sampleMobileLayout}
       />
     );
   }

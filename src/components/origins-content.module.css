@@ -486,4 +486,41 @@
   .related {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  :global(body:has([data-storefront-theme])) .articleHeading h1 {
+    font-size: var(--mobile-type-title);
+    line-height: 1.25;
+  }
+
+  :global(body:has([data-storefront-theme])) :is(.caption h2, .connections h2) {
+    font-size: var(--mobile-type-heading);
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  :global(body:has([data-storefront-theme])) :is(.dek, .prose) {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+
+  :global(body:has([data-storefront-theme]))
+    :is(.back, .indexButton, .chapters button, .related a, .action) {
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+
+  :global(body:has([data-storefront-theme]))
+    :is(
+      .journalLabel,
+      .eyebrow,
+      .chapterNumber,
+      .imageCaption,
+      .photograph figcaption,
+      .availability
+    ) {
+    font-size: var(--mobile-type-label);
+    line-height: 1.5;
+  }
 }

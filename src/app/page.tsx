@@ -28,6 +28,7 @@ export default async function HomePage({
         sampleRightEntry="start"
         sampleImageryVariant="sachets"
         sampleOrderLayout="essentials"
+        sampleMobileLayout="compact"
         startAtSelection={Boolean(handle)}
         initialProductHandle={handle}
       />

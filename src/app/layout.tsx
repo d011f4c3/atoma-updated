@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 import { CartProvider } from "@/components/cart-drawer";
+import { FocusModality } from "@/components/focus-modality";
 import { OriginsProvider } from "@/components/origins-provider";
 import { SmoothScrollProvider } from "@/components/smooth-scroll";
 import { StorefrontThemeProvider } from "@/components/storefront-theme-provider";
@@ -94,6 +95,7 @@ export default async function RootLayout({
       className={`${fraktionSans.variable} ${fraktionMono.variable} ${atomaMono.variable} ${antroVectra.variable}`}
     >
       <body>
+        <FocusModality />
         <StorefrontLocaleProvider initialLocale={initialLocale}>
           <SmoothScrollProvider>
             <StorefrontThemeProvider initialTone={initialTone}>
