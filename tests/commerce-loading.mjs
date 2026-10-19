@@ -1,4 +1,4 @@
-/* Shopify loading feedback with deliberately delayed, isolated responses.
+/* Shopify inline loading feedback with deliberately delayed, isolated responses.
  * All commerce is mocked; external requests and unrecognised writes are blocked. */
 import assert from "node:assert/strict";
 import { resolve } from "node:path";
@@ -254,14 +254,24 @@ function notice(page) {
   return page.locator("[data-commerce-loading]:visible");
 }
 
+async function checkNoFloatingNotice(page) {
+  assert.equal(
+    await page.locator("[data-commerce-loading]:not([data-in-cart])").count(),
+    0,
+    "Background commerce work never shows a floating loading notice",
+  );
+}
+
 async function checkNotice(page, label) {
   await notice(page).waitFor();
+  await checkNoFloatingNotice(page);
   assert.equal(
     await notice(page).count(),
     1,
     "Concurrent reads share one notice",
   );
   assert.equal(await notice(page).getAttribute("role"), "status");
+  assert.equal(await notice(page).getAttribute("data-in-cart"), "true");
   assert.equal(await notice(page).getAttribute("aria-valuenow"), null);
   assert.equal((await notice(page).innerText()).trim(), label);
   assert.equal(await notice(page).locator("[aria-valuenow]").count(), 0);
@@ -284,7 +294,22 @@ async function pendingFlow(fixture, path, width) {
   hold("cart");
   hold("catalog");
   await page.goto(`${baseURL}${path}`);
-  await checkNotice(page, "Loading prices and availability…");
+  await eventually(
+    () => fixture.reads.cart > 0 && fixture.reads.catalog > 0,
+    "Initial cart and catalog reads begin",
+  );
+  if (path === "/") {
+    await page.locator("[data-hero-loader]").waitFor({ state: "detached" });
+    await checkNoFloatingNotice(page);
+    await page
+      .getByRole("button", {
+        name: "Explore matcha from the silver bag",
+        exact: true,
+      })
+      .click();
+    await page.locator("[data-sample-start-entry]").waitFor();
+  }
+  await checkNoFloatingNotice(page);
   const country = page
     .locator("select[data-destination-selector]:visible")
     .first();
@@ -295,29 +320,45 @@ async function pendingFlow(fixture, path, width) {
     () => fixture.reads.destination > 0,
     "Destination read begins",
   );
-  await checkNotice(page, "Loading prices and availability…");
+  await checkNoFloatingNotice(page);
   release("destination");
   await eventually(
     async () => !(await country.isDisabled()),
     "Destination settles",
   );
+  await checkNoFloatingNotice(page);
+  hold("cart");
+  await page
+    .getByRole("button", { name: "Open cart, 0 items", exact: true })
+    .first()
+    .click();
   await checkNotice(page, "Loading prices and availability…");
-  if (width < 760)
-    assert.equal(
-      await notice(page)
-        .locator("[data-indeterminate]")
-        .evaluate((node) => getComputedStyle(node).animationName),
-      "none",
-      "Reduced motion retains the status without animated ticks",
-    );
-  release("catalog");
+  release("cart");
+  const cartDialog = page.getByRole("dialog", { name: /Your\s+selection/ });
+  await eventually(
+    async () =>
+      !(await cartDialog
+        .locator("select[data-destination-selector]")
+        .isDisabled()),
+    "The cart's destination read settles while the page catalog is still pending",
+  );
   await page.locator("[data-commerce-loading]").waitFor({ state: "detached" });
+  assert.equal(
+    await page.locator("[data-commerce-loading]").count(),
+    0,
+    "Unrelated page catalog work cannot extend the cart loading status",
+  );
+  await cartDialog
+    .getByRole("button", { name: "Close cart", exact: true })
+    .click();
+  release("catalog");
   const purchase = page.locator("[data-sample-purchase]");
   const add = purchase.locator("button[data-available]");
   await eventually(
     async () => (await add.count()) === 1 && !(await add.isDisabled()),
     "Sample purchase becomes available",
   );
+  await checkNoFloatingNotice(page);
   await purchase
     .getByRole("button", { name: "Increase quantity", exact: true })
     .click();
@@ -329,7 +370,11 @@ async function pendingFlow(fixture, path, width) {
   hold("change");
   hold("catalog");
   await country.selectOption("SG");
-  await checkNotice(page, "Updating prices…");
+  await eventually(
+    () => fixture.writes.length === 1,
+    "The deliberate country change begins",
+  );
+  await checkNoFloatingNotice(page);
   assert.equal(await add.isDisabled(), true);
   assert.equal(await country.isDisabled(), true);
   release("change");
@@ -337,13 +382,13 @@ async function pendingFlow(fixture, path, width) {
     async () => (await country.inputValue()) === "SG",
     "Country response is confirmed",
   );
-  await checkNotice(page, "Loading prices and availability…");
+  await checkNoFloatingNotice(page);
   release("catalog");
-  await page.locator("[data-commerce-loading]").waitFor({ state: "detached" });
   await eventually(
     async () => !(await add.isDisabled()),
     "Refreshed prices unlock purchasing",
   );
+  await checkNoFloatingNotice(page);
   assert.equal(
     await purchase.getByLabel("Set quantity", { exact: true }).innerText(),
     "2",
@@ -355,7 +400,11 @@ async function pendingFlow(fixture, path, width) {
 
   hold("add");
   await add.click();
-  await checkNotice(page, "Adding…");
+  await eventually(
+    () => fixture.writes.length === 2,
+    "The deliberate add begins",
+  );
+  await checkNoFloatingNotice(page);
   await purchase.locator('button[aria-busy="true"]').waitFor();
   assert.equal(
     fixture.writes.length,
@@ -365,6 +414,7 @@ async function pendingFlow(fixture, path, width) {
   release("add");
   await page.getByRole("dialog", { name: /Your\s+selection/ }).waitFor();
   await page.locator("[data-commerce-loading]").waitFor({ state: "detached" });
+  await checkNoFloatingNotice(page);
   assert.equal(
     fixture.writes.length,
     2,
@@ -378,7 +428,14 @@ async function pendingFlow(fixture, path, width) {
     .first()
     .click();
   await checkNotice(page, "Loading prices and availability…");
-  assert.equal(await notice(page).getAttribute("data-in-cart"), "true");
+  if (width < 760)
+    assert.equal(
+      await notice(page)
+        .locator("[data-indeterminate]")
+        .evaluate((node) => getComputedStyle(node).animationName),
+      "none",
+      "Reduced motion retains the cart status without animated ticks",
+    );
   assert.equal(
     await notice(page).evaluate((node) =>
       Boolean(node.closest('[aria-busy="true"]')),
@@ -394,6 +451,7 @@ async function pendingFlow(fixture, path, width) {
   );
   release("cart");
   await page.locator("[data-commerce-loading]").waitFor({ state: "detached" });
+  await checkNoFloatingNotice(page);
   assert.equal(fixture.writes.length, 2, "Cart refresh is read-only");
 }
 
@@ -403,12 +461,13 @@ async function failureRecovery(fixture) {
   fixture.failReads(true);
   await page.goto(`${baseURL}/`);
   await page.locator("[data-hero-loader]").waitFor({ state: "detached" });
-  await checkNotice(page, "Loading prices and availability…");
+  await eventually(() => fixture.reads.cart > 0, "Initial cart read begins");
+  await checkNoFloatingNotice(page);
   release("cart");
-  await page.locator("[data-commerce-loading]").waitFor({ state: "detached" });
   const control = page.locator("[data-destination-control]:visible").first();
   const retry = control.getByRole("button", { name: "Try again", exact: true });
   await retry.waitFor();
+  await checkNoFloatingNotice(page);
   assert.equal(
     await retry.isDisabled(),
     false,
@@ -421,15 +480,20 @@ async function failureRecovery(fixture) {
   );
   fixture.failReads(false);
   hold("cart");
+  const readsBeforeRetry = fixture.reads.cart;
   await retry.click();
-  await checkNotice(page, "Loading prices and availability…");
+  await eventually(
+    () => fixture.reads.cart > readsBeforeRetry,
+    "Read-only cart retry begins",
+  );
+  await checkNoFloatingNotice(page);
   assert.equal(await retry.isDisabled(), true);
   release("cart");
-  await page.locator("[data-commerce-loading]").waitFor({ state: "detached" });
   await eventually(
     async () => !(await control.locator("select").isDisabled()),
     "Read-only retry recovers the country",
   );
+  await checkNoFloatingNotice(page);
   assert.equal(await retry.count(), 0);
   assert.deepEqual(
     fixture.writes,
@@ -464,14 +528,13 @@ async function catalogFailureRecovery(fixture, afterCountryChange) {
     await country.selectOption("SG");
   }
   const retry = purchase.getByRole("button", {
-    name: "Try again",
-    exact: true,
+    name: /^Try again(?:\s+↻)?$/,
   });
   await eventually(
     async () => (await retry.count()) === 1 && !(await retry.isDisabled()),
     "A failed catalog read offers an enabled read-only retry",
   );
-  await page.locator("[data-commerce-loading]").waitFor({ state: "detached" });
+  await checkNoFloatingNotice(page);
   assert.equal(
     await add.count(),
     0,
@@ -488,18 +551,22 @@ async function catalogFailureRecovery(fixture, afterCountryChange) {
   fixture.failCatalog(false);
   fixture.hold("catalog");
   await retry.click();
-  await checkNotice(page, "Loading prices and availability…");
+  await eventually(
+    () => fixture.reads.catalog > readsBeforeRetry,
+    "Read-only catalog retry begins",
+  );
+  await checkNoFloatingNotice(page);
   assert.equal(
     await add.count(),
     0,
     "Retry keeps purchasing unavailable until fresh prices arrive",
   );
   fixture.release("catalog");
-  await page.locator("[data-commerce-loading]").waitFor({ state: "detached" });
   await eventually(
     async () => (await add.count()) === 1 && !(await add.isDisabled()),
     "Successful retry restores purchasing",
   );
+  await checkNoFloatingNotice(page);
   const quantity = afterCountryChange ? 2 : 1;
   assert.equal(
     await purchase.getByLabel("Set quantity", { exact: true }).innerText(),
@@ -529,6 +596,7 @@ const cases = [
     (fixture) => pendingFlow(fixture, "/samples", 1440),
   ],
   ["samples-mobile", 390, (fixture) => pendingFlow(fixture, "/samples", 390)],
+  ["homepage-mobile", 390, (fixture) => pendingFlow(fixture, "/", 390)],
   ["homepage-failed-read", 1440, failureRecovery],
   [
     "initial-catalog-retry",

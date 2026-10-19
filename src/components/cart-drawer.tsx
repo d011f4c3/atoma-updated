@@ -48,7 +48,6 @@ type CartContextValue = {
   ) => Promise<void>;
   openCart: () => void;
   refreshCart: () => Promise<void>;
-  beginCatalogRead: () => () => void;
   itemCount: number;
   adding: boolean;
   busy: boolean;
@@ -189,7 +188,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [cart, setCart] = useState<CartData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [catalogReads, setCatalogReads] = useState(0);
   const [checkoutEnabled, setCheckoutEnabled] = useState(false);
   const [checkingOut, setCheckingOut] = useState(false);
   const [popupOpened, setPopupOpened] = useState(false);
@@ -213,17 +211,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [destinationLoading, setDestinationLoading] = useState(true);
   const [destinationReviewRequired, setDestinationReviewRequired] =
     useState(false);
-
-  const beginCatalogRead = useCallback(() => {
-    let finished = false;
-    setCatalogReads((count) => count + 1);
-    return () => {
-      // Cleanup and finally both release a request. Only the first counts.
-      if (finished) return;
-      finished = true;
-      setCatalogReads((count) => count - 1);
-    };
-  }, []);
 
   const confirmDestination = useCallback(
     (value: DestinationContext | null, needsReview = false) => {
@@ -691,14 +678,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
   const operationBusy = pendingAction !== null || checkingOut;
   const busy = operationBusy || destinationLoading;
-  const commerceLoadingLabel =
+  const cartLoadingLabel =
     pendingAction === "destination"
       ? "Updating prices…"
       : pendingAction === "add"
         ? "Adding…"
         : pendingAction !== null
           ? "Updating your selection…"
-          : loading || destinationLoading || catalogReads > 0
+          : loading || destinationLoading
             ? "Loading prices and availability…"
             : checkingOut && !popupOpened
               ? "Opening checkout…"
@@ -720,7 +707,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       addItem,
       openCart,
       refreshCart,
-      beginCatalogRead,
       itemCount,
       adding: pendingAction === "add",
       busy,
@@ -743,7 +729,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       addItem,
       openCart,
       refreshCart,
-      beginCatalogRead,
       itemCount,
       pendingAction,
       busy,
@@ -827,9 +812,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   return (
     <CartContext.Provider value={context}>
       {children}
-      {commerceLoadingLabel && !isOpen && (
-        <CommerceLoader label={commerceLoadingLabel} />
-      )}
       <dialog
         {...dismissCart}
         ref={dialogRef}
@@ -870,8 +852,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
               {t("selection.")}
             </h2>
           </div>
-          {commerceLoadingLabel && isOpen && (
-            <CommerceLoader label={commerceLoadingLabel} inCart />
+          {cartLoadingLabel && isOpen && (
+            <CommerceLoader label={cartLoadingLabel} inCart />
           )}
           <div className={styles.content} aria-busy={loading || busy}>
             <DestinationSelector />

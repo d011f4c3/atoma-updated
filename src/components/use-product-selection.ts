@@ -61,7 +61,6 @@ export function useProductSelection(
     destinationReviewRequired,
     destinationChanging,
     reviewRequired,
-    beginCatalogRead,
   } = useCart();
   const { journey, rememberJourney } = useHomepageJourney();
   const savedSelection = useRef(preserveJourney ? journey.selection : null);
@@ -87,7 +86,6 @@ export function useProductSelection(
   useEffect(() => {
     const controller = new AbortController();
     const request = ++requestRef.current;
-    const finishCatalogRead = beginCatalogRead();
     async function read() {
       try {
         const response = await fetch("/api/catalog", {
@@ -170,7 +168,6 @@ export function useProductSelection(
               },
         );
       } finally {
-        finishCatalogRead();
         if (!controller.signal.aborted && request === requestRef.current) {
           setLoading(false);
         }
@@ -179,7 +176,6 @@ export function useProductSelection(
     void read();
     return () => {
       controller.abort();
-      finishCatalogRead();
     };
   }, [
     revision,
@@ -188,7 +184,6 @@ export function useProductSelection(
     initialFormat,
     destinationRevision,
     destination,
-    beginCatalogRead,
   ]);
 
   useEffect(() => {

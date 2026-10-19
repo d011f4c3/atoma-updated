@@ -2,7 +2,7 @@
   --ink: var(--color-ink);
   --muted: var(--color-muted);
   --line: var(--color-line);
-  --surface: transparent;
+  --surface: var(--color-surface);
   --gutter: clamp(1.25rem, 3.3vw, 4rem);
   min-height: 100svh;
   color: var(--ink);
