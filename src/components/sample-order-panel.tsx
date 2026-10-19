@@ -52,6 +52,11 @@ export function SampleOrderPanel({
       data-layout={layout}
       aria-labelledby="sample-start-heading"
     >
+      {packagesOnMobile && (
+        <div className={styles.mobilePackages}>
+          <SampleFoilTrio disabled={locked} compact />
+        </div>
+      )}
       <header className={styles.heading}>
         <span className={styles.eyebrow}>{t("Start with samples")}</span>
         <div className={styles.titleLine}>
@@ -84,11 +89,6 @@ export function SampleOrderPanel({
         </summary>
         <SetContents numbered />
       </details>
-      {packagesOnMobile && (
-        <div className={styles.mobilePackages}>
-          <SampleFoilTrio disabled={locked} compact />
-        </div>
-      )}
       <SampleSetDetails className={styles.detailsLink} disabled={locked} />
     </section>
   );
