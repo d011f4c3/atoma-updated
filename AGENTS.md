@@ -2,6 +2,29 @@
 
 ## Scope and authority
 
+- **Task 0265 refines the complete shopping journey:** read
+  `docs/tasks/0265-shopping-journey-refinement.md`. Bring canonical product buying
+  into the first view, with focused interactive Profile/Preparation/Origin
+  learning. Refine the separate `/new-wholesale` study into a scalable compact
+  catalog with direct product-page access and real purchase controls. Preserve
+  exact selections, commerce guards, facts, palettes, localization and studies.
+
+- **Task 0264 studies a new wholesale buying experience:** read
+  `docs/tasks/0264-new-wholesale-study.md`. Build `/new-wholesale` as a separate
+  catalog-backed study with aligned desktop comparison and compact mobile
+  browsing, focused in-place orders, and working search in an extensible library
+  toolbar. Do not show temporary or non-working filters. Preserve the canonical
+  store, earlier studies, factual boundaries and commerce contracts.
+
+- **Task 0263 simplifies the canonical mobile experience:** read
+  `docs/tasks/0263-mobile-three-application-hero.md`. Show all three applications
+  together in a dedicated mobile hero and remove repeated homepage sections.
+  Prioritize purchase controls in the Sample Set view, product popups and product
+  pages; disclose supporting profiles, guidance and tasting tools on demand.
+  Keep shared mobile surfaces compact while preserving desktop/study layouts,
+  themes, product facts, motion, focus/history and commerce state. The rejected
+  grower section remains removed.
+
 - **Task 0262 refines the canonical light palette:** read
   `docs/tasks/0262-light-palette-and-navigation.md`. Give light navigation more
   weight and carry richer pearl/sage/mineral gradients, deeper ink and clearer

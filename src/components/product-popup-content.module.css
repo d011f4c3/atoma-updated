@@ -189,6 +189,10 @@
   grid-row: 2;
   min-width: 0;
 }
+.mobileSummary,
+.mobileDetails {
+  display: none;
+}
 .body :is(a, button):focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
@@ -379,14 +383,57 @@
     font-size: 0.75rem;
   }
   .usage {
+    display: none;
+  }
+  .reading {
+    display: none;
+  }
+  .mobileSummary {
+    display: block;
+    margin: 0.625rem 0 0;
+    color: var(--muted);
     font-size: calc(1rem + var(--locale-font-increment, 0px));
     line-height: 1.5;
   }
-  .reading {
-    grid-column: 1 / -1;
-    grid-row: 3;
-    min-width: 0;
+  .mobileDetails {
+    display: block;
+    padding: 0 1rem 0.5rem;
+    color: var(--ink);
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+    line-height: 1.6;
+  }
+  .mobileDetails details {
+    border-top: 1px solid var(--line);
+  }
+  .mobileDetails summary {
+    display: flex;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.75rem;
+    list-style: none;
+    cursor: pointer;
+  }
+  .mobileDetails summary::-webkit-details-marker {
+    display: none;
+  }
+  .mobileDetails summary:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+  .disclosureIcon::after {
+    content: "+";
+  }
+  .mobileDetails details[open] .disclosureIcon::after {
+    content: "−";
+  }
+  .mobileDetails :is(dl, p) {
     margin: 0;
+    padding-block: 0.25rem 1.25rem;
+  }
+  .mobileDetails p {
+    color: var(--muted);
   }
   .tabs {
     gap: 1.5rem;

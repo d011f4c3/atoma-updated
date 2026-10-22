@@ -1,5 +1,6 @@
 "use client";
 
+import { useId, useState } from "react";
 import { getProductContent } from "@/lib/product-content";
 import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
 import { ShopMaterialImage } from "./shop-material-image";
@@ -8,6 +9,8 @@ import styles from "./samples-range.module.css";
 
 export function SamplesRange({ disabled }: { disabled: boolean }) {
   const { t, locale } = useStorefrontLocale();
+  const id = useId();
+  const [expanded, setExpanded] = useState<string[]>([]);
 
   return (
     <section
@@ -80,8 +83,29 @@ export function SamplesRange({ disabled }: { disabled: boolean }) {
                       <span>{item.grams} g</span>
                     </p>
                   </div>
-                  <div className={styles.guidance}>
-                    <p>{guidance.selectionNote}</p>
+                  <div
+                    className={styles.guidance}
+                    data-open={expanded.includes(item.key) || undefined}
+                  >
+                    <button
+                      type="button"
+                      className={styles.guidanceToggle}
+                      aria-expanded={expanded.includes(item.key)}
+                      aria-controls={`${id}-${item.key}`}
+                      onClick={() =>
+                        setExpanded((current) =>
+                          current.includes(item.key)
+                            ? current.filter((key) => key !== item.key)
+                            : [...current, item.key],
+                        )
+                      }
+                    >
+                      <span>{t("What to look for")}</span>
+                      <span aria-hidden="true">
+                        {expanded.includes(item.key) ? "−" : "+"}
+                      </span>
+                    </button>
+                    <p id={`${id}-${item.key}`}>{guidance.selectionNote}</p>
                   </div>
                 </article>
               );
@@ -97,6 +121,8 @@ export function SamplesRange({ disabled }: { disabled: boolean }) {
           [data-samples-range] [data-sample-content] { width: 100% !important; height: auto !important; }
           [data-sample-range-material] { height: 15rem !important; }
           [data-samples-range] [data-pending="true"] img { opacity: 1 !important; }
+          [data-samples-range] button[aria-controls] { display: none !important; }
+          [data-samples-range] div[data-open] > p, [data-samples-range] button + p { display: block !important; }
         `}</style>
       </noscript>
     </section>

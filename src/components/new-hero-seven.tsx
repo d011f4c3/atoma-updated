@@ -231,14 +231,7 @@ export function NewHeroSevenHome({
           />
         </div>
       </div>
-      {motion && (
-        <MobileHomeSections
-          destinations={{
-            samples: destination("samples"),
-            applications: destination("matcha"),
-          }}
-        />
-      )}
+      {motion && <MobileHomeSections />}
     </div>
   );
 }

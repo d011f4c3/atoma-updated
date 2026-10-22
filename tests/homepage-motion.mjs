@@ -275,11 +275,12 @@ async function reviewSelectionVisuals(page, width, tone, description) {
   await samples.waitFor();
   await settled(samples);
   await painted(samples);
-  assert.deepEqual(
-    await samples.locator(":scope > header > p").evaluate(style),
-    description,
-    "Sample introduction matches the hero supporting-text role",
-  );
+  if (description)
+    assert.deepEqual(
+      await samples.locator(":scope > header > p").evaluate(style),
+      description,
+      "Sample introduction matches the hero supporting-text role",
+    );
   await headingCase(samples);
   const sampleAdd = samples.locator(
     "[data-new-hero7-sample-purchase] button[data-available]",
@@ -292,6 +293,15 @@ async function reviewSelectionVisuals(page, width, tone, description) {
         900,
     );
   await page.screenshot({ path: `${prefix}-samples.png` });
+  if (width < 761) {
+    const contents = samples.getByRole("button", {
+      name: "Inside the set",
+      exact: true,
+    });
+    assert.equal(await contents.getAttribute("aria-expanded"), "false");
+    await contents.click();
+    assert.equal(await contents.getAttribute("aria-expanded"), "true");
+  }
   await samples.locator('[data-new-hero7-sample-tab="ceremonial"]').click();
   const sampleDialog = samples.locator("[data-new-hero7-sample-dialog][open]");
   await sampleDialog.waitFor();
@@ -315,27 +325,39 @@ async function reviewSelectionVisuals(page, width, tone, description) {
   await sampleDialog.waitFor({ state: "hidden" });
   await page.goBack();
   await page.locator('[data-new-hero7-view="home"]:visible').waitFor();
-  await heroAction(page, "explore").click();
-  const applications = page.locator('[data-new-hero7-view="matcha"]:visible');
-  await applications.waitFor();
-  await settled(applications);
-  await painted(applications);
-  assert.deepEqual(
-    await applications
-      .locator(":scope > header > div:first-child > p:last-child")
-      .evaluate(style),
-    description,
-    "Application introduction matches the hero supporting-text role",
+  if (width >= 761) await heroAction(page, "explore").click();
+  const applications = page.locator(
+    width >= 761
+      ? '[data-new-hero7-view="matcha"]:visible'
+      : '[data-new-hero7-view="home"]:visible',
   );
-  await headingCase(applications);
-  await page.screenshot({ path: `${prefix}-applications.png` });
+  await applications.waitFor();
+  if (width >= 761) {
+    await settled(applications);
+    await painted(applications);
+    assert.deepEqual(
+      await applications
+        .locator(":scope > header > div:first-child > p:last-child")
+        .evaluate(style),
+      description,
+      "Application introduction matches the hero supporting-text role",
+    );
+    await headingCase(applications);
+    await page.screenshot({ path: `${prefix}-applications.png` });
+  }
   const trigger = applications.locator(
-    '[data-new-hero7-application="barista"]',
+    width >= 761
+      ? '[data-new-hero7-application="barista"]'
+      : '[data-mobile-hero-learn="barista"]',
   );
   await trigger.scrollIntoViewIfNeeded();
   const before = await page.evaluate(() => scrollY);
   await trigger.click();
-  const dialog = applications.locator("[data-new-hero7-product-dialog][open]");
+  const dialog = applications.locator(
+    width >= 761
+      ? "[data-new-hero7-product-dialog][open]"
+      : "[data-new-hero7-home-product-dialog][open]",
+  );
   await dialog.waitFor();
   assert.equal(await dialog.evaluate((node) => node.matches(":modal")), true);
   assert.equal(await page.evaluate(() => scrollY), before);
@@ -362,20 +384,40 @@ async function reviewSelectionVisuals(page, width, tone, description) {
     );
   }
   await headingCase(dialog);
-  const preparation = product.locator('[data-popup-info-tab="preparation"]');
-  await preparation.click();
-  assert.equal(await preparation.getAttribute("aria-selected"), "true");
-  assert.equal(
-    await product.locator("[data-new-hero-product-profile]").isVisible(),
-    true,
-  );
-  await product.locator('[data-popup-info-tab="overview"]').click();
+  if (width < 761) {
+    const preparation = product.locator(
+      '[data-popup-mobile-detail="preparation"]',
+    );
+    assert.equal(await preparation.getAttribute("open"), null);
+    await preparation.locator(":scope > summary").click();
+    assert.equal(await preparation.getAttribute("open"), "");
+    assert.equal(await preparation.locator("p").first().isVisible(), true);
+    await preparation.locator(":scope > summary").click();
+    const profile = product.locator('[data-popup-mobile-detail="profile"]');
+    assert.equal(await profile.getAttribute("open"), null);
+    await profile.locator(":scope > summary").click();
+    assert.equal(await profile.locator("dd:visible").count(), 6);
+    await profile.locator(":scope > summary").click();
+  } else {
+    const preparation = product.locator('[data-popup-info-tab="preparation"]');
+    await preparation.click();
+    assert.equal(await preparation.getAttribute("aria-selected"), "true");
+    assert.equal(
+      await product.locator("[data-new-hero-product-profile]").isVisible(),
+      true,
+    );
+    await product.locator('[data-popup-info-tab="overview"]').click();
+  }
   await painted(dialog);
   await page.screenshot({ path: `${prefix}-product.png` });
-  await dialog.locator("[data-new-hero7-product-close]").click();
+  await dialog
+    .locator(
+      "[data-new-hero7-product-close], [data-new-hero7-home-product-close]",
+    )
+    .click();
   await dialog.waitFor({ state: "hidden" });
   assert.equal(await page.evaluate(() => scrollY), before);
-  await page.goBack();
+  if (width >= 761) await page.goBack();
   await page.locator('[data-new-hero7-view="home"]:visible').waitFor();
 }
 async function observe(scope) {
@@ -581,10 +623,20 @@ try {
           await nav.evaluate((node) => node.blur());
           await animatedInteraction(page, nav, () => nav.focus());
         }
-        await heroAction(page, "explore").click();
-        await page.locator('[data-new-hero7-view="matcha"]:visible').waitFor();
-        await page.locator('[data-new-hero7-application="barista"]').click();
-        const popup = page.locator("[data-new-hero7-product-dialog][open]");
+        if (width < 760) {
+          await page.locator('[data-mobile-hero-learn="barista"]').click();
+        } else {
+          await heroAction(page, "explore").click();
+          await page
+            .locator('[data-new-hero7-view="matcha"]:visible')
+            .waitFor();
+          await page.locator('[data-new-hero7-application="barista"]').click();
+        }
+        const popup = page.locator(
+          width < 760
+            ? "[data-new-hero7-home-product-dialog][open]"
+            : "[data-new-hero7-product-dialog][open]",
+        );
         await popup.waitFor();
         assert.equal(
           await popup.evaluate((node) => node.matches(":modal")),
@@ -592,6 +644,12 @@ try {
         );
         await page.keyboard.press("Escape");
         await popup.waitFor({ state: "hidden" });
+        if (width < 760) {
+          await heroAction(page, "samples").click();
+          await page
+            .locator('[data-new-hero7-view="samples"]:visible')
+            .waitFor();
+        }
         await page.goBack();
         await page.locator('[data-new-hero7-view="home"]:visible').waitFor();
         assert.equal(
@@ -759,7 +817,7 @@ try {
           );
         else
           assert.ok(
-            homeSize > studySize && homeSize >= 32 && homeSize <= 44,
+            homeSize > studySize && homeSize >= 28 && homeSize <= 40,
             "The dedicated portrait hero has a distinct, readable display scale",
           );
         const summary = header(page).locator("[data-nav-summary]");
@@ -867,6 +925,7 @@ try {
   for (const [width, tone] of [
     [1440, "light"],
     [390, "dark"],
+    [390, "light"],
   ]) {
     await fixture(
       `font-${width}-${tone}`,
@@ -909,9 +968,15 @@ try {
           );
           return {
             heading: style(currentHero.querySelector("h1")),
-            description: style(
-              currentHero.querySelector("[data-new-hero7-description], h1 + p"),
-            ),
+            description: (() => {
+              const node = currentHero.querySelector(
+                "[data-new-hero7-description], h1 + p",
+              );
+              return node ? style(node) : null;
+            })(),
+            controlCount: currentHero.querySelectorAll("a,button").length,
+            proseCount: currentHero.querySelectorAll("p:not([role=status])")
+              .length,
             headings: Array.from(
               document.querySelectorAll("[data-homepage] :is(h1,h2,h3)"),
             ).map((node) => ({
@@ -922,6 +987,7 @@ try {
               const node = visible(
                 "[data-mobile-hero-explore], [data-new-hero7-explore]",
               );
+              if (!node) return null;
               const line = getComputedStyle(node, "::after");
               return {
                 decoration: getComputedStyle(node).textDecorationLine,
@@ -971,6 +1037,27 @@ try {
           "300",
           "The hero description uses the lighter weight",
         );
+        assert.ok(
+          fonts.description.size >= 16,
+          "Hero supporting text remains readable",
+        );
+        if (width < 761) {
+          assert.equal(
+            fonts.proseCount,
+            1,
+            "The mobile hero retains one concise introduction",
+          );
+          assert.equal(
+            fonts.controlCount,
+            4,
+            "The mobile hero contains three product links and one Sample Set action",
+          );
+          assert.equal(
+            fonts.explore,
+            null,
+            "The mobile hero has one primary onward action",
+          );
+        }
         assert.ok(fonts.headings.length > 1);
         for (const item of fonts.headings)
           assert.equal(
@@ -978,13 +1065,13 @@ try {
             "uppercase",
             `Canonical heading is uppercase: ${item.label}`,
           );
-        assert.equal(fonts.explore.decoration, "none");
-        assert.equal(
-          fonts.explore.fragmentedUnderline,
-          false,
-          "Explore never adds fragmented glyph underlines",
-        );
-        if (width >= 761)
+        if (width >= 761) {
+          assert.equal(fonts.explore.decoration, "none");
+          assert.equal(
+            fonts.explore.fragmentedUnderline,
+            false,
+            "Explore never adds fragmented glyph underlines",
+          );
           assert.deepEqual(
             fonts.explore,
             {
@@ -997,25 +1084,29 @@ try {
             },
             "Desktop Explore retains its single continuous rule",
           );
+        }
         for (const item of fonts.nav)
           assert.equal(
             item.weight,
-            "300",
-            `${item.label} uses the lighter header weight`,
+            tone === "light" ? "400" : "300",
+            `${item.label} uses the approved ${tone} header weight`,
           );
         const normalize = (family) =>
           family.replaceAll('"', "").replaceAll("'", "").trim();
         const family = normalize(fonts.heading.family.split(",")[0]);
-        for (const item of [...fonts.nav, fonts.description]) {
-          const lightFamily = normalize(item.family.split(",")[0]);
+        for (const item of [
+          ...fonts.nav,
+          ...(fonts.description ? [fonts.description] : []),
+        ]) {
+          const computedFamily = normalize(item.family.split(",")[0]);
           assert.ok(
             fonts.faces.some(
               (face) =>
-                normalize(face.family) === lightFamily &&
-                face.weight === "300" &&
+                normalize(face.family) === computedFamily &&
+                face.weight === item.weight &&
                 face.status === "loaded",
             ),
-            "The actual computed 300-weight Mono font face is loaded",
+            `The actual computed ${item.weight}-weight Mono font face is loaded`,
           );
         }
         const progress = await page.evaluate(() => window.__motion.progress);
@@ -1043,18 +1134,22 @@ try {
             fonts.heading.x + fonts.heading.width <= width,
         );
         assert.equal(
-          await hero(page).evaluate((node) =>
-            Array.from(
+          await hero(page).evaluate((node) => {
+            const applications = Array.from(
               node.querySelectorAll(
-                "[data-new-hero7-jump], [data-mobile-hero-choice]",
+                "[data-new-hero7-jump], [data-mobile-hero-application]",
               ),
-            ).every((link) => {
-              const box = link.getBoundingClientRect();
-              return box.top >= 0 && box.bottom <= innerHeight + 1;
-            }),
-          ),
+            );
+            return (
+              applications.length === 3 &&
+              applications.every((link) => {
+                const box = link.getBoundingClientRect();
+                return box.top >= 0 && box.bottom <= innerHeight + 1;
+              })
+            );
+          }),
           true,
-          "Every application choice remains in the first viewport",
+          "Every application and its learning control remain in the first viewport",
         );
         if (width === 1440)
           assert.ok(
@@ -1083,11 +1178,18 @@ try {
           });
           await page.keyboard.press("Escape");
         }
-        await reviewSelectionVisuals(page, width, tone, {
-          color: fonts.description.color,
-          weight: fonts.description.weight,
-          family: fonts.description.family,
-        });
+        await reviewSelectionVisuals(
+          page,
+          width,
+          tone,
+          fonts.description
+            ? {
+                color: fonts.description.color,
+                weight: fonts.description.weight,
+                family: fonts.description.family,
+              }
+            : null,
+        );
         await writeFile(
           `${evidence}/font-${width}-${tone}-metrics.json`,
           JSON.stringify(fonts, null, 2),
@@ -1112,8 +1214,8 @@ try {
             .evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
           assert.ok(
             fonts.heading.size > studySize &&
-              fonts.heading.size >= 32 &&
-              fonts.heading.size <= 44,
+              fonts.heading.size >= 28 &&
+              fonts.heading.size <= 40,
             "Mobile type follows the dedicated portrait composition",
           );
         }

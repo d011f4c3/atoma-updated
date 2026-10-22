@@ -7,8 +7,12 @@
     --mobile-glow: var(--color-hero-glow, #bad2be);
     position: relative;
     isolation: isolate;
-    display: block;
-    padding: 1.25rem var(--gutter) 1.5rem;
+    container: mobile-hero / inline-size;
+    display: grid;
+    grid-template-rows: auto minmax(20rem, 1fr) auto;
+    gap: 0.5rem;
+    min-height: calc(100svh - var(--seven-header-height, 4rem));
+    padding: 1rem var(--gutter) 1.25rem;
   }
 
   .hero[data-tone="dark"] {
@@ -20,9 +24,9 @@
     z-index: -1;
     inset: 0;
     background: radial-gradient(
-      ellipse 100% 35% at 65% 55%,
-      color-mix(in srgb, var(--mobile-glow) 80%, transparent),
-      color-mix(in srgb, var(--mobile-glow) 25%, transparent) 55%,
+      ellipse 110% 55% at 68% 58%,
+      color-mix(in srgb, var(--mobile-glow) 90%, transparent),
+      color-mix(in srgb, var(--mobile-glow) 35%, transparent) 55%,
       transparent 100%
     );
     pointer-events: none;
@@ -30,27 +34,35 @@
   }
 
   .introduction,
-  .tabs,
-  .preview,
+  .applications,
   .actions {
     width: 100%;
-    max-width: 32rem;
+    max-width: 30rem;
+    min-width: 0;
     margin-inline: auto;
   }
 
   .introduction h1 {
-    max-width: 17ch;
+    max-width: 19ch;
     margin: 0;
-    font-size: calc(clamp(2rem, 8.7vw, 2.75rem) + var(--locale-font-increment));
+    font-size: calc(clamp(1.75rem, 8vw, 2.5rem) + var(--locale-font-increment));
     font-weight: 400;
-    line-height: 1.08;
-    letter-spacing: -0.06em;
+    line-height: 1.1;
+    letter-spacing: -0.055em;
     text-wrap: balance;
     text-transform: uppercase;
   }
 
+  .hero:lang(ja) .introduction h1 {
+    max-width: none;
+    font-size: calc(
+      clamp(1.625rem, 7.2vw, 2.25rem) + var(--locale-font-increment)
+    );
+    letter-spacing: -0.035em;
+  }
+
   .description {
-    margin: 0.875rem 0 1.25rem;
+    margin: 0.75rem 0 0;
     color: var(--muted);
     font-family: var(--font-atoma-mono-light), monospace;
     font-size: calc(1rem + var(--locale-font-increment));
@@ -58,75 +70,54 @@
     line-height: 1.55;
   }
 
-  .hero:lang(ja) .introduction h1 {
-    max-width: none;
-    font-size: calc(
-      clamp(1.75rem, 7.6vw, 2.5rem) + var(--locale-font-increment)
-    );
-    letter-spacing: -0.035em;
-  }
-
-  .tabs {
+  .applications {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 5.5rem), 1fr));
-    border-bottom: 1px solid var(--line);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    grid-template-areas: "tea latte" "baking latte";
+    align-content: center;
+    align-items: center;
+    gap: 1.25rem 1.5rem;
+    padding-block: 1.75rem;
   }
 
-  .tabs button {
+  .application {
     position: relative;
-    min-height: 2.75rem;
-    padding: 0.625rem 0.25rem;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    color: var(--muted);
-    font: inherit;
-    font-size: calc(0.875rem + var(--locale-font-increment));
-    line-height: 1.4;
-    cursor: pointer;
-  }
-
-  .tabs button[aria-selected="true"] {
+    display: block;
+    min-width: 0;
     color: var(--ink);
+    text-decoration: none;
   }
 
-  .tabs button[aria-selected="true"]::after {
-    position: absolute;
-    inset: auto 0 -1px;
-    height: 2px;
-    background: currentColor;
-    content: "";
+  .application[data-mobile-hero-application="ceremonial"] {
+    grid-area: tea;
+    width: 100%;
   }
 
-  .figure {
-    margin: 0;
+  .application[data-mobile-hero-application="barista"] {
+    grid-area: latte;
+    justify-self: end;
+    width: 100%;
+    margin-top: 3rem;
+  }
+
+  .application[data-mobile-hero-application="culinary"] {
+    grid-area: baking;
+    margin-left: 0.375rem;
   }
 
   .visual {
-    --preview-height: clamp(192px, 54vw, 224px);
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: var(--preview-height);
-    margin: 0.625rem 0 0.375rem;
+    width: 94%;
+    margin-inline: auto;
   }
 
-  .index {
-    position: absolute;
-    left: 0;
-    top: 0.375rem;
-    color: var(--ink);
-    opacity: 0.13;
-    font-family: var(--font-atoma-mono-light), monospace;
-    font-size: 4rem;
-    line-height: 1;
-    letter-spacing: -0.07em;
+  .application[data-mobile-hero-application="culinary"] .visual {
+    width: 100%;
   }
 
   .crop {
     position: relative;
-    width: min(100%, calc(var(--preview-height) * var(--crop-aspect)));
+    width: 100%;
     aspect-ratio: var(--crop-ratio);
     overflow: hidden;
   }
@@ -141,58 +132,53 @@
     user-select: none;
   }
 
-  .fallback {
-    max-width: 24ch;
-    color: var(--muted);
-    font-size: 1rem;
-    text-align: center;
-  }
-
-  .learn {
+  .caption {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
     align-items: center;
-    gap: 1rem;
-    min-height: 3.5rem;
-    padding-block: 0.5rem;
-    color: var(--ink);
+    justify-content: space-between;
+    gap: 0.375rem;
+    min-height: 2.75rem;
+    padding: 0.375rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: calc(1rem + var(--locale-font-increment));
+    line-height: 1.4;
+    color: inherit;
     text-decoration: none;
   }
 
-  .identity {
+  .caption::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+  }
+
+  .captionIdentity {
     display: grid;
-    flex: 1 1 10rem;
-    gap: 0.25rem;
-    min-width: min(100%, 10rem);
-    font-size: calc(1rem + var(--locale-font-increment));
-    line-height: 1.4;
+    min-width: 0;
+    gap: 0.125rem;
   }
 
   .code {
     color: var(--muted);
-    font-size: 0.75rem;
+    font-size: calc(0.75rem + var(--locale-font-increment));
+    line-height: 1.5;
   }
 
-  .learnLabel {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: calc(0.875rem + var(--locale-font-increment));
+  .caption > :last-child {
+    flex-shrink: 0;
+    color: var(--muted);
   }
 
-  .learnLabel > :last-child {
-    font-size: 1.25rem;
+  .application:hover .caption {
+    border-color: currentColor;
   }
 
   .actions {
     display: grid;
-    gap: 0.375rem;
-    margin-top: 1rem;
+    gap: 0.25rem;
   }
 
-  .primary,
-  .secondary {
+  .primary {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -211,36 +197,53 @@
     color: var(--surface);
   }
 
-  .secondary {
-    min-height: 2.75rem;
-    padding-inline: 0;
+  .fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-items: center;
     color: var(--muted);
+    font-size: 0.875rem;
+    text-align: center;
   }
 
-  .hero :is(a, button):focus-visible {
+  .imageNotice {
+    margin: 0 0 0.5rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .hero a:focus-visible {
     outline: 2px solid var(--ink);
     outline-offset: 4px;
   }
 
-  .hero :is(a[aria-disabled="true"], button:disabled) {
+  .hero a[aria-disabled="true"] {
     opacity: 0.5;
     cursor: wait;
   }
 }
 
-@media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
-  .crop {
-    animation: preview-arrive 350ms ease-out both;
+/* Enlarged text gets a readable vertical arrangement with whole objects. */
+@container mobile-hero (max-width: 13rem) {
+  .applications {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "tea" "latte" "baking";
+    gap: 1.25rem;
   }
-}
 
-@keyframes preview-arrive {
-  from {
-    opacity: 0;
-    translate: 0 6px;
+  .application[data-mobile-hero-application] {
+    width: 100%;
+    margin: 0;
+    justify-self: center;
   }
-  to {
-    opacity: 1;
-    translate: 0 0;
+
+  .visual {
+    width: 70%;
+  }
+
+  .application[data-mobile-hero-application="culinary"] .visual {
+    width: 80%;
   }
 }

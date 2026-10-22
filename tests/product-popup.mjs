@@ -129,7 +129,20 @@ async function mobileReading(page) {
     [],
     "Mobile learning and ordering share one scroll area",
   );
-  const fields = product(page).locator('[role="tabpanel"]:visible dl > div');
+  const profile = product(page).locator('[data-popup-mobile-detail="profile"]');
+  const preparation = product(page).locator(
+    '[data-popup-mobile-detail="preparation"]',
+  );
+  assert.equal(await profile.getAttribute("open"), null);
+  assert.equal(await preparation.getAttribute("open"), null);
+  assert.equal(await product(page).getByRole("tablist").count(), 0);
+  await profile.locator("summary").click();
+  const fields = profile.locator("dl > div");
+  assert.equal(
+    await fields.count(),
+    6,
+    "The complete profile remains available",
+  );
   const purchase = await product(page)
     .locator("[data-popup-purchase]")
     .boundingBox();
@@ -141,8 +154,8 @@ async function mobileReading(page) {
   );
   for (const [index, field] of fieldBounds.entries()) {
     assert.ok(
-      purchase && field.y + field.height <= purchase.y + 1,
-      "Every mobile profile field precedes the purchase area",
+      purchase && field.y >= purchase.y + purchase.height - 1,
+      "Optional mobile details follow the immediate purchase area",
     );
     for (const next of fieldBounds.slice(index + 1)) {
       const overlapWidth =
@@ -159,7 +172,7 @@ async function mobileReading(page) {
   }
   const targets = await product(page)
     .locator(
-      '[role="tabpanel"]:visible dl > div, [data-new-hero-add] button, [data-popup-sample-action]',
+      '[data-popup-mobile-detail="profile"] dl > div, [data-new-hero-add] button, [data-popup-sample-action]',
     )
     .all();
   for (const target of targets) {
@@ -188,6 +201,7 @@ async function mobileReading(page) {
     Math.abs((await page.evaluate(() => scrollY)) - pageScroll) < 2,
     "Reading and ordering scroll only the popup",
   );
+  await profile.locator("summary").click();
   await body.evaluate((node) => {
     node.scrollTop = 0;
   });
@@ -264,6 +278,29 @@ async function exploreProduct(page, touch = false) {
       image === "matcha",
       "The material and application are deliberate image choices",
     );
+  }
+  const mobile = await product(page)
+    .locator("[data-popup-mobile-details]")
+    .isVisible();
+  if (mobile) {
+    for (const detail of ["profile", "preparation"]) {
+      const disclosure = product(page).locator(
+        `[data-popup-mobile-detail="${detail}"]`,
+      );
+      const summary = disclosure.locator("summary");
+      await summary.focus();
+      await page.keyboard.press("Enter");
+      assert.equal(await disclosure.getAttribute("open"), "");
+      assert.equal(
+        await disclosure.locator(detail === "profile" ? "dl" : "p").isVisible(),
+        true,
+      );
+      await activate(summary);
+      assert.equal(await disclosure.getAttribute("open"), null);
+    }
+    assert.equal(await quantity(page).textContent(), before);
+    assert.ok(Math.abs((await page.evaluate(() => scrollY)) - pageScroll) < 2);
+    return;
   }
   const overview = product(page).locator('[data-popup-info-tab="overview"]');
   const preparation = product(page).locator(
@@ -470,7 +507,7 @@ try {
     for (const selector of [
       "[data-new-hero-product-code]",
       "[data-new-hero-product-name]",
-      "[data-new-hero-product-overview]",
+      "[data-popup-mobile-summary]",
       "[data-product-application-cutout]",
     ]) {
       await withinDialog(
@@ -749,6 +786,11 @@ try {
     await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
     await dialog(page).waitFor();
     const popup = dialog(page);
+    for (const summary of await product(page)
+      .locator("[data-popup-mobile-detail] > summary")
+      .all()) {
+      await summary.click();
+    }
     const bodySize = await scrollBody(page).evaluate((node) => ({
       clientWidth: node.clientWidth,
       scrollWidth: node.scrollWidth,

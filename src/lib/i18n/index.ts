@@ -10,6 +10,8 @@ import { applicationImageryTranslations } from "./application-imagery.ts";
 import { productClarityTranslations } from "./product-clarity.ts";
 import { productComparisonTranslations } from "./product-comparison.ts";
 import { newHeroTranslations } from "./new-hero.ts";
+import { wholesaleTranslations } from "./wholesale.ts";
+import { retailLearningTranslations } from "./retail-learning.ts";
 import type { Locale, TranslationTable } from "./types.ts";
 
 export { locales, resolveLocale, type Locale } from "./types.ts";
@@ -26,6 +28,8 @@ export const translationTables = [
   productClarityTranslations,
   productComparisonTranslations,
   newHeroTranslations,
+  wholesaleTranslations,
+  retailLearningTranslations,
 ];
 const messages: TranslationTable = Object.assign(
   Object.create(null),

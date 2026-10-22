@@ -152,6 +152,47 @@ export function SampleSetPurchase({
       <span aria-hidden="true"> ↗</span>
     </Link>
   );
+  const valueDetails = (mobile = false) => (
+    <div
+      className={styles.valueDisclosure}
+      data-sample-value-disclosure
+      data-mobile-value={mobile || undefined}
+      data-page-value={presentation === "page" || undefined}
+      data-open={valueOpen || undefined}
+    >
+      {presentation === "page" && (
+        <button
+          type="button"
+          className={styles.valueToggle}
+          aria-expanded={valueOpen}
+          aria-controls={`${valueId}-${mobile ? "mobile" : "main"}`}
+          onClick={() => setValueOpen((open) => !open)}
+        >
+          <ScrambleText
+            text={t("Sample Set details")}
+            interactive
+            animateOnMount={false}
+            wrap
+          />
+          <span aria-hidden="true">{valueOpen ? "−" : "+"}</span>
+        </button>
+      )}
+      <p
+        id={`${valueId}-${mobile ? "mobile" : "main"}`}
+        className={`${styles.detail} ${styles.valueNote}`}
+        data-sample-value
+      >
+        {mobile && (
+          <span className={styles.mobileSetFact}>
+            3 × 20 g · {t("60 g total")}
+          </span>
+        )}
+        {t(
+          "Compare flavour, texture and performance in your own recipes before committing to 1 kg. Your Sample Set includes ¥4,500 credit toward your first eligible wholesale order of 1 kg or more. Taste first, then put the value of your samples toward your chosen matcha using the code emailed after purchase.",
+        )}
+      </p>
+    </div>
+  );
   return (
     <section
       className={[styles.purchase, className].filter(Boolean).join(" ")}
@@ -184,40 +225,7 @@ export function SampleSetPurchase({
           </p>
         </>
       )}
-      {showValueNote && (
-        <div
-          className={styles.valueDisclosure}
-          data-sample-value-disclosure
-          data-open={valueOpen || undefined}
-        >
-          {presentation === "page" && (
-            <button
-              type="button"
-              className={styles.valueToggle}
-              aria-expanded={valueOpen}
-              aria-controls={valueId}
-              onClick={() => setValueOpen((open) => !open)}
-            >
-              <ScrambleText
-                text={t("Sample Set details")}
-                interactive
-                animateOnMount={false}
-                wrap
-              />
-              <span aria-hidden="true">{valueOpen ? "−" : "+"}</span>
-            </button>
-          )}
-          <p
-            id={valueId}
-            className={`${styles.detail} ${styles.valueNote}`}
-            data-sample-value
-          >
-            {t(
-              "Compare flavour, texture and performance in your own recipes before committing to 1 kg. Your Sample Set includes ¥4,500 credit toward your first eligible wholesale order of 1 kg or more. Taste first, then put the value of your samples toward your chosen matcha using the code emailed after purchase.",
-            )}
-          </p>
-        </div>
-      )}
+      {showValueNote && valueDetails()}
       {model.loading ? (
         <div className={styles.status} role="status">
           {t("Opening the sample set…")}
@@ -435,6 +443,7 @@ export function SampleSetPurchase({
           </details>
         </div>
       )}
+      {showValueNote && presentation === "page" && valueDetails(true)}
     </section>
   );
 }
@@ -445,6 +454,8 @@ export function Samples() {
   const purchase = useSampleSetPurchase();
   const { locked } = purchase;
   const pageRef = useRef<HTMLElement>(null);
+  const tastingId = useId();
+  const [tastingOpen, setTastingOpen] = useState(false);
   useSamplesMotion(pageRef);
   usePageReveals(pageRef);
 
@@ -520,7 +531,25 @@ export function Samples() {
         <div className={styles.journey}>
           <SamplesRange disabled={locked} />
 
-          <SampleTastingTools />
+          <div
+            className={styles.tastingDisclosure}
+            data-sample-tasting-disclosure
+            data-open={tastingOpen || undefined}
+          >
+            <button
+              type="button"
+              className={styles.tastingToggle}
+              aria-expanded={tastingOpen}
+              aria-controls={tastingId}
+              onClick={() => setTastingOpen((open) => !open)}
+            >
+              <span>{t("Tasting tools")}</span>
+              <span aria-hidden="true">{tastingOpen ? "−" : "+"}</span>
+            </button>
+            <div className={styles.tastingContent} id={tastingId}>
+              <SampleTastingTools />
+            </div>
+          </div>
 
           <section className={styles.next} aria-labelledby="samples-next">
             <figure
@@ -562,7 +591,7 @@ export function Samples() {
           </div>
         </div>
         <noscript>
-          <style>{`[data-samples-cover] { min-height: auto !important; margin-bottom: 0 !important; padding-bottom: 0 !important; } [data-samples-cover] > section { position: relative !important; height: auto !important; } [data-samples-page] [data-sample-value] { display: block !important; } [data-samples-page] [data-sample-value-disclosure] > button { display: none !important; }`}</style>
+          <style>{`[data-samples-cover] { min-height: auto !important; margin-bottom: 0 !important; padding-bottom: 0 !important; } [data-samples-cover] > section { position: relative !important; height: auto !important; } [data-samples-page] [data-sample-value] { display: block !important; } [data-samples-page] [data-sample-value-disclosure] > button { display: none !important; } [data-sample-tasting-disclosure] > button { display: none !important; } [data-sample-tasting-disclosure] > div { display: contents !important; }`}</style>
         </noscript>
       </main>
     </div>

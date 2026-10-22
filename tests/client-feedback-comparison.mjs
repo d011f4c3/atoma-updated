@@ -196,19 +196,41 @@ async function assertProfile(scope, product, locale) {
   const profile = scope.locator("[data-visible-product-profile]");
   await profile.waitFor();
   const content = getProductContent(product, locale);
-  assert.equal(await profile.locator("dl > div").count(), 7);
-  assert.deepEqual(
-    (await profile.locator("dt").allTextContents()).map((value) =>
-      value.trim(),
-    ),
-    content.materialProfile.map((property) => property.label),
-  );
-  assert.deepEqual(
-    (await profile.locator("dd").allTextContents()).map((value) =>
-      value.trim(),
-    ),
-    content.materialProfile.map((property) => property.value),
-  );
+  const interactive = profile.locator("[data-retail-profile-property]");
+  if (await interactive.count()) {
+    const values = await interactive.evaluateAll((nodes) =>
+      nodes
+        .map((node) => ({
+          index: Number(node.dataset.retailProfileProperty),
+          label: node.firstElementChild?.textContent?.trim(),
+          value: node.lastElementChild?.textContent?.trim(),
+        }))
+        .sort((first, second) => first.index - second.index),
+    );
+    assert.equal(values.length, 7);
+    assert.deepEqual(
+      values.map((item) => item.label),
+      content.materialProfile.map((item) => item.label),
+    );
+    assert.deepEqual(
+      values.map((item) => item.value),
+      content.materialProfile.map((item) => item.value),
+    );
+  } else {
+    assert.equal(await profile.locator("dl > div").count(), 7);
+    assert.deepEqual(
+      (await profile.locator("dt").allTextContents()).map((value) =>
+        value.trim(),
+      ),
+      content.materialProfile.map((property) => property.label),
+    );
+    assert.deepEqual(
+      (await profile.locator("dd").allTextContents()).map((value) =>
+        value.trim(),
+      ),
+      content.materialProfile.map((property) => property.value),
+    );
+  }
   assert.equal(
     await profile
       .getByText(
@@ -218,8 +240,9 @@ async function assertProfile(scope, product, locale) {
         ),
         { exact: true },
       )
-      .isVisible(),
-    true,
+      .count(),
+    0,
+    "Internal provenance captions do not return to customer-facing copy",
   );
   assert.equal(
     await profile.evaluate((node) => node.closest("details") === null),
@@ -377,17 +400,16 @@ try {
           name: translate(locale, "Format"),
           exact: true,
         });
-        assert.equal(
-          await profileSection.evaluate(
-            (node, selector) =>
-              Boolean(
-                node.compareDocumentPosition(document.querySelector(selector)) &
-                Node.DOCUMENT_POSITION_FOLLOWING,
-              ),
-            `[data-retail-product="${tea.handle}"] fieldset`,
-          ),
-          true,
-          "Profile precedes format controls",
+        const addBounds = await retail
+          .locator("button[data-pending]")
+          .boundingBox();
+        const viewport = page.viewportSize();
+        assert.ok(
+          addBounds &&
+            viewport &&
+            addBounds.y >= 0 &&
+            addBounds.y + addBounds.height <= viewport.height + 1,
+          "The complete purchase action is visible before scrolling into learning",
         );
         assert.equal(
           await formatFieldset

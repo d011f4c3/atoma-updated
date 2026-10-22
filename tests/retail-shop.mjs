@@ -555,15 +555,23 @@ for (const tone of ["dark", "light"]) {
         );
         await purchaseOptions.locator("summary").click();
 
-        const specifications = main.locator("[data-retail-specifications]");
-        assert.equal(
-          await specifications.locator("[data-retail-specification]").count(),
-          7,
+        const specifications = main.locator(
+          '[data-retail-learning-panel="profile"]',
         );
+        const properties = specifications.locator(
+          "[data-retail-profile-property]",
+        );
+        assert.equal(await properties.count(), 7);
         assert.deepEqual(
-          await specifications
-            .locator("[data-retail-specification] summary > span:first-child")
-            .allTextContents(),
+          await properties.evaluateAll((nodes) =>
+            nodes
+              .map((node) => ({
+                index: Number(node.dataset.retailProfileProperty),
+                label: node.firstElementChild?.textContent?.trim(),
+              }))
+              .sort((first, second) => first.index - second.index)
+              .map((item) => item.label),
+          ),
           [
             "Aroma",
             "Flavour",
@@ -574,68 +582,73 @@ for (const tone of ["dark", "light"]) {
             "Finish",
           ],
         );
-        const firstProperty = specifications
-          .locator("[data-retail-specification]")
-          .first();
-        const propertyTrigger = firstProperty.locator("summary");
-        await propertyTrigger.focus();
+        const firstProperty = specifications.locator(
+          '[data-retail-profile-property="0"]',
+        );
+        const explanation = specifications.locator('[aria-live="polite"]');
+        const initialExplanation = await explanation.textContent();
+        await firstProperty.focus();
         await page.keyboard.press("Enter");
+        assert.equal(await firstProperty.getAttribute("aria-pressed"), "true");
+        assert.notEqual(await explanation.textContent(), initialExplanation);
+        assert.equal(await explanation.isVisible(), true);
         assert.equal(
-          await firstProperty.evaluate((element) => element.open),
-          true,
-        );
-        assert.equal(await firstProperty.locator("p").isVisible(), true);
-        await page.keyboard.press("Space");
-        assert.equal(
-          await firstProperty.evaluate((element) => element.open),
-          false,
-        );
-        assert.equal(
-          await propertyTrigger.evaluate(
+          await firstProperty.evaluate(
             (element) => element === document.activeElement,
           ),
           true,
         );
-        await page.keyboard.press("Enter");
-        const material = main.locator("[data-retail-material-use]");
-        await material.locator("summary").click();
-        for (const heading of ["Use & preparation", "What to look for"])
-          assert.equal(
-            await material
-              .getByRole("heading", { name: heading, exact: true })
-              .isVisible(),
-            true,
-          );
-        await material.locator("summary").click();
-        const details = main.locator("[data-product-details]");
+        const profileTab = main.locator('[data-retail-learning-tab="profile"]');
+        const preparationTab = main.locator(
+          '[data-retail-learning-tab="preparation"]',
+        );
+        const originTab = main.locator('[data-retail-learning-tab="origin"]');
+        await profileTab.focus();
+        await page.keyboard.press("ArrowRight");
         assert.equal(
-          await details.evaluate(
-            (element) => element.tagName === "DETAILS" && !element.open,
+          await preparationTab.getAttribute("aria-selected"),
+          "true",
+        );
+        assert.equal(
+          await preparationTab.evaluate(
+            (element) => element === document.activeElement,
           ),
           true,
-          "The dedicated retail page must retain its initially closed product-details disclosure",
         );
-        await details.locator("summary").click();
-        for (const heading of [
-          "Formats & availability",
-          "Application & preparation",
-          "Product record",
-        ])
-          assert.equal(
-            await details
-              .getByRole("heading", { name: heading, exact: true })
-              .isVisible(),
-            true,
-          );
-        assert.match(
-          await details.textContent(),
-          /Further product details are awaiting supplier confirmation/,
+        const material = main.locator(
+          '[data-retail-learning-panel="preparation"]',
         );
         assert.equal(
-          await details.locator("[data-provisional-detail]").count(),
-          3,
+          await material
+            .getByRole("heading", { name: "What to look for", exact: true })
+            .isVisible(),
+          true,
         );
-        await details.locator("summary").click();
+        const guidance = material.locator("details");
+        await guidance.locator("summary").click();
+        assert.equal(await guidance.evaluate((element) => element.open), true);
+        await preparationTab.focus();
+        await page.keyboard.press("ArrowRight");
+        assert.equal(await originTab.getAttribute("aria-selected"), "true");
+        assert.equal(
+          await specifications.evaluate((element) => element.hidden),
+          true,
+        );
+        assert.equal(
+          await firstProperty.getAttribute("aria-pressed"),
+          "true",
+          "Learning panels retain the chosen property while hidden",
+        );
+        assert.equal(
+          await main.locator("[data-product-details]").count(),
+          0,
+          "The page has one preparation and no repeated format disclosure",
+        );
+        assert.equal(
+          await main.locator("[data-provisional-detail]").count(),
+          0,
+          "Unpublished supplier placeholders stay out of the reader",
+        );
 
         const otherTone = tone === "dark" ? "light" : "dark";
         await page.evaluate(() => {
@@ -663,7 +676,7 @@ for (const tone of ["dark", "light"]) {
         assert.equal(Number(await quantity.textContent()), 10);
 
         const originSection = main.locator("[data-retail-origins]");
-        await originSection.locator("summary").click();
+        await page.locator('[data-retail-learning-tab="origin"]').click();
         assert.match(
           await originSection.textContent(),
           /Origin details have not been published/,
@@ -698,14 +711,12 @@ for (const tone of ["dark", "light"]) {
         assert.equal(Number(await quantity.textContent()), 10);
         assert.equal(await bundle.getAttribute("aria-pressed"), "true");
         assert.equal(
-          await firstProperty.evaluate((element) => element.open),
-          true,
-          "Appearance and Origins return must preserve open product information",
+          await firstProperty.getAttribute("aria-pressed"),
+          "true",
+          "Appearance and Origins return retain the selected profile property",
         );
-        assert.equal(
-          await originSection.evaluate((element) => element.open),
-          true,
-        );
+        assert.equal(await originSection.isVisible(), true);
+        assert.equal(await originTab.getAttribute("aria-selected"), "true");
         assert.equal(
           await origins.evaluate(
             (element) => element === document.activeElement,
@@ -869,9 +880,13 @@ for (const [width, height, tone] of [
         );
         await assertNoOverflow(page);
         await capture(page, `product-${tone}-${width}-purchase`);
-        const specifications = page.locator("[data-retail-specifications]");
+        const specifications = page.locator(
+          '[data-retail-learning-panel="profile"]',
+        );
         assert.equal(
-          await specifications.locator("[data-retail-specification]").count(),
+          await specifications
+            .locator("[data-retail-profile-property]")
+            .count(),
           7,
         );
         await specifications.scrollIntoViewIfNeeded();
@@ -924,7 +939,7 @@ for (const [width, height, tone] of [
         await page.keyboard.press("Escape");
         await cart.waitFor({ state: "hidden" });
         const originSection = page.locator("[data-retail-origins]");
-        await originSection.locator("summary").click();
+        await page.locator('[data-retail-learning-tab="origin"]').click();
         await originSection
           .getByRole("button", { name: "All origins", exact: true })
           .click();

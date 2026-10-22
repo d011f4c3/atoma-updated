@@ -5,7 +5,7 @@ import {
   HeroSevenLink as Link,
   useHeroSevenNavigation,
 } from "./new-hero-seven-navigation";
-import { useRef, useState, type MouseEvent } from "react";
+import { useId, useRef, useState, type MouseEvent } from "react";
 import { FIELD_ENTRIES } from "@/lib/origins-content";
 import type { ProductKey } from "@/lib/product-codes";
 import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
@@ -36,6 +36,8 @@ export function NewHeroSevenSamples() {
     navigation?.basePath === "/" ? "homepage" : "new-hero7",
   );
   const [reading, setReading] = useState<ProductKey | null>(null);
+  const [contentsOpen, setContentsOpen] = useState(false);
+  const contentsId = useId();
   const order = useRef<HTMLDivElement>(null);
 
   function reachOrder() {
@@ -72,13 +74,19 @@ export function NewHeroSevenSamples() {
         <div>
           <p className={styles.eyebrow}>{t("The Sample Set")}</p>
           <h1>
-            <ScrambleText
-              text={t("Try all three. Find your matcha.")}
-              wrap
-              periodic
-              visibleOnly
-            />
+            <span className={styles.desktopSampleTitle}>
+              <ScrambleText
+                text={t("Try all three. Find your matcha.")}
+                wrap
+                periodic
+                visibleOnly
+              />
+            </span>
+            <span className={styles.mobileSampleTitle}>{t("Sample Set")}</span>
           </h1>
+          <p className={styles.mobileSetSize}>
+            {t("Three matcha · 20 g each")}
+          </p>
         </div>
         <p className={styles.body}>
           {t(
@@ -91,15 +99,45 @@ export function NewHeroSevenSamples() {
         <div className={styles.sampleVisual}>
           <SampleFoilTrio contained disabled={navigationBusy} />
         </div>
-        <div className={styles.sampleContents}>
-          <NewHeroSevenSampleExplorer
-            selected={reading}
-            onSelect={setReading}
-            onOrder={reachOrder}
-            disabled={navigationBusy}
-          />
+        <div
+          className={styles.sampleContents}
+          data-open={contentsOpen || undefined}
+        >
+          <button
+            type="button"
+            className={styles.contentsToggle}
+            aria-expanded={contentsOpen}
+            aria-controls={contentsId}
+            onClick={() => setContentsOpen((open) => !open)}
+          >
+            <span>{t("Inside the set")}</span>
+            <span aria-hidden="true">{contentsOpen ? "−" : "+"}</span>
+          </button>
+          <div className={styles.contentsBody} id={contentsId}>
+            <NewHeroSevenSampleExplorer
+              selected={reading}
+              onSelect={(key) => {
+                if (key) setContentsOpen(true);
+                setReading(key);
+              }}
+              onOrder={reachOrder}
+              disabled={navigationBusy}
+            />
+            <Link
+              href="/samples"
+              className={`${styles.textLink} ${styles.mobileSampleDetails}`}
+              {...linkGuard}
+            >
+              <ScrambleText
+                text={t("Sample Set details")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
+              <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
         </div>
-
         <div
           ref={order}
           id="new-hero7-sample-order"
@@ -150,6 +188,9 @@ export function NewHeroSevenSamples() {
           </Link>
         </div>
       </div>
+      <noscript>
+        <style>{`[data-new-hero7-view="samples"] button[aria-controls] { display: none !important; } [data-new-hero7-view="samples"] [data-open] > div, [data-new-hero7-view="samples"] button[aria-controls] + div { display: contents !important; }`}</style>
+      </noscript>
     </div>
   );
 }

@@ -143,6 +143,7 @@ body:has([data-storefront-theme]) [data-origins-directory] {
    retain the original light tokens above, and Blue hour remains independent. */
 body:has([data-storefront-theme="light"]):has(
     [data-homepage],
+    [data-new-wholesale],
     [data-canonical-shop],
     [data-samples-page],
     [data-about-page],
@@ -195,6 +196,7 @@ body:has([data-storefront-theme="light"]):has(
    sibling dialogs, but leave saved concepts and their typography independent. */
 body:has(
     [data-homepage],
+    [data-new-wholesale],
     [data-canonical-shop],
     [data-samples-page],
     [data-about-page],

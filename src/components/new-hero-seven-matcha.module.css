@@ -748,3 +748,10 @@
     overflow: auto;
   }
 }
+
+@media (max-width: 760px) {
+  :global([data-homepage]) .directory .introduction .eyebrow,
+  :global([data-homepage]) .directory .sampleInvitation > p {
+    display: none;
+  }
+}

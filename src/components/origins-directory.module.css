@@ -1136,3 +1136,12 @@
     transition: none;
   }
 }
+
+@media (max-width: 760px) {
+  :global(main[data-client-reading] > [data-origins-content])
+    .directoryGrowers
+    .growerPlaceholder
+    h3 {
+    display: none;
+  }
+}

@@ -87,6 +87,11 @@ export function ProductPopupContent({
                 {t(application.usage)}
               </p>
             )}
+            {flavour && (
+              <p className={styles.mobileSummary} data-popup-mobile-summary>
+                {flavour.value}
+              </p>
+            )}
           </header>
           <div className={styles.reading} data-new-hero-product-reading>
             <div
@@ -168,6 +173,30 @@ export function ProductPopupContent({
         </div>
       </div>
       <div className={styles.order}>{purchase}</div>
+      <div className={styles.mobileDetails} data-popup-mobile-details>
+        <details data-popup-mobile-detail="profile">
+          <summary>
+            <span>{t("Product details")}</span>
+            <span className={styles.disclosureIcon} aria-hidden="true" />
+          </summary>
+          {application && <p>{t(application.usage)}</p>}
+          <dl className={styles.highlights}>
+            {supporting.map((property) => (
+              <div key={property.label}>
+                <dt>{property.label}</dt>
+                <dd>{property.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </details>
+        <details data-popup-mobile-detail="preparation">
+          <summary>
+            <span>{t("Preparation")}</span>
+            <span className={styles.disclosureIcon} aria-hidden="true" />
+          </summary>
+          <p>{content.preparation}</p>
+        </details>
+      </div>
     </div>
   );
 }

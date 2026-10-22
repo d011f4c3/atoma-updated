@@ -3,15 +3,15 @@
 import { useStorefrontLocale } from "./storefront-locale-provider";
 
 import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getProductContent } from "@/lib/product-content";
 import { getProductApplicationImage } from "@/lib/product-application-imagery";
 import { canPurchaseQuantity, money } from "@/lib/product-selection";
 import { ThemeSwitcher } from "./theme-switcher";
 import { HomeHeader } from "./home-header";
 import { ShopMaterialImage } from "./shop-material-image";
-import { ProductApplicationImage } from "./product-application-image";
-import { ProductProfileSummary } from "./product-profile-summary";
+import { ProductApplicationCutout } from "./product-application-cutout";
+import { getProductCode, getProductKey } from "@/lib/product-codes";
 import { useProductSelection } from "./use-product-selection";
 import { useCart } from "./cart-drawer";
 import { useOrigins } from "./origins-provider";
@@ -37,8 +37,9 @@ export function RetailProduct({
   const cart = useCart();
   const { setSelectedMatcha } = useOrigins();
   const [pending, setPending] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const profileId = useId();
+  const [imagery, setImagery] = useState<"application" | "material">(
+    "application",
+  );
   const submitting = useRef(false);
   const { catalog, loading, variant, purchaseVariant, quantity } = model;
   // The shared homepage hook can fall back to its first matcha; a retail URL
@@ -105,7 +106,7 @@ export function RetailProduct({
         <nav className={styles.breadcrumb} aria-label={t("Breadcrumb")}>
           <Link href={collectionHref}>
             <ScrambleText
-              text={t("Shop")}
+              text={t("Wholesale")}
               interactive
               animateOnMount={false}
               wrap
@@ -151,25 +152,64 @@ export function RetailProduct({
           <>
             <div className={styles.productLayout}>
               <div className={styles.gallery} data-page-enter="visual">
-                <ProductApplicationImage
-                  handle={product.handle}
-                  presentation="retail"
-                />
-                <div className={styles.galleryIdentity}>
-                  <span>{content.name}</span>
-                  <span>{content.application}</span>
+                <div
+                  className={styles.galleryImage}
+                  data-retail-imagery={imagery}
+                >
+                  {imagery === "application" &&
+                  getProductKey(product.handle) ? (
+                    <ProductApplicationCutout
+                      productKey={getProductKey(product.handle)!}
+                    />
+                  ) : (
+                    <ShopMaterialImage
+                      src={content.materialImage}
+                      alt={content.materialImageAlt}
+                    />
+                  )}
+                </div>
+                <div
+                  className={styles.imageControls}
+                  aria-label={t("Product imagery")}
+                >
+                  {(["application", "material"] as const).map((view) => (
+                    <button
+                      type="button"
+                      key={view}
+                      aria-pressed={imagery === view}
+                      disabled={cart.navigationBusy}
+                      onClick={() => setImagery(view)}
+                    >
+                      {t(view === "application" ? "In use" : "Matcha")}
+                    </button>
+                  ))}
                 </div>
               </div>
               <div className={styles.productBody}>
                 <section
                   className={styles.purchase}
+                  data-retail-purchase
                   aria-label={t("Purchase {name}", { name: content.name })}
                 >
                   <div className={styles.identity} data-page-enter="text">
+                    {(product.productCode ||
+                      getProductCode(product.handle)) && (
+                      <p className={styles.code}>
+                        ◇{" "}
+                        {product.productCode || getProductCode(product.handle)}
+                      </p>
+                    )}
                     <h1>
                       <ScrambleText text={content.name} wrap />
                     </h1>
-                    <p className={styles.application}>{content.application}</p>
+                    <p
+                      className={styles.application}
+                      data-product-application-copy
+                    >
+                      {applicationImage
+                        ? t(applicationImage.usage)
+                        : content.purpose}
+                    </p>
                     <p
                       className={styles.availability}
                       data-available={available}
@@ -182,214 +222,192 @@ export function RetailProduct({
                           : t("Currently unavailable")}
                     </p>
                   </div>
-                  <p className={styles.purpose}>{content.purpose}</p>
-                  {applicationImage && (
-                    <p
-                      className={styles.applicationUse}
-                      data-product-application-copy
-                    >
-                      {t(applicationImage.usage)}
-                    </p>
-                  )}
                   <div
-                    className={styles.profilePreview}
-                    data-retail-profile-preview
-                    data-open={profileOpen || undefined}
+                    className={styles.purchaseControls}
+                    data-retail-purchase-controls
                   >
-                    <button
-                      type="button"
-                      className={styles.profileToggle}
-                      aria-expanded={profileOpen}
-                      aria-controls={profileId}
-                      onClick={() => setProfileOpen((open) => !open)}
-                    >
-                      <ScrambleText
-                        text={t("Specifications")}
-                        interactive
-                        animateOnMount={false}
-                        wrap
-                      />
-                      <span aria-hidden="true">{profileOpen ? "−" : "+"}</span>
-                    </button>
-                    <div id={profileId} className={styles.profileContent}>
-                      <p className={styles.materialSummary}>
-                        {content.materialSummary}
-                      </p>
-                      <ProductProfileSummary product={product} />
-                    </div>
-                    <noscript>
-                      <style>{`[data-retail-profile-preview] > button { display: none !important; } @media (max-width: 760px) { [data-retail-profile-preview] > div { display: block !important; } }`}</style>
-                    </noscript>
-                  </div>
-                  <Link
-                    className={styles.compare}
-                    href="/shop#product-comparison"
-                    aria-disabled={locked || undefined}
-                    onClick={(event) => {
-                      if (locked) event.preventDefault();
-                    }}
-                    onNavigate={(event) => {
-                      if (locked) event.preventDefault();
-                    }}
-                  >
-                    <ScrambleText
-                      text={t("Compare the three matcha")}
-                      interactive
-                    />{" "}
-                    <span aria-hidden="true">↗</span>
-                  </Link>
-                  <p className={styles.unitPrice}>
-                    {model.refreshing
-                      ? t("Updating prices…")
-                      : purchaseVariant
-                        ? money(
-                            purchaseVariant.priceMinor,
-                            purchaseVariant.currency,
-                          )
-                        : t(
-                            requestedFormatUnavailable
-                              ? "1 kg selection unavailable"
-                              : model.selectedSellingPlanKey
-                                ? "Selected subscription unavailable"
-                                : "No published format",
-                          )}
-                    {variant && (
-                      <span>
-                        {" "}
-                        /{" "}
-                        {variant.title === "Default Title"
-                          ? t("Standard")
-                          : variant.title}
-                      </span>
-                    )}
-                  </p>
-                  <fieldset
-                    className={styles.formats}
-                    disabled={locked}
-                    data-requested-format-unavailable={
-                      requestedFormatUnavailable || undefined
-                    }
-                  >
-                    <legend>{t("Format")}</legend>
-                    {requestedFormatUnavailable &&
-                      product.variants.length > 0 && (
-                        <p role="status">
-                          {t("Choose a published format below to continue.")}
-                        </p>
+                    <p className={styles.unitPrice}>
+                      {model.refreshing
+                        ? t("Updating prices…")
+                        : purchaseVariant
+                          ? money(
+                              purchaseVariant.priceMinor,
+                              purchaseVariant.currency,
+                            )
+                          : t(
+                              requestedFormatUnavailable
+                                ? "1 kg selection unavailable"
+                                : model.selectedSellingPlanKey
+                                  ? "Selected subscription unavailable"
+                                  : "No published format",
+                            )}
+                      {variant && (
+                        <span>
+                          {" "}
+                          /{" "}
+                          {variant.title === "Default Title"
+                            ? t("Standard")
+                            : variant.title}
+                        </span>
                       )}
-                    <div>
-                      {product.variants.map((item) => (
-                        <button
-                          type="button"
-                          key={item.id}
-                          aria-pressed={variant?.id === item.id}
-                          onClick={() => {
-                            if (!locked) model.selectVariant(item.id);
-                          }}
-                        >
-                          <span>
-                            {item.title === "Default Title"
-                              ? t("Standard")
-                              : item.title}
-                          </span>
-                          {!item.available && <small>{t("Unavailable")}</small>}
-                        </button>
-                      ))}
-                    </div>
-                    {!product.variants.length && (
-                      <p>{t("No formats are currently published.")}</p>
-                    )}
-                  </fieldset>
+                    </p>
+                    <fieldset
+                      className={styles.formats}
+                      disabled={locked}
+                      data-single-format={
+                        (product.variants.length === 1 &&
+                          variant?.id === product.variants[0]?.id) ||
+                        undefined
+                      }
+                      data-requested-format-unavailable={
+                        requestedFormatUnavailable || undefined
+                      }
+                    >
+                      <legend>{t("Format")}</legend>
+                      {requestedFormatUnavailable &&
+                        product.variants.length > 0 && (
+                          <p role="status">
+                            {t("Choose a published format below to continue.")}
+                          </p>
+                        )}
+                      <div>
+                        {product.variants.map((item) => (
+                          <button
+                            type="button"
+                            key={item.id}
+                            aria-pressed={variant?.id === item.id}
+                            onClick={() => {
+                              if (!locked) model.selectVariant(item.id);
+                            }}
+                          >
+                            <span>
+                              {item.title === "Default Title"
+                                ? t("Standard")
+                                : item.title}
+                            </span>
+                            {!item.available && (
+                              <small>{t("Unavailable")}</small>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                      {!product.variants.length && (
+                        <p>{t("No formats are currently published.")}</p>
+                      )}
+                    </fieldset>
 
-                  <div className={styles.orderLine}>
-                    <div className={styles.quantityGroup}>
-                      <span>{t("Quantity")}</span>
-                      <div className={styles.stepper}>
-                        <button
-                          type="button"
-                          aria-label={t("Decrease quantity")}
-                          disabled={
-                            locked ||
-                            !available ||
-                            !variant ||
-                            quantity <= variant.minimum
-                          }
-                          onClick={model.decrementQuantity}
-                        >
-                          −
-                        </button>
-                        <output aria-label={t("Quantity")} aria-live="polite">
-                          {quantity}
-                        </output>
-                        <button
-                          type="button"
-                          aria-label={t("Increase quantity")}
-                          disabled={locked || !available || !model.canIncrement}
-                          onClick={model.incrementQuantity}
-                        >
-                          +
-                        </button>
+                    <div className={styles.orderLine}>
+                      <div className={styles.quantityGroup}>
+                        <span>{t("Quantity")}</span>
+                        <div className={styles.stepper}>
+                          <button
+                            type="button"
+                            aria-label={t("Decrease quantity")}
+                            disabled={
+                              locked ||
+                              !available ||
+                              !variant ||
+                              quantity <= variant.minimum
+                            }
+                            onClick={model.decrementQuantity}
+                          >
+                            −
+                          </button>
+                          <output aria-label={t("Quantity")} aria-live="polite">
+                            {quantity}
+                          </output>
+                          <button
+                            type="button"
+                            aria-label={t("Increase quantity")}
+                            disabled={
+                              locked || !available || !model.canIncrement
+                            }
+                            onClick={model.incrementQuantity}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      <div className={styles.total}>
+                        <span>{t("Total")}</span>
+                        <strong aria-live="polite">{total}</strong>
                       </div>
                     </div>
-                    <div className={styles.total}>
-                      <span>{t("Total")}</span>
-                      <strong aria-live="polite">{total}</strong>
-                    </div>
-                  </div>
-                  {variant &&
-                    (variant.minimum > 1 || variant.increment > 1) && (
-                      <p className={styles.quantityNote}>
-                        {t("Minimum {minimum} · Increments of {increment}", {
-                          minimum: variant.minimum,
-                          increment: variant.increment,
-                        })}
+                    {variant &&
+                      (variant.minimum > 1 || variant.increment > 1) && (
+                        <p className={styles.quantityNote}>
+                          {t("Minimum {minimum} · Increments of {increment}", {
+                            minimum: variant.minimum,
+                            increment: variant.increment,
+                          })}
+                        </p>
+                      )}
+                    <AddToCartButton
+                      updating={model.refreshing}
+                      available={available}
+                      pending={pending}
+                      disabled={locked || !purchasable}
+                      onAdd={() => void addToCart()}
+                    />
+                    {cart.error && (
+                      <p className={styles.error} role="alert">
+                        {cart.error}
                       </p>
                     )}
-                  <details className={styles.purchaseOptions}>
-                    <summary>
-                      <span>
-                        {model.selectedSellingPlanKey
-                          ? model.selectedSellingPlan
-                            ? `${t("Subscribe")} · ${t("Every 4 weeks")}`
-                            : t("Selected subscription unavailable")
-                          : t("One-time purchase")}
-                      </span>
-                      <span>
-                        <ScrambleText
-                          text={t("Purchase options")}
-                          interactive
-                          animateOnMount={false}
-                          wrap
-                        />{" "}
-                        <span aria-hidden="true">+</span>
-                      </span>
-                    </summary>
-                    <PurchaseOptions model={model} disabled={locked} />
-                  </details>
-                  <AddToCartButton
-                    updating={model.refreshing}
-                    available={available}
-                    pending={pending}
-                    disabled={locked || !purchasable}
-                    onAdd={() => void addToCart()}
-                  />
-                  {cart.error && (
-                    <p className={styles.error} role="alert">
-                      {cart.error}
-                    </p>
-                  )}
-                  {available && !purchasable && (
-                    <p className={styles.quantityNote}>
-                      {t("This format’s quantity is currently unavailable.")}
-                    </p>
-                  )}
-                </section>
+                    {available && !purchasable && (
+                      <p className={styles.quantityNote}>
+                        {t("This format’s quantity is currently unavailable.")}
+                      </p>
+                    )}
 
+                    <details className={styles.purchaseOptions}>
+                      <summary>
+                        <span>
+                          {model.selectedSellingPlanKey
+                            ? model.selectedSellingPlan
+                              ? `${t("Subscribe")} · ${t("Every 4 weeks")}`
+                              : t("Selected subscription unavailable")
+                            : t("One-time purchase")}
+                        </span>
+                        <span>
+                          <ScrambleText
+                            text={t("Purchase options")}
+                            interactive
+                            animateOnMount={false}
+                            wrap
+                          />{" "}
+                          <span aria-hidden="true">+</span>
+                        </span>
+                      </summary>
+                      <PurchaseOptions model={model} disabled={locked} />
+                    </details>
+                  </div>
+                </section>
+              </div>
+              <div className={styles.learning}>
                 <RetailProductInformation
+                  key={product.id}
                   product={product}
                   tone={tone}
                   refreshing={model.refreshing}
                 />
+                <Link
+                  className={styles.compare}
+                  href="/shop#product-comparison"
+                  aria-disabled={locked || undefined}
+                  onClick={(event) => {
+                    if (locked) event.preventDefault();
+                  }}
+                  onNavigate={(event) => {
+                    if (locked) event.preventDefault();
+                  }}
+                >
+                  <ScrambleText
+                    text={t("Compare the three matcha")}
+                    interactive
+                  />
+                  <span aria-hidden="true">↗</span>
+                </Link>
               </div>
             </div>
 

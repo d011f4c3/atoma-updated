@@ -444,6 +444,9 @@
   }
 }
 @media (max-width: 760px) {
+  .page[data-about-page] .edition > :global([data-appearance-controls]) {
+    display: none;
+  }
   .page {
     --about-hero: calc(
       clamp(1.25rem, 5.125vw, 1.5rem) + var(--locale-font-increment, 0px)

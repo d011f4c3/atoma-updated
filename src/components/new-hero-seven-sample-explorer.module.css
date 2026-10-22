@@ -457,6 +457,74 @@
   }
 }
 
+/* Inside the mobile set, each complete row opens its sample profile. */
+@media (max-width: 760px) {
+  :global([data-homepage]) .summary {
+    display: none;
+  }
+  :global([data-homepage]) .choices {
+    container: sample-contents / inline-size;
+  }
+  :global([data-homepage]) .choices li:first-child {
+    border-top: 0;
+  }
+  :global([data-homepage]) .choice {
+    grid-template-columns: 40px minmax(0, 1fr) auto auto;
+    gap: 0.625rem;
+    min-height: 5rem;
+    padding-block: 0.875rem;
+  }
+  :global([data-homepage]) .choice .swatch {
+    display: block;
+    width: 40px;
+  }
+  :global([data-homepage]) .choice .identity {
+    gap: 0.125rem;
+  }
+  :global([data-homepage]) .choice .name {
+    font-size: calc(1rem + var(--locale-font-increment));
+    line-height: 1.4;
+  }
+  :global([data-homepage]) .choice :is(.application, .weight) {
+    font-size: calc(0.875rem + var(--locale-font-increment));
+    line-height: 1.5;
+  }
+  :global([data-homepage]) .choice .application > span,
+  :global([data-homepage]) .choice .read > :not([aria-hidden]) {
+    display: none;
+  }
+  :global([data-homepage]) .choice .read {
+    grid-column: 4;
+    grid-row: 1;
+    justify-content: flex-end;
+    font-size: calc(1rem + var(--locale-font-increment));
+  }
+}
+
+@container sample-contents (max-width: 18rem) {
+  :global([data-homepage]) .choice {
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    row-gap: 0.125rem;
+  }
+  :global([data-homepage]) .choice .swatch {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  :global([data-homepage]) .choice .identity {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  :global([data-homepage]) .choice .weight {
+    grid-column: 2;
+    grid-row: 2;
+    color: var(--muted);
+  }
+  :global([data-homepage]) .choice .read {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+}
+
 /* On a landscape phone, keep the return controls fixed and give the remaining
    height to one reader instead of trapping it between two fixed action bars. */
 @media (max-height: 500px) and (pointer: coarse) {

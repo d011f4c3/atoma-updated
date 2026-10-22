@@ -53,6 +53,20 @@
   border-top: 1px solid var(--line);
   padding-top: 1rem;
 }
+.valueDisclosure[data-mobile-value] {
+  display: none;
+}
+.mobileSetFact {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+.tastingDisclosure,
+.tastingContent {
+  display: contents;
+}
+.tastingToggle {
+  display: none;
+}
 .eyebrow {
   font-size: 0.625rem;
   line-height: 1.6;
@@ -679,6 +693,81 @@
   }
   .page[data-samples-page] .valueDisclosure[data-open] .valueNote {
     display: block;
+  }
+  .page[data-samples-page] .topline > :global([data-appearance-controls]),
+  .page[data-samples-page] .orderSummary,
+  .page[data-samples-page] :global([data-sample-gallery-caption]),
+  .page[data-samples-page]
+    .valueDisclosure[data-page-value]:not([data-mobile-value]) {
+    display: none;
+  }
+  .page[data-samples-page] .purchase[data-presentation="page"] > h2 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .page[data-samples-page] .valueDisclosure[data-mobile-value] {
+    margin-top: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 0;
+  }
+  .page[data-samples-page] .setPurchase {
+    padding-block: 0;
+  }
+  .page[data-samples-page] .setLayout {
+    row-gap: 1rem;
+  }
+  .page[data-samples-page]
+    .setVisual
+    :global([data-foil-trio])
+    > div:has(> span + button) {
+    justify-content: flex-end;
+  }
+  .page[data-samples-page]
+    .setVisual
+    :global([data-foil-trio])
+    > div:has(> span + button)
+    > span {
+    display: none;
+  }
+  .page[data-samples-page] .tastingDisclosure {
+    display: block;
+    margin-inline: var(--gutter);
+    margin-bottom: 2rem;
+    border-block: 1px solid var(--line);
+  }
+  .page[data-samples-page] .tastingToggle {
+    display: flex;
+    width: 100%;
+    min-height: 3.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: var(--mobile-type-action);
+    text-align: left;
+    cursor: pointer;
+  }
+  .page[data-samples-page] .tastingContent {
+    display: none;
+  }
+  .page[data-samples-page] .tastingDisclosure[data-open] .tastingContent {
+    display: block;
+    margin-inline: calc(-1 * var(--gutter));
+  }
+  .page[data-samples-page] .preparationImage {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 3 / 2;
   }
   .page .purchase[data-presentation="page"] h2 {
     font-size: var(--mobile-type-section);
