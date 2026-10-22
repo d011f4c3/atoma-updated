@@ -13,7 +13,7 @@
   --ink: var(--lab-ink);
   --muted: var(--lab-muted);
   --line: var(--lab-line);
-  background: var(--lab-surface);
+  background: var(--color-origin-background, var(--lab-surface));
   color-scheme: light;
 }
 .page > header {

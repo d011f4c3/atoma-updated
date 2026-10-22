@@ -2,6 +2,17 @@
 
 ## Scope and authority
 
+- **Task 0262 refines the canonical light palette:** read
+  `docs/tasks/0262-light-palette-and-navigation.md`. Give light navigation more
+  weight and carry richer pearl/sage/mineral gradients, deeper ink and clearer
+  surfaces through all storefront pages. Preserve dark mode, layouts, saved
+  studies, motion, product facts and commerce state.
+
+- **Task 0261 places the theme switcher in navigation:** read
+  `docs/tasks/0261-navigation-theme-switcher.md`. Put the persistent theme
+  control beside location/currency, retaining mobile language access, footer
+  controls, saved preferences and commerce state.
+
 - **Task 0260 rebuilds the canonical mobile product popup:** read
   `docs/tasks/0260-mobile-product-popup.md`. Use a compact name-and-image
   introduction, one continuous scrolling body and persistent Close/Order

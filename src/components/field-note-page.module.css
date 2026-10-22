@@ -10,6 +10,10 @@
   font-variant-numeric: tabular-nums;
 }
 
+.page[data-tone="light"] {
+  background-attachment: fixed;
+}
+
 .main {
   width: min(100% - var(--gutter) * 2, 80rem);
   margin-inline: auto;

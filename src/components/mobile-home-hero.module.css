@@ -4,7 +4,7 @@
 
 @media (max-width: 760px) {
   .hero {
-    --mobile-glow: #bad2be;
+    --mobile-glow: var(--color-hero-glow, #bad2be);
     position: relative;
     isolation: isolate;
     display: block;

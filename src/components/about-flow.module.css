@@ -454,6 +454,10 @@
   .journey {
     background-attachment: scroll;
   }
+  .page[data-about-page][data-tone="light"],
+  .page[data-about-page][data-tone="light"] .journey {
+    background-attachment: fixed;
+  }
   .edition {
     gap: 0.75rem;
     flex-wrap: wrap;

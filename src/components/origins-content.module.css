@@ -7,7 +7,7 @@
   --origin-gutter: clamp(1.25rem, 4vw, 4rem);
   --origin-navigation-height: 4.5rem;
   min-width: 0;
-  background: var(--origin-surface);
+  background: var(--color-origin-content, var(--origin-surface));
   color: var(--origin-ink);
   color-scheme: dark;
   font-family: var(--font-atoma-mono), monospace;

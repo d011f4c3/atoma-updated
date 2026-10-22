@@ -139,6 +139,58 @@ body:has([data-storefront-theme]) [data-origins-directory] {
   --directory-control: color-mix(in srgb, var(--color-ink) 5%, transparent);
 }
 
+/* The refined Mist palette belongs to the live storefront. Saved comparisons
+   retain the original light tokens above, and Blue hour remains independent. */
+body:has([data-storefront-theme="light"]):has(
+    [data-homepage],
+    [data-canonical-shop],
+    [data-samples-page],
+    [data-about-page],
+    [data-retail-product],
+    [data-field-note-page],
+    main[data-client-reading] > [data-origins-content]
+  ) {
+  --color-surface: #e8eee8;
+  --color-raised: #f4f7f1;
+  --color-ink: #1d332e;
+  --color-muted: #344a41;
+  --muted: var(--color-muted);
+  --color-line: rgb(29 51 46 / 26%);
+  --color-background:
+    radial-gradient(
+      ellipse 70% 62% at 100% 84%,
+      rgb(119 155 150 / 40%),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 70% 65% at 5% 105%,
+      rgb(144 170 189 / 42%),
+      transparent 75%
+    ),
+    linear-gradient(155deg, #fafbf7 8%, #ecf1e9 37%, #d6e1d6 65%, #b9ccc5);
+  --color-selection:
+    radial-gradient(ellipse 80% 90% at 0% 75%, #b4c9c0, transparent 78%),
+    radial-gradient(ellipse 65% 60% at 100% 100%, #b9ccd3, transparent 80%),
+    linear-gradient(120deg, #e0e9df, #f7f9f2 65%, #e9efe8);
+  --color-panel: linear-gradient(145deg, #fafbf7, #edf3ea 56%, #dce7de);
+  --color-footer: linear-gradient(120deg, #d2dfd8, #e1e9e0 58%, #bccdc6);
+  --color-section-glow: #bed1c4;
+  --color-section-glow-soft: #d2dfd7;
+  --color-hero-glow: #adc8bb;
+  --color-mobile-flow:
+    radial-gradient(ellipse 110% 24% at 100% 28%, #c7d8cf, transparent 80%),
+    linear-gradient(180deg, #e8eee8, #f1f4ec 45%, #dbe5dc);
+  --color-origin-background: var(--color-background);
+  --color-origin-content: transparent;
+  --storefront-nav-font: var(--font-atoma-mono);
+  --storefront-nav-weight: 400;
+  --storefront-nav-surface: rgb(29 51 46 / 7%);
+  --storefront-nav-shadow: inset 0 1px 0 rgb(255 255 255 / 65%);
+  --storefront-menu-surface: linear-gradient(145deg, #f7f9f3, #e3ece3);
+  --storefront-menu-shadow:
+    0 1rem 2.5rem rgb(29 51 46 / 20%), inset 0 1px 0 rgb(255 255 255 / 80%);
+}
+
 /* Canonical storefront titles share the uppercase display language. Include
    sibling dialogs, but leave saved concepts and their typography independent. */
 body:has(

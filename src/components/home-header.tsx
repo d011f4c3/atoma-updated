@@ -522,14 +522,11 @@ export function HomeHeader({
               )}
               {mainLinks}
               {siteNavigation && (
-                <div className={styles.destination}>
+                <div className={styles.destination} data-nav-preferences>
                   <DestinationSelector compact />
-                </div>
-              )}
-              {hasResponsiveMenu && persistentTheme && (
-                <div className={styles.mobileTheme}>
-                  <span>{t("Appearance")}</span>
-                  <ThemeSwitcher label="Dark mode in menu" />
+                  {persistentTheme && (
+                    <ThemeSwitcher label="Dark mode in menu" />
+                  )}
                 </div>
               )}
             </div>
