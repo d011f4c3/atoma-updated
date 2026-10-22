@@ -6,7 +6,8 @@ import {
 } from "./new-hero-seven-navigation";
 import { heroSevenHref } from "@/lib/new-hero-seven-view";
 import { usePathname } from "next/navigation";
-import { useRef, type MouseEvent, type ReactNode } from "react";
+import { useRef, useState, type MouseEvent, type ReactNode } from "react";
+import type { ProductKey } from "@/lib/product-codes";
 import { useCart } from "./cart-drawer";
 import { HomeHeader } from "./home-header";
 import { NewHeroApplicationHero } from "./new-hero-application-hero";
@@ -15,6 +16,7 @@ import { MobileHomeSections } from "./mobile-home-sections";
 import { NewHeroSections } from "./new-hero-sections";
 import { NewHeroSevenMatcha as HomeApplicationSection } from "./new-hero-seven-matcha";
 import { NewHeroSevenOrderProcess } from "./new-hero-seven-order-process";
+import { NewHeroSevenSampleExplorer } from "./new-hero-seven-sample-explorer";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { useStorefrontTheme } from "./storefront-theme-provider";
 import { ThemeSwitcher } from "./theme-switcher";
@@ -140,6 +142,8 @@ export function NewHeroSevenHome({
 }) {
   const navigationState = useHeroSevenNavigation();
   const basePath = navigationState?.basePath ?? root;
+  const { navigationBusy } = useCart();
+  const [readingSample, setReadingSample] = useState<ProductKey | null>(null);
   const home = useRef<HTMLDivElement>(null);
   const motion = basePath === "/";
   const applicationImageSrc = motion
@@ -186,6 +190,19 @@ export function NewHeroSevenHome({
           <NewHeroSections
             idPrefix="new-hero7-home"
             samplesFirst
+            sampleContents={
+              motion ? (
+                <NewHeroSevenSampleExplorer
+                  homeSection
+                  selected={readingSample}
+                  onSelect={setReadingSample}
+                  onOrder={() =>
+                    navigationState?.navigate(destination("samples"))
+                  }
+                  disabled={navigationBusy}
+                />
+              ) : undefined
+            }
             originPhotoPair={motion}
             originImageSizes={
               motion

@@ -15,6 +15,7 @@ import { ShopMaterialImage } from "./shop-material-image";
 import { ScrambleText } from "./scramble-text";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import styles from "./new-hero-seven-sample-explorer.module.css";
+import sectionStyles from "./new-hero.module.css";
 
 /** Reading a sample never changes the contents or purchase state of the set. */
 export function NewHeroSevenSampleExplorer({
@@ -22,16 +23,19 @@ export function NewHeroSevenSampleExplorer({
   onSelect,
   onOrder,
   disabled,
+  homeSection = false,
 }: {
   selected: ProductKey | null;
   onSelect: (key: ProductKey | null) => void;
   onOrder: () => void;
   disabled: boolean;
+  homeSection?: boolean;
 }) {
   const { locale, t } = useStorefrontLocale();
   const cart = useCart();
   const navigation = useHeroSevenNavigation();
-  const active = !navigation || navigation.state.view === "samples";
+  const active =
+    !navigation || navigation.state.view === (homeSection ? "home" : "samples");
   const open = active && selected !== null;
   const id = useId();
   const dialog = useRef<HTMLDialogElement>(null);
@@ -114,14 +118,17 @@ export function NewHeroSevenSampleExplorer({
   return (
     <section
       className={styles.root}
-      aria-labelledby={`${id}-intro`}
+      aria-labelledby={homeSection ? undefined : `${id}-intro`}
+      aria-label={homeSection ? t("All three included.") : undefined}
       data-new-hero7-sample-explorer
     >
-      <div className={styles.summary}>
-        <h2 id={`${id}-intro`}>{t("All three included.")}</h2>
-        <span>{t("60 g total")}</span>
-      </div>
-      <ul className={styles.choices}>
+      {!homeSection && (
+        <div className={styles.summary}>
+          <h2 id={`${id}-intro`}>{t("All three included.")}</h2>
+          <span>{t("60 g total")}</span>
+        </div>
+      )}
+      <ul className={homeSection ? sectionStyles.contents : styles.choices}>
         {SAMPLE_SET_CONTENTS.map((sample) => (
           <li key={sample.key}>
             <button
@@ -129,7 +136,9 @@ export function NewHeroSevenSampleExplorer({
               ref={(node) => {
                 buttons.current[sample.key] = node;
               }}
-              className={styles.choice}
+              className={
+                homeSection ? sectionStyles.contentLink : styles.choice
+              }
               aria-haspopup="dialog"
               aria-expanded={open && selected === sample.key}
               aria-controls={`${id}-profile`}
@@ -137,26 +146,39 @@ export function NewHeroSevenSampleExplorer({
               data-new-hero7-sample-tab={sample.key}
               onClick={() => onSelect(sample.key)}
             >
-              <span className={styles.swatch}>
-                <ShopMaterialImage src={sample.image} alt="" />
-              </span>
-              <span className={styles.identity}>
-                <span className={styles.name}>{t(sample.name)}</span>
-                <span className={styles.application}>
-                  {t(sample.application)} <span aria-hidden="true">·</span>{" "}
-                  <span className={styles.code}>◇ {sample.productCode}</span>
-                </span>
-              </span>
-              <span className={styles.weight}>{sample.grams} g</span>
-              <span className={styles.read}>
-                <ScrambleText
-                  text={t("Read profile")}
-                  interactive
-                  animateOnMount={false}
-                  wrap
-                />
-                <span aria-hidden="true">↗</span>
-              </span>
+              {homeSection ? (
+                <>
+                  <span>{t(sample.name)}</span>
+                  <span>
+                    {sample.grams} g <span aria-hidden="true">↗</span>
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className={styles.swatch}>
+                    <ShopMaterialImage src={sample.image} alt="" />
+                  </span>
+                  <span className={styles.identity}>
+                    <span className={styles.name}>{t(sample.name)}</span>
+                    <span className={styles.application}>
+                      {t(sample.application)} <span aria-hidden="true">·</span>{" "}
+                      <span className={styles.code}>
+                        ◇ {sample.productCode}
+                      </span>
+                    </span>
+                  </span>
+                  <span className={styles.weight}>{sample.grams} g</span>
+                  <span className={styles.read}>
+                    <ScrambleText
+                      text={t("Read profile")}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />
+                    <span aria-hidden="true">↗</span>
+                  </span>
+                </>
+              )}
             </button>
           </li>
         ))}

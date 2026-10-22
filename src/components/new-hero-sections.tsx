@@ -49,6 +49,7 @@ export function NewHeroSections({
   destinations,
   selectionMemoryKey,
   samplesFirst = false,
+  sampleContents,
   applicationsSection,
   supplySection,
   originImageSizes,
@@ -63,6 +64,7 @@ export function NewHeroSections({
   };
   selectionMemoryKey?: string;
   samplesFirst?: boolean;
+  sampleContents?: ReactNode;
   applicationsSection?: ReactNode;
   supplySection?: ReactNode;
   originImageSizes?: string;
@@ -142,14 +144,16 @@ export function NewHeroSections({
             "Compare the three matcha in your own drinks and recipes before choosing a larger format.",
           )}
         </p>
-        <ul className={styles.contents}>
-          {SAMPLE_SET_CONTENTS.map((item) => (
-            <li key={item.key}>
-              <span>{t(item.name)}</span>
-              <span>{item.grams} g</span>
-            </li>
-          ))}
-        </ul>
+        {sampleContents ?? (
+          <ul className={styles.contents}>
+            {SAMPLE_SET_CONTENTS.map((item) => (
+              <li key={item.key}>
+                <span>{t(item.name)}</span>
+                <span>{item.grams} g</span>
+              </li>
+            ))}
+          </ul>
+        )}
         <Link
           href={destinations?.samples ?? "/samples"}
           className={styles.primary}

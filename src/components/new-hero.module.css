@@ -252,6 +252,33 @@
 .contents li:first-child {
   border-top: 1px solid var(--line);
 }
+.contentLink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  margin: -0.75rem 0;
+  padding: 0.75rem 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.contentLink > span:last-child {
+  flex-shrink: 0;
+}
+.contentLink:is(:hover, :focus-visible) > span:first-child {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.contentLink:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
 .sampleVisual {
   height: 25rem;
   min-width: 0;
