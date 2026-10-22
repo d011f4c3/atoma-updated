@@ -476,14 +476,14 @@ export function Samples() {
         <div className={styles.topline} data-page-enter="text">
           <nav aria-label={t("Breadcrumb")}>
             <Link
-              href="/shop"
+              href="/wholesale"
               aria-disabled={locked || undefined}
               onNavigate={(event) => {
                 if (locked) event.preventDefault();
               }}
             >
               <ScrambleText
-                text={t("Shop")}
+                text={t("Wholesale")}
                 interactive
                 animateOnMount={false}
                 wrap

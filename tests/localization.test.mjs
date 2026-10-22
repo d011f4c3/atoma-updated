@@ -207,6 +207,11 @@ test("localized metadata preserves the English baseline and only changes present
       description:
         "Explore the ATOMA matcha collection. Choose your format, quantity and matcha for the way you serve it.",
     },
+    wholesale: {
+      title: "ATOMA — Wholesale matcha",
+      description:
+        "Explore the ATOMA matcha collection. Choose your format, quantity and matcha for the way you serve it.",
+    },
     product: {
       title: "ATOMA — Matcha selection",
       description:

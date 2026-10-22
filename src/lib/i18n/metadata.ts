@@ -1,7 +1,8 @@
 import { translate } from "./index.ts";
 import type { Locale } from "./types.ts";
 
-export type StorefrontPage = "home" | "shop" | "product" | "about" | "samples";
+export type StorefrontPage =
+  "home" | "shop" | "wholesale" | "product" | "about" | "samples";
 const metadata = {
   home: {
     title: "ATOMA — Matcha",
@@ -10,6 +11,11 @@ const metadata = {
   },
   shop: {
     title: "ATOMA — Shop matcha",
+    description:
+      "Explore the ATOMA matcha collection. Choose your format, quantity and matcha for the way you serve it.",
+  },
+  wholesale: {
+    title: "ATOMA — Wholesale matcha",
     description:
       "Explore the ATOMA matcha collection. Choose your format, quantity and matcha for the way you serve it.",
   },

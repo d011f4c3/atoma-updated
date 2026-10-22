@@ -14,6 +14,7 @@ const { chromium } = await import(
 const baseURL = process.env.MOBILE_HOMEPAGE_BASE_URL ?? "http://127.0.0.1:3100";
 const evidence =
   process.env.MOBILE_HOMEPAGE_EVIDENCE ?? ".local/mobile-trio/tests";
+const requested = process.env.MOBILE_HOMEPAGE_CASES?.split(",").filter(Boolean);
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const results = [];
 const geometries = [];
@@ -123,6 +124,7 @@ async function inspectPhone(page, label, firstViewport = false) {
       scrollWidth: document.documentElement.scrollWidth,
       hero: rect(hero),
       heading: rect(hero.querySelector("h1")),
+      description: rect(hero.querySelector("h1 + p")),
       preview: rect(hero.querySelector("[data-mobile-hero-preview]")),
       primary: rect(hero.querySelector("[data-mobile-hero-samples]")),
       actions: Array.from(hero.querySelectorAll("a,button")).map((node) => ({
@@ -135,6 +137,7 @@ async function inspectPhone(page, label, firstViewport = false) {
       ).map((node) => ({
         key: node.getAttribute("data-mobile-hero-application"),
         image: rect(node.querySelector("img").parentElement),
+        caption: rect(node.querySelector("[data-mobile-hero-learn]")),
         crop: getComputedStyle(node.querySelector("img")).left,
         ...rect(node),
       })),
@@ -179,6 +182,10 @@ async function inspectPhone(page, label, firstViewport = false) {
         item.image.x + item.image.width <= geometry.viewport.width + 1,
       `${label}: the complete ${item.key} image fits the phone`,
     );
+    assert.ok(
+      item.caption.y >= item.image.bottom - 1,
+      `${label}: the ${item.key} caption has its own space below the object`,
+    );
     if (geometry.rootFontSize <= 16)
       assert.ok(
         item.image.width <= geometry.viewport.width * 0.45 + 1,
@@ -190,11 +197,56 @@ async function inspectPhone(page, label, firstViewport = false) {
         `${label}: ${item.key} and its label are visible in the first viewport`,
       );
   }
-  geometries.push({ label, ...geometry });
+  for (let index = 0; index < geometry.applications.length; index++) {
+    const item = geometry.applications[index];
+    for (const other of geometry.applications.slice(index + 1)) {
+      const horizontal =
+        Math.min(item.x + item.width, other.x + other.width) -
+        Math.max(item.x, other.x);
+      const vertical =
+        Math.min(item.bottom, other.bottom) - Math.max(item.y, other.y);
+      assert.ok(
+        horizontal <= 1 || vertical <= 1,
+        `${label}: ${item.key} and ${other.key} objects and captions do not overlap`,
+      );
+    }
+  }
+  const gaps = {
+    headingFromHero: geometry.heading.y - geometry.hero.y,
+    introToFirstImage:
+      Math.min(...geometry.applications.map((item) => item.image.y)) -
+      geometry.description.bottom,
+    lastCaptionToSample:
+      geometry.primary.y -
+      Math.max(...geometry.applications.map((item) => item.bottom)),
+  };
+  if (geometry.rootFontSize <= 16) {
+    assert.ok(
+      gaps.headingFromHero >= 24 && gaps.headingFromHero <= 64,
+      `${label}: the introduction starts close to navigation with a bounded top gap`,
+    );
+    if (geometry.viewport.height < 800)
+      assert.ok(
+        geometry.primary.bottom <= geometry.viewport.height + 200,
+        `${label}: the complete hero needs only modest scrolling on short phones`,
+      );
+  }
+  assert.ok(
+    gaps.introToFirstImage >= 0 && gaps.lastCaptionToSample >= 0,
+    `${label}: application objects and the Sample Set do not overlap adjacent content`,
+  );
+  if (firstViewport) {
+    assert.ok(
+      gaps.introToFirstImage <= 48 && gaps.lastCaptionToSample <= 56,
+      `${label}: the introduction, application objects and Sample Set remain a connected composition`,
+    );
+  }
+  geometries.push({ label, ...geometry, gaps });
   await page.screenshot({ path: `${evidence}/${label}.png`, fullPage: true });
 }
 
 async function run(label, width, tone, locale, options, callback) {
+  if (requested && !requested.includes(label)) return;
   const fixture = await createHeroStudyFixture(
     browser,
     baseURL,
@@ -404,6 +456,7 @@ try {
   for (const [width, height, tone, locale] of [
     [320, 568, "dark", "en"],
     [430, 932, "light", "ja"],
+    [440, 956, "light", "en"],
   ]) {
     await run(
       `${width}-${tone}-${locale}`,
@@ -485,74 +538,80 @@ try {
     },
   );
 
-  await run("desktop-and-study", 1440, "light", "en", {}, async ({ page }) => {
-    await ready(page);
-    assert.equal(
-      await page.locator("[data-mobile-home-hero]").isVisible(),
-      false,
-    );
-    assert.equal(
-      await page.locator("[data-mobile-home-sections]").isVisible(),
-      false,
-    );
-    assert.equal(await page.locator("[data-new-hero7-hero]").isVisible(), true);
-    assert.equal(await page.locator("h1:visible").count(), 1);
+  await run(
+    "desktop-and-responsive-samples",
+    1440,
+    "light",
+    "en",
+    {},
+    async ({ page }) => {
+      await ready(page);
+      assert.equal(
+        await page.locator("[data-mobile-home-hero]").isVisible(),
+        false,
+      );
+      assert.equal(
+        await page.locator("[data-mobile-home-sections]").isVisible(),
+        false,
+      );
+      assert.equal(
+        await page.locator("[data-new-hero7-hero]").isVisible(),
+        true,
+      );
+      assert.equal(await page.locator("h1:visible").count(), 1);
 
-    await ready(page, "/?view=samples");
-    const samples = page.locator('[data-new-hero7-view="samples"]:visible');
-    const sampleOrder = samples.locator("[data-new-hero7-sample-purchase]");
-    const setQuantity = sampleOrder.locator(
-      'output[aria-label="Set quantity"]',
-    );
-    await sampleOrder
-      .getByRole("button", { name: "Increase quantity", exact: true })
-      .click();
-    assert.equal(await setQuantity.textContent(), "2");
-    const sampleTrigger = samples.locator(
-      '[data-new-hero7-sample-tab="ceremonial"]',
-    );
-    await sampleTrigger.focus();
-    await sampleTrigger.click();
-    const sampleDialog = samples.locator("[data-new-hero7-sample-dialog]");
-    await sampleDialog.waitFor({ state: "visible" });
-    await page.setViewportSize({ width: 390, height: 844 });
-    await sampleDialog.waitFor({ state: "visible" });
-    assert.equal(
-      await sampleDialog.evaluate(
-        (node) => node.matches(":modal") && node.checkVisibility(),
-      ),
-      true,
-      "An open desktop sample profile remains visible after resizing to mobile",
-    );
-    assert.equal(await setQuantity.textContent(), "2");
-    await page.screenshot({
-      path: `${evidence}/desktop-sample-profile-resized.png`,
-    });
-    await page.keyboard.press("Escape");
-    await sampleDialog.waitFor({ state: "hidden" });
-    assert.equal(await sampleTrigger.isVisible(), true);
-    assert.equal(
-      await sampleTrigger.evaluate((node) => node === document.activeElement),
-      true,
-      "Escape restores the exact visible sample trigger after responsive resizing",
-    );
-    assert.equal(
-      await samples
-        .getByRole("button", { name: "Inside the set", exact: true })
-        .getAttribute("aria-expanded"),
-      "true",
-      "The mobile contents disclosure remains open around the returned trigger",
-    );
-    assert.equal(
-      await setQuantity.textContent(),
-      "2",
-      "Responsive sample learning retains the selected set quantity",
-    );
-
-    await ready(page, "/new-hero7");
-    assert.equal(await page.locator("[data-mobile-home-hero]").count(), 0);
-    assert.equal(await page.locator("[data-new-hero7-hero]").isVisible(), true);
-  });
+      await ready(page, "/?view=samples");
+      const samples = page.locator('[data-new-hero7-view="samples"]:visible');
+      const sampleOrder = samples.locator("[data-new-hero7-sample-purchase]");
+      const setQuantity = sampleOrder.locator(
+        'output[aria-label="Set quantity"]',
+      );
+      await sampleOrder
+        .getByRole("button", { name: "Increase quantity", exact: true })
+        .click();
+      assert.equal(await setQuantity.textContent(), "2");
+      const sampleTrigger = samples.locator(
+        '[data-new-hero7-sample-tab="ceremonial"]',
+      );
+      await sampleTrigger.focus();
+      await sampleTrigger.click();
+      const sampleDialog = samples.locator("[data-new-hero7-sample-dialog]");
+      await sampleDialog.waitFor({ state: "visible" });
+      await page.setViewportSize({ width: 390, height: 844 });
+      await sampleDialog.waitFor({ state: "visible" });
+      assert.equal(
+        await sampleDialog.evaluate(
+          (node) => node.matches(":modal") && node.checkVisibility(),
+        ),
+        true,
+        "An open desktop sample profile remains visible after resizing to mobile",
+      );
+      assert.equal(await setQuantity.textContent(), "2");
+      await page.screenshot({
+        path: `${evidence}/desktop-sample-profile-resized.png`,
+      });
+      await page.keyboard.press("Escape");
+      await sampleDialog.waitFor({ state: "hidden" });
+      assert.equal(await sampleTrigger.isVisible(), true);
+      assert.equal(
+        await sampleTrigger.evaluate((node) => node === document.activeElement),
+        true,
+        "Escape restores the exact visible sample trigger after responsive resizing",
+      );
+      assert.equal(
+        await samples
+          .getByRole("button", { name: "Inside the set", exact: true })
+          .getAttribute("aria-expanded"),
+        "true",
+        "The mobile contents disclosure remains open around the returned trigger",
+      );
+      assert.equal(
+        await setQuantity.textContent(),
+        "2",
+        "Responsive sample learning retains the selected set quantity",
+      );
+    },
+  );
 
   await run(
     "normal-motion-readiness",

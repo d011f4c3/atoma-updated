@@ -621,7 +621,7 @@
   .page[data-about-page] .entryAction,
   .page[data-about-page]
     :global([data-about-selection-invitation])
-    a[href="/shop"] {
+    a[href="/wholesale"] {
     font-size: var(--mobile-type-action);
     line-height: 1.5;
     letter-spacing: 0.025em;

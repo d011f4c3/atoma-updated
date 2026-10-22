@@ -9,10 +9,11 @@
     isolation: isolate;
     container: mobile-hero / inline-size;
     display: grid;
-    grid-template-rows: auto minmax(20rem, 1fr) auto;
-    gap: 0.5rem;
+    grid-template-rows: auto auto auto;
+    align-content: start;
+    gap: clamp(2rem, 4.2svh, 2.75rem);
     min-height: calc(100svh - var(--seven-header-height, 4rem));
-    padding: 1rem var(--gutter) 1.25rem;
+    padding: clamp(2.5rem, 7svh, 4rem) var(--gutter) 2.5rem;
   }
 
   .hero[data-tone="dark"] {
@@ -45,7 +46,7 @@
   .introduction h1 {
     max-width: 19ch;
     margin: 0;
-    font-size: calc(clamp(1.75rem, 8vw, 2.5rem) + var(--locale-font-increment));
+    font-size: calc(clamp(1.75rem, 7.6vw, 2rem) + var(--locale-font-increment));
     font-weight: 400;
     line-height: 1.1;
     letter-spacing: -0.055em;
@@ -77,8 +78,7 @@
     grid-template-areas: "tea latte" "baking latte";
     align-content: center;
     align-items: center;
-    gap: 1.25rem 1.5rem;
-    padding-block: 1.75rem;
+    gap: clamp(1.75rem, calc(25svh - 9rem), 6rem) 1.75rem;
   }
 
   .application {
@@ -98,7 +98,6 @@
     grid-area: latte;
     justify-self: end;
     width: 100%;
-    margin-top: 3rem;
   }
 
   .application[data-mobile-hero-application="culinary"] {
@@ -107,12 +106,12 @@
   }
 
   .visual {
-    width: 94%;
+    width: 88%;
     margin-inline: auto;
   }
 
   .application[data-mobile-hero-application="culinary"] .visual {
-    width: 100%;
+    width: 92%;
   }
 
   .crop {
@@ -176,6 +175,7 @@
   .actions {
     display: grid;
     gap: 0.25rem;
+    padding-top: 0.5rem;
   }
 
   .primary {

@@ -288,7 +288,7 @@ export function HomeHeader({
       <Link
         className={styles.control}
         data-nav-action="shop"
-        href="/shop"
+        href={siteNavigation ? "/wholesale" : "/shop"}
         aria-current={activePage === "shop" ? "page" : undefined}
         onClick={closeIndex}
       >

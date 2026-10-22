@@ -40,7 +40,7 @@ async function ready(page, view) {
 async function rootLinks(page) {
   const links = {
     matcha: "/",
-    shop: "/shop",
+    shop: "/wholesale",
     samples: "/samples",
     origins: "/origins",
     about: "/about",
@@ -62,7 +62,9 @@ async function rootLinks(page) {
     /WHOLESALE/i,
   );
   assert.match(
-    await page.locator('[data-site-footer] nav a[href="/shop"]').innerText(),
+    await page
+      .locator('[data-site-footer] nav a[href="/wholesale"]')
+      .innerText(),
     /WHOLESALE/i,
   );
   assert.equal(await page.locator("[data-site-footer]").count(), 1);
@@ -375,7 +377,7 @@ try {
             await header(page).locator("summary").click();
           assert.match(await wholesale.innerText(), /WHOLESALE/i);
           await wholesale.click();
-          await page.waitForURL((url) => url.pathname === "/shop");
+          await page.waitForURL((url) => url.pathname === "/wholesale");
           await page.goBack();
           await ready(page, "matcha");
           await rootLinks(page);

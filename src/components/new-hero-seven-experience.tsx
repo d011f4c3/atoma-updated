@@ -179,7 +179,8 @@ export function NewHeroSevenExperience({
   const home = state.view === "home";
 
   if (params.get("view") === "origins") redirect("/origins");
-  if (params.get("view") === "wholesale") redirect("/shop");
+  if (params.get("view") === "wholesale")
+    redirect(basePath === "/" ? "/wholesale" : "/shop");
 
   return (
     <HeroSevenNavigation value={navigation}>

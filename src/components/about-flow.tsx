@@ -346,7 +346,11 @@ export function AboutFlow({
             </div>
           </section>
 
-          <AboutSelectionInvitation t={t} busy={busy} />
+          <AboutSelectionInvitation
+            t={t}
+            busy={busy}
+            collectionHref={preview ? "/shop" : "/wholesale"}
+          />
         </div>
       </main>
       <noscript>

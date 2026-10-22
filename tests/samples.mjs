@@ -769,7 +769,7 @@ async function navigation(page, context) {
   await page.waitForURL((url) => url.pathname === "/samples");
   await noPurchase(page);
   await (await navLink(page, "shop")).click();
-  await page.waitForURL((url) => url.pathname === "/shop");
+  await page.waitForURL((url) => url.pathname === "/wholesale");
   await page.locator('footer a[href="/samples"]').click();
   await page.waitForURL((url) => url.pathname === "/samples");
   await noPurchase(page);

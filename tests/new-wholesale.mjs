@@ -1,4 +1,4 @@
-/* Independent wholesale study: durable browsing, direct ordering and optional learning. */
+/* Wholesale collection: compact browsing, direct ordering and optional learning. */
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -16,7 +16,7 @@ const { chromium } = await import(
 );
 const baseURL = process.env.NEW_WHOLESALE_BASE_URL ?? "http://127.0.0.1:3100";
 const evidence =
-  process.env.NEW_WHOLESALE_EVIDENCE ?? ".local/wholesale-0264/tests";
+  process.env.NEW_WHOLESALE_EVIDENCE ?? ".local/wholesale-0270/tests";
 const requested = process.env.NEW_WHOLESALE_CASES?.split(",").filter(Boolean);
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const results = [];
@@ -42,10 +42,85 @@ const quantity = (page, key = "barista") =>
   purchase(page, key).locator("[data-wholesale-quantity]");
 const add = (page, key = "barista") =>
   purchase(page, key).locator("[data-wholesale-add] button");
+const why = (page) => page.locator("[data-wholesale-why]");
+const whyAction = (page) => page.locator("[data-wholesale-why-action]");
+
+async function inspectWhy(page) {
+  assert.equal(await why(page).isVisible(), true);
+  assert.equal(await why(page).getByRole("heading", { level: 2 }).count(), 1);
+  const reasons = why(page).locator("[data-wholesale-why-reason]");
+  assert.equal(await reasons.count(), 3);
+  assert.equal(await whyAction(page).getAttribute("href"), "/samples");
+  const geometry = await why(page).evaluate((section) => {
+    const rect = (node) => {
+      const box = node.getBoundingClientRect();
+      return {
+        x: box.x,
+        y: box.y,
+        right: box.right,
+        bottom: box.bottom,
+        width: box.width,
+        height: box.height,
+      };
+    };
+    return {
+      width: innerWidth,
+      section: rect(section),
+      collectionBottom: Math.max(
+        ...Array.from(
+          document.querySelectorAll("[data-wholesale-product]:not([hidden])"),
+          (node) => node.getBoundingClientRect().bottom,
+        ),
+      ),
+      reasons: Array.from(
+        section.querySelectorAll("[data-wholesale-why-reason]"),
+        (node) => ({
+          ...rect(node),
+          scrollWidth: node.scrollWidth,
+          clientWidth: node.clientWidth,
+          fontSize: parseFloat(
+            getComputedStyle(node.querySelector("p")).fontSize,
+          ),
+        }),
+      ),
+      action: rect(section.querySelector("[data-wholesale-why-action]")),
+    };
+  });
+  assert.ok(
+    geometry.section.y >= geometry.collectionBottom,
+    "Why ATOMA follows the visible matcha collection",
+  );
+  for (const [index, reason] of geometry.reasons.entries()) {
+    assert.ok(
+      reason.x >= -1 &&
+        reason.right <= geometry.width + 1 &&
+        reason.scrollWidth <= reason.clientWidth + 1,
+      "Each reason remains contained without horizontal scrolling",
+    );
+    if (geometry.width <= 1000)
+      assert.ok(
+        reason.fontSize >= 16,
+        "Mobile reasons retain readable body text",
+      );
+    if (!index) continue;
+    const previous = geometry.reasons[index - 1];
+    assert.ok(
+      geometry.width > 1000
+        ? Math.abs(reason.y - previous.y) < 2 && reason.x >= previous.right
+        : reason.y >= previous.bottom && Math.abs(reason.x - previous.x) < 2,
+      "Reasons form a desktop row and a non-overlapping mobile stack",
+    );
+  }
+  assert.ok(
+    geometry.action.width >= 44 &&
+      geometry.action.height >= 44 &&
+      geometry.action.x >= -1 &&
+      geometry.action.right <= geometry.width + 1,
+    "The Sample Set action remains a reachable touch target",
+  );
+}
 
 async function showOrder(page, key = "barista") {
-  if (!(await purchase(page, key).isVisible()))
-    await card(page, key).locator("[data-wholesale-order-toggle]").click();
   await purchase(page, key).waitFor({ state: "visible" });
   return purchase(page, key);
 }
@@ -82,7 +157,7 @@ async function eventually(check, message) {
   assert.fail(message);
 }
 
-async function ready(page, path = "/new-wholesale", expected = 3) {
+async function ready(page, path = "/wholesale", expected = 3) {
   await page.goto(`${baseURL}${path}`);
   await collection(page).waitFor();
   await page.evaluate(() => document.fonts.ready);
@@ -226,26 +301,29 @@ async function inspectPopup(page) {
   }
 }
 
-async function snapshot(page, label) {
+async function snapshot(page, label, fullPage = false) {
   await page.addStyleTag({
     content:
       "nextjs-portal { display: none !important; } * { caret-color: transparent !important; }",
   });
-  await page.evaluate(async () => {
+  await page.evaluate(async (fullPage) => {
     await Promise.all(
       [...document.images]
         .filter((image) => {
           const box = image.getBoundingClientRect();
           return (
-            box.width && box.height && box.top < innerHeight && box.bottom > 0
+            box.width &&
+            box.height &&
+            (fullPage || (box.top < innerHeight && box.bottom > 0))
           );
         })
         .map((image) => image.decode().catch(() => {})),
     );
-  });
+  }, fullPage);
   await page.screenshot({
     path: `${evidence}/${label}.png`,
     animations: "disabled",
+    fullPage,
   });
 }
 
@@ -329,7 +407,7 @@ async function run(label, width, tone, locale, options, callback) {
 
 try {
   for (const tone of ["light", "dark"]) {
-    for (const width of [1440, 390]) {
+    for (const width of [1440, 1280, 390, 320]) {
       await run(
         `library-${width}-${tone}`,
         width,
@@ -337,6 +415,9 @@ try {
         "en",
         {},
         async ({ page }) => {
+          if (width === 1280)
+            await page.setViewportSize({ width, height: 720 });
+          if (width === 320) await page.setViewportSize({ width, height: 568 });
           await ready(page);
           assert.equal(await collection(page).locator("h1:visible").count(), 1);
           const boxes = await cards(page).evaluateAll((nodes) =>
@@ -356,8 +437,10 @@ try {
             } else {
               assert.ok(
                 boxes[index].y >=
-                  boxes[index - 1].y + boxes[index - 1].height - 1,
-                "Mobile presents distinct compact entries without overlap",
+                  boxes[index - 1].y + boxes[index - 1].height - 1 &&
+                  Math.abs(boxes[index].x - boxes[0].x) < 2 &&
+                  Math.abs(boxes[index].width - boxes[0].width) < 2,
+                "Mobile presents equal-width cards in one vertical scroll without overlap",
               );
             }
           }
@@ -372,34 +455,62 @@ try {
             );
             const bounds = await trigger(page, item.key).boundingBox();
             assert.ok(bounds && bounds.height >= 44 && bounds.width >= 44);
-            for (const target of ["image", "name", "details"])
+            assert.match(
+              await trigger(page, item.key).getAttribute("aria-label"),
+              /Quick view/,
+              "The compact learning control has an explicit accessible name",
+            );
+            for (const target of ["image", "name"])
               assert.equal(
                 await card(page, item.key)
                   .locator(`[data-wholesale-direct-link="${target}"]`)
                   .getAttribute("href"),
                 `/shop/${item.productHandle}`,
-                "Product imagery, identity and View matcha lead directly to the canonical product",
+                "Product imagery and identity lead directly to the canonical product",
               );
+            assert.equal(
+              await purchase(page, item.key).isVisible(),
+              true,
+              "Ordering is available directly in every card without a disclosure",
+            );
+            assert.equal(await add(page, item.key).isEnabled(), true);
+            const total = await purchase(page, item.key)
+              .locator("[data-wholesale-total]")
+              .evaluate((node) => {
+                const bounds = node.parentElement.getBoundingClientRect();
+                return { width: bounds.width, height: bounds.height };
+              });
+            assert.ok(
+              total.width <= 1 || total.height <= 1,
+              "A single-unit order avoids repeating its unit price as a total",
+            );
             if (width > 1000) {
-              assert.equal(
-                await purchase(page, item.key).isVisible(),
-                true,
-                "Desktop ordering is available directly in every card",
+              const action = await add(page, item.key).boundingBox();
+              assert.ok(
+                action &&
+                  action.y + action.height <= page.viewportSize().height,
+                "Desktop purchase actions fit completely in the first viewport",
               );
-              assert.equal(await add(page, item.key).isEnabled(), true);
             } else {
-              const toggle = card(page, item.key).locator(
-                "[data-wholesale-order-toggle]",
+              const entry = card(page, item.key);
+              const outer = await entry.boundingBox();
+              const image = await entry
+                .locator('[data-wholesale-direct-link="image"]')
+                .boundingBox();
+              const identity = await entry
+                .locator('[data-wholesale-direct-link="name"]')
+                .boundingBox();
+              const order = await purchase(page, item.key).boundingBox();
+              assert.ok(
+                image.width >= outer.width * 0.9 && image.height >= 160,
+                "Mobile cards lead with a substantial image across their width",
               );
-              assert.equal(await toggle.isVisible(), true);
-              assert.equal(await toggle.getAttribute("aria-expanded"), "false");
-              assert.equal(
-                await purchase(page, item.key).isVisible(),
-                false,
-                "Mobile begins with concise entries and optional inline ordering",
+              assert.ok(
+                identity.y >= image.y + image.height - 1 &&
+                  order.y >= identity.y + identity.height - 1 &&
+                  order.width >= image.width - 48,
+                "Product identity and direct buying follow the image in one clear vertical card",
               );
-              const target = await toggle.boundingBox();
-              assert.ok(target.width >= 44 && target.height >= 44);
             }
           }
           assert.equal(
@@ -412,27 +523,22 @@ try {
             /coming soon|temporary filters/i,
           );
           await noOverflow(page);
-          await snapshot(page, `library-${width}-${tone}`);
-          for (const view of ["application", "material"]) {
-            const choice = page.locator(`[data-wholesale-imagery="${view}"]`);
-            await choice.click();
-            assert.equal(await choice.getAttribute("aria-pressed"), "true");
-            assert.equal(
-              await cards(page)
-                .locator(`[data-wholesale-image="${view}"]`)
-                .count(),
-              3,
-              "Image choices retain the complete collection",
-            );
-          }
+          await inspectWhy(page);
+          await snapshot(page, `library-${width}-${tone}`, width < 760);
+          await why(page).screenshot({
+            path: `${evidence}/why-${width}-${tone}.png`,
+            animations: "disabled",
+          });
+          assert.equal(
+            await cards(page)
+              .locator('[data-wholesale-image="application"]')
+              .count(),
+            3,
+            "Known matchas show their application without an extra image choice",
+          );
           await inspectOrder(page);
           if (width < 760) {
             await snapshot(page, `order-${width}-${tone}`);
-            const toggle = card(page, "barista").locator(
-              "[data-wholesale-order-toggle]",
-            );
-            await toggle.click();
-            assert.equal(await purchase(page).isVisible(), false);
             assert.equal(
               await popup(page).count(),
               0,
@@ -443,6 +549,53 @@ try {
       );
     }
   }
+
+  await run("legacy-route", 1440, "light", "en", {}, async ({ page }) => {
+    await ready(page, "/new-wholesale?q=latte&matcha=barista", 1);
+    const url = new URL(page.url());
+    assert.equal(url.pathname, "/wholesale");
+    assert.equal(url.searchParams.get("q"), "latte");
+    assert.equal(url.searchParams.get("matcha"), "barista");
+    await popup(page).waitFor();
+    assert.equal(
+      await product(page).getAttribute("data-wholesale-learning-product"),
+      "barista",
+      "A shared study URL opens the same matcha on the adopted wholesale route",
+    );
+    await close(page).click();
+    await popup(page).waitFor({ state: "detached" });
+    assert.equal(page.url(), `${baseURL}/wholesale?q=latte`);
+    await eventually(
+      () =>
+        trigger(page, "barista").evaluate(
+          (node) => node === document.activeElement,
+        ),
+      "The redirected product returns focus to its visible collection entry",
+    );
+    const links = await collection(page)
+      .locator('a[data-nav-action="shop"]')
+      .evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href")));
+    assert.ok(
+      links.length > 0 && links.every((href) => href === "/wholesale"),
+      "Storefront Wholesale navigation points to the adopted collection",
+    );
+    await page.goto(baseURL);
+    assert.equal(
+      await page
+        .locator('a[data-nav-action="shop"]')
+        .first()
+        .getAttribute("href"),
+      "/wholesale",
+      "The canonical homepage opens the adopted Wholesale collection",
+    );
+    assert.equal(
+      await page
+        .locator('[data-storefront-footer] nav a[href="/wholesale"]')
+        .count(),
+      1,
+      "The canonical homepage footer uses the same Wholesale destination",
+    );
+  });
 
   await run("search-and-return", 390, "light", "en", {}, async ({ page }) => {
     await ready(page);
@@ -464,6 +617,18 @@ try {
       .getByRole("button", { name: "Increase quantity" })
       .click();
     assert.equal(await quantity(page).textContent(), "2");
+    const total = await purchase(page)
+      .locator("[data-wholesale-total]")
+      .boundingBox();
+    assert.ok(
+      total && total.height >= 16,
+      "A multi-unit order reveals its complete total",
+    );
+    assert.equal(
+      await purchase(page).locator("[data-wholesale-total]").textContent(),
+      "¥14,000",
+      "The revealed total uses the published price and exact quantity",
+    );
     await query(page, "ceremonial", 1);
     await query(page, "barista", 1);
     await showOrder(page);
@@ -471,12 +636,6 @@ try {
       await quantity(page).textContent(),
       "2",
       "Search preserves each row's order",
-    );
-    await page.locator('[data-wholesale-imagery="application"]').click();
-    assert.equal(
-      await quantity(page).textContent(),
-      "2",
-      "Changing imagery preserves the order",
     );
     const entry = await choose(page, "barista");
     await close(page).click();
@@ -506,6 +665,37 @@ try {
           .locator("[data-wholesale-search-toggle]")
           .evaluate((node) => node === document.activeElement),
       "Closing mobile search returns focus to its toggle",
+    );
+  });
+
+  await run("why-sample-handoff", 390, "light", "en", {}, async ({ page }) => {
+    await ready(page);
+    await query(page, "barista", 1);
+    await purchase(page)
+      .getByRole("button", { name: "Increase quantity" })
+      .click();
+    await inspectWhy(page);
+    await whyAction(page).scrollIntoViewIfNeeded();
+    assert.equal(new URL(page.url()).searchParams.get("q"), "barista");
+    assert.equal(
+      await quantity(page).textContent(),
+      "2",
+      "Reading Why ATOMA leaves the selected order intact",
+    );
+    await whyAction(page).click();
+    await page.waitForURL(`${baseURL}/samples`);
+    await page.locator("[data-samples-page]").waitFor();
+    await page.goBack();
+    await collection(page).waitFor();
+    await eventually(
+      async () => (await quantity(page).textContent()) === "2",
+      "Returning from the Sample Set restores the wholesale order",
+    );
+    assert.equal(new URL(page.url()).searchParams.get("q"), "barista");
+    assert.equal(
+      await cards(page).count(),
+      1,
+      "Returning from the Sample Set preserves the collection search",
     );
   });
 
@@ -560,7 +750,7 @@ try {
     "en",
     {},
     async ({ page }) => {
-      await ready(page, "/new-wholesale?q=latte", 1);
+      await ready(page, "/wholesale?q=latte", 1);
       await showOrder(page);
       await purchase(page)
         .getByRole("button", { name: "Increase quantity", exact: true })
@@ -569,7 +759,7 @@ try {
         .getByRole("button", { name: "Increase quantity", exact: true })
         .click();
       const direct = card(page, "barista").locator(
-        '[data-wholesale-direct-link="details"]',
+        '[data-wholesale-direct-link="name"]',
       );
       await direct.click();
       await page.waitForURL(`${baseURL}/shop/${handle("barista")}`);
@@ -603,13 +793,13 @@ try {
   );
 
   await run("direct-and-resize", 390, "dark", "en", {}, async ({ page }) => {
-    await ready(page, "/new-wholesale?q=latte&matcha=barista#library", 1);
+    await ready(page, "/wholesale?q=latte&matcha=barista#library", 1);
     await popup(page).waitFor();
     await inspectPopup(page);
     await snapshot(page, "mobile-dialog");
     await close(page).click();
     await popup(page).waitFor({ state: "detached" });
-    assert.equal(page.url(), `${baseURL}/new-wholesale?q=latte#library`);
+    assert.equal(page.url(), `${baseURL}/wholesale?q=latte#library`);
     await eventually(
       () =>
         trigger(page, "barista").evaluate(
@@ -632,7 +822,16 @@ try {
       "2",
       "Resizing and learning retain the row order",
     );
-    await ready(page, "/new-wholesale?q=latte&matcha=ceremonial", 1);
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: width > 1000 ? 900 : 844 });
+      assert.equal(await purchase(page).isVisible(), true);
+      assert.equal(
+        await quantity(page).textContent(),
+        "2",
+        "The same direct buyer retains its order across desktop and mobile layouts",
+      );
+    }
+    await ready(page, "/wholesale?q=latte&matcha=ceremonial", 1);
     await popup(page).waitFor();
     await close(page).click();
     await popup(page).waitFor({ state: "detached" });
@@ -664,18 +863,21 @@ try {
       );
       await ready(page);
       await showOrder(page);
+      await add(page)
+        .getByText("Currently unavailable", { exact: true })
+        .waitFor();
       assert.equal(await add(page).isDisabled(), true);
       assert.equal(
         await purchase(page)
           .getByRole("button", { name: "Increase quantity" })
-          .isDisabled(),
-        true,
+          .count(),
+        0,
+        "A single-format unavailable product offers no ineffective quantity control",
       );
       assert.equal(
-        await purchase(page)
-          .getByText("Currently unavailable", { exact: true })
-          .count(),
-        1,
+        await add(page).innerText(),
+        "Currently unavailable",
+        "The disabled purchase action clearly states availability",
       );
       await inspectOrder(page);
       await snapshot(page, "unavailable");
@@ -762,7 +964,7 @@ try {
         await route.fulfill({ json: catalog() });
       });
       try {
-        await ready(page, "/new-wholesale", null);
+        await ready(page, "/wholesale", null);
         const state = page.locator('[data-wholesale-status="loading"]');
         await state.waitFor();
         assert.equal(await cards(page).count(), 0);
@@ -795,7 +997,7 @@ try {
         await context.route("**/api/catalog", (route) =>
           route.fulfill({ json: catalog({ status }) }),
         );
-        await ready(page, "/new-wholesale", 0);
+        await ready(page, "/wholesale", 0);
         await page
           .locator(
             `[data-wholesale-status="${status === "empty" ? "empty" : "error"}"]`,
@@ -845,10 +1047,27 @@ try {
           { ...catalog().products[0].variants[0], id: `v1_${"f".repeat(43)}` },
         ],
       };
-      await context.route("**/api/catalog", (route) =>
-        route.fulfill({ json: catalog({ extra: [next] }) }),
+      const future = Array.from({ length: 9 }, (_, index) =>
+        index === 0
+          ? next
+          : {
+              ...next,
+              id: `future-product-fixture-${index}`,
+              handle: `future-product-fixture-${index}`,
+              title: `Future matcha fixture ${index + 1}`,
+              productCode: `NXT-${String(index + 2).padStart(2, "0")}`,
+              variants: [
+                {
+                  ...next.variants[0],
+                  id: `v1_${String.fromCharCode(102 + index).repeat(43)}`,
+                },
+              ],
+            },
       );
-      await ready(page, "/new-wholesale", 4);
+      await context.route("**/api/catalog", (route) =>
+        route.fulfill({ json: catalog({ extra: future }) }),
+      );
+      await ready(page, "/wholesale", 12);
       const item = page.locator(
         '[data-wholesale-product="future-product-fixture"]:visible',
       );
@@ -860,8 +1079,8 @@ try {
       );
       assert.equal(
         await item.locator('a[href="/shop/future-product-fixture"]').count(),
-        3,
-        "Future product imagery, identity and details have their real product destination",
+        2,
+        "Future product imagery and identity have their real product destination",
       );
       assert.equal(
         await item.locator("[data-wholesale-add] button").isEnabled(),
@@ -871,16 +1090,35 @@ try {
       await page.setViewportSize({ width: 1800, height: 1000 });
       const rows = await cards(page).evaluateAll((nodes) =>
         nodes.map((node) => {
-          const { x, y, right } = node.getBoundingClientRect();
-          return { x, y, right };
+          const { x, y, right, bottom } = node.getBoundingClientRect();
+          const add = node
+            .querySelector("[data-wholesale-add] button")
+            .getBoundingClientRect();
+          return { x, y, right, bottom, actionBottom: add.bottom };
         }),
       );
-      for (let index = 1; index < rows.length; index++)
-        assert.ok(
-          Math.abs(rows[index].y - rows[0].y) < 2 &&
-            rows[index].x >= rows[index - 1].right - 1,
-          "A larger library uses four distinct columns when desktop space permits",
-        );
+      for (let index = 1; index < rows.length; index++) {
+        const column = index % 4;
+        if (column > 0) {
+          assert.ok(
+            Math.abs(rows[index].y - rows[index - column].y) < 2 &&
+              rows[index].x >= rows[index - 1].right - 1,
+            "A twelve-product library uses four distinct columns on a wide desktop",
+          );
+          assert.ok(
+            Math.abs(
+              rows[index].actionBottom - rows[index - column].actionBottom,
+            ) < 2,
+            "Purchase actions align even when future products have less editorial content",
+          );
+        } else {
+          assert.ok(
+            rows[index].y >= rows[index - 4].bottom - 1 &&
+              Math.abs(rows[index].x - rows[0].x) < 2,
+            "Additional products continue on distinct rows without overlap",
+          );
+        }
+      }
       await noOverflow(page);
       await snapshot(page, "future-catalog-wide");
       await page.setViewportSize({ width: 1440, height: 900 });
@@ -907,7 +1145,7 @@ try {
       await context.route("**/api/catalog", (route) =>
         route.fulfill({ json: catalog({ extra: [duplicate] }) }),
       );
-      await ready(page, "/new-wholesale", 4);
+      await ready(page, "/wholesale", 4);
       await query(page, "DUP-02", 1);
       assert.ok((await cards(page).textContent()).includes(duplicate.title));
       assert.equal(
@@ -922,34 +1160,110 @@ try {
     },
   );
 
-  await run("japanese-enlarged", 320, "dark", "ja", {}, async ({ page }) => {
-    await page.setViewportSize({ width: 320, height: 568 });
-    await ready(page);
-    await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
-    await noOverflow(page);
-    await query(page, "UJI-00", 1);
-    await inspectOrder(page);
-    await snapshot(page, "japanese-order-enlarged");
-    const entry = await choose(page, "barista");
-    await product(page).locator("[data-wholesale-preparation] summary").click();
-    await inspectPopup(page);
-    for (const control of await popup(page)
-      .locator("button:visible, summary:visible")
-      .all()) {
-      await control.scrollIntoViewIfNeeded();
-      const bounds = await control.boundingBox();
-      const outer = await popup(page).boundingBox();
-      assert.ok(
-        bounds.x >= outer.x - 1 &&
-          bounds.x + bounds.width <= outer.x + outer.width + 1,
-        "Enlarged Japanese controls fit the reader width",
+  await run(
+    "japanese-enlarged",
+    320,
+    "dark",
+    "ja",
+    {},
+    async ({ context, page }) => {
+      const data = catalog();
+      for (const item of data.products)
+        for (const variant of item.variants) {
+          variant.currency = "USD";
+          variant.priceMinor = 13000;
+        }
+      await context.route("**/api/catalog", (route) =>
+        route.fulfill({ json: data }),
       );
-    }
-    await snapshot(page, "japanese-enlarged");
-    await close(page).click();
-    await returned(page, entry);
-    await noOverflow(page);
-  });
+      await context.route("**/api/destination", (route) =>
+        route.fulfill({
+          json: {
+            kind: "ready",
+            preference: { countryCode: "US", source: "default" },
+            destination: { countryCode: "US", currency: "USD" },
+            countries: ["US", "SG"],
+            reviewRequired: false,
+          },
+        }),
+      );
+      await page.setViewportSize({ width: 320, height: 568 });
+      await ready(page);
+      await page.addStyleTag({
+        content: "html { font-size: 200% !important; }",
+      });
+      await noOverflow(page);
+      await inspectWhy(page);
+      assert.equal(
+        await why(page).getByRole("heading", { level: 2 }).textContent(),
+        "ATOMAを選ぶ理由",
+        "The new section follows the selected language",
+      );
+      await why(page).screenshot({
+        path: `${evidence}/why-japanese-enlarged.png`,
+        animations: "disabled",
+      });
+      await query(page, "UJI-00", 1);
+      await quantity(page).locator("..").getByRole("button").last().click();
+      assert.equal(await quantity(page).textContent(), "2");
+      const total = await purchase(page)
+        .locator("[data-wholesale-total]")
+        .boundingBox();
+      const bounds = await purchase(page).boundingBox();
+      assert.ok(
+        total &&
+          total.height >= 32 &&
+          total.x >= bounds.x - 1 &&
+          total.x + total.width <= bounds.x + bounds.width + 1,
+        "The enlarged multi-unit currency total remains readable inside the card",
+      );
+      const amountLines = await purchase(page)
+        .locator("[data-wholesale-unit-price]")
+        .evaluate((node) => {
+          const text = Array.from(node.childNodes).find(
+            (child) =>
+              child.nodeType === Node.TEXT_NODE &&
+              /\d[\d,]*\.\d{2}/.test(child.textContent),
+          );
+          const amount = text?.textContent.match(/\d[\d,]*\.\d{2}/);
+          if (!amount) return 0;
+          const range = document.createRange();
+          range.setStart(text, amount.index);
+          range.setEnd(text, amount.index + amount[0].length);
+          return Array.from(range.getClientRects()).filter(
+            (rect) => rect.width && rect.height,
+          ).length;
+        });
+      assert.equal(
+        amountLines,
+        1,
+        "The enlarged unit price keeps its numeric amount and decimal places on one line",
+      );
+      await inspectOrder(page);
+      await snapshot(page, "japanese-order-enlarged");
+      const entry = await choose(page, "barista");
+      await product(page)
+        .locator("[data-wholesale-preparation] summary")
+        .click();
+      await inspectPopup(page);
+      for (const control of await popup(page)
+        .locator("button:visible, summary:visible")
+        .all()) {
+        await control.scrollIntoViewIfNeeded();
+        const bounds = await control.boundingBox();
+        const outer = await popup(page).boundingBox();
+        assert.ok(
+          bounds.x >= outer.x - 1 &&
+            bounds.x + bounds.width <= outer.x + outer.width + 1,
+          "Enlarged Japanese controls fit the reader width",
+        );
+      }
+      await snapshot(page, "japanese-enlarged");
+      await close(page).click();
+      await returned(page, entry);
+      await noOverflow(page);
+    },
+  );
 
   await run(
     "pending-guard",
@@ -972,10 +1286,11 @@ try {
       const current = page.url();
       assert.equal(await add(page).isDisabled(), true);
       assert.equal(
-        await card(page, "barista")
-          .locator("[data-wholesale-order-toggle]")
+        await purchase(page)
+          .getByRole("button", { name: "Increase quantity" })
           .isDisabled(),
         true,
+        "The visible quantity controls stay locked during the purchase attempt",
       );
       await trigger(page, "barista").evaluate((node) => node.click());
       assert.equal(
@@ -984,6 +1299,13 @@ try {
         "Pending commerce cannot be interrupted by product learning",
       );
       assert.equal(await popup(page).count(), 0);
+      assert.equal(await whyAction(page).getAttribute("aria-disabled"), "true");
+      await whyAction(page).evaluate((node) => node.click());
+      assert.equal(
+        page.url(),
+        current,
+        "Why ATOMA cannot interrupt a pending purchase with navigation",
+      );
       assert.equal(
         await page.locator("[data-wholesale-search-toggle]").isDisabled(),
         true,

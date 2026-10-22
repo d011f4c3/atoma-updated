@@ -434,7 +434,7 @@ async function stylesheetRestoration(page, tone) {
   );
   for (const selector of [
     '[data-about-cover] a[href="#about-purpose"]',
-    '[data-about-selection-invitation] a[href="/shop"]',
+    '[data-about-selection-invitation] a[href="/wholesale"]',
   ]) {
     const action = about.locator(selector);
     assert.equal(await action.count(), 1);
@@ -956,13 +956,13 @@ async function navigation(page, context, tone) {
     "/about",
   );
 
-  await page.locator('footer a[href="/shop"]').click();
-  await page.waitForURL((url) => url.pathname === "/shop");
+  await page.locator('footer a[href="/wholesale"]').click();
+  await page.waitForURL((url) => url.pathname === "/wholesale");
   await cartButton(page).waitFor();
   await aboutLink(page);
   await checkCart(page);
   await page.goBack();
-  await page.waitForURL((url) => url.pathname === "/shop");
+  await page.waitForURL((url) => url.pathname === "/wholesale");
   await checkCart(page);
   const footer = page.locator('footer a[href="/about"]');
   await footer.click();

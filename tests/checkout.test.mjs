@@ -200,6 +200,31 @@ test("missing, empty, stale, rejected, or hostile checkout results return safely
   }
 });
 
+test("checkout retry returns to the wholesale collection without accepting arbitrary routes or queries", async () => {
+  for (const [referer, destination] of [
+    [
+      "http://127.0.0.1:3100/wholesale?q=latte&matcha=barista&return=https://attacker.test",
+      "http://127.0.0.1:3100/wholesale?checkout=retry",
+    ],
+    [
+      "https://attacker.test/wholesale",
+      "http://127.0.0.1:3100/?checkout=retry",
+    ],
+    [
+      "http://127.0.0.1:3100/wholesale/anything",
+      "http://127.0.0.1:3100/?checkout=retry",
+    ],
+  ]) {
+    const { response } = await perform(
+      request({ headers: { referer } }),
+      {},
+      { kind: "missing" },
+    );
+    assert.equal(response.status, 303);
+    assert.equal(response.headers.get("location"), destination);
+  }
+});
+
 test("checkout retry preserves one canonical homepage product handle and drops unrelated query parameters", async () => {
   for (const handle of ["jmm-storefront-test-matcha", "a".repeat(255)]) {
     const { response } = await perform(

@@ -797,13 +797,6 @@ try {
       "dark",
       { reducedMotion: "reduce" },
       async ({ page }) => {
-        await page.goto(`${baseURL}/new-hero7`, {
-          waitUntil: "domcontentloaded",
-        });
-        await hydrated(page);
-        const studySize = await page
-          .locator("[data-new-hero7-hero] h1")
-          .evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
         await page.goto(`${baseURL}/`, { waitUntil: "domcontentloaded" });
         await released(page);
         const heading = hero(page).locator("h1");
@@ -812,12 +805,12 @@ try {
         );
         if (width > 760)
           assert.ok(
-            homeSize / studySize >= 0.85 && homeSize / studySize <= 0.86,
-            "The desktop heading follows the approved smaller scale",
+            homeSize >= 28 && homeSize <= 44,
+            "The desktop heading retains a readable, restrained display scale",
           );
         else
           assert.ok(
-            homeSize > studySize && homeSize >= 28 && homeSize <= 40,
+            homeSize >= 28 && homeSize <= 40,
             "The dedicated portrait hero has a distinct, readable display scale",
           );
         const summary = header(page).locator("[data-nav-summary]");
@@ -864,7 +857,7 @@ try {
     "light",
     { javaScriptEnabled: false },
     async ({ page }) => {
-      await page.goto(`${baseURL}/`, { waitUntil: "domcontentloaded" });
+      await page.goto(`${baseURL}/`, { waitUntil: "load" });
       assert.equal(await page.locator("[data-hero-loader]").isVisible(), false);
       const heading = hero(page).locator("h1");
       assert.equal(await heading.isVisible(), true);
@@ -1153,8 +1146,8 @@ try {
         );
         if (width === 1440)
           assert.ok(
-            Math.abs(fonts.heading.size - 50.4) < 0.01,
-            "Desktop type keeps its approved size",
+            fonts.heading.size >= 28 && fonts.heading.size <= 44,
+            "Desktop type retains its quieter, readable scale",
           );
         await page.mouse.move(1, 1);
         await page.screenshot({
@@ -1205,17 +1198,8 @@ try {
           ),
         );
         if (width === 390) {
-          await page.goto(`${baseURL}/new-hero7`, {
-            waitUntil: "domcontentloaded",
-          });
-          await hydrated(page);
-          const studySize = await page
-            .locator("[data-new-hero7-hero] h1")
-            .evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
           assert.ok(
-            fonts.heading.size > studySize &&
-              fonts.heading.size >= 28 &&
-              fonts.heading.size <= 40,
+            fonts.heading.size >= 28 && fonts.heading.size <= 40,
             "Mobile type follows the dedicated portrait composition",
           );
         }

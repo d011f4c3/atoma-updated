@@ -1,19 +1,22 @@
 import type { Metadata } from "next";
-import { connection } from "next/server";
-import { NewWholesale } from "@/components/new-wholesale";
-import { StorefrontFooter } from "@/components/storefront-footer";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Wholesale study — ATOMA",
+  title: "ATOMA — Wholesale matcha",
+  alternates: { canonical: "/wholesale" },
   robots: { index: false, follow: false },
 };
 
-export default async function NewWholesalePage() {
-  await connection();
-  return (
-    <>
-      <NewWholesale />
-      <StorefrontFooter year={new Date().getUTCFullYear()} />
-    </>
-  );
+export default async function NewWholesalePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(await searchParams)) {
+    if (Array.isArray(value)) value.forEach((item) => query.append(key, item));
+    else if (value !== undefined) query.set(key, value);
+  }
+  const search = query.toString();
+  redirect(`/wholesale${search ? `?${search}` : ""}`);
 }

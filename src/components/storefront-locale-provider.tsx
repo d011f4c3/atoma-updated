@@ -51,6 +51,7 @@ export function StorefrontLocaleProvider({
       pathname !== "/about" &&
       pathname !== "/samples" &&
       pathname !== "/shop" &&
+      pathname !== "/wholesale" &&
       !pathname.startsWith("/shop/")
     )
       return;
@@ -59,11 +60,13 @@ export function StorefrontLocaleProvider({
         ? "about"
         : pathname === "/samples"
           ? "samples"
-          : pathname === "/shop"
-            ? "shop"
-            : pathname.startsWith("/shop/")
-              ? "product"
-              : "home",
+          : pathname === "/wholesale"
+            ? "wholesale"
+            : pathname === "/shop"
+              ? "shop"
+              : pathname.startsWith("/shop/")
+                ? "product"
+                : "home",
       locale,
     );
     document.title = metadata.title;

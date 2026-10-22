@@ -92,7 +92,9 @@ function retryLocation(request: Request): string {
     const referer = new URL(request.headers.get("referer") ?? "");
     if (
       referer.origin === origin &&
-      /^(?:\/|\/shop(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)?)$/.test(referer.pathname)
+      /^(?:\/|\/wholesale|\/shop(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)?)$/.test(
+        referer.pathname,
+      )
     ) {
       path = referer.pathname;
       // Preserve the homepage's explicit product selection, never arbitrary

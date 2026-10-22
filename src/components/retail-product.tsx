@@ -63,7 +63,7 @@ export function RetailProduct({
     Number.isSafeInteger(purchaseVariant.priceMinor * quantity)
       ? money(purchaseVariant.priceMinor * quantity, purchaseVariant.currency)
       : "—";
-  const collectionHref = "/shop";
+  const collectionHref = "/wholesale";
   const productHref = (nextHandle: string) =>
     `/shop/${encodeURIComponent(nextHandle)}`;
   const related = model.products.filter((item) => item.handle !== handle);

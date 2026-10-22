@@ -1,6 +1,59 @@
 import type { TranslationTable } from "./types.ts";
 
 export const wholesaleTranslations = {
+  "Why ATOMA": {
+    "zh-Hans": "为什么选择 ATOMA",
+    "zh-Hant": "為什麼選擇 ATOMA",
+    ja: "ATOMAを選ぶ理由",
+  },
+  "Japanese matcha, selected for the way you work.": {
+    "zh-Hans": "为您的制作方式精选日本抹茶。",
+    "zh-Hant": "為您的製作方式精選日本抹茶。",
+    ja: "使い方に合わせて選んだ、日本の抹茶。",
+  },
+  "Selected for your menu": {
+    "zh-Hans": "为您的菜单精选",
+    "zh-Hant": "為您的菜單精選",
+    ja: "メニューに合わせた選定",
+  },
+  "Flavour, texture and application guide our selection, from tea service to lattes and recipes.":
+    {
+      "zh-Hans": "从纯茶到拿铁和各式料理，我们依据风味、口感与用途挑选抹茶。",
+      "zh-Hant": "從純茶到拿鐵和各式料理，我們依據風味、口感與用途挑選抹茶。",
+      ja: "お茶、ラテ、レシピ。それぞれの用途に合わせ、風味と口当たりを大切に選んでいます。",
+    },
+  "Try it in your kitchen": {
+    "zh-Hans": "在您的厨房里试用",
+    "zh-Hant": "在您的廚房裡試用",
+    ja: "いつもの一杯や一皿で試す",
+  },
+  "Taste all three matchas in the Sample Set and compare them in your own drinks and dishes.":
+    {
+      "zh-Hans": "品尝品鉴套装中的三款抹茶，在您自己的饮品与料理中比较它们。",
+      "zh-Hant": "品嚐品鑑套組中的三款抹茶，在您自己的飲品與料理中比較它們。",
+      ja: "サンプルセットの3種類を、ご自身のドリンクや料理で試して比べてみてください。",
+    },
+  "Know your matcha": {
+    "zh-Hans": "了解您的抹茶",
+    "zh-Hant": "了解您的抹茶",
+    ja: "抹茶を知って選ぶ",
+  },
+  "Clear tasting profiles, preparation guidance and origin notes help you choose with confidence.":
+    {
+      "zh-Hans": "清晰的风味介绍、调制指南与产地说明，帮助您更有把握地选择。",
+      "zh-Hant": "清晰的風味介紹、調製指南與產地說明，幫助您更有把握地選擇。",
+      ja: "味わいの特徴、調製の案内、産地についての説明が、納得のいく抹茶選びを支えます。",
+    },
+  "For lattes, tea service and recipes.": {
+    "zh-Hans": "用于拿铁、纯茶与烘焙。",
+    "zh-Hant": "用於拿鐵、純茶與烘焙。",
+    ja: "ラテ、お茶、レシピに。",
+  },
+  "Try the Sample Set": {
+    "zh-Hans": "试试品鉴套装",
+    "zh-Hant": "試試品鑑套組",
+    ja: "サンプルセットを試す",
+  },
   "Quick view": {
     "zh-Hans": "快速查看",
     "zh-Hant": "快速查看",

@@ -9,9 +9,11 @@ import styles from "./about-selection-invitation.module.css";
 export function AboutSelectionInvitation({
   t,
   busy,
+  collectionHref = "/shop",
 }: {
   t: (source: string) => string;
   busy: boolean;
+  collectionHref?: string;
 }) {
   return (
     <section
@@ -24,7 +26,7 @@ export function AboutSelectionInvitation({
       <div className={styles.heading}>
         <h2 id="closing-title">{t("Find your matcha.")}</h2>
         <Link
-          href="/shop"
+          href={collectionHref}
           className={styles.selectionLink}
           aria-disabled={busy || undefined}
           onClick={(event) => {

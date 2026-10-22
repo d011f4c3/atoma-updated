@@ -12,6 +12,7 @@ const canonicalPages = new Set([
   "/new-hero7/origins",
   "/new-hero7/wholesale",
   "/shop",
+  "/wholesale",
   "/samples",
   "/about",
   "/origins",

@@ -2,6 +2,37 @@
 
 ## Scope and authority
 
+- **Task 0270 explains Why ATOMA beneath Wholesale:** read
+  `docs/tasks/0270-wholesale-why-atoma.md`. Add a concise customer-facing section
+  below the catalog about application-led selection, sampling and useful product
+  guidance. Preserve shopping geometry, exact orders, guards, localized copy,
+  both themes and factual boundaries; use a real Sample Set destination.
+
+- **Task 0269 balances the mobile homepage entrance:** read
+  `docs/tasks/0269-balanced-mobile-hero.md`. Redistribute space between the
+  introduction, three applications and Sample Set action, with calmer image
+  scale and a bounded gap below navigation. Preserve desktop, approved assets,
+  all application entrances, facts, themes, localization and commerce state.
+
+- **Task 0268 makes mobile Wholesale a simple card shop:** read
+  `docs/tasks/0268-mobile-wholesale-cards.md`. Use one vertical column of visual
+  product cards with visible real buying controls. Preserve the approved desktop
+  layout, direct product links, optional learning, search, exact order state,
+  both themes, localization and commerce guards.
+
+- **Task 0267 refines the canonical homepage hero:** read
+  `docs/tasks/0267-homepage-hero-spacing-and-scale.md`. Group the mobile heading,
+  three application entrances and Sample Set action with deliberate spacing,
+  and reduce canonical desktop heading/image scale. Preserve the composition,
+  complete objects, localization, motion, palettes and selection behavior.
+
+- **Task 0266 simplifies and adopts Wholesale:** read
+  `docs/tasks/0266-simple-wholesale-store.md`. Make `/wholesale` the canonical
+  Wholesale navigation destination, redirect `/new-wholesale` with its query,
+  and use a concise visual catalog with compact real purchase controls and a
+  prominent Sample Set invitation. Preserve direct product pages, exact order
+  state, search, localization, factual boundaries and commerce guards.
+
 - **Task 0265 refines the complete shopping journey:** read
   `docs/tasks/0265-shopping-journey-refinement.md`. Bring canonical product buying
   into the first view, with focused interactive Profile/Preparation/Origin

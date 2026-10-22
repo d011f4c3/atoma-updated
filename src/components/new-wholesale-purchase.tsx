@@ -107,6 +107,8 @@ export function NewWholesalePurchase({
   const canDecrease = Boolean(
     variant && available && quantity > variant.minimum,
   );
+  const compactUnavailable =
+    ready && Boolean(variant) && !available && product.variants.length === 1;
   const purchaseError =
     owner.feedback?.handle === product.handle &&
     !owner.feedback.pending &&
@@ -164,7 +166,9 @@ export function NewWholesalePurchase({
         {product.variants.length > 1 ||
         (product.variants.length > 0 && !variant) ? (
           <div className={styles.formatSelect}>
-            <label htmlFor={formatId}>{t("Format")}</label>
+            <label className={styles.visuallyHidden} htmlFor={formatId}>
+              {t("Format")}
+            </label>
             <select
               id={formatId}
               value={variant?.id ?? ""}
@@ -192,68 +196,78 @@ export function NewWholesalePurchase({
         )}
         <span className={styles.unitPrice} data-wholesale-unit-price>
           {unitPrice}
-          <small>{ready && variant ? t("/ UNIT") : ""}</small>
         </span>
-        {(!ready || !variant || !available || !validQuantity) && (
-          <span
-            className={styles.status}
-            role="status"
-            data-wholesale-purchase-status
-          >
-            {refreshing
-              ? t("Updating prices…")
-              : needsReview
-                ? t("Review your selection")
-                : !pricesReady
-                  ? t("Loading prices and availability…")
-                  : !variant
-                    ? t("Choose a format")
-                    : !available
-                      ? t("Currently unavailable")
-                      : t("This format’s quantity is currently unavailable.")}
-          </span>
-        )}
+        {!compactUnavailable &&
+          (!ready || !variant || !available || !validQuantity) && (
+            <span
+              className={styles.status}
+              role="status"
+              data-wholesale-purchase-status
+            >
+              {refreshing
+                ? t("Updating prices…")
+                : needsReview
+                  ? t("Review your selection")
+                  : !pricesReady
+                    ? t("Loading prices and availability…")
+                    : !variant
+                      ? t("Choose a format")
+                      : !available
+                        ? t("Currently unavailable")
+                        : t("This format’s quantity is currently unavailable.")}
+            </span>
+          )}
       </div>
-      <div className={styles.quantity}>
-        <span className={styles.label}>{t("Quantity")}</span>
-        <div className={styles.stepper}>
-          <button
-            type="button"
-            aria-label={t("Decrease quantity")}
-            disabled={locked || !canDecrease}
-            onClick={() => changeQuantity(-1)}
-          >
-            −
-          </button>
+      <div className={styles.controls}>
+        {compactUnavailable ? (
           <output
+            className={styles.visuallyHidden}
             aria-label={t("Quantity")}
             data-wholesale-quantity
-            aria-live="polite"
           >
             {quantity}
           </output>
-          <button
-            type="button"
-            aria-label={t("Increase quantity")}
-            disabled={locked || !canIncrease}
-            onClick={() => changeQuantity(1)}
-          >
-            +
-          </button>
-        </div>
-      </div>
-      <div className={styles.checkout}>
-        <div className={styles.total}>
-          <span className={styles.label}>{t("Total")}</span>
-          <output data-wholesale-total aria-live="polite">
-            {total}
-          </output>
-        </div>
-        <div data-wholesale-add>
+        ) : (
+          <div className={styles.quantity}>
+            <span className={styles.visuallyHidden}>{t("Quantity")}</span>
+            <div className={styles.stepper}>
+              <button
+                type="button"
+                aria-label={t("Decrease quantity")}
+                disabled={locked || !canDecrease}
+                onClick={() => changeQuantity(-1)}
+              >
+                −
+              </button>
+              <output
+                aria-label={t("Quantity")}
+                data-wholesale-quantity
+                aria-live="polite"
+              >
+                {quantity}
+              </output>
+              <button
+                type="button"
+                aria-label={t("Increase quantity")}
+                disabled={locked || !canIncrease}
+                onClick={() => changeQuantity(1)}
+              >
+                +
+              </button>
+            </div>
+          </div>
+        )}
+        <div className={styles.checkout} data-wholesale-add>
           {ready && !available ? (
             <button className={styles.blockedButton} type="button" disabled>
-              <span>{t("Add to cart")}</span>
-              <span aria-hidden="true">+</span>
+              <span
+                role={compactUnavailable ? "status" : undefined}
+                data-wholesale-purchase-status={
+                  compactUnavailable ? true : undefined
+                }
+              >
+                {t(variant ? "Currently unavailable" : "Choose a format")}
+              </span>
             </button>
           ) : (
             <AddToCartButton
@@ -266,6 +280,18 @@ export function NewWholesalePurchase({
             />
           )}
         </div>
+      </div>
+      <div
+        className={
+          quantity > 1 && !compactUnavailable
+            ? styles.total
+            : styles.visuallyHidden
+        }
+      >
+        <span className={styles.label}>{t("Total")}</span>
+        <output data-wholesale-total aria-live="polite">
+          {total}
+        </output>
       </div>
       {variant && (variant.minimum > 1 || variant.increment > 1) && (
         <p className={styles.note}>

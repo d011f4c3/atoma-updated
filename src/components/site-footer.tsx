@@ -118,7 +118,7 @@ export function SiteFooter({
         <nav className={styles.navigation} aria-label={t("Footer navigation")}>
           <Link
             className={styles.destination}
-            href="/shop"
+            href={canonical ? "/wholesale" : "/shop"}
             aria-disabled={busy || undefined}
             onClick={(event) => {
               if (busy) event.preventDefault();

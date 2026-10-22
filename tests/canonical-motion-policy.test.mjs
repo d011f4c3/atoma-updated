@@ -21,6 +21,8 @@ const canonical = [
   "/new-hero7/wholesale",
   "/shop",
   "/shop/",
+  "/wholesale",
+  "/wholesale/",
   "/shop/jmm-storefront-test-matcha",
   "/samples",
   "/about",
@@ -38,6 +40,7 @@ const studies = [
   "/origins-study",
   "/concept-02",
   "/shopper",
+  "/wholesale-study",
   null,
 ];
 

@@ -455,9 +455,9 @@ async function homepageCase(browser, width, height) {
       "Footer controls must unlock after the mocked cart response",
     );
     await assertSelection(page);
-    assert.equal(await shop.getAttribute("href"), "/shop");
+    assert.equal(await shop.getAttribute("href"), "/wholesale");
     await shop.click();
-    await page.waitForURL(`${baseURL}/shop`);
+    await page.waitForURL(`${baseURL}/wholesale`);
     await assertFooter(page, "dark");
     await page.reload({ waitUntil: "domcontentloaded" });
     await assertFooter(page, "dark");

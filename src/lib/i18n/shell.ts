@@ -370,6 +370,11 @@ export const shellTranslations = {
     "zh-Hant": "ATOMA — 選購抹茶",
     ja: "ATOMA — 抹茶を選ぶ",
   },
+  "ATOMA — Wholesale matcha": {
+    "zh-Hans": "ATOMA — 抹茶批发",
+    "zh-Hant": "ATOMA — 抹茶批發",
+    ja: "ATOMA — 抹茶の卸売",
+  },
   "ATOMA — Matcha selection": {
     "zh-Hans": "ATOMA — 抹茶选择",
     "zh-Hant": "ATOMA — 抹茶選擇",

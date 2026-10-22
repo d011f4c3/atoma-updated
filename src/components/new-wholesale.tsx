@@ -8,7 +8,8 @@ import {
   searchWholesaleLibrary,
   type WholesaleLibraryEntry,
 } from "@/lib/wholesale-library";
-import { money } from "@/lib/product-selection";
+import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
+import { FoilPouch } from "./sample-foil-trio";
 import { useCart } from "./cart-drawer";
 import { useHomepageJourney } from "./homepage-journey-provider";
 import { HomeHeader } from "./home-header";
@@ -27,6 +28,24 @@ import {
 import revealStyles from "./page-reveals.module.css";
 import styles from "./new-wholesale.module.css";
 
+const wholesaleReasons = [
+  {
+    title: "Selected for your menu",
+    description:
+      "Flavour, texture and application guide our selection, from tea service to lattes and recipes.",
+  },
+  {
+    title: "Try it in your kitchen",
+    description:
+      "Taste all three matchas in the Sample Set and compare them in your own drinks and dishes.",
+  },
+  {
+    title: "Know your matcha",
+    description:
+      "Clear tasting profiles, preparation guidance and origin notes help you choose with confidence.",
+  },
+] as const;
+
 export function NewWholesale() {
   const { t, locale } = useStorefrontLocale();
   const { tone } = useStorefrontTheme();
@@ -36,11 +55,7 @@ export function NewWholesale() {
   const productDialog = useWholesaleDialog();
   const params = useSearchParams();
   const query = params.get("q") ?? "";
-  const [imagery, setImagery] = useState<"material" | "application">(
-    "material",
-  );
   const [searchOpen, setSearchOpen] = useState(false);
-  const [openOrder, setOpenOrder] = useState<string | null>(null);
   const searchToggle = useRef<HTMLButtonElement>(null);
   const searchId = useId();
   const searchInput = useRef<HTMLInputElement>(null);
@@ -83,7 +98,7 @@ export function NewWholesale() {
     if (!entry.productKey) return entry.href ?? "#";
     const next = new URLSearchParams(params.toString());
     next.set("matcha", entry.productKey);
-    return `/new-wholesale?${next.toString()}`;
+    return `/wholesale?${next.toString()}`;
   }
 
   function rememberProduct(entry: WholesaleLibraryEntry) {
@@ -108,12 +123,40 @@ export function NewWholesale() {
             <h1 ref={heading} tabIndex={-1} data-wholesale-collection-heading>
               <ScrambleText text={t("Matcha for your menu.")} wrap />
             </h1>
+            <p className={styles.introCopy}>
+              {t("For lattes, tea service and recipes.")}
+            </p>
           </div>
-          <p className={styles.introCopy}>
-            {t(
-              "A clear view of the matcha. A considered choice for what you make.",
-            )}
-          </p>
+          <Link
+            className={styles.samples}
+            href="/samples"
+            aria-disabled={cart.navigationBusy || undefined}
+            onClick={(event) => {
+              if (cart.navigationBusy) event.preventDefault();
+            }}
+            onNavigate={(event) => {
+              if (cart.navigationBusy) event.preventDefault();
+            }}
+          >
+            <span className={styles.sampleImage} aria-hidden="true">
+              {SAMPLE_SET_CONTENTS.map((item) => (
+                <span key={item.key}>
+                  <FoilPouch item={item} />
+                </span>
+              ))}
+            </span>
+            <span className={styles.sampleCopy}>
+              <span className={styles.sampleTitle}>
+                {t("Find your matcha.")}
+              </span>
+              <span className={styles.sampleSize}>
+                {t("Three matcha · 20 g each")}
+              </span>
+              <span className={styles.sampleAction}>
+                {t("Try the Sample Set")} <span aria-hidden="true">↗</span>
+              </span>
+            </span>
+          </Link>
         </header>
 
         {/* A permanent library toolbar. Verified future facets can join search
@@ -125,23 +168,6 @@ export function NewWholesale() {
               {model.loading ? "—" : String(results.length).padStart(2, "0")}
             </span>
           </h2>
-          <div
-            className={styles.viewControls}
-            aria-label={t("Product imagery")}
-          >
-            {(["material", "application"] as const).map((view) => (
-              <button
-                type="button"
-                key={view}
-                aria-pressed={imagery === view}
-                disabled={cart.navigationBusy}
-                data-wholesale-imagery={view}
-                onClick={() => setImagery(view)}
-              >
-                {t(view === "material" ? "Matcha" : "In use")}
-              </button>
-            ))}
-          </div>
           <button
             type="button"
             className={styles.searchToggle}
@@ -180,7 +206,7 @@ export function NewWholesale() {
               data-wholesale-search
               type="search"
               value={query}
-              placeholder={t("Name, code or application")}
+              placeholder={t("Search matcha")}
               autoComplete="off"
               disabled={cart.navigationBusy}
               onChange={(event) => updateSearch(event.target.value)}
@@ -250,19 +276,7 @@ export function NewWholesale() {
                 data-large-library={library.length > 3 || undefined}
               >
                 {library.map((entry, index) => {
-                  const variant = entry.offer?.fromVariant;
-                  const format =
-                    variant?.title === "Default Title"
-                      ? t("Standard")
-                      : variant?.title;
-                  const price = !pricesReady
-                    ? t("Updating prices…")
-                    : variant
-                      ? money(variant.priceMinor, variant.currency)
-                      : t("Currently unavailable");
                   const blocked = cart.navigationBusy || !entry.href;
-                  const expanded = openOrder === entry.product.handle;
-                  const purchaseId = `${searchId}-order-${index}`;
                   return (
                     <article
                       key={`${entry.product.id}-${index}`}
@@ -270,13 +284,20 @@ export function NewWholesale() {
                       hidden={!visibleEntries.has(entry)}
                       data-wholesale-product={entry.product.handle}
                       data-known={Boolean(entry.productKey) || undefined}
-                      data-order-open={expanded || undefined}
                     >
-                      <div className={styles.productIdentity}>
+                      <div className={styles.visual}>
+                        <div className={styles.productCaption}>
+                          <span>{entry.application}</span>
+                          {entry.code && (
+                            <span className={styles.code}>◇ {entry.code}</span>
+                          )}
+                        </div>
                         <Link
                           href={entry.href ?? "#"}
                           className={styles.material}
-                          data-wholesale-image={imagery}
+                          data-wholesale-image={
+                            entry.productKey ? "application" : "material"
+                          }
                           data-wholesale-direct-link="image"
                           aria-label={t("View {name}", { name: entry.name })}
                           aria-disabled={blocked || undefined}
@@ -288,7 +309,7 @@ export function NewWholesale() {
                             else rememberProduct(entry);
                           }}
                         >
-                          {imagery === "application" && entry.productKey ? (
+                          {entry.productKey ? (
                             <ProductApplicationCutout
                               productKey={entry.productKey}
                             />
@@ -309,62 +330,6 @@ export function NewWholesale() {
                               {entry.code ?? t("Matcha")}
                             </span>
                           )}
-                        </Link>
-                        <header className={styles.identity}>
-                          <h3>
-                            <Link
-                              href={entry.href ?? "#"}
-                              data-wholesale-direct-link="name"
-                              aria-disabled={blocked || undefined}
-                              onClick={(event) => {
-                                if (blocked) event.preventDefault();
-                              }}
-                              onNavigate={(event) => {
-                                if (blocked) event.preventDefault();
-                                else rememberProduct(entry);
-                              }}
-                            >
-                              {entry.name}
-                            </Link>
-                          </h3>
-                          {entry.code && (
-                            <p className={styles.code}>◇ {entry.code}</p>
-                          )}
-                        </header>
-                      </div>
-                      <div className={styles.profile}>
-                        {entry.application && (
-                          <p className={styles.application}>
-                            {entry.application}
-                          </p>
-                        )}
-                        {entry.flavour && (
-                          <p className={styles.flavour}>{entry.flavour}</p>
-                        )}
-                        {entry.origin && (
-                          <p className={styles.origin}>
-                            <span>{entry.origin.label}</span>{" "}
-                            {entry.origin.value}
-                          </p>
-                        )}
-                      </div>
-                      <div className={styles.productActions}>
-                        <Link
-                          href={entry.href ?? "#"}
-                          className={styles.details}
-                          data-wholesale-direct-link="details"
-                          aria-label={t("View {name}", { name: entry.name })}
-                          aria-disabled={blocked || undefined}
-                          onClick={(event) => {
-                            if (blocked) event.preventDefault();
-                          }}
-                          onNavigate={(event) => {
-                            if (blocked) event.preventDefault();
-                            else rememberProduct(entry);
-                          }}
-                        >
-                          <span>{t("View matcha")}</span>
-                          <span aria-hidden="true">↗</span>
                         </Link>
                         {entry.productKey && (
                           <Link
@@ -400,52 +365,33 @@ export function NewWholesale() {
                               if (blocked) event.preventDefault();
                             }}
                           >
-                            <span>{t("Quick view")}</span>{" "}
                             <span aria-hidden="true">+</span>
                           </Link>
                         )}
                       </div>
-                      <div className={styles.mobileOrder}>
-                        <div className={styles.price} data-wholesale-price>
-                          <span>
-                            {entry.offer?.available &&
-                            entry.product.variants.length > 1
-                              ? `${t("From")} `
-                              : ""}
-                            {price}
-                          </span>
-                          {pricesReady && variant && (
-                            <span className={styles.format}>
-                              {t("Per {format}", {
-                                format: format ?? t("Standard"),
-                              })}
-                            </span>
-                          )}
-                        </div>
-                        {entry.status === "ready" && (
-                          <button
-                            type="button"
-                            className={styles.orderToggle}
-                            data-wholesale-order-toggle
-                            aria-expanded={expanded}
-                            aria-controls={purchaseId}
-                            disabled={cart.navigationBusy}
-                            onClick={() =>
-                              setOpenOrder(
-                                expanded ? null : entry.product.handle,
-                              )
-                            }
+                      <header className={styles.identity}>
+                        <h3>
+                          <Link
+                            href={entry.href ?? "#"}
+                            data-wholesale-direct-link="name"
+                            aria-disabled={blocked || undefined}
+                            onClick={(event) => {
+                              if (blocked) event.preventDefault();
+                            }}
+                            onNavigate={(event) => {
+                              if (blocked) event.preventDefault();
+                              else rememberProduct(entry);
+                            }}
                           >
-                            {t("Order")}{" "}
-                            <span aria-hidden="true">
-                              {expanded ? "−" : "+"}
-                            </span>
-                          </button>
-                        )}
-                      </div>
+                            {entry.name}
+                          </Link>
+                        </h3>
+                      </header>
+                      {entry.flavour && (
+                        <p className={styles.flavour}>{entry.flavour}</p>
+                      )}
                       <div
                         className={styles.purchaseRegion}
-                        id={purchaseId}
                         data-wholesale-purchase-region
                       >
                         {entry.status === "ready" ? (
@@ -483,30 +429,44 @@ export function NewWholesale() {
           </>
         )}
 
-        <Link
-          className={styles.samples}
-          href="/samples"
-          aria-disabled={cart.navigationBusy || undefined}
-          onClick={(event) => {
-            if (cart.navigationBusy) event.preventDefault();
-          }}
-          onNavigate={(event) => {
-            if (cart.navigationBusy) event.preventDefault();
-          }}
+        <section
+          className={styles.why}
+          aria-labelledby={`${searchId}-why`}
+          data-wholesale-why
+          data-page-reveal="rise"
         >
-          <div>
-            <span className={styles.eyebrow}>{t("The Sample Set")}</span>
-            <span className={styles.sampleTitle}>
-              {t("Find your matcha. Try all three.")}
-            </span>
+          <div className={styles.whyIntroduction}>
+            <h2 id={`${searchId}-why`}>{t("Why ATOMA")}</h2>
+            <p>{t("Japanese matcha, selected for the way you work.")}</p>
           </div>
-          <span className={styles.sampleSize}>
-            {t("Three matcha · 20 g each")}
-          </span>
-          <span className={styles.sampleAction}>
-            {t("Explore the set")} <span aria-hidden="true">↗</span>
-          </span>
-        </Link>
+          <div className={styles.whyReasons}>
+            {wholesaleReasons.map((reason) => (
+              <div
+                key={reason.title}
+                className={styles.whyReason}
+                data-wholesale-why-reason
+              >
+                <h3>{t(reason.title)}</h3>
+                <p>{t(reason.description)}</p>
+              </div>
+            ))}
+          </div>
+          <Link
+            href="/samples"
+            className={styles.whyAction}
+            data-wholesale-why-action
+            aria-disabled={cart.navigationBusy || undefined}
+            onClick={(event) => {
+              if (cart.navigationBusy) event.preventDefault();
+            }}
+            onNavigate={(event) => {
+              if (cart.navigationBusy) event.preventDefault();
+            }}
+          >
+            {t("Try the Sample Set")}
+            <span aria-hidden="true">↗</span>
+          </Link>
+        </section>
       </div>
       <NewWholesaleDialog controller={productDialog} />
     </main>

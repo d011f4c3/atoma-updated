@@ -14,10 +14,23 @@
   font-weight: 300;
 }
 
-/* The adopted homepage keeps the selected proportions, with a quieter title. */
+/* Keep the adopted hero's type and whole-object imagery at a quieter scale. */
 @media (min-width: 761px) {
   .frame[data-homepage] :global([data-new-hero7-hero]) h1 {
-    font-size: calc(clamp(2rem, 3.5vw, 3.4rem) + var(--locale-font-increment));
+    font-size: calc(
+      clamp(1.875rem, 2.9vw, 2.875rem) + var(--locale-font-increment)
+    );
+  }
+
+  .frame[data-homepage] :global([data-new-hero7-material]) {
+    justify-content: flex-end;
+  }
+
+  .frame[data-homepage] :global([data-new-hero7-material]) > div {
+    flex: 0.86;
+    align-self: center;
+    width: min(86%, 70rem);
+    min-height: 0;
   }
 }
 
@@ -29,10 +42,13 @@
   }
 }
 
-/* Entrance motion starts once the loading readout has cleared, not behind it. */
-.frame[data-hero-paused] :global([data-page-enter]),
-.frame[data-hero-paused] :global([data-new-hero7-material]) img {
-  animation-play-state: paused;
+/* Reset an entrance that may have started before hydration, then let it run
+   from the beginning when the loading readout clears. Without client script,
+   this attribute is absent and the existing visible HTML fallback remains. */
+.frame[data-homepage][data-hero-paused] :global([data-page-enter]),
+.frame[data-homepage][data-hero-paused] :global([data-new-hero7-material]) img {
+  animation: none;
+  opacity: 0;
 }
 
 .experienceStage {

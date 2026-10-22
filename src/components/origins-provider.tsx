@@ -54,6 +54,7 @@ export function OriginsProvider({ children }: { children: ReactNode }) {
     pathname === "/" ||
     pathname === "/about" ||
     pathname === "/samples" ||
+    pathname === "/wholesale" ||
     pathname === "/origins" ||
     pathname.startsWith("/field-notes/") ||
     /^\/shop(?:\/[^/]+)?$/.test(pathname);
