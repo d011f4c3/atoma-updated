@@ -68,6 +68,12 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+.header[data-storefront-navigation] .navigation,
+.header[data-storefront-navigation] .cart,
+.header[data-storefront-navigation] :global([data-destination-control]) {
+  font-family: var(--font-atoma-mono-light), monospace;
+  font-weight: 300;
+}
 .control {
   display: flex;
   min-width: 8.5rem;
@@ -874,6 +880,41 @@
   .dialogHeader {
     padding: 0.625rem 0.875rem;
   }
+
+  .header[data-storefront-navigation] .responsivePanel {
+    max-height: calc(100svh - 100% - 1rem);
+    max-height: calc(100dvh - 100% - 1rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  .header[data-storefront-navigation] .responsivePanel .control {
+    min-height: 3rem;
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+
+  .header[data-storefront-navigation] .mobileTheme {
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    padding-top: 0.75rem;
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  }
+
+  .header[data-storefront-navigation] .mobileTheme select {
+    min-width: 0;
+    max-width: 100%;
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+
+  .header[data-storefront-navigation]
+    .mobileTheme
+    :global([data-appearance-controls]) {
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
+  }
 }
 
 /* Plain text is the chosen navigation; button surfaces appear on interaction. */
@@ -939,6 +980,22 @@
   background: var(--nav-surface);
   box-shadow: var(--nav-shadow, none);
   text-decoration: none;
+}
+
+/* A continuous active marker stays intact while the label's glyphs resolve. */
+.header[data-storefront-navigation] .navigation .control[aria-current="page"] {
+  position: relative;
+  text-decoration: none;
+}
+.header[data-storefront-navigation] .control[aria-current="page"]::after {
+  position: absolute;
+  right: 0.35rem;
+  bottom: 0.375rem;
+  left: 0.35rem;
+  height: 1px;
+  background: currentColor;
+  content: "";
+  pointer-events: none;
 }
 
 .destination {

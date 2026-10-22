@@ -1,0 +1,1981 @@
+.root {
+  min-width: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+
+.product {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 1.5rem 1.5rem 0 0;
+  scroll-margin-top: 1.5rem;
+}
+
+.product:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.product + .product {
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--line);
+}
+
+.product:last-child {
+  padding-right: 0;
+}
+
+.identity {
+  margin-bottom: 1rem;
+}
+
+.applicationNumber {
+  display: none;
+}
+
+.identity h3 {
+  margin: 0 0 0.75rem;
+  color: var(--ink);
+  font-size: calc(1.125rem + var(--locale-font-increment, 0px));
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.nameLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.875rem;
+}
+
+.productLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  color: var(--ink);
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.code {
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.imagery :global([data-product-application-image]) > div {
+  height: clamp(11.25rem, 15vw, 13.125rem);
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+}
+
+.imagery figcaption {
+  min-height: 2.8em;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  line-height: 1.4;
+}
+
+.usage {
+  margin: 1rem 0 1.25rem;
+  color: var(--muted);
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+
+.purchase {
+  margin-top: auto;
+}
+
+.priceLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.purchaseKind {
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+}
+
+.price {
+  margin: 0.375rem 0 0;
+  color: var(--ink);
+  font-size: calc(1.125rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+}
+
+.perUnit {
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+}
+
+.status {
+  max-width: 24ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+}
+
+.formats {
+  min-width: 0;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.formats legend,
+.quantity > span,
+.total > span {
+  margin-bottom: 0.625rem;
+  color: var(--muted);
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+}
+
+.formats > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.formats button,
+.message button {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.formats button[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.formats button small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.formatMessage,
+.quantityNote {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+
+.orderLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.quantity,
+.total {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.stepper {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(2.25rem, auto) 2.75rem;
+  align-items: center;
+  min-height: 2.75rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.stepper button {
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.stepper output {
+  padding: 0 0.25rem;
+  color: var(--ink);
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+  text-align: center;
+}
+
+.total {
+  margin-left: auto;
+  text-align: right;
+}
+
+.total output {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: end;
+  color: var(--ink);
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+}
+
+.add {
+  margin-top: 1.25rem;
+}
+
+.add > button {
+  --treatment-fill: var(--ink);
+  --treatment-edge: var(--ink);
+  --study-action: color-mix(in srgb, var(--surface) 12%, var(--ink));
+  --study-action-ink: var(--surface);
+  border-radius: 3px;
+  background: var(--ink);
+  color: var(--surface);
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+}
+
+.message {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  color: var(--muted);
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+
+.message p,
+.error {
+  margin: 0;
+}
+
+.error {
+  margin-bottom: 1.25rem;
+  color: var(--ink);
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+
+.purchaseError {
+  margin: 0.75rem 0 0;
+  color: var(--ink);
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+
+.root :is(a, button):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.root :is(button:disabled, [aria-disabled="true"]) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .productLink:is(:hover, :focus-visible) > span:first-child {
+    box-shadow: 0 1px currentColor;
+  }
+}
+
+@media (max-width: 1000px) and (min-width: 761px) {
+  .product {
+    padding-right: 1rem;
+  }
+
+  .product + .product {
+    padding-left: 1rem;
+  }
+
+  .nameLine {
+    align-items: start;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product,
+  .product + .product {
+    padding: 1.5rem 0;
+    border-left: 0;
+  }
+
+  .product + .product {
+    border-top: 1px solid var(--line);
+  }
+
+  .identity h3 {
+    font-size: calc(1.125rem + var(--locale-font-increment, 0px));
+  }
+
+  .productLink {
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+
+  .code {
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  }
+
+  .imagery :global([data-product-application-image]) > div {
+    height: 8.75rem;
+  }
+
+  .imagery figcaption {
+    min-height: 0;
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+    line-height: 1.5;
+  }
+
+  .usage,
+  .message,
+  .error,
+  .purchaseError {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+
+  .formats legend,
+  .quantity > span,
+  .total > span {
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+}
+
+.root[data-presentation="rows"] .grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.root[data-presentation="rows"] .product {
+  display: grid;
+  grid-template-areas:
+    "identity imagery purchase"
+    "usage imagery purchase";
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr) minmax(0, 2.1fr);
+  grid-template-rows: auto 1fr;
+  gap: 1.25rem clamp(1.25rem, 2.5vw, 2.5rem);
+  align-items: start;
+  padding: 2rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 2rem;
+}
+
+.root[data-presentation="rows"] .identity {
+  grid-area: identity;
+  min-width: 0;
+  margin: 0;
+}
+
+.root[data-presentation="rows"] .applicationNumber {
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.root[data-presentation="rows"] .identity h3 {
+  margin-bottom: 0.5rem;
+  font-size: calc(1.375rem + var(--locale-font-increment, 0px));
+  line-height: 1.35;
+}
+
+.root[data-presentation="rows"] .nameLine {
+  align-items: start;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.root[data-presentation="rows"] .imagery {
+  grid-area: imagery;
+  min-width: 0;
+}
+
+.root[data-presentation="rows"]
+  .imagery
+  :global([data-product-application-image])
+  > div {
+  height: clamp(11.25rem, 16vw, 14rem);
+}
+
+.root[data-presentation="rows"] .imagery figcaption {
+  min-height: 0;
+}
+
+.root[data-presentation="rows"] .usage {
+  grid-area: usage;
+  margin: 0;
+}
+
+.root[data-presentation="rows"] .purchase {
+  display: grid;
+  grid-area: purchase;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 1rem 1.25rem;
+  min-width: 0;
+  margin: 0;
+}
+
+.root[data-presentation="rows"] .priceLine {
+  grid-column: 1 / -1;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.root[data-presentation="rows"] .price {
+  font-size: calc(1.25rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="rows"] .formats {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.root[data-presentation="rows"] .orderLine {
+  grid-column: 1;
+  grid-row: 3;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.root[data-presentation="rows"] .add {
+  grid-column: 2;
+  grid-row: 3;
+  align-self: end;
+  margin: 0;
+}
+
+.root[data-presentation="rows"] :is(.quantityNote, .purchaseError) {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+@media (max-width: 1100px) {
+  .root[data-presentation="rows"] .product {
+    grid-template-areas:
+      "identity imagery"
+      "usage imagery"
+      "purchase purchase";
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.65fr);
+    grid-template-rows: auto 1fr auto;
+    gap: 1.25rem 2rem;
+  }
+
+  .root[data-presentation="rows"]
+    .imagery
+    :global([data-product-application-image])
+    > div {
+    height: 10rem;
+  }
+
+  .root[data-presentation="rows"] .purchase {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 600px) {
+  .root[data-presentation="rows"] .product {
+    grid-template-areas:
+      "identity imagery"
+      "usage usage"
+      "caption caption"
+      "purchase purchase";
+    grid-template-columns: minmax(0, 1fr) 6.25rem;
+    grid-template-rows: auto;
+    gap: 0.875rem 1rem;
+    padding: 1.5rem 0;
+  }
+
+  .root[data-presentation="rows"] .applicationNumber {
+    margin-bottom: 0.75rem;
+  }
+
+  .root[data-presentation="rows"] .identity h3 {
+    font-size: calc(1.125rem + var(--locale-font-increment, 0px));
+  }
+
+  .root[data-presentation="rows"] .imagery,
+  .root[data-presentation="rows"]
+    .imagery
+    :global([data-product-application-image]) {
+    display: contents;
+  }
+
+  .root[data-presentation="rows"]
+    .imagery
+    :global([data-product-application-image])
+    > div {
+    grid-area: imagery;
+    width: 6.25rem;
+    height: 6.25rem;
+  }
+
+  .root[data-presentation="rows"] .imagery figcaption {
+    grid-area: caption;
+    margin: 0;
+  }
+
+  .root[data-presentation="rows"]
+    .imagery
+    :global([data-product-application-fallback]) {
+    padding: 0.375rem;
+    overflow-wrap: anywhere;
+  }
+
+  .root[data-presentation="rows"] .purchase {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 1rem;
+  }
+
+  .root[data-presentation="rows"] :is(.orderLine, .add) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
+.root[data-presentation="counter"] .grid {
+  gap: clamp(1.25rem, 3vw, 3rem);
+}
+
+.root[data-presentation="counter"] .product {
+  padding: 1rem 0 0;
+  border: 0;
+}
+
+.root[data-presentation="counter"] .identity {
+  margin-bottom: 0.5rem;
+}
+
+.root[data-presentation="counter"] .identity h3 {
+  margin-bottom: 0.375rem;
+  font-size: calc(
+    clamp(1.125rem, 1.6vw, 1.5rem) + var(--locale-font-increment, 0px)
+  );
+  line-height: 1.35;
+  letter-spacing: -0.035em;
+}
+
+.root[data-presentation="counter"] .nameLine {
+  gap: 0.125rem 0.75rem;
+}
+
+.root[data-presentation="counter"]
+  .imagery
+  :global([data-product-application-image])
+  > div {
+  height: 8.75rem;
+}
+
+.root[data-presentation="counter"] .imagery figcaption {
+  min-height: 0;
+  margin-top: 0.5rem;
+}
+
+.root[data-presentation="counter"] .usage {
+  margin: 0.75rem 0 0.75rem;
+  line-height: 1.5;
+}
+
+.root[data-presentation="counter"] .purchase {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.75rem 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.root[data-presentation="counter"] .priceLine {
+  display: block;
+  padding: 0;
+  border: 0;
+}
+
+.root[data-presentation="counter"] .price {
+  margin-top: 0.25rem;
+  font-size: calc(1.125rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="counter"] .status {
+  margin-top: 0.25rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="counter"] .formats {
+  margin: 0;
+}
+
+.root[data-presentation="counter"]
+  :is(.formats legend, .quantity > span, .total > span) {
+  margin-bottom: 0.375rem;
+}
+
+.root[data-presentation="counter"] .formats button {
+  padding-inline: 0.625rem;
+}
+
+.root[data-presentation="counter"] .orderLine {
+  grid-column: 1 / -1;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.root[data-presentation="counter"] :is(.quantityNote, .add, .purchaseError) {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+@media (max-width: 1100px) and (min-width: 761px) {
+  .root[data-presentation="counter"] .purchase {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .root[data-presentation="counter"] .priceLine {
+    display: flex;
+  }
+
+  .root[data-presentation="counter"] .status {
+    max-width: 13ch;
+  }
+}
+
+@media (max-width: 760px) {
+  .root[data-presentation="counter"] .grid {
+    gap: 0;
+  }
+
+  .root[data-presentation="counter"] .product {
+    padding: 1.5rem 0;
+  }
+
+  .root[data-presentation="counter"] .product + .product {
+    border-top: 1px solid var(--line);
+  }
+
+  .root[data-presentation="counter"] .identity h3 {
+    font-size: calc(1.375rem + var(--locale-font-increment, 0px));
+  }
+
+  .root[data-presentation="counter"]
+    .imagery
+    :global([data-product-application-image])
+    > div {
+    height: 7.5rem;
+  }
+
+  .root[data-presentation="counter"] .imagery figcaption {
+    min-height: 0;
+  }
+
+  .root[data-presentation="counter"] .usage {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+    line-height: 1.6;
+  }
+
+  .root[data-presentation="counter"] .purchase {
+    gap: 1rem;
+  }
+
+  .root[data-presentation="counter"]
+    :is(.formats button, .stepper output, .total output, .add > button) {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+
+  .root[data-presentation="counter"]
+    :is(.status, .quantityNote, .formatMessage) {
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+}
+
+@media (max-width: 360px) {
+  .root[data-presentation="counter"] .purchase {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .root[data-presentation="counter"] .priceLine {
+    display: flex;
+  }
+
+  .root[data-presentation="counter"] .status {
+    max-width: 13ch;
+  }
+}
+
+/* The fifth concept keeps its approved hero and gives each application a
+   self-contained card, with the same control radius as the opening actions. */
+.root[data-presentation="gallery"] .grid {
+  gap: clamp(1rem, 2vw, 1.75rem);
+  border: 0;
+}
+
+.root[data-presentation="gallery"] .product {
+  --card-inset: clamp(1rem, 1.8vw, 1.5rem);
+  container-type: inline-size;
+  padding: var(--card-inset);
+  border: 1px solid var(--line);
+  border-radius: calc(2 * var(--radius-button));
+  background: var(--color-raised);
+  box-shadow: 0 0.5rem 1.5rem color-mix(in srgb, var(--ink) 3%, transparent);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.root[data-presentation="gallery"] .identity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.375rem 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.root[data-presentation="gallery"] .applicationNumber {
+  display: block;
+  grid-column: 2;
+  grid-row: 1;
+  padding-top: 0.375rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+}
+
+.root[data-presentation="gallery"] .identity h3 {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  font-size: calc(
+    clamp(1.25rem, 1.7vw, 1.625rem) + var(--locale-font-increment, 0px)
+  );
+  line-height: 1.3;
+  letter-spacing: -0.04em;
+  overflow-wrap: anywhere;
+}
+
+.root[data-presentation="gallery"] .nameLine {
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: 0.25rem 0.5rem;
+}
+
+.root[data-presentation="gallery"] .productLink {
+  min-width: 0;
+}
+
+.root[data-presentation="gallery"] .productLink > span:first-child {
+  overflow-wrap: anywhere;
+}
+
+.root[data-presentation="gallery"]
+  .imagery
+  :global([data-product-application-image])
+  > div {
+  height: clamp(12rem, 18vw, 16rem);
+  overflow: hidden;
+  border-radius: calc(2 * var(--radius-button));
+}
+
+.root[data-presentation="gallery"]
+  .imagery
+  :global([data-product-application-image])
+  img {
+  border-radius: inherit;
+}
+
+.root[data-presentation="gallery"] .imagery figcaption {
+  min-height: 2.8em;
+  margin-top: 0.75rem;
+}
+
+.root[data-presentation="gallery"] .usage {
+  margin: 1rem 0 1.25rem;
+}
+
+.root[data-presentation="gallery"] .purchase {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.root[data-presentation="gallery"] .priceLine {
+  display: block;
+  padding: 0;
+  border: 0;
+}
+
+.root[data-presentation="gallery"] .status {
+  margin-top: 0.375rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="gallery"] .formats {
+  margin: 0;
+}
+
+.root[data-presentation="gallery"] .orderLine {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.root[data-presentation="gallery"] .quantity {
+  max-width: 100%;
+}
+
+.root[data-presentation="gallery"] .stepper {
+  width: 8rem;
+  max-width: 100%;
+  grid-template-columns: minmax(44px, 1fr) minmax(2rem, auto) minmax(44px, 1fr);
+}
+
+.root[data-presentation="gallery"]
+  :is(.formats button, .message button, .stepper, .add > button) {
+  border-radius: var(--radius-button);
+}
+
+.root[data-presentation="gallery"] :is(.add, .quantityNote, .purchaseError) {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .root[data-presentation="gallery"] .product:hover {
+    border-color: color-mix(in srgb, var(--ink) 35%, var(--line));
+    box-shadow: 0 0.75rem 2rem color-mix(in srgb, var(--ink) 5%, transparent);
+  }
+}
+
+@media (max-width: 1100px) {
+  .root[data-presentation="gallery"] .purchase {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .root[data-presentation="gallery"] .priceLine {
+    display: flex;
+  }
+}
+
+@media (max-width: 900px) {
+  .root[data-presentation="gallery"] .grid {
+    max-width: 36rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    margin-inline: auto;
+  }
+  .root[data-presentation="gallery"] .purchase {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .root[data-presentation="gallery"] .priceLine {
+    display: block;
+  }
+  .root[data-presentation="gallery"]
+    .imagery
+    :global([data-product-application-image])
+    > div {
+    height: 11rem;
+  }
+  .root[data-presentation="gallery"] .imagery figcaption {
+    min-height: 0;
+  }
+  .root[data-presentation="gallery"] .identity h3 {
+    font-size: calc(1.375rem + var(--locale-font-increment, 0px));
+  }
+  .root[data-presentation="gallery"]
+    :is(.formats button, .stepper output, .total output, .add > button) {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+  .root[data-presentation="gallery"]
+    :is(.status, .quantityNote, .formatMessage) {
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+}
+
+@container (max-width: 18rem) {
+  .root[data-presentation="gallery"] .purchase {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .root[data-presentation="gallery"] .priceLine {
+    display: flex;
+  }
+}
+
+.root[data-presentation="gallery"] .product:target {
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+/* A readable product folio: application, reference image and order together. */
+.root[data-presentation="folio"] .grid {
+  grid-template-columns: minmax(0, 1fr);
+  border: 0;
+  gap: 2rem;
+}
+
+.root[data-presentation="folio"] .product {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.85fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "imagery identity purchase" "imagery usage purchase";
+  gap: 0 clamp(1.5rem, 3vw, 3rem);
+  padding: 2rem 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.root[data-presentation="folio"] .identity {
+  grid-area: identity;
+  margin: 0;
+  padding-top: 0.5rem;
+}
+
+.root[data-presentation="folio"] .applicationNumber {
+  display: block;
+  margin-bottom: 1.25rem;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+}
+
+.root[data-presentation="folio"] .identity h3 {
+  margin-bottom: 1rem;
+  font-size: calc(
+    clamp(1.5rem, 2.1vw, 2rem) + var(--locale-font-increment, 0px)
+  );
+  line-height: 1.3;
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+}
+
+.root[data-presentation="folio"] .nameLine {
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.root[data-presentation="folio"] .productLink {
+  font-size: calc(0.9375rem + var(--locale-font-increment, 0px));
+  text-decoration: none;
+}
+
+.root[data-presentation="folio"] .productLink > span:first-child {
+  box-shadow: 0 1px currentColor;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.root[data-presentation="folio"] .imagery {
+  grid-area: imagery;
+  min-width: 0;
+}
+
+.root[data-presentation="folio"]
+  .imagery
+  :global([data-product-application-image])
+  > div {
+  height: clamp(16rem, 23vw, 22rem);
+  border-radius: calc(2 * var(--radius-button));
+  overflow: hidden;
+}
+
+.root[data-presentation="folio"] .imagery img {
+  border-radius: inherit;
+}
+
+.root[data-presentation="folio"] .imagery figcaption {
+  margin-top: 0.875rem;
+  min-height: 0;
+  line-height: 1.6;
+}
+
+.root[data-presentation="folio"] .usage {
+  grid-area: usage;
+  margin: 1.5rem 0 0;
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
+  line-height: 1.7;
+}
+
+.root[data-presentation="folio"] .purchase {
+  grid-area: purchase;
+  container-type: inline-size;
+  align-self: start;
+  min-width: 0;
+  margin: 0;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: calc(2 * var(--radius-button));
+  background: var(--color-raised);
+}
+
+.root[data-presentation="folio"] .priceLine {
+  padding: 0;
+  border: 0;
+}
+
+.root[data-presentation="folio"] .price {
+  font-size: calc(1.375rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="folio"] .status {
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="folio"]
+  :is(.formats button, .message button, .stepper, .add > button) {
+  border-radius: var(--radius-button);
+}
+
+.root[data-presentation="folio"] .quantity {
+  max-width: 100%;
+}
+
+.root[data-presentation="folio"] .stepper {
+  width: 8rem;
+  max-width: 100%;
+  grid-template-columns: minmax(44px, 1fr) minmax(2rem, auto) minmax(44px, 1fr);
+}
+
+.root[data-presentation="folio"] .product:target .purchase {
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+@media (max-width: 1099px) and (min-width: 761px) {
+  .root[data-presentation="folio"] .product {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas: "imagery identity" "imagery usage" "purchase purchase";
+    row-gap: 1.5rem;
+  }
+  .root[data-presentation="folio"] .purchase {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.25rem 2rem;
+    align-items: start;
+  }
+  .root[data-presentation="folio"] :is(.formats, .orderLine, .add) {
+    margin: 0;
+  }
+  .root[data-presentation="folio"] .add {
+    align-self: end;
+  }
+  .root[data-presentation="folio"] .priceLine {
+    display: block;
+  }
+  .root[data-presentation="folio"] .status {
+    margin-top: 0.375rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .root[data-presentation="folio"] .grid {
+    gap: 1.5rem;
+  }
+  .root[data-presentation="folio"] .product {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas: "identity" "imagery" "usage" "purchase";
+    gap: 1.25rem;
+    padding-block: 1.5rem 0;
+  }
+  .root[data-presentation="folio"] .identity {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem;
+    padding: 0;
+  }
+  .root[data-presentation="folio"] .applicationNumber {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    padding-top: 0.375rem;
+  }
+  .root[data-presentation="folio"] .identity h3 {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+  }
+  .root[data-presentation="folio"] .nameLine {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem 0.75rem;
+  }
+  .root[data-presentation="folio"]
+    .imagery
+    :global([data-product-application-image])
+    > div {
+    height: 11rem;
+  }
+  .root[data-presentation="folio"] .usage {
+    margin: 0;
+  }
+  .root[data-presentation="folio"] .purchase {
+    padding: 1.25rem;
+  }
+  .root[data-presentation="folio"]
+    :is(
+      .productLink,
+      .formats button,
+      .stepper output,
+      .total output,
+      .add > button,
+      .message button,
+      .quantity > span,
+      .total > span,
+      .formats legend,
+      .purchaseKind
+    ) {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+  .root[data-presentation="folio"] :is(.status, .quantityNote, .formatMessage) {
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+}
+
+/* The seventh concept leads with the application, then keeps the order in a
+   quiet, continuous card. Its commerce markup is shared with every treatment. */
+.root[data-presentation="showcase"] .grid {
+  gap: clamp(1rem, 2vw, 1.75rem);
+  border: 0;
+}
+
+.root[data-presentation="showcase"] .product {
+  --muted: var(--color-muted);
+  --card-inset: clamp(1rem, 1.5vw, 1.375rem);
+  container-type: inline-size;
+  padding: 0.625rem 0.625rem var(--card-inset);
+  border: 1px solid var(--line);
+  border-radius: calc(2 * var(--radius-button));
+  background: var(--seven-panel-surface, var(--color-raised));
+  box-shadow: 0 0.75rem 2rem color-mix(in srgb, var(--ink) 4%, transparent);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.root[data-presentation="showcase"] .imagery {
+  min-width: 0;
+}
+
+.root[data-presentation="showcase"]
+  .imagery
+  :global([data-product-application-image])
+  > div {
+  height: clamp(10rem, 13vw, 12rem);
+  overflow: hidden;
+  border-radius: calc(2 * var(--radius-button));
+}
+
+.root[data-presentation="showcase"] .imagery img {
+  border-radius: inherit;
+}
+
+.root[data-presentation="showcase"] .imagery figcaption {
+  min-height: 2.8em;
+  margin: 0.625rem calc(var(--card-inset) - 0.625rem) 0;
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  line-height: 1.4;
+}
+
+.root[data-presentation="showcase"] :is(.identity, .usage, .purchase) {
+  margin-inline: calc(var(--card-inset) - 0.625rem);
+}
+
+.root[data-presentation="showcase"] .identity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.125rem 0.75rem;
+  margin-top: 1.125rem;
+  margin-bottom: 0;
+}
+
+.root[data-presentation="showcase"] .applicationNumber {
+  display: block;
+  grid-column: 2;
+  grid-row: 1;
+  padding-top: 0.375rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+}
+
+.root[data-presentation="showcase"] .identity h3 {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  font-size: calc(
+    clamp(1.375rem, 1.8vw, 1.75rem) + var(--locale-font-increment, 0px)
+  );
+  line-height: 1.3;
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+}
+
+.root[data-presentation="showcase"] .nameLine {
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: 0 0.5rem;
+}
+
+.root[data-presentation="showcase"] .productLink {
+  min-width: 0;
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="showcase"] .productLink > span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.root[data-presentation="showcase"] .usage {
+  margin-top: 0.375rem;
+  margin-bottom: 1.25rem;
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+
+.root[data-presentation="showcase"] .purchase {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  min-width: 0;
+  margin-top: auto;
+  padding-top: 1.125rem;
+  border-top: 1px solid var(--line);
+}
+
+.root[data-presentation="showcase"] .priceLine {
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0;
+  border: 0;
+}
+
+.root[data-presentation="showcase"] .price {
+  margin-top: 0.125rem;
+  font-size: calc(1.375rem + var(--locale-font-increment, 0px));
+  letter-spacing: -0.04em;
+}
+
+.root[data-presentation="showcase"] .status {
+  max-width: 16ch;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="showcase"] .formats {
+  margin: 0;
+}
+
+.root[data-presentation="showcase"] .formats > div {
+  gap: 0.5rem;
+}
+
+.root[data-presentation="showcase"] .formats button {
+  flex: 1 1 5rem;
+  min-width: 0;
+  padding-inline: 0.5rem;
+  background: color-mix(in srgb, var(--color-raised) 60%, transparent);
+  overflow-wrap: anywhere;
+}
+
+.root[data-presentation="showcase"] .formats button[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, var(--color-raised));
+  box-shadow: inset 0 0 0 0.5px var(--ink);
+}
+
+.root[data-presentation="showcase"]
+  :is(.formats legend, .quantity > span, .total > span) {
+  margin-bottom: 0.375rem;
+}
+
+.root[data-presentation="showcase"] .orderLine {
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.root[data-presentation="showcase"] .quantity {
+  max-width: 100%;
+}
+
+.root[data-presentation="showcase"] .stepper {
+  width: 8rem;
+  max-width: 100%;
+  grid-template-columns: minmax(44px, 1fr) minmax(2rem, auto) minmax(44px, 1fr);
+  background: color-mix(in srgb, var(--color-raised) 60%, transparent);
+}
+
+.root[data-presentation="showcase"] .total output {
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="showcase"]
+  :is(.formats button, .message button, .stepper, .add > button) {
+  border-radius: var(--radius-button);
+}
+
+.root[data-presentation="showcase"] :is(.add, .quantityNote, .purchaseError) {
+  margin: 0;
+}
+
+.root[data-presentation="showcase"] .product:target {
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .root[data-presentation="showcase"] .product:hover {
+    border-color: color-mix(in srgb, var(--ink) 35%, var(--line));
+    box-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--ink) 6%, transparent);
+  }
+}
+
+@media (max-width: 900px) {
+  .root[data-presentation="showcase"] .grid {
+    max-width: 36rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    margin-inline: auto;
+  }
+
+  .root[data-presentation="showcase"]
+    .imagery
+    :global([data-product-application-image])
+    > div {
+    height: 10rem;
+  }
+
+  .root[data-presentation="showcase"] .imagery figcaption {
+    min-height: 0;
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+    line-height: 1.5;
+  }
+
+  .root[data-presentation="showcase"] .identity {
+    margin-top: 1rem;
+  }
+
+  .root[data-presentation="showcase"]
+    :is(
+      .productLink,
+      .usage,
+      .formats button,
+      .stepper output,
+      .total output,
+      .add > button
+    ) {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+
+  .root[data-presentation="showcase"]
+    :is(.status, .quantityNote, .formatMessage) {
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root[data-presentation="showcase"] .product {
+    transition: none;
+  }
+}
+
+/* A single selected application has room to be understood and ordered. The
+   other products stay mounted so switching never discards an order choice. */
+.root[data-presentation="spotlight"] {
+  --spotlight-height: min(36rem, var(--product-popup-content-height, 36rem));
+  display: flex;
+  flex-direction: column;
+  height: var(--spotlight-height);
+  container: application-spotlight / inline-size;
+}
+
+.root[data-presentation="spotlight"] .grid {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  border: 0;
+}
+
+.root[data-presentation="spotlight"] .product {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  grid-template-areas:
+    "introduction order"
+    "information order";
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 1rem clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+  height: 100%;
+  padding: 0;
+  border: 0;
+}
+
+.root[data-presentation="spotlight"] .product[hidden] {
+  display: none;
+}
+
+.spotlightIntroduction {
+  grid-area: introduction;
+  min-width: 0;
+}
+
+.spotlightInformation {
+  display: grid;
+  grid-area: information;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.75rem;
+  height: min(28rem, calc(var(--spotlight-height) - 5.5rem));
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  overflow: visible;
+}
+
+.spotlightOrder {
+  display: flex;
+  grid-area: order;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  padding-left: clamp(1.5rem, 3vw, 2.5rem);
+  border-left: 1px solid var(--line);
+}
+
+.materialSwatch {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-button);
+  background: transparent;
+}
+
+.materialSwatch img {
+  object-fit: contain;
+}
+
+.root[data-presentation="spotlight"] .identity {
+  grid-area: identity;
+  margin: 0;
+}
+
+.root[data-presentation="spotlight"] .identity h2 {
+  margin: 0 0 0.375rem;
+  color: var(--ink);
+  font-size: calc(
+    clamp(1.625rem, 2.2vw, 1.875rem) + var(--locale-font-increment, 0px)
+  );
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+}
+
+.root[data-presentation="spotlight"] .nameLine {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.375rem 0.75rem;
+}
+
+.root[data-presentation="spotlight"] .code {
+  order: -1;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="spotlight"] .productLink {
+  min-width: 0;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="spotlight"] .imagery {
+  min-width: 0;
+  min-height: 0;
+}
+
+.root[data-presentation="spotlight"]
+  .imagery
+  :global([data-product-application-image]) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.root[data-presentation="spotlight"]
+  .imagery
+  :global([data-product-application-image])
+  > div {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--radius-button);
+  background: transparent;
+}
+
+.root[data-presentation="spotlight"] .imagery img {
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.root[data-presentation="spotlight"] .imagery figcaption {
+  flex: 0 0 auto;
+  min-height: 0;
+  margin-top: 0.5rem;
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+
+/* Detailed learning extends the body’s single scroll area. The dialog chrome
+   remains outside that scroll area at every viewport size. */
+.root[data-presentation="spotlight"]:has(.spotlightProfile[open]) {
+  height: auto;
+  min-height: var(--spotlight-height);
+}
+
+.root[data-presentation="spotlight"]:has(.spotlightProfile[open]) .product {
+  height: auto;
+  min-height: var(--spotlight-height);
+}
+
+.spotlightReading {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  min-height: 2.875rem;
+  overflow: visible;
+}
+
+.spotlightReading:has(.spotlightProfile[open]) .spotlightOverview {
+  display: none;
+}
+
+.spotlightOverview {
+  flex: 0 0 auto;
+  min-width: 0;
+  color: var(--ink);
+  font-size: calc(0.9375rem + var(--locale-font-increment, 0px));
+  line-height: 1.7;
+}
+
+.spotlightOverview p {
+  margin: 0;
+}
+
+:global([data-homepage]) .spotlightOverview,
+:global([data-homepage]) .profileBody > p,
+:global([data-homepage]) .profileIntroduction p {
+  color: var(--muted);
+}
+
+.spotlightOverview .profileNote,
+.profileIntroduction .profileNote {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+
+.spotlightProfile {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 2.875rem;
+  margin: 0;
+  overflow: visible;
+  border-block: 1px solid var(--line);
+}
+
+.spotlightProfile summary {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 2.75rem;
+  padding-block: 0.5rem;
+  color: var(--ink);
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+  list-style: none;
+  cursor: pointer;
+  background: var(--color-raised);
+}
+
+.spotlightProfile summary::-webkit-details-marker {
+  display: none;
+}
+
+.spotlightProfile summary:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.spotlightProfile summary > span[aria-hidden] {
+  flex: 0 0 1em;
+  width: 1em;
+  text-align: center;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.spotlightProfile summary > span[aria-hidden]::before {
+  content: "+";
+}
+
+.spotlightProfile[open] summary > span[aria-hidden]::before {
+  content: "−";
+}
+
+.profileBody {
+  padding-block: 0.5rem 1.25rem;
+  color: var(--ink);
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.7;
+}
+
+.profileBody > p,
+.profileIntroduction p {
+  margin: 0;
+}
+
+.profileIntroduction {
+  margin-bottom: 1rem;
+}
+
+.profileBody h3 {
+  margin: 1.5rem 0 0.5rem;
+  color: var(--muted);
+  font: inherit;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+}
+
+.profileValues {
+  display: grid;
+  gap: 0;
+  margin: 1.5rem 0 0;
+}
+
+.profileValues > div {
+  display: grid;
+  grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr);
+  gap: 0.75rem;
+  padding-block: 0.625rem;
+  border-top: 1px solid var(--line);
+}
+
+.profileValues dt {
+  color: var(--muted);
+}
+
+.profileValues dd {
+  margin: 0;
+}
+
+.root[data-presentation="spotlight"] .purchase {
+  flex: 0 0 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0.25rem 0 0;
+}
+
+.root[data-presentation="spotlight"] .priceLine {
+  padding: 0;
+  border: 0;
+}
+
+.root[data-presentation="spotlight"] .price {
+  margin-top: 0.125rem;
+  font-size: calc(1.5rem + var(--locale-font-increment, 0px));
+  line-height: 1.4;
+  letter-spacing: -0.04em;
+}
+
+.root[data-presentation="spotlight"] :is(.formats, .orderLine, .add) {
+  margin-top: 1rem;
+}
+
+.root[data-presentation="spotlight"]
+  :is(
+    .purchaseKind,
+    .formats legend,
+    .quantity > span,
+    .total > span,
+    .status
+  ) {
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
+}
+
+.root[data-presentation="spotlight"]
+  :is(.formats legend, .quantity > span, .total > span) {
+  margin-bottom: 0.5rem;
+}
+
+.root[data-presentation="spotlight"] .add > button {
+  min-height: 3rem;
+  padding-block: 0.4375rem;
+  font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
+  font-weight: 400;
+}
+
+.root[data-presentation="spotlight"] .formats > div {
+  gap: 0.5rem;
+}
+
+.root[data-presentation="spotlight"] .formats button {
+  flex: 1 1 5rem;
+  min-width: 0;
+  background: color-mix(in srgb, var(--color-raised) 35%, transparent);
+  overflow-wrap: anywhere;
+}
+
+.root[data-presentation="spotlight"] .formats button[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--seven-panel-surface, var(--color-raised));
+  box-shadow: inset 0 0 0 0.5px var(--ink);
+}
+
+.root[data-presentation="spotlight"]
+  :is(.formats button, .message button, .stepper, .add > button) {
+  border-radius: var(--radius-button);
+}
+
+.root[data-presentation="spotlight"] .stepper {
+  max-width: 100%;
+  grid-template-columns: minmax(44px, 1fr) minmax(2rem, auto) minmax(44px, 1fr);
+}
+
+.root[data-presentation="spotlight"] .total output {
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
+}
+
+/* Preserve a complete default order in short desktop windows. Expanded
+   information continues in the same body scroll area below the order. */
+@media (max-height: 700px) {
+  .root[data-presentation="spotlight"] {
+    height: auto;
+    min-height: var(--spotlight-height);
+  }
+
+  .root[data-presentation="spotlight"] .product {
+    grid-template-areas:
+      "introduction purchase"
+      "overview purchase"
+      "information profile";
+    grid-template-rows: auto auto minmax(20rem, auto);
+    height: auto;
+    min-height: var(--spotlight-height);
+  }
+
+  .spotlightInformation {
+    height: 20rem;
+    max-height: none;
+  }
+
+  .spotlightOrder,
+  .spotlightReading {
+    display: contents;
+  }
+
+  .spotlightReading:has(.spotlightProfile[open]) .spotlightOverview {
+    display: block;
+  }
+
+  .spotlightOverview {
+    grid-area: overview;
+  }
+
+  .root[data-presentation="spotlight"] .purchase {
+    grid-area: purchase;
+    padding-left: clamp(1.5rem, 3vw, 2.5rem);
+    border-left: 1px solid var(--line);
+  }
+
+  .spotlightProfile {
+    grid-area: profile;
+    height: auto;
+    margin-left: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .profileIntroduction {
+    display: none;
+  }
+}
+
+@container application-popup (max-width: 53rem) {
+  .root[data-presentation="spotlight"],
+  .root[data-presentation="spotlight"]:has(.spotlightProfile[open]) {
+    display: block;
+    height: auto;
+    min-height: 0;
+  }
+}
+
+@container application-spotlight (max-width: 50rem) {
+  .root[data-presentation="spotlight"] .product,
+  .root[data-presentation="spotlight"]:has(.spotlightProfile[open]) .product {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "introduction"
+      "overview"
+      "purchase"
+      "profile"
+      "information";
+    grid-template-rows: auto;
+    gap: 0.625rem;
+    max-width: 42rem;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    margin-inline: auto;
+  }
+
+  .spotlightIntroduction {
+    display: block;
+  }
+
+  .spotlightOrder,
+  .spotlightReading {
+    display: contents;
+  }
+
+  .spotlightReading:has(.spotlightProfile[open]) .spotlightOverview {
+    display: block;
+  }
+
+  .profileIntroduction {
+    display: none;
+  }
+
+  .spotlightProfile {
+    grid-area: profile;
+    flex: none;
+    height: auto;
+    margin-left: 0;
+    overflow: visible;
+  }
+
+  .spotlightProfile summary {
+    position: static;
+  }
+
+  .materialSwatch {
+    height: clamp(12rem, 50vw, 18.75rem);
+  }
+
+  .spotlightOverview {
+    grid-area: overview;
+    margin-top: 0;
+    padding-left: 0;
+    border-left: 0;
+    line-height: 1.6;
+  }
+
+  .spotlightInformation {
+    display: block;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .root[data-presentation="spotlight"] .purchase {
+    grid-area: purchase;
+    padding: 0.75rem 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .root[data-presentation="spotlight"] .imagery {
+    margin-top: 0.75rem;
+  }
+
+  .root[data-presentation="spotlight"]
+    .imagery
+    :global([data-product-application-image])
+    > div {
+    flex: none;
+    height: clamp(12rem, 50vw, 18.75rem);
+  }
+
+  .root[data-presentation="spotlight"]
+    :is(
+      .productLink,
+      .formats button,
+      .stepper output,
+      .total output,
+      .add > button,
+      .message button,
+      .purchaseKind,
+      .formats legend,
+      .quantity > span,
+      .total > span,
+      .status,
+      .quantityNote,
+      .formatMessage
+    ),
+  .spotlightOverview,
+  .spotlightProfile summary,
+  .profileBody,
+  .profileBody h3 {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+
+  .root[data-presentation="spotlight"] .imagery figcaption,
+  .spotlightOverview .profileNote,
+  .profileIntroduction .profileNote {
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  }
+
+  .profileValues > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.25rem;
+  }
+}

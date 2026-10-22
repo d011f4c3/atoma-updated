@@ -9,6 +9,11 @@ import { translate, type Locale } from "@/lib/i18n";
 import type { SampleEntryDirection } from "@/lib/sample-entry-directions";
 import { getProductContent } from "@/lib/product-content";
 import { getProductDisplayIndex } from "@/lib/product-display-index";
+import { getProductApplicationImage } from "@/lib/product-application-imagery";
+import {
+  getProductOfferSummary,
+  productFormatLabel,
+} from "@/lib/product-comparison";
 import { money } from "@/lib/product-selection";
 import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
 import { oneKilogramProductUrl } from "@/lib/sample-journey";
@@ -22,12 +27,16 @@ import { useProductSelection } from "./use-product-selection";
 import { ShopMaterialImage } from "./shop-material-image";
 import { SampleEntryLink } from "./sample-entry-link";
 import { ScrambleText } from "./scramble-text";
+import { usePageReveals } from "./use-page-reveals";
+import revealStyles from "./page-reveals.module.css";
 import styles from "./shop.module.css";
 import { useStorefrontTheme } from "./storefront-theme-provider";
 import { useCart } from "./cart-drawer";
 import { useSavedMatcha } from "./use-saved-matcha";
+import { ProductComparison } from "./product-comparison";
 
 type ShopProps = {
+  productClarity?: boolean;
   sampleEntryDirection?: SampleEntryDirection;
   studyTone?: "light" | "dark";
   onStudyToneChange?: (tone: "light" | "dark") => void;
@@ -44,6 +53,7 @@ type ShopProps = {
 };
 
 export function Shop({
+  productClarity = false,
   sampleEntryDirection,
   studyTone,
   onStudyToneChange,
@@ -53,6 +63,8 @@ export function Shop({
   const { tone: storefrontTone } = useStorefrontTheme();
   const tone = studyTone ?? storefrontTone;
   const localTheme = Boolean(studyTone || onStudyToneChange);
+  const pageRef = useRef<HTMLElement>(null);
+  usePageReveals(pageRef, !localTheme);
   const { busy } = useCart();
   const { catalog, products, loading, refreshing, retry } =
     useProductSelection();
@@ -82,11 +94,16 @@ export function Shop({
 
   return (
     <main
-      className={styles.shop}
+      ref={pageRef}
+      className={
+        localTheme ? styles.shop : `${styles.shop} ${revealStyles.scope}`
+      }
       data-tone={tone}
       data-storefront-theme={tone}
       data-canonical-shop={!localTheme || undefined}
       data-sample-entry-shop={sampleEntryDirection}
+      data-product-clarity={productClarity || undefined}
+      data-client-reading={productClarity || undefined}
     >
       <HomeHeader
         persistentTheme={!localTheme}
@@ -95,13 +112,16 @@ export function Shop({
         activePage="shop"
       />
       <div className={styles.content}>
-        <header className={styles.intro}>
+        <header
+          className={styles.intro}
+          data-page-enter={!localTheme ? "text" : undefined}
+        >
           <div>
             <p className={styles.eyebrow}>
               <ScrambleText text={t("SHOP / MATCHA")} periodic wrap />
             </p>
             <h1 ref={headingRef} tabIndex={-1}>
-              {t("Find your matcha.")}
+              <ScrambleText text={t("Find your matcha.")} wrap />
             </h1>
           </div>
           <p className={styles.introCopy}>
@@ -127,7 +147,8 @@ export function Shop({
                   if (busy) event.preventDefault();
                 }}
               >
-                {t("Start with samples")} <span aria-hidden="true">↗</span>
+                <ScrambleText text={t("Start with samples")} interactive />{" "}
+                <span aria-hidden="true">↗</span>
               </Link>
             )}
           </p>
@@ -150,7 +171,24 @@ export function Shop({
                   if (busy) event.preventDefault();
                 }}
               >
-                {t("Review 1 kg")} <span aria-hidden="true">↗</span>
+                <span>
+                  {t("View 1 kg of {name}", { name: t(savedMatcha.name) })
+                    .split(/(1 kg)/)
+                    .map((part, index) =>
+                      part === "1 kg" ? (
+                        part
+                      ) : (
+                        <ScrambleText
+                          key={index}
+                          text={part}
+                          interactive
+                          animateOnMount={false}
+                          wrap
+                        />
+                      ),
+                    )}
+                </span>
+                <span aria-hidden="true">↗</span>
               </Link>
               <button
                 type="button"
@@ -164,7 +202,12 @@ export function Shop({
                     });
                 }}
               >
-                {t("Clear saved matcha")}
+                <ScrambleText
+                  text={t("Clear saved matcha")}
+                  interactive
+                  animateOnMount={false}
+                  wrap
+                />
               </button>
             </div>
             {clearFailed && (
@@ -259,6 +302,9 @@ export function Shop({
               <ShopProduct
                 key={product.id}
                 product={product}
+                clarity={productClarity}
+                refreshing={refreshing}
+                disabled={busy}
                 hidden={
                   categoryFilter
                     ? !matchesShopCategory(
@@ -300,11 +346,26 @@ export function Shop({
                     categoryFilter.onClear();
                   }}
                 >
-                  {translate(categoryFilter.locale ?? "en", "Clear category")}
+                  <ScrambleText
+                    text={translate(
+                      categoryFilter.locale ?? "en",
+                      "Clear category",
+                    )}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />
                 </button>
               </div>
             )}
           </section>
+        )}
+        {productClarity && catalog?.status === "ready" && (
+          <ProductComparison
+            products={products}
+            refreshing={refreshing}
+            disabled={busy}
+          />
         )}
         {sampleEntryDirection && (
           <div className={styles.sampleFooter}>
@@ -366,9 +427,15 @@ export function Shop({
 function ShopProduct({
   product,
   hidden,
+  clarity = false,
+  refreshing = false,
+  disabled = false,
 }: {
   product: CatalogProduct;
   hidden?: boolean;
+  clarity?: boolean;
+  refreshing?: boolean;
+  disabled?: boolean;
 }) {
   const { locale, t } = useStorefrontLocale();
   const codeId = useId();
@@ -394,6 +461,109 @@ function ShopProduct({
     : undefined;
   const formatCount = product.variants.length;
   const href = `/shop/${encodeURIComponent(product.handle)}`;
+
+  if (clarity) {
+    const offer = getProductOfferSummary(product);
+    const application = getProductApplicationImage(product.handle);
+    const blocked = disabled || refreshing;
+    return (
+      <article
+        className={`${styles.product} ${styles.clearProduct}`}
+        data-available={refreshing ? undefined : offer.available}
+        data-shop-product={product.id}
+        hidden={hidden}
+      >
+        <Link
+          className={styles.productLink}
+          href={href}
+          aria-label={t("View {name}", { name: content.name })}
+          aria-describedby={displayIndex ? codeId : undefined}
+          aria-disabled={blocked || undefined}
+          onClick={(event) => {
+            if (blocked) event.preventDefault();
+          }}
+          onNavigate={(event) => {
+            if (blocked) event.preventDefault();
+          }}
+        >
+          <div className={styles.productIdentity}>
+            <h2 data-shop-product-name>
+              <ScrambleText text={content.name} interactive wrap />
+            </h2>
+            {displayIndex && (
+              <span
+                className={styles.productCode}
+                id={codeId}
+                data-shop-product-code={displayIndex}
+              >
+                <span className={styles.srOnly}>{t("Product code")} </span>
+                {displayIndex}
+              </span>
+            )}
+          </div>
+          <p className={styles.application}>{content.application}</p>
+          <div className={styles.material} data-page-enter="visual">
+            <ShopMaterialImage
+              src={content.materialImage}
+              alt={content.materialImageAlt}
+            />
+          </div>
+          <div className={styles.productBody}>
+            <p className={styles.description} data-shop-description>
+              {application ? t(application.usage) : content.purpose}
+            </p>
+            <div className={styles.clearFacts}>
+              <span className={styles.factLabel}>{t("Format")}</span>
+              <div className={styles.formatList} data-shop-formats>
+                {refreshing
+                  ? t("Updating prices…")
+                  : offer.formats.length === 0
+                    ? t("No published format")
+                    : offer.formats.map((format) => (
+                        <span key={format.id}>
+                          {productFormatLabel(format, locale)}
+                          {!format.available && (
+                            <span className={styles.formatUnavailable}>
+                              {" "}
+                              · {t("Unavailable")}
+                            </span>
+                          )}
+                        </span>
+                      ))}
+              </div>
+              <span
+                className={styles.price}
+                data-shop-from-price
+                aria-live="polite"
+              >
+                {refreshing
+                  ? t("Updating prices…")
+                  : offer.fromVariant
+                    ? t("From {price}", {
+                        price: money(
+                          offer.fromVariant.priceMinor,
+                          offer.fromVariant.currency,
+                        ),
+                      })
+                    : offer.available
+                      ? t("View pricing")
+                      : t("Currently unavailable")}
+              </span>
+            </div>
+            <span className={styles.viewProduct}>
+              <ScrambleText
+                text={t("View {name}", { name: content.name })}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
+              <span aria-hidden="true">↗</span>
+            </span>
+          </div>
+        </Link>
+      </article>
+    );
+  }
 
   return (
     <article
@@ -423,7 +593,14 @@ function ShopProduct({
         </div>
         <div className={styles.productBody}>
           <div className={styles.productIdentity}>
-            <h2 data-shop-product-name>{content.name}</h2>
+            <h2 data-shop-product-name>
+              <ScrambleText
+                text={content.name}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
+            </h2>
             {displayIndex && (
               <span
                 className={styles.productCode}
@@ -455,7 +632,13 @@ function ShopProduct({
             </span>
           </div>
           <span className={styles.viewProduct}>
-            {t("View matcha")} <span aria-hidden="true">↗</span>
+            <ScrambleText
+              text={t("View matcha")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />{" "}
+            <span aria-hidden="true">↗</span>
           </span>
         </div>
       </Link>

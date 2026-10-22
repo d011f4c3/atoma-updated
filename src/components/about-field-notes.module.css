@@ -69,7 +69,7 @@
   cursor: pointer;
 }
 
-.navigation button > span {
+.navigation button > span[aria-hidden="true"] {
   font-size: 1.25rem;
   line-height: 1;
 }
@@ -516,6 +516,11 @@
 }
 
 @media (max-width: 760px) {
+  :global([data-about-page]) .dialog[data-presentation="field-record"] {
+    --story-gutter: 16px;
+    width: calc(100vw - 32px);
+  }
+
   .recordWorkImage {
     width: 100%;
   }
@@ -666,6 +671,27 @@
 
   .observation h3 {
     font-size: calc(1.125rem + var(--locale-font-increment, 0px));
+  }
+}
+
+@media (max-width: 380px) {
+  :global([data-about-page]) .readerHeader .navigation {
+    min-height: 0;
+    padding-block: 8px;
+  }
+
+  :global([data-about-page]) .readerHeader .navigation > span {
+    display: none;
+  }
+
+  :global([data-about-page]) .readerHeader .navigation button {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    justify-content: space-between;
+    gap: 12px;
+    padding-block: 8px;
+    text-align: left;
   }
 }
 

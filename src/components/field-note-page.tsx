@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   aboutFarmPhotographs,
   aboutFieldNotes,
@@ -14,6 +14,9 @@ import { StorefrontFooter } from "./storefront-footer";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { useStorefrontTheme } from "./storefront-theme-provider";
 import { ThemeSwitcher } from "./theme-switcher";
+import { ScrambleText } from "./scramble-text";
+import { usePageReveals } from "./use-page-reveals";
+import revealStyles from "./page-reveals.module.css";
 import styles from "./field-note-page.module.css";
 
 type FieldNoteStory = (typeof aboutPhotoStories)[number];
@@ -31,7 +34,12 @@ function Photograph({
 }) {
   const { t } = useStorefrontLocale();
   return (
-    <figure className={styles.photograph} data-field-note-photo>
+    <figure
+      className={styles.photograph}
+      data-field-note-photo
+      data-page-enter={preload ? "visual" : undefined}
+      data-page-reveal={preload ? undefined : "fade"}
+    >
       <Image
         src={photograph.src}
         alt={t(photograph.alt)}
@@ -58,7 +66,11 @@ function Observation({
   return (
     <div className={styles.observation}>
       <p className={styles.label}>{t(note.category)}</p>
-      {"title" in note && <h2>{t(note.title)}</h2>}
+      {"title" in note && (
+        <h2>
+          <ScrambleText text={t(note.title)} wrap visibleOnly />
+        </h2>
+      )}
       <p className={styles.observationText}>{t(note.text)}</p>
     </div>
   );
@@ -74,6 +86,8 @@ export function FieldNotePage({
   const { tone } = useStorefrontTheme();
   const { locale, t } = useStorefrontLocale();
   const { busy } = useCart();
+  const pageRef = useRef<HTMLElement>(null);
+  usePageReveals(pageRef);
   const relatedStory = aboutPhotoStories.find((entry) => entry.id !== story.id);
   const photographs = aboutFarmPhotographs;
 
@@ -97,7 +111,13 @@ export function FieldNotePage({
         activePage="about"
         originsReturnLabel="Back to story"
       />
-      <main className={styles.main} lang={locale} id="field-note-top">
+      <main
+        ref={pageRef}
+        className={`${styles.main} ${revealStyles.scope}`}
+        lang={locale}
+        id="field-note-top"
+        data-client-reading
+      >
         <div className={styles.edition}>
           <span>{t("ATOMA / Community")}</span>
           <Link
@@ -108,16 +128,24 @@ export function FieldNotePage({
               if (busy) event.preventDefault();
             }}
           >
-            <span aria-hidden="true">←</span> {t("Back to About")}
+            <span aria-hidden="true">←</span>{" "}
+            <ScrambleText
+              text={t("Back to About")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
           </Link>
           <ThemeSwitcher />
         </div>
 
         <article aria-labelledby="field-note-title">
-          <header className={styles.heading}>
+          <header className={styles.heading} data-page-enter="text">
             <div>
               <p className={styles.label}>{t(story.category)}</p>
-              <h1 id="field-note-title">{t(story.title)}</h1>
+              <h1 id="field-note-title">
+                <ScrambleText text={t(story.title)} wrap />
+              </h1>
             </div>
             <p className={styles.introduction}>{t(story.introduction)}</p>
           </header>
@@ -202,7 +230,13 @@ export function FieldNotePage({
               if (busy) event.preventDefault();
             }}
           >
-            <span aria-hidden="true">←</span> {t("Back to About")}
+            <span aria-hidden="true">←</span>{" "}
+            <ScrambleText
+              text={t("Back to About")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
           </Link>
           {relatedStory && (
             <Link
@@ -215,7 +249,14 @@ export function FieldNotePage({
             >
               <span>
                 <span className={styles.label}>{t(relatedStory.category)}</span>
-                <span>{t(relatedStory.title)}</span>
+                <span>
+                  <ScrambleText
+                    text={t(relatedStory.title)}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />
+                </span>
               </span>
               <span aria-hidden="true">↗</span>
             </Link>

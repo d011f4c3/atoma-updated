@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { createPeriodicTextScheduler } from "@/lib/periodic-text-scheduler";
+import {
+  isCanonicalMotionRoute,
+  motionControlSelector,
+  motionHeadingSelector,
+  permitsScramble,
+} from "@/lib/canonical-motion-policy";
 import {
   hasCjkCharacters,
   isScrambleUnit,
@@ -91,6 +98,7 @@ export function ScrambleText({
   mobileDurationMs = tapDuration,
 }: ScrambleTextProps) {
   const rootRef = useRef<HTMLSpanElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     const root = rootRef.current;
@@ -341,6 +349,21 @@ export function ScrambleText({
     }
 
     settle();
+    const permitted = permitsScramble(pathname, {
+      interactive,
+      insideHeading: Boolean(root.closest(motionHeadingSelector)),
+      insideControl: Boolean(root.closest(motionControlSelector)),
+      stableData: Boolean(root.closest("output, [data-motion-stable]")),
+    });
+    root.dataset.scramblePolicy = !permitted
+      ? "stable"
+      : isCanonicalMotionRoute(pathname)
+        ? "canonical"
+        : "study";
+    // Restore the same DOM before exiting: a shared header can arrive from a
+    // study while its previous animation was still changing these glyphs.
+    if (!permitted) return settle;
+
     // Supporting copy enters settled; the coordinator gives it a turn instead
     // of scrambling every paragraph together when a panel opens.
     if (animateOnMount && !periodic) start(Math.max(0, delay));
@@ -374,7 +397,7 @@ export function ScrambleText({
 
     return () => {
       stopAmbient?.();
-      cancel();
+      settle();
       if (repeatTimer !== undefined) clearInterval(repeatTimer);
       target?.removeEventListener("pointerenter", onPointerEnter);
       target?.removeEventListener("pointerleave", onPointerLeave);
@@ -399,6 +422,7 @@ export function ScrambleText({
     visibleOnly,
     durationMs,
     mobileDurationMs,
+    pathname,
   ]);
 
   return (

@@ -11,7 +11,8 @@ import { useStorefrontLocale } from "./storefront-locale-provider";
 import { ScrambleText } from "./scramble-text";
 import styles from "./overview-study-panel.module.css";
 
-export type OverviewStudyVariant = "current" | "digest" | "index" | "folded";
+export type OverviewStudyVariant =
+  "current" | "digest" | "index" | "folded" | "application";
 
 /** Shared presentation for the adopted Overview and its study alternatives. */
 export function OverviewStudyPanel({
@@ -23,7 +24,7 @@ export function OverviewStudyPanel({
   onSpecifications,
 }: {
   product: CatalogProduct;
-  variant: Exclude<OverviewStudyVariant, "current">;
+  variant: Exclude<OverviewStudyVariant, "current" | "application">;
   productCodePlacement?: ProductCodePlacement;
   busy: boolean;
   onShop: () => void;

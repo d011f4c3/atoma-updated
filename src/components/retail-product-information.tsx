@@ -13,11 +13,13 @@ import {
 import { useCart } from "./cart-drawer";
 import { useOrigins } from "./origins-provider";
 import { ProductDetails } from "./product-details";
+import { ScrambleText } from "./scramble-text";
 import styles from "./retail-product-information.module.css";
 
 type RetailProductInformationProps = {
   product: CatalogProduct;
   tone: "dark" | "light";
+  refreshing?: boolean;
 };
 
 const originRoles = {
@@ -31,6 +33,7 @@ const originRoles = {
 export function RetailProductInformation({
   product,
   tone,
+  refreshing = false,
 }: RetailProductInformationProps) {
   const { locale, t } = useStorefrontLocale();
   const content = getProductContent(product, locale);
@@ -78,11 +81,16 @@ export function RetailProductInformation({
       <details
         className={styles.accordion}
         id="retail-specifications"
-        open
         data-retail-specifications
       >
         <summary className={styles.trigger}>
-          <span>{t("Specifications")}</span>
+          <span>
+            <ScrambleText
+              text={t("Specification explanations")}
+              interactive
+              wrap
+            />
+          </span>
           <span className={styles.plus} aria-hidden="true">
             +
           </span>
@@ -97,7 +105,12 @@ export function RetailProductInformation({
                 <details className={styles.property} data-retail-specification>
                   <summary>
                     <span className={styles.propertyLabel}>
-                      {property.label}
+                      <ScrambleText
+                        text={property.label}
+                        interactive
+                        animateOnMount={false}
+                        wrap
+                      />
                     </span>
                     <span className={styles.propertyValue}>
                       {property.value}
@@ -116,14 +129,18 @@ export function RetailProductInformation({
 
       <details className={styles.accordion} data-retail-material-use>
         <summary className={styles.trigger}>
-          <span>{t("Material & use")}</span>
+          <span>
+            <ScrambleText text={t("Material & use")} interactive wrap />
+          </span>
           <span className={styles.plus} aria-hidden="true">
             +
           </span>
         </summary>
         <div className={`${styles.body} ${styles.prose}`}>
           <section>
-            <h3>{t("Use & preparation")}</h3>
+            <h3>
+              <ScrambleText text={t("Use & preparation")} wrap visibleOnly />
+            </h3>
             <p>{content.preparation}</p>
           </section>
           {content.sections.map((section) => (
@@ -144,7 +161,7 @@ export function RetailProductInformation({
         </div>
       </details>
 
-      <ProductDetails product={product} tone={tone} />
+      <ProductDetails product={product} tone={tone} refreshing={refreshing} />
 
       <details
         className={styles.accordion}
@@ -152,7 +169,9 @@ export function RetailProductInformation({
         data-retail-origins
       >
         <summary className={styles.trigger}>
-          <span>{t("Origins & field notes")}</span>
+          <span>
+            <ScrambleText text={t("Origins & field notes")} interactive wrap />
+          </span>
           <span className={styles.plus} aria-hidden="true">
             +
           </span>
@@ -181,7 +200,12 @@ export function RetailProductInformation({
                       })
                     }
                   >
-                    {record.action}
+                    <ScrambleText
+                      text={record.action}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />
                     <span aria-hidden="true">↗</span>
                   </button>
                 </section>
@@ -215,7 +239,12 @@ export function RetailProductInformation({
                 >
                   <span className={styles.caption}>{t(entry.region)}</span>
                   <span className={styles.entryTitle}>
-                    {t(entry.title)}
+                    <ScrambleText
+                      text={t(entry.title)}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />
                     <span aria-hidden="true">↗</span>
                   </span>
                   <span className={styles.entryDescription}>
@@ -232,7 +261,12 @@ export function RetailProductInformation({
             disabled={busy}
             onClick={() => openOrigins({ tone, returnProduct })}
           >
-            {t("All origins")}
+            <ScrambleText
+              text={t("All origins")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
             <span aria-hidden="true">↗</span>
           </button>
         </div>

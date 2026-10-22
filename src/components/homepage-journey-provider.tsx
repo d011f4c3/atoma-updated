@@ -21,6 +21,12 @@ type HomepageJourney = {
 type JourneyContextValue = {
   journey: HomepageJourney;
   rememberJourney: (patch: Partial<HomepageJourney>) => void;
+  surfaceSelections: Record<string, Record<string, Selection>>;
+  rememberSurfaceSelection: (
+    surface: string,
+    productHandle: string,
+    selection: Selection,
+  ) => void;
 };
 
 const JourneyContext = createContext<JourneyContextValue | null>(null);
@@ -35,6 +41,23 @@ export function HomepageJourneyProvider({ children }: { children: ReactNode }) {
     reference: "",
     labelHasQuantity: false,
   });
+  // Optional comparison surfaces retain each edited order across local routes.
+  // These are UI choices only; current catalog data still governs purchases.
+  const [surfaceSelections, setSurfaceSelections] = useState<
+    Record<string, Record<string, Selection>>
+  >({});
+  const rememberSurfaceSelection = useCallback(
+    (surface: string, productHandle: string, selection: Selection) => {
+      setSurfaceSelections((current) => {
+        if (current[surface]?.[productHandle] === selection) return current;
+        return {
+          ...current,
+          [surface]: { ...current[surface], [productHandle]: selection },
+        };
+      });
+    },
+    [],
+  );
   const rememberJourney = useCallback((patch: Partial<HomepageJourney>) => {
     setJourney((current) => {
       const keys = Object.keys(patch) as (keyof HomepageJourney)[];
@@ -44,8 +67,13 @@ export function HomepageJourneyProvider({ children }: { children: ReactNode }) {
     });
   }, []);
   const value = useMemo(
-    () => ({ journey, rememberJourney }),
-    [journey, rememberJourney],
+    () => ({
+      journey,
+      rememberJourney,
+      surfaceSelections,
+      rememberSurfaceSelection,
+    }),
+    [journey, rememberJourney, surfaceSelections, rememberSurfaceSelection],
   );
   return (
     <JourneyContext.Provider value={value}>{children}</JourneyContext.Provider>

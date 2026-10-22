@@ -3,12 +3,15 @@
 import { useStorefrontLocale } from "./storefront-locale-provider";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { getProductContent } from "@/lib/product-content";
+import { getProductApplicationImage } from "@/lib/product-application-imagery";
 import { canPurchaseQuantity, money } from "@/lib/product-selection";
 import { ThemeSwitcher } from "./theme-switcher";
 import { HomeHeader } from "./home-header";
 import { ShopMaterialImage } from "./shop-material-image";
+import { ProductApplicationImage } from "./product-application-image";
+import { ProductProfileSummary } from "./product-profile-summary";
 import { useProductSelection } from "./use-product-selection";
 import { useCart } from "./cart-drawer";
 import { useOrigins } from "./origins-provider";
@@ -17,6 +20,9 @@ import { PurchaseOptions } from "./purchase-options";
 import { RetailProductInformation } from "./retail-product-information";
 import styles from "./retail-product.module.css";
 import { useStorefrontTheme } from "./storefront-theme-provider";
+import { ScrambleText } from "./scramble-text";
+import { usePageReveals } from "./use-page-reveals";
+import revealStyles from "./page-reveals.module.css";
 
 export function RetailProduct({
   handle,
@@ -27,16 +33,21 @@ export function RetailProduct({
 }) {
   const { locale, t } = useStorefrontLocale();
   const { tone } = useStorefrontTheme();
-  const model = useProductSelection(handle, false, "matcha", initialFormat);
+  const model = useProductSelection(handle, "restore", "matcha", initialFormat);
   const cart = useCart();
   const { setSelectedMatcha } = useOrigins();
   const [pending, setPending] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileId = useId();
   const submitting = useRef(false);
   const { catalog, loading, variant, purchaseVariant, quantity } = model;
   // The shared homepage hook can fall back to its first matcha; a retail URL
   // must match exactly so an unknown handle can never purchase that fallback.
   const product = model.product?.handle === handle ? model.product : undefined;
+  const pageRef = useRef<HTMLElement>(null);
+  usePageReveals(pageRef, Boolean(product));
   const content = product ? getProductContent(product, locale) : undefined;
+  const applicationImage = getProductApplicationImage(product?.handle);
   const unavailable = !catalog || catalog.status === "unavailable";
   const locked = pending || cart.busy || model.refreshing;
   const available = Boolean(product && purchaseVariant?.available);
@@ -82,15 +93,24 @@ export function RetailProduct({
 
   return (
     <main
-      className={styles.page}
+      ref={pageRef}
+      className={`${styles.page} ${revealStyles.scope}`}
       data-retail-product={handle}
+      data-client-reading
       data-tone={tone}
       data-storefront-theme={tone}
     >
       <HomeHeader persistentTheme tone={tone} activePage="shop" />
       <div className={styles.content}>
         <nav className={styles.breadcrumb} aria-label={t("Breadcrumb")}>
-          <Link href={collectionHref}>{t("Shop")}</Link>
+          <Link href={collectionHref}>
+            <ScrambleText
+              text={t("Shop")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
+          </Link>
           <span aria-hidden="true">/</span>
           <span aria-current="page">{content?.name ?? t("Matcha")}</span>
         </nav>
@@ -104,7 +124,13 @@ export function RetailProduct({
             <h1>{t("This matcha couldn’t be loaded.")}</h1>
             <p>{t("Please try again.")}</p>
             <button type="button" onClick={model.retry}>
-              {t("Try again")} <span aria-hidden="true">↻</span>
+              <ScrambleText
+                text={t("Try again")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />{" "}
+              <span aria-hidden="true">↻</span>
             </button>
           </div>
         ) : !product || !content ? (
@@ -112,32 +138,38 @@ export function RetailProduct({
             <h1>{t("Matcha not found.")}</h1>
             <p>{t("This selection is not in the current collection.")}</p>
             <Link href={collectionHref}>
-              {t("Back to the collection")} <span aria-hidden="true">↗</span>
+              <ScrambleText
+                text={t("Back to the collection")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />{" "}
+              <span aria-hidden="true">↗</span>
             </Link>
           </div>
         ) : (
           <>
             <div className={styles.productLayout}>
-              <figure className={styles.gallery}>
-                <div className={styles.imageStage}>
-                  <ShopMaterialImage
-                    src={content.materialImage}
-                    alt={content.materialImageAlt}
-                  />
-                </div>
-                <figcaption>
+              <div className={styles.gallery} data-page-enter="visual">
+                <ProductApplicationImage
+                  handle={product.handle}
+                  presentation="retail"
+                />
+                <div className={styles.galleryIdentity}>
                   <span>{content.name}</span>
                   <span>{content.application}</span>
-                </figcaption>
-              </figure>
+                </div>
+              </div>
               <div className={styles.productBody}>
                 <section
                   className={styles.purchase}
                   aria-label={t("Purchase {name}", { name: content.name })}
                 >
-                  <p className={styles.eyebrow}>{content.application}</p>
-                  <div className={styles.identity}>
-                    <h1>{content.name}</h1>
+                  <div className={styles.identity} data-page-enter="text">
+                    <h1>
+                      <ScrambleText text={content.name} wrap />
+                    </h1>
+                    <p className={styles.application}>{content.application}</p>
                     <p
                       className={styles.availability}
                       data-available={available}
@@ -151,6 +183,61 @@ export function RetailProduct({
                     </p>
                   </div>
                   <p className={styles.purpose}>{content.purpose}</p>
+                  {applicationImage && (
+                    <p
+                      className={styles.applicationUse}
+                      data-product-application-copy
+                    >
+                      {t(applicationImage.usage)}
+                    </p>
+                  )}
+                  <div
+                    className={styles.profilePreview}
+                    data-retail-profile-preview
+                    data-open={profileOpen || undefined}
+                  >
+                    <button
+                      type="button"
+                      className={styles.profileToggle}
+                      aria-expanded={profileOpen}
+                      aria-controls={profileId}
+                      onClick={() => setProfileOpen((open) => !open)}
+                    >
+                      <ScrambleText
+                        text={t("Specifications")}
+                        interactive
+                        animateOnMount={false}
+                        wrap
+                      />
+                      <span aria-hidden="true">{profileOpen ? "−" : "+"}</span>
+                    </button>
+                    <div id={profileId} className={styles.profileContent}>
+                      <p className={styles.materialSummary}>
+                        {content.materialSummary}
+                      </p>
+                      <ProductProfileSummary product={product} />
+                    </div>
+                    <noscript>
+                      <style>{`[data-retail-profile-preview] > button { display: none !important; } @media (max-width: 760px) { [data-retail-profile-preview] > div { display: block !important; } }`}</style>
+                    </noscript>
+                  </div>
+                  <Link
+                    className={styles.compare}
+                    href="/shop#product-comparison"
+                    aria-disabled={locked || undefined}
+                    onClick={(event) => {
+                      if (locked) event.preventDefault();
+                    }}
+                    onNavigate={(event) => {
+                      if (locked) event.preventDefault();
+                    }}
+                  >
+                    <ScrambleText
+                      text={t("Compare the three matcha")}
+                      interactive
+                    />{" "}
+                    <span aria-hidden="true">↗</span>
+                  </Link>
                   <p className={styles.unitPrice}>
                     {model.refreshing
                       ? t("Updating prices…")
@@ -176,10 +263,6 @@ export function RetailProduct({
                       </span>
                     )}
                   </p>
-                  <p className={styles.materialSummary}>
-                    {content.materialSummary}
-                  </p>
-
                   <fieldset
                     className={styles.formats}
                     disabled={locked}
@@ -272,7 +355,12 @@ export function RetailProduct({
                           : t("One-time purchase")}
                       </span>
                       <span>
-                        {t("Purchase options")}{" "}
+                        <ScrambleText
+                          text={t("Purchase options")}
+                          interactive
+                          animateOnMount={false}
+                          wrap
+                        />{" "}
                         <span aria-hidden="true">+</span>
                       </span>
                     </summary>
@@ -297,15 +385,11 @@ export function RetailProduct({
                   )}
                 </section>
 
-                <section
-                  className={styles.overview}
-                  aria-labelledby="retail-overview"
-                >
-                  <p className={styles.sectionLabel}>{t("Overview")}</p>
-                  <h2 id="retail-overview">{content.purpose}</h2>
-                  <p>{content.summary}</p>
-                </section>
-                <RetailProductInformation product={product} tone={tone} />
+                <RetailProductInformation
+                  product={product}
+                  tone={tone}
+                  refreshing={model.refreshing}
+                />
               </div>
             </div>
 
@@ -313,11 +397,24 @@ export function RetailProduct({
               <section
                 className={styles.related}
                 aria-labelledby="retail-related"
+                data-page-reveal="rise"
               >
                 <header>
-                  <h2 id="retail-related">{t("Explore the collection.")}</h2>
+                  <h2 id="retail-related">
+                    <ScrambleText
+                      text={t("Explore the collection.")}
+                      wrap
+                      visibleOnly
+                    />
+                  </h2>
                   <Link href={collectionHref}>
-                    {t("All matcha")} <span aria-hidden="true">↗</span>
+                    <ScrambleText
+                      text={t("All matcha")}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />{" "}
+                    <span aria-hidden="true">↗</span>
                   </Link>
                 </header>
                 <div className={styles.relatedGrid}>
@@ -342,7 +439,12 @@ export function RetailProduct({
                         </div>
                         <span className={styles.relatedText}>
                           <span>
-                            {details.name}
+                            <ScrambleText
+                              text={details.name}
+                              interactive
+                              animateOnMount={false}
+                              wrap
+                            />
                             <small>{details.application}</small>
                           </span>
                           <span aria-hidden="true">↗</span>

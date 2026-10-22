@@ -25,6 +25,9 @@ import { getProductContent } from "@/lib/product-content";
 import { productName } from "@/lib/product-name";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { ShopMaterialImage } from "./shop-material-image";
+import { ScrambleText } from "./scramble-text";
+import { usePageReveals } from "./use-page-reveals";
+import revealStyles from "./page-reveals.module.css";
 import styles from "./origins-directory.module.css";
 
 type OriginsDirectoryProps = {
@@ -99,6 +102,7 @@ export function OriginsDirectory({
     t(count === 1 ? `{count} ${singular}` : `{count} ${singular}s`, { count });
   const id = useId();
   const root = useRef<HTMLElement>(null);
+  usePageReveals(root);
   const heading = useRef<HTMLHeadingElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
   const productsHeading = useRef<HTMLHeadingElement>(null);
@@ -348,7 +352,14 @@ export function OriginsDirectory({
         >
           {photograph && <Thumbnail entry={photograph} />}
           <span className={styles.rowBody}>
-            <span className={styles.placeName}>{t(item.name)}</span>
+            <span className={styles.placeName}>
+              <ScrambleText
+                text={t(item.name)}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
+            </span>
             <span className={styles.path}>
               {parentPath.length
                 ? parentPath.map((part) => t(part.name)).join(" / ")
@@ -381,7 +392,12 @@ export function OriginsDirectory({
                 type="button"
                 onClick={() => onPlaceChange(child.id)}
               >
-                {t(child.name)}
+                <ScrambleText
+                  text={t(child.name)}
+                  interactive
+                  animateOnMount={false}
+                  wrap
+                />
                 <span aria-hidden="true">↗</span>
               </button>
             ))}
@@ -400,17 +416,20 @@ export function OriginsDirectory({
   return (
     <section
       ref={root}
-      className={styles.root}
+      className={`${styles.root} ${revealStyles.scope}`}
       data-tone={tone}
       data-origins-directory={place?.id ?? "all"}
       aria-labelledby={`${id}-title`}
     >
       {placeId === null ? (
         <>
-          <header className={`${styles.heading} ${styles.directoryHeading}`}>
+          <header
+            className={`${styles.heading} ${styles.directoryHeading}`}
+            data-page-enter="text"
+          >
             <div>
               <h1 ref={heading} id={`${id}-title`} tabIndex={-1}>
-                {t("Growing places")}
+                <ScrambleText text={t("Growing places")} wrap />
               </h1>
             </div>
             <p className={styles.introduction}>
@@ -517,7 +536,12 @@ export function OriginsDirectory({
                       type="button"
                       onClick={() => onPlaceChange(group.country!.id)}
                     >
-                      {t(group.country.name)}
+                      <ScrambleText
+                        text={t(group.country.name)}
+                        interactive
+                        animateOnMount={false}
+                        wrap
+                      />
                       <span aria-hidden="true">↗</span>
                     </button>
                   ) : (
@@ -544,7 +568,12 @@ export function OriginsDirectory({
               onClick={showMore}
               aria-controls={`${id}-places`}
             >
-              {t("Show more places")}
+              <ScrambleText
+                text={t("Show more places")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
               <span aria-hidden="true">+</span>
             </button>
           )}
@@ -572,7 +601,12 @@ export function OriginsDirectory({
                   onClick={() => showMoreEntries(true)}
                   aria-controls={`${id}-search-entry-results`}
                 >
-                  {t("Show more photographs")}
+                  <ScrambleText
+                    text={t("Show more photographs")}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />
                   <span aria-hidden="true">+</span>
                 </button>
               )}
@@ -583,7 +617,12 @@ export function OriginsDirectory({
         <>
           <nav className={styles.breadcrumbs} aria-label={t("Place path")}>
             <button type="button" onClick={() => onPlaceChange(null)}>
-              {t("Origins")}
+              <ScrambleText
+                text={t("Origins")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
             </button>
             {path.map((part) => (
               <span key={part.id} className={styles.crumb}>
@@ -592,7 +631,12 @@ export function OriginsDirectory({
                   <span aria-current="page">{t(part.name)}</span>
                 ) : (
                   <button type="button" onClick={() => onPlaceChange(part.id)}>
-                    {t(part.name)}
+                    <ScrambleText
+                      text={t(part.name)}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />
                   </button>
                 )}
               </span>
@@ -602,7 +646,7 @@ export function OriginsDirectory({
             className={styles.placeIntro}
             data-photograph={Boolean(featuredPhotograph)}
           >
-            <header className={styles.heading}>
+            <header className={styles.heading} data-page-enter="text">
               <div>
                 <p className={styles.eyebrow}>
                   {path
@@ -612,7 +656,7 @@ export function OriginsDirectory({
                     .join(" / ") || t("Growing origins")}
                 </p>
                 <h1 ref={heading} id={`${id}-title`} tabIndex={-1}>
-                  {t(place.name)}
+                  <ScrambleText text={t(place.name)} wrap />
                 </h1>
               </div>
               <p className={styles.introduction}>{t(place.description)}</p>
@@ -624,18 +668,30 @@ export function OriginsDirectory({
                   type="button"
                   onClick={() => jumpTo(productsHeading.current)}
                 >
-                  {t("Matcha")} <span aria-hidden="true">↓</span>
+                  <ScrambleText
+                    text={t("Matcha")}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />{" "}
+                  <span aria-hidden="true">↓</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => jumpTo(workHeading.current)}
                 >
-                  {t("People & work")} <span aria-hidden="true">↓</span>
+                  <ScrambleText
+                    text={t("People & work")}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />{" "}
+                  <span aria-hidden="true">↓</span>
                 </button>
               </nav>
             </header>
             {featuredPhotograph && (
-              <figure className={styles.landscape}>
+              <figure className={styles.landscape} data-page-enter="visual">
                 <div className={styles.landscapeImage}>
                   <Image
                     src={featuredPhotograph.image}
@@ -698,7 +754,12 @@ export function OriginsDirectory({
                   type="button"
                   onClick={retryCatalog}
                 >
-                  {t("Try again")}
+                  <ScrambleText
+                    text={t("Try again")}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />
                   <span aria-hidden="true">↻</span>
                 </button>
               </div>
@@ -771,7 +832,12 @@ export function OriginsDirectory({
                     onClick={showMoreMatchas}
                     aria-controls={`${id}-matcha-results`}
                   >
-                    {t("Show more matchas")}
+                    <ScrambleText
+                      text={t("Show more matchas")}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />
                     <span aria-hidden="true">+</span>
                   </button>
                 )}
@@ -803,7 +869,12 @@ export function OriginsDirectory({
                     type="button"
                     onClick={() => onPlaceChange(child.id)}
                   >
-                    {t(child.name)}
+                    <ScrambleText
+                      text={t(child.name)}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />
                     <span aria-hidden="true">↗</span>
                   </button>
                 ))}
@@ -814,7 +885,12 @@ export function OriginsDirectory({
                     onClick={showMoreChildren}
                     aria-controls={`${id}-child-places`}
                   >
-                    {t("More places")}
+                    <ScrambleText
+                      text={t("More places")}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />
                     <span aria-hidden="true">+</span>
                   </button>
                 )}
@@ -847,7 +923,12 @@ export function OriginsDirectory({
                       onClick={() => showMoreEntries(false)}
                       aria-controls={`${id}-place-entry-results`}
                     >
-                      {t("Show more photographs")}
+                      <ScrambleText
+                        text={t("Show more photographs")}
+                        interactive
+                        animateOnMount={false}
+                        wrap
+                      />
                       <span aria-hidden="true">+</span>
                     </button>
                   )}
@@ -868,7 +949,12 @@ export function OriginsDirectory({
               type="button"
               onClick={() => onPlaceChange(null)}
             >
-              {t("Return to Origins")}
+              <ScrambleText
+                text={t("Return to Origins")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
               <span aria-hidden="true">↗</span>
             </button>
           </div>
@@ -889,12 +975,22 @@ export function OriginsDirectory({
         <span>{t("ATOMA / Matcha collection")}</span>
         {onExplore ? (
           <button className={styles.action} type="button" onClick={onExplore}>
-            {t("Explore matcha")}
+            <ScrambleText
+              text={t("Explore matcha")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
             <span aria-hidden="true">↗</span>
           </button>
         ) : (
           <Link className={styles.action} href={home}>
-            {t("Explore matcha")}
+            <ScrambleText
+              text={t("Explore matcha")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
             <span aria-hidden="true">↗</span>
           </Link>
         )}
@@ -980,7 +1076,12 @@ function PlacePhotographs({
                 })}
                 onClick={() => onRead(entry.slug)}
               >
-                {t("View photographs")}
+                <ScrambleText
+                  text={t("View photographs")}
+                  interactive
+                  animateOnMount={false}
+                  wrap
+                />
                 <span aria-hidden="true">↗</span>
               </button>
             </div>

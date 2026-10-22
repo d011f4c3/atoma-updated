@@ -29,11 +29,13 @@ export function StorefrontFooter({ year }: { year: number }) {
 
   return (
     <SiteFooter
+      canonical
       footerRef={footerRef}
       pageReveals={pageReveals}
       direction="directory"
       tone={tone}
       year={year}
+      shopLabel="Wholesale"
       showAbout
       showManageSubscriptions
       showSamples={pathname !== "/"}

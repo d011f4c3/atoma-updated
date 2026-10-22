@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ScrambleText } from "./scramble-text";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { ThemeSwitcher } from "./theme-switcher";
 import { HomeHeader } from "./home-header";
@@ -12,12 +13,23 @@ export function OriginsPage() {
   const { t } = useStorefrontLocale();
   const { tone } = useStorefrontTheme();
   return (
-    <main className={styles.page} data-tone={tone} data-storefront-theme={tone}>
+    <main
+      className={styles.page}
+      data-tone={tone}
+      data-storefront-theme={tone}
+      data-client-reading
+    >
       <HomeHeader persistentTheme tone={tone} activePage="origins" />
       <OriginsContent tone={tone} />
       <footer className={styles.footer}>
         <Link href="/">
-          {t("Explore matcha")} <span aria-hidden="true">↗</span>
+          <ScrambleText
+            text={t("Explore matcha")}
+            interactive
+            animateOnMount={false}
+            wrap
+          />{" "}
+          <span aria-hidden="true">↗</span>
         </Link>
         <ThemeSwitcher />
       </footer>

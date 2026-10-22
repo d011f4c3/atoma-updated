@@ -19,6 +19,7 @@ import { StorefrontFooter } from "./storefront-footer";
 import { useStorefrontTheme } from "./storefront-theme-provider";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { ThemeSwitcher } from "./theme-switcher";
+import { ScrambleText } from "./scramble-text";
 import styles from "./about-flow.module.css";
 import revealStyles from "./page-reveals.module.css";
 
@@ -100,6 +101,7 @@ export function AboutFlow({
       ref={root}
       data-about-flow
       data-about-page={!preview || undefined}
+      data-client-reading={!preview || undefined}
       data-tone={tone}
       data-storefront-theme={tone}
     >
@@ -121,7 +123,14 @@ export function AboutFlow({
         <div className={styles.edition}>
           <span>{t("About ATOMA")}</span>
           <a href="#about-community">
-            <span className={styles.communityLabel}>{t("Community")}</span>{" "}
+            <span className={styles.communityLabel}>
+              <ScrambleText
+                text={t("Community")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
+            </span>{" "}
             <span aria-hidden="true">↓</span>
           </a>
           <ThemeSwitcher />
@@ -135,9 +144,9 @@ export function AboutFlow({
                   {t("Our approach to matcha")}
                 </span>
                 <h1 id="about-title">
-                  {t("Matcha,")}
+                  <ScrambleText text={t("Matcha,")} />
                   <br />
-                  {t("in detail.")}
+                  <ScrambleText text={t("in detail.")} delay={80} />
                 </h1>
               </div>
               <div
@@ -149,7 +158,14 @@ export function AboutFlow({
                 <p>{t("Connected to the people and places behind it.")}</p>
               </div>
               <a href="#about-purpose" className={styles.approachLink}>
-                <span>{t("About ATOMA")}</span>
+                <span>
+                  <ScrambleText
+                    text={t("About ATOMA")}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />
+                </span>
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M5 19 19 5M5 5h14v14" />
                 </svg>
@@ -194,7 +210,13 @@ export function AboutFlow({
               {t("About the company")}
             </span>
             <div className={styles.purposeStatement}>
-              <h2 id="purpose-title">{t("Matcha, selected and explained.")}</h2>
+              <h2 id="purpose-title">
+                <ScrambleText
+                  text={t("Matcha, selected and explained.")}
+                  wrap
+                  visibleOnly
+                />
+              </h2>
               <p>
                 {t(
                   "ATOMA helps businesses find matcha suited to what they make. We bring product selection, practical guidance and relationships with tea-growing communities into one connected approach.",
@@ -225,7 +247,9 @@ export function AboutFlow({
               >
                 <div>
                   <span className={styles.label}>{t("People & place")}</span>
-                  <h2 id="field-title">{t("Community")}</h2>
+                  <h2 id="field-title">
+                    <ScrambleText text={t("Community")} visibleOnly />
+                  </h2>
                 </div>
                 <p>
                   {t("Stories from the places and communities we work with.")}
@@ -283,7 +307,14 @@ export function AboutFlow({
                           </div>
                           <p>{t(entry.introduction)}</p>
                           <span className={styles.entryAction}>
-                            <span>{t("Read story")}</span>
+                            <span>
+                              <ScrambleText
+                                text={t("Read story")}
+                                interactive
+                                animateOnMount={false}
+                                wrap
+                              />
+                            </span>
                             <svg
                               viewBox="0 0 24 24"
                               fill="none"

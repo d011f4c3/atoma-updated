@@ -1,0 +1,503 @@
+.root {
+  min-width: 0;
+}
+.summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+}
+.summary h2 {
+  margin: 0;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  font-weight: 400;
+  line-height: 1.5;
+}
+.summary > span {
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.choices {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.choices li {
+  min-width: 0;
+  border-top: 1px solid var(--line);
+}
+.choices li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.choice {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr) auto auto;
+  gap: 0.875rem;
+  align-items: center;
+  width: 100%;
+  min-height: 4.5rem;
+  padding: 0.75rem 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.choice:is(:hover, :focus-visible) .read > span:first-child {
+  box-shadow: 0 1px currentColor;
+}
+.swatch {
+  position: relative;
+  width: 2.75rem;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--radius-button);
+}
+.swatch img {
+  object-fit: contain;
+}
+.identity {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+}
+.name {
+  font-size: calc(0.9375rem + var(--locale-font-increment));
+  line-height: 1.5;
+}
+.application,
+.code {
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+.application {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.5rem;
+}
+.weight {
+  font-size: calc(0.75rem + var(--locale-font-increment));
+  white-space: nowrap;
+}
+.read {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-size: calc(0.75rem + var(--locale-font-increment));
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.dialog {
+  width: min(60rem, calc(100vw - 3rem));
+  max-width: none;
+  height: min(42rem, calc(100dvh - 3rem));
+  max-height: calc(100dvh - 3rem);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 0;
+  background: var(--color-raised);
+  color: var(--color-ink);
+  --ink: var(--color-ink);
+  --muted: var(--color-muted);
+  --surface: var(--color-surface);
+  --line: var(--color-line);
+  font-family: var(--font-atoma-mono), monospace;
+  overflow: hidden;
+  box-shadow: 0 2rem 6rem rgb(0 0 0 / 24%);
+}
+.dialog[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.dialog::backdrop {
+  background: rgb(8 12 17 / 58%);
+  backdrop-filter: blur(8px);
+}
+.profileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.dialogContent {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+  overflow: hidden;
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 44px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: calc(0.8125rem + var(--locale-font-increment));
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+}
+.back:is(:hover, :focus-visible) > span:last-child {
+  box-shadow: 0 1px currentColor;
+}
+.back > span:first-child {
+  flex-shrink: 0;
+}
+.profileIdentity {
+  grid-area: identity;
+  min-width: 0;
+}
+.profileIdentity h2 {
+  margin: 0.375rem 0 0;
+  font-size: calc(clamp(1.25rem, 2vw, 1.625rem) + var(--locale-font-increment));
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.3;
+}
+.close {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.reader {
+  display: grid;
+  grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+  grid-template-areas:
+    "identity content"
+    "image content";
+  grid-template-rows: auto 1fr;
+  gap: 1.25rem 2rem;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 1.5rem;
+}
+.profileImage {
+  grid-area: image;
+  position: sticky;
+  top: 0;
+  min-width: 0;
+  height: 17rem;
+  overflow: hidden;
+  border-radius: var(--radius-button);
+}
+.profileImage img {
+  object-fit: contain;
+}
+.profileContent {
+  grid-area: content;
+  min-width: 0;
+}
+.description {
+  margin: 0 0 1rem;
+  color: var(--muted);
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.75;
+}
+.profileNote {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+.properties {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 1rem 0;
+  border-block: 1px solid var(--line);
+}
+.properties dt {
+  margin-bottom: 0.25rem;
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment));
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+.properties dd {
+  margin: 0;
+  font-size: calc(0.8125rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+.preparation {
+  border-bottom: 1px solid var(--line);
+}
+.preparation summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  min-height: 3rem;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.6;
+  list-style: none;
+  cursor: pointer;
+}
+.preparation summary::-webkit-details-marker {
+  display: none;
+}
+.preparation summary > span[aria-hidden]::after {
+  content: "+";
+}
+.preparation[open] summary > span[aria-hidden]::after {
+  content: "−";
+}
+.preparation p,
+.preparation li {
+  color: var(--muted);
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.8;
+}
+.preparation p {
+  margin: 0.5rem 0 1.25rem;
+}
+.preparation h3 {
+  margin: 0;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  font-weight: 400;
+  line-height: 1.6;
+}
+.preparation ul {
+  margin: 0.75rem 0 1.5rem;
+  padding-left: 1.25rem;
+}
+.preparation li + li {
+  margin-top: 0.375rem;
+}
+.actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--line);
+}
+.order,
+.productLink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  min-height: 2.75rem;
+  border-radius: var(--radius-button);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: calc(0.8125rem + var(--locale-font-increment));
+  line-height: 1.6;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.order {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--surface);
+}
+.productLink {
+  padding: 0.5rem 0;
+}
+.productLink small {
+  display: block;
+  margin-top: 0.125rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+}
+.productLink:is(:hover, :focus-visible) > span:first-child > span {
+  box-shadow: 0 1px currentColor;
+}
+.root :is(button, a, summary):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+.root :is(button:disabled, a[aria-disabled="true"]) {
+  cursor: default;
+  opacity: 0.5;
+}
+.root :is(p, h2, h3, span, dd, dt, li) {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1100px) {
+  .choice {
+    grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+    gap: 0.5rem 0.75rem;
+  }
+  .read {
+    grid-column: 2 / -1;
+    justify-content: space-between;
+  }
+}
+@media (max-width: 760px) {
+  .summary h2,
+  .name,
+  .read,
+  .description,
+  .properties dd,
+  .preparation summary,
+  .preparation h3,
+  .preparation p,
+  .preparation li,
+  .order,
+  .productLink {
+    font-size: calc(1rem + var(--locale-font-increment));
+  }
+  .summary > span,
+  .code,
+  .application,
+  .weight,
+  .properties dt,
+  .productLink small {
+    font-size: calc(0.75rem + var(--locale-font-increment));
+  }
+  .dialog {
+    width: calc(100vw - 1.5rem);
+    height: calc(100dvh - 2rem);
+    max-height: calc(100dvh - 2rem);
+  }
+  .profileHeader {
+    gap: 12px;
+    padding: 8px 16px;
+  }
+  .back {
+    font-size: calc(1rem + var(--locale-font-increment));
+  }
+  .close {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+  }
+  .reader {
+    grid-template-columns: 1fr;
+    grid-template-areas: "identity" "image" "content";
+    grid-template-rows: auto auto auto;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .profileImage {
+    position: relative;
+    width: min(100%, 12rem);
+    height: 9rem;
+    margin-inline: auto;
+  }
+  .profileImage img {
+    object-fit: contain;
+  }
+  .profileNote {
+    font-size: calc(0.75rem + var(--locale-font-increment));
+  }
+  .actions {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+  .productLink {
+    padding: 0.375rem 0;
+  }
+}
+@media (max-width: 380px) {
+  .dialog {
+    width: calc(100vw - 24px);
+    height: calc(100dvh - 32px);
+    max-height: calc(100dvh - 32px);
+  }
+  .dialogContent {
+    display: block;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  .reader {
+    min-width: 0;
+    overflow: visible;
+    padding: 16px;
+  }
+  .actions {
+    padding: 12px 16px;
+  }
+  .choice {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .swatch {
+    display: none;
+  }
+  .read {
+    grid-column: 1 / -1;
+    min-width: 0;
+    gap: 0.5rem;
+    white-space: normal;
+  }
+  .read > span[aria-hidden] {
+    flex-shrink: 0;
+  }
+  .properties {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* On a landscape phone, keep the return controls fixed and give the remaining
+   height to one reader instead of trapping it between two fixed action bars. */
+@media (max-height: 500px) and (pointer: coarse) {
+  :global([data-homepage]) .dialog {
+    width: calc(100vw - 24px);
+    height: calc(100dvh - 24px);
+    max-height: calc(100dvh - 24px);
+  }
+  :global([data-homepage]) .profileHeader {
+    padding: 6px 16px;
+  }
+  :global([data-homepage]) .dialogContent {
+    display: block;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  :global([data-homepage]) .reader {
+    min-width: 0;
+    overflow: visible;
+    padding: 16px;
+  }
+  :global([data-homepage]) .profileImage {
+    position: relative;
+    height: 12rem;
+  }
+  :global([data-homepage])
+    .dialog
+    :is(
+      .back,
+      .description,
+      .properties dd,
+      .preparation summary,
+      .preparation h3,
+      .preparation p,
+      .preparation li,
+      .order,
+      .productLink
+    ) {
+    font-size: calc(1rem + var(--locale-font-increment));
+  }
+  :global([data-homepage]) .actions {
+    padding: 12px 16px;
+  }
+}

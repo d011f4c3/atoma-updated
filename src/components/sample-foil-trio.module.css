@@ -277,7 +277,7 @@
   white-space: nowrap;
 }
 
-.dialogHeader button > span {
+.dialogHeader button > span[aria-hidden] {
   font-size: 1.25rem;
 }
 
@@ -316,9 +316,8 @@
   text-transform: uppercase;
 }
 
-.productLink:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.3em;
+.productLink:is(:hover, :focus-visible) > span:first-child {
+  box-shadow: 0 1px currentColor;
 }
 
 .dialogFooter {
@@ -348,7 +347,7 @@
   cursor: pointer;
 }
 
-.labelChoices button span {
+.labelChoices button > span:first-child {
   font-size: 0.625rem;
 }
 
@@ -453,5 +452,161 @@
   }
   .packet:not(:disabled):is(:hover, :focus-visible) {
     --lift: 0px;
+  }
+}
+
+/* The canonical mobile reader uses the live label's same facts at a reading
+   scale; its miniature print and all saved desktop studies remain unchanged. */
+@media (max-width: 760px), (max-height: 500px) and (pointer: coarse) {
+  :global(:is([data-homepage], [data-samples-page])) .dialog {
+    width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px);
+    overflow-wrap: anywhere;
+  }
+  :global(:is([data-homepage], [data-samples-page])) .dialogHeader {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    gap: 12px;
+    padding: 8px 16px;
+  }
+  :global(:is([data-homepage], [data-samples-page])) .dialog .dialogHeader h2 {
+    min-width: 0;
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+    line-height: 1.5;
+    text-align: left;
+    text-wrap: wrap;
+  }
+  :global(:is([data-homepage], [data-samples-page]))
+    .dialogHeader
+    h2
+    > span:first-child,
+  :global(:is([data-homepage], [data-samples-page])) .closeLabel {
+    display: none;
+  }
+  :global(:is([data-homepage], [data-samples-page])) .dialogHeader h2 span {
+    white-space: normal;
+  }
+  :global(:is([data-homepage], [data-samples-page])) .dialogHeader button {
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    gap: 0;
+    padding: 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-button);
+  }
+  :global(:is([data-homepage], [data-samples-page])) .inspection {
+    align-items: start;
+    gap: 1rem;
+    padding: 16px;
+  }
+  :global(:is([data-homepage], [data-samples-page])) .inspectedPouch {
+    width: min(100%, 5rem);
+  }
+  :global(:is([data-homepage], [data-samples-page])) .productLink {
+    min-height: 48px;
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+    line-height: 1.5;
+  }
+  :global(:is([data-homepage], [data-samples-page])) .labelChoices {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  :global(:is([data-homepage], [data-samples-page])) .labelChoices button {
+    grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr);
+    align-items: center;
+    min-height: 48px;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+    line-height: 1.5;
+  }
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelChoices
+    button
+    > span:first-child {
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  }
+  :global(:is([data-homepage], [data-samples-page])) .dialogFooter p {
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelDetail
+    :global([data-pouch-sticker]) {
+    aspect-ratio: auto;
+    gap: 12px;
+    padding: 16px;
+    line-height: 1.5;
+  }
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelDetail
+    :global([data-pouch-sticker])
+    > span {
+    margin: 0;
+    padding: 0 0 12px;
+    gap: 8px;
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+    line-height: 1.5;
+  }
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelDetail
+    :global([data-pouch-sticker])
+    > span:first-child
+    > span:first-child,
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelDetail
+    :global([data-pouch-sticker])
+    > span:nth-child(2)
+    > span:first-child {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+    line-height: 1.4;
+  }
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelDetail
+    :global([data-pouch-sticker])
+    > span:nth-child(2)
+    > span:last-child {
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  }
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelDetail
+    :global([data-has-qr]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelDetail
+    :global([data-has-qr])
+    > span {
+    gap: 12px;
+  }
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelDetail
+    :global([data-has-qr])
+    > span
+    > span {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+    line-height: 1.5;
+  }
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelDetail
+    :global([data-has-qr])
+    > span
+    > span
+    > span:first-child,
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelDetail
+    :global([data-pouch-sticker])
+    > span:last-child
+    > span {
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+    line-height: 1.5;
+  }
+  :global(:is([data-homepage], [data-samples-page]))
+    .labelDetail
+    :global([data-has-qr])
+    > img {
+    width: 64px;
   }
 }

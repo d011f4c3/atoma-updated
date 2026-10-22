@@ -65,11 +65,22 @@ export function useHeroLoading(
 
     const type = hero.current ? getComputedStyle(hero.current) : null;
     const mono = type?.fontFamily ?? "monospace";
+    const lightMono =
+      type?.getPropertyValue("--font-atoma-mono-light").trim() || mono;
+    const heading = Array.from(hero.current?.querySelectorAll("h1") ?? []).find(
+      (node) => node.getClientRects().length > 0,
+    );
+    const headingType = heading ? getComputedStyle(heading) : null;
     const sans =
       type?.getPropertyValue("--font-fraktion-sans").trim() || "sans-serif";
     try {
       void Promise.allSettled([
         document.fonts.load(`400 14px ${mono}`, "0123456789%"),
+        document.fonts.load(`300 14px ${lightMono}`, "Japanese matcha"),
+        document.fonts.load(
+          `${headingType?.fontWeight ?? "400"} ${headingType?.fontSize ?? "14px"} ${headingType?.fontFamily ?? mono}`,
+          heading?.textContent ?? "Matcha",
+        ),
         document.fonts.load(`700 18px ${sans}`, "ATOMA"),
       ]).then(() => {
         if (!disposed) fontsReady = true;

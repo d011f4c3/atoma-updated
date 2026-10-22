@@ -17,14 +17,14 @@ export function LanguageSwitcher() {
       <option value="en" lang="en">
         English
       </option>
+      <option value="ja" lang="ja">
+        日本語 / Japanese
+      </option>
       <option value="zh-Hans" lang="zh-Hans">
         简体中文
       </option>
       <option value="zh-Hant" lang="zh-Hant">
         繁體中文
-      </option>
-      <option value="ja" lang="ja">
-        日本語
       </option>
     </select>
   );

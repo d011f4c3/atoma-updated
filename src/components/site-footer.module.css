@@ -180,7 +180,11 @@
   min-height: 2.75rem;
   color: var(--color-ink);
   font: inherit;
-  text-underline-offset: 0.3em;
+  text-decoration: none;
+}
+
+.accountLabel {
+  border-bottom: 1px solid currentColor;
 }
 
 .accountLink:focus-visible {
@@ -484,6 +488,41 @@
 
   .footer[data-footer-direction="directory"] .utilityList li {
     padding-block: 0.75rem;
+  }
+
+  .footer[data-storefront-footer] .statement,
+  .footer[data-storefront-footer] .destination {
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+
+  .footer[data-storefront-footer] .utility,
+  .footer[data-storefront-footer] .base {
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  }
+
+  .footer[data-storefront-footer] .base {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .footer[data-storefront-footer] .appearance {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+  }
+
+  .footer[data-storefront-footer] .appearance select {
+    min-width: 0;
+    max-width: 100%;
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+
+  .footer[data-storefront-footer]
+    .appearance
+    :global([data-appearance-controls]) {
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
   }
 }
 

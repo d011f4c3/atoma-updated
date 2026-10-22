@@ -75,34 +75,7 @@
   min-width: 0;
   margin: 0;
 }
-.imageStage {
-  position: relative;
-  height: clamp(25rem, calc(100dvh - 14rem), 46rem);
-  overflow: hidden;
-  isolation: isolate;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: clamp(1.5rem, 4vw, 4rem);
-  background: radial-gradient(
-    ellipse at 52% 35%,
-    color-mix(in srgb, var(--ink) 4%, transparent),
-    transparent 70%
-  );
-}
-.imageStage > div {
-  filter: drop-shadow(-10px 20px 13px rgb(0 0 0 / 28%));
-}
-.page[data-tone="light"] .imageStage {
-  background: radial-gradient(
-    ellipse at 65% 20%,
-    rgb(255 255 255 / 20%),
-    transparent 75%
-  );
-}
-.page[data-tone="light"] .imageStage > div {
-  filter: drop-shadow(-13px 22px 12px rgb(31 49 46 / 25%));
-}
-.gallery figcaption {
+.galleryIdentity {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -133,6 +106,32 @@
   letter-spacing: -0.045em;
   line-height: 1.2;
 }
+.application {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.compare {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 2.75rem;
+  margin-block: 1rem;
+  text-decoration: none;
+}
+.compare > :first-child {
+  position: relative;
+}
+.compare > :first-child::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -0.2em;
+  height: 1px;
+  background: currentColor;
+}
 .availability {
   display: inline-flex;
   align-items: center;
@@ -155,6 +154,11 @@
   margin: 0.875rem 0 0;
   font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
 }
+.applicationUse {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  text-transform: none;
+}
 .unitPrice {
   margin: 0.875rem 0 1.25rem;
   font-size: calc(1.125rem + var(--locale-font-increment, 0px));
@@ -166,8 +170,16 @@
 }
 .materialSummary {
   max-width: 45em;
-  margin: 0;
+  margin: 1rem 0 0;
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
   line-height: 1.8;
+}
+.profilePreview,
+.profileContent {
+  display: contents;
+}
+.profileToggle {
+  display: none;
 }
 .formats {
   min-width: 0;
@@ -419,13 +431,18 @@
   min-height: 2.75rem;
   align-items: center;
   gap: 1rem;
+  text-decoration: none;
+}
+.state a > :first-child {
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.15em;
 }
 .error {
   margin: 1rem 0 0;
   line-height: 1.7;
 }
 .breadcrumb,
-.gallery figcaption,
+.galleryIdentity,
 .eyebrow,
 .sectionLabel,
 .availability,
@@ -504,11 +521,7 @@
     top: auto;
     margin-bottom: 1.5rem;
   }
-  .imageStage {
-    height: clamp(15rem, 80vw, 24rem);
-    padding: 1.5rem;
-  }
-  .gallery figcaption {
+  .galleryIdentity {
     padding: 0.75rem 0;
     font-size: calc(0.5625rem + var(--locale-font-increment, 0px));
   }
@@ -578,6 +591,7 @@
     letter-spacing: -0.02em;
   }
   .purpose,
+  .applicationUse,
   .materialSummary,
   .overview > p:last-child,
   .state p {
@@ -586,7 +600,7 @@
     letter-spacing: 0;
   }
   .breadcrumb,
-  .gallery figcaption,
+  .galleryIdentity,
   .eyebrow,
   .sectionLabel,
   .availability,
@@ -622,5 +636,49 @@
   .relatedText {
     font-size: var(--mobile-type-heading);
     line-height: 1.5;
+  }
+  .breadcrumb a {
+    min-width: 2.75rem;
+  }
+  .profilePreview {
+    display: block;
+    margin-block: 1rem;
+    border-block: 1px solid var(--line);
+  }
+  .profileToggle {
+    display: flex;
+    width: 100%;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: var(--mobile-type-action);
+    text-align: left;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .profileToggle > span:last-child {
+    flex: none;
+  }
+  .profileContent {
+    display: none;
+  }
+  .profilePreview[data-open] .profileContent {
+    display: block;
+  }
+}
+@media (min-width: 761px) and (max-width: 1000px) and (max-height: 500px) {
+  .breadcrumb a {
+    min-width: 2.75rem;
+  }
+  .related header > a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
   }
 }

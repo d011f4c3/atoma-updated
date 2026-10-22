@@ -14,6 +14,7 @@ import type { ProductCodePlacement } from "@/lib/product-display-index";
 import { ProductCodeIdentity } from "./product-code-identity";
 import { ScrambleText } from "./scramble-text";
 import { ProductDetails } from "./product-details";
+import { ApplicationOverview } from "./application-overview";
 import {
   OverviewStudyPanel,
   type OverviewStudyVariant,
@@ -122,7 +123,19 @@ export function HomepageProductInformation({
             data-homepage-view-panel="overview"
             hidden={view !== "overview"}
           >
-            {overviewStudyVariant !== "current" && product ? (
+            {overviewStudyVariant === "application" && product ? (
+              <ApplicationOverview
+                product={product}
+                tone={tone}
+                productCodePlacement={productCodePlacement}
+                busy={busy}
+                refreshing={model.refreshing}
+                onShop={onShop}
+                onSpecifications={onSpecifications}
+              />
+            ) : overviewStudyVariant !== "current" &&
+              overviewStudyVariant !== "application" &&
+              product ? (
               <OverviewStudyPanel
                 product={product}
                 variant={overviewStudyVariant}
@@ -203,6 +216,7 @@ export function HomepageProductInformation({
               tone={tone}
               presentation="homepage"
               productCodePlacement={productCodePlacement}
+              showProfileStatus={overviewStudyVariant === "application"}
             />
           </div>
 

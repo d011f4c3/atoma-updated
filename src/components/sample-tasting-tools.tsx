@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
 import type { ProductKey } from "@/lib/product-codes";
 import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
+import { oneKilogramProductUrl } from "@/lib/sample-journey";
 import {
   parseTastingDraft,
   tastingToDraft,
@@ -12,7 +14,10 @@ import {
 } from "@/lib/sample-tastings";
 import { downloadTastingCard } from "@/lib/tasting-card-image";
 import { useSampleTastings } from "./use-sample-tastings";
+import { useSampleTastingSession } from "./sample-tasting-session-provider";
+import { useCart } from "./cart-drawer";
 import { useStorefrontLocale } from "./storefront-locale-provider";
+import { ScrambleText } from "./scramble-text";
 import styles from "./sample-tasting-tools.module.css";
 
 const preparations = { hot: "Hot", iced: "Iced", recipe: "Recipe" } as const;
@@ -20,19 +25,21 @@ const preparations = { hot: "Hot", iced: "Iced", recipe: "Recipe" } as const;
 /** Personal trial records are kept separate from product facts and commerce. */
 export function SampleTastingTools() {
   const { t } = useStorefrontLocale();
+  const { busy } = useCart();
   const saved = useSampleTastings();
+  const {
+    view,
+    setView,
+    selected,
+    setSelected,
+    pair,
+    setPair,
+    drafts,
+    setDrafts,
+  } = useSampleTastingSession();
   const id = useId();
   const root = useRef<HTMLElement>(null);
   const textFallback = useRef<HTMLTextAreaElement>(null);
-  const [view, setView] = useState<"card" | "compare">("card");
-  const [selected, setSelected] = useState<ProductKey>("ceremonial");
-  const [pair, setPair] = useState<[ProductKey, ProductKey]>([
-    "ceremonial",
-    "barista",
-  ]);
-  const [drafts, setDrafts] = useState<
-    Partial<Record<ProductKey, TastingDraft>>
-  >({});
   const [feedback, setFeedback] = useState("");
   const [feedbackArea, setFeedbackArea] = useState<"editor" | "export">(
     "editor",
@@ -240,9 +247,55 @@ export function SampleTastingTools() {
           );
         }}
       >
-        {t("Edit card")}
+        <ScrambleText
+          text={t("Edit card")}
+          interactive
+          animateOnMount={false}
+          wrap
+        />
         <span aria-hidden="true">↗</span>
       </button>
+    );
+  }
+
+  function orderLink(key: ProductKey, context: "editor" | "comparison") {
+    const tea = SAMPLE_SET_CONTENTS.find((item) => item.key === key);
+    const href = tea && oneKilogramProductUrl(tea.productHandle);
+    if (!tea || !href) return null;
+    return (
+      <Link
+        className={styles.orderLink}
+        href={href}
+        aria-disabled={busy || undefined}
+        tabIndex={busy ? -1 : undefined}
+        onClick={(event) => {
+          if (busy) event.preventDefault();
+        }}
+        onNavigate={(event) => {
+          if (busy) event.preventDefault();
+        }}
+        data-tasting-one-kilogram={key}
+        data-tasting-link-context={context}
+      >
+        <span>
+          {t("View 1 kg of {name}", { name: t(tea.name) })
+            .split(/(1 kg)/)
+            .map((part, index) =>
+              part === "1 kg" ? (
+                part
+              ) : (
+                <ScrambleText
+                  key={index}
+                  text={part}
+                  interactive
+                  animateOnMount={false}
+                  wrap
+                />
+              ),
+            )}
+        </span>
+        <span aria-hidden="true">↗</span>
+      </Link>
     );
   }
 
@@ -251,6 +304,8 @@ export function SampleTastingTools() {
       ref={root}
       className={styles.tools}
       data-sample-tasting-tools
+      data-tasting-view={view}
+      data-tasting-selected={selected}
       aria-labelledby={`${id}-title`}
     >
       <header className={styles.heading} data-page-reveal="rise">
@@ -274,7 +329,12 @@ export function SampleTastingTools() {
           disabled={!saved.ready}
           onClick={() => setView("card")}
         >
-          {t("Tasting card")}
+          <ScrambleText
+            text={t("Tasting card")}
+            interactive
+            animateOnMount={false}
+            wrap
+          />
         </button>
         <button
           type="button"
@@ -282,7 +342,12 @@ export function SampleTastingTools() {
           disabled={!saved.ready}
           onClick={() => setView("compare")}
         >
-          {t("Compare samples")}
+          <ScrambleText
+            text={t("Compare samples")}
+            interactive
+            animateOnMount={false}
+            wrap
+          />
         </button>
       </div>
       <noscript>
@@ -306,7 +371,14 @@ export function SampleTastingTools() {
               onClick={() => edit(tea.key)}
             >
               <span className={styles.teaNumber}>0{index + 1}</span>
-              <span>{t(tea.name.replace(/ Matcha$/, ""))}</span>
+              <span>
+                <ScrambleText
+                  text={t(tea.name.replace(/ Matcha$/, ""))}
+                  interactive
+                  animateOnMount={false}
+                  wrap
+                />
+              </span>
               {saved.records[tea.key] && (
                 <span
                   className={styles.savedMark}
@@ -353,7 +425,12 @@ export function SampleTastingTools() {
               </div>
               <details className={styles.disclosure}>
                 <summary>
-                  {t("Recipe (optional)")}
+                  <ScrambleText
+                    text={t("Recipe (optional)")}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />
                   <span aria-hidden="true">+</span>
                 </summary>
                 <div className={styles.recipeFields}>
@@ -404,7 +481,12 @@ export function SampleTastingTools() {
               </details>
               <div className={styles.actions}>
                 <button className={styles.primary} type="submit">
-                  {t("Save tasting card")}
+                  <ScrambleText
+                    text={t("Save tasting card")}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />
                   <span aria-hidden="true">↗</span>
                 </button>
                 {saved.records[selected] && (
@@ -424,7 +506,12 @@ export function SampleTastingTools() {
                         setFeedback("Your saved card could not be cleared.");
                     }}
                   >
-                    {t("Clear saved card")}
+                    <ScrambleText
+                      text={t("Clear saved card")}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />
                   </button>
                 )}
               </div>
@@ -436,6 +523,9 @@ export function SampleTastingTools() {
             >
               {feedbackArea === "editor" && feedback ? t(feedback) : ""}
             </p>
+            <div className={styles.editorOrder}>
+              {orderLink(selected, "editor")}
+            </div>
           </form>
 
           <details
@@ -444,7 +534,12 @@ export function SampleTastingTools() {
             onToggle={(event) => setPreviewOpen(event.currentTarget.open)}
           >
             <summary data-page-reveal="rise">
-              {t("Card preview")}
+              <ScrambleText
+                text={t("Card preview")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
               <span aria-hidden="true">+</span>
             </summary>
             <article
@@ -472,14 +567,24 @@ export function SampleTastingTools() {
             </article>
             <div className={styles.exportActions}>
               <button type="button" disabled={!record} onClick={copyCard}>
-                {t("Copy card")}
+                <ScrambleText
+                  text={t("Copy card")}
+                  interactive
+                  animateOnMount={false}
+                  wrap
+                />
               </button>
               <button
                 type="button"
                 disabled={!record || exporting}
                 onClick={downloadCard}
               >
-                {t("Download card")}
+                <ScrambleText
+                  text={t("Download card")}
+                  interactive
+                  animateOnMount={false}
+                  wrap
+                />
                 <span aria-hidden="true">↓</span>
               </button>
             </div>
@@ -518,6 +623,7 @@ export function SampleTastingTools() {
               <span>{t(index === 0 ? "First matcha" : "Second matcha")}</span>
               <select
                 value={key}
+                data-tasting-compare-slot={index}
                 onChange={(event) =>
                   selectCompared(
                     index as 0 | 1,
@@ -676,6 +782,18 @@ export function SampleTastingTools() {
                   headers={`${id}-${index === 0 ? "first" : "second"}-tea`}
                 >
                   {editButton(key)}
+                </td>
+              ))}
+            </tr>
+            <tr className={styles.orderActions} role="row">
+              <td className={styles.corner} role="cell" />
+              {pair.map((key, index) => (
+                <td
+                  key={key}
+                  role="cell"
+                  headers={`${id}-${index === 0 ? "first" : "second"}-tea`}
+                >
+                  {orderLink(key, "comparison")}
                 </td>
               ))}
             </tr>

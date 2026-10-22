@@ -272,10 +272,12 @@
   text-align: left;
 }
 
-.groupHeading button:hover,
+.groupHeading button:hover {
+  box-shadow: inset 0 -1px 0 currentColor;
+}
+
 .breadcrumbs button:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.3em;
+  box-shadow: inset 0 -1px 0 currentColor;
 }
 
 .placeList,
@@ -385,10 +387,12 @@
   text-align: left;
 }
 
-.branchChildren button:hover,
+.branchChildren button:hover {
+  box-shadow: inset 0 -1px 0 currentColor;
+}
+
 .fieldLink:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.3em;
+  box-shadow: inset 0 -1px 0 currentColor;
 }
 
 .path {
@@ -570,7 +574,7 @@
   transition: background 160ms ease;
 }
 
-.action > span {
+.action > span[aria-hidden="true"] {
   flex: none;
   font-size: calc(1rem + var(--locale-font-increment, 0px));
 }
@@ -872,6 +876,16 @@
 }
 
 @media (max-width: 600px) {
+  :global([data-client-reading]) .collectionHeading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  :global([data-client-reading]) .collectionHeading .fieldLink {
+    max-width: 100%;
+  }
+
   .root {
     padding-inline: 1rem;
   }
@@ -1085,6 +1099,33 @@
   :global(body:has([data-storefront-theme])) .filter select {
     font-size: var(--mobile-type-input);
     letter-spacing: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  :global([data-client-reading]) .root {
+    padding-inline: 16px;
+  }
+
+  :global([data-client-reading]) .resultsHeader {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  :global([data-client-reading]) .placeRow {
+    grid-template-columns: 48px minmax(0, 1fr) 1rem;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  :global([data-client-reading]) .placeRow[data-photograph="false"] {
+    grid-template-columns: minmax(0, 1fr) 1rem;
+  }
+
+  :global([data-client-reading]) .action {
+    max-width: 100%;
+    gap: 12px;
+    padding: 12px;
   }
 }
 

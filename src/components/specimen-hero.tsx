@@ -43,6 +43,8 @@ import { useStorefrontTheme } from "./storefront-theme-provider";
 import { useHomepageJourney } from "./homepage-journey-provider";
 import { HeroLoader } from "./hero-loader";
 import { useHeroLoading } from "./use-hero-loading";
+import { HomepageApplicationIntroduction } from "./homepage-application-introduction";
+import homepageEntryStyles from "./homepage-application-introduction.module.css";
 import { usePageReveals } from "./use-page-reveals";
 import revealStyles from "./page-reveals.module.css";
 import {
@@ -96,6 +98,7 @@ export function SpecimenHero({
   sampleOrderLayout,
   sampleMobileLayout,
   contextVisible = true,
+  clientFeedbackEntry = false,
 }: {
   tone?: "dark" | "light";
   storefrontTheme?: boolean;
@@ -126,6 +129,7 @@ export function SpecimenHero({
   sampleOrderLayout?: SampleOrderLayout;
   sampleMobileLayout?: SampleMobileLayout;
   contextVisible?: boolean;
+  clientFeedbackEntry?: boolean;
 }) {
   const { t } = useStorefrontLocale();
   const { busy } = useCart();
@@ -518,8 +522,9 @@ export function SpecimenHero({
     <>
       <main
         ref={heroRef}
-        className={`${styles.hero}${pageEntrance ? ` ${revealStyles.scope}` : ""}`}
+        className={`${styles.hero}${pageEntrance ? ` ${revealStyles.scope}` : ""}${clientFeedbackEntry ? ` ${homepageEntryStyles.hero}` : ""}`}
         data-brand-part="hero"
+        data-client-reading={clientFeedbackEntry || undefined}
         data-concept="01"
         data-storefront-theme={storefrontTheme ? tone : undefined}
         data-page-entrance={persistentTheme || undefined}
@@ -560,7 +565,13 @@ export function SpecimenHero({
             inert={exploring}
             aria-hidden={exploring}
           >
-            {introductionStudy2Variant ? (
+            {clientFeedbackEntry ? (
+              <HomepageApplicationIntroduction
+                exploring={exploring}
+                onExplore={openSelection}
+                exploreRef={exploreRef}
+              />
+            ) : introductionStudy2Variant ? (
               <HeroStudy2Introduction
                 direction={introductionStudy2Variant}
                 exploring={exploring}

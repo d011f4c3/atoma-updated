@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { SampleTitleTreatment } from "@/lib/sample-title-treatments";
 import { SamplePanelTitle } from "./sample-panel-title";
 import { SAMPLE_SET_OFFER, resolveSampleSetOffer } from "@/lib/sample-set";
@@ -19,16 +19,19 @@ import { SamplesRange } from "./samples-range";
 import { SampleNextOrder } from "./sample-next-order";
 import { SampleTastingTools } from "./sample-tasting-tools";
 import { useSamplesMotion } from "./use-samples-motion";
+import { ScrambleText } from "./scramble-text";
 import { usePageReveals } from "./use-page-reveals";
 import revealStyles from "./page-reveals.module.css";
 import styles from "./samples.module.css";
 
-export function useSampleSetPurchase() {
+export function useSampleSetPurchase(selectionMemoryKey?: string) {
   const cart = useCart();
   const model = useProductSelection(
     SAMPLE_SET_OFFER?.productHandle,
     false,
     "all",
+    undefined,
+    selectionMemoryKey,
   );
   const offer = resolveSampleSetOffer(model.catalog);
   // The generic selection hook may fall back to the first catalog product.
@@ -113,6 +116,11 @@ export function SampleSetPurchase({
     addSet,
   } = purchase;
   const locked = purchaseLocked || disabled;
+  const [valueOpen, setValueOpen] = useState(false);
+  const valueId = useId();
+  const [creditAction = "", creditAmount] = t(
+    "First wholesale order credit · approx. US$29",
+  ).split(" · ");
   const purchaseHeading = useRef<HTMLHeadingElement>(null);
   function retrySet() {
     if (locked) return;
@@ -132,7 +140,15 @@ export function SampleSetPurchase({
       }}
       data-sample-credit-link
     >
-      {t("First wholesale order credit · approx. US$29")}
+      <span>
+        <ScrambleText
+          text={creditAction}
+          interactive
+          animateOnMount={false}
+          wrap
+        />
+        {creditAmount && ` · ${creditAmount}`}
+      </span>
       <span aria-hidden="true"> ↗</span>
     </Link>
   );
@@ -169,11 +185,38 @@ export function SampleSetPurchase({
         </>
       )}
       {showValueNote && (
-        <p className={`${styles.detail} ${styles.valueNote}`} data-sample-value>
-          {t(
-            "Compare flavour, texture and performance in your own recipes before committing to 1 kg. Your Sample Set includes ¥4,500 credit toward your first eligible wholesale order of 1 kg or more. Taste first, then put the value of your samples toward your chosen matcha using the code emailed after purchase.",
+        <div
+          className={styles.valueDisclosure}
+          data-sample-value-disclosure
+          data-open={valueOpen || undefined}
+        >
+          {presentation === "page" && (
+            <button
+              type="button"
+              className={styles.valueToggle}
+              aria-expanded={valueOpen}
+              aria-controls={valueId}
+              onClick={() => setValueOpen((open) => !open)}
+            >
+              <ScrambleText
+                text={t("Sample Set details")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
+              <span aria-hidden="true">{valueOpen ? "−" : "+"}</span>
+            </button>
           )}
-        </p>
+          <p
+            id={valueId}
+            className={`${styles.detail} ${styles.valueNote}`}
+            data-sample-value
+          >
+            {t(
+              "Compare flavour, texture and performance in your own recipes before committing to 1 kg. Your Sample Set includes ¥4,500 credit toward your first eligible wholesale order of 1 kg or more. Taste first, then put the value of your samples toward your chosen matcha using the code emailed after purchase.",
+            )}
+          </p>
+        </div>
       )}
       {model.loading ? (
         <div className={styles.status} role="status">
@@ -194,7 +237,13 @@ export function SampleSetPurchase({
             onClick={retrySet}
             disabled={locked}
           >
-            {t("Try again")} ↻
+            <ScrambleText
+              text={t("Try again")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />{" "}
+            ↻
           </button>
         </div>
       ) : !offer ? (
@@ -216,7 +265,14 @@ export function SampleSetPurchase({
                 if (locked) event.preventDefault();
               }}
             >
-              <span>{t("See what's included")}</span>
+              <span>
+                <ScrambleText
+                  text={t("See what's included")}
+                  interactive
+                  animateOnMount={false}
+                  wrap
+                />
+              </span>
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M5 19 19 5M5 5h14v14" />
               </svg>
@@ -232,7 +288,12 @@ export function SampleSetPurchase({
           {presentation !== "panel" && (
             <details className={styles.orderDetails}>
               <summary>
-                {t("Ordering information")}
+                <ScrambleText
+                  text={t("Ordering information")}
+                  interactive
+                  animateOnMount={false}
+                  wrap
+                />
                 <span aria-hidden="true" />
               </summary>
               <p className={styles.detail}>
@@ -343,7 +404,12 @@ export function SampleSetPurchase({
           )}
           <details className={styles.orderDetails}>
             <summary>
-              {t("Ordering information")}
+              <ScrambleText
+                text={t("Ordering information")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
               <span aria-hidden="true" />
             </summary>
             <p className={styles.detail} data-sample-shipping-note>
@@ -386,6 +452,7 @@ export function Samples() {
     <div
       className={styles.page}
       data-samples-page
+      data-client-reading
       data-tone={tone}
       data-storefront-theme={tone}
     >
@@ -404,7 +471,12 @@ export function Samples() {
                 if (locked) event.preventDefault();
               }}
             >
-              {t("Shop")}
+              <ScrambleText
+                text={t("Shop")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
             </Link>
             <span aria-hidden="true">/</span>
             <span aria-current="page">{t("Samples")}</span>
@@ -418,7 +490,9 @@ export function Samples() {
             aria-labelledby="sample-set-title"
           >
             <header className={styles.setIntroduction} data-page-enter="hero">
-              <h1 id="sample-set-title">{t("Sample Set")}</h1>
+              <h1 id="sample-set-title">
+                <ScrambleText text={t("Sample Set")} wrap />
+              </h1>
               <p className={styles.setDescription}>
                 {t("Three matcha · 20 g each")}
               </p>
@@ -478,7 +552,9 @@ export function Samples() {
                 if (locked) event.preventDefault();
               }}
             >
-              <span>{t("Order the set")}</span>
+              <span>
+                <ScrambleText text={t("Order the set")} interactive />
+              </span>
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M5 19 19 5M5 5h14v14" />
               </svg>
@@ -486,7 +562,7 @@ export function Samples() {
           </div>
         </div>
         <noscript>
-          <style>{`[data-samples-cover] { min-height: auto !important; margin-bottom: 0 !important; padding-bottom: 0 !important; } [data-samples-cover] > section { position: relative !important; height: auto !important; }`}</style>
+          <style>{`[data-samples-cover] { min-height: auto !important; margin-bottom: 0 !important; padding-bottom: 0 !important; } [data-samples-cover] > section { position: relative !important; height: auto !important; } [data-samples-page] [data-sample-value] { display: block !important; } [data-samples-page] [data-sample-value-disclosure] > button { display: none !important; }`}</style>
         </noscript>
       </main>
     </div>

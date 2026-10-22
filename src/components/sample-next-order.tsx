@@ -10,6 +10,8 @@ import {
 } from "@/lib/sample-journey";
 import { useSavedMatcha } from "./use-saved-matcha";
 import { useStorefrontLocale } from "./storefront-locale-provider";
+import { useSampleTastingSession } from "./sample-tasting-session-provider";
+import { ScrambleText } from "./scramble-text";
 import styles from "./sample-next-order.module.css";
 
 export function SampleNextOrder({
@@ -23,7 +25,8 @@ export function SampleNextOrder({
 }) {
   const { t } = useStorefrontLocale();
   const saved = useSavedMatcha();
-  const [choice, setChoice] = useState<string | null>(null);
+  const { nextOrderChoice: choice, setNextOrderChoice: setChoice } =
+    useSampleTastingSession();
   const [feedback, setFeedback] = useState<
     "cleared" | "save-error" | "clear-error" | null
   >(null);
@@ -71,7 +74,12 @@ export function SampleNextOrder({
         </p>
         <details className={styles.guidance}>
           <summary>
-            {t("After your samples")}
+            <ScrambleText
+              text={t("After your samples")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
             <span aria-hidden="true" />
           </summary>
           <ol>
@@ -133,7 +141,12 @@ export function SampleNextOrder({
                 }}
               />
               <span className={styles.choiceName}>
-                {t(item.name.replace(/ Matcha$/, ""))}
+                <ScrambleText
+                  text={t(item.name.replace(/ Matcha$/, ""))}
+                  interactive
+                  animateOnMount={false}
+                  wrap
+                />
               </span>
               <span className={styles.application}>{t(item.application)}</span>
             </label>
@@ -155,7 +168,23 @@ export function SampleNextOrder({
             }}
             data-sample-one-kilogram
           >
-            <span>{t("View 1 kg")}</span>
+            <span>
+              {t("View 1 kg of {name}", { name: t(selected.name) })
+                .split(/(1 kg)/)
+                .map((part, index) =>
+                  part === "1 kg" ? (
+                    part
+                  ) : (
+                    <ScrambleText
+                      key={index}
+                      text={part}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />
+                  ),
+                )}
+            </span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M5 19 19 5M5 5h14v14" />
             </svg>
@@ -171,7 +200,12 @@ export function SampleNextOrder({
               );
             }}
           >
-            {t("Save for next time")}
+            <ScrambleText
+              text={t("Save for next time")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
           </button>
         </div>
         <div className={styles.memory}>
@@ -209,7 +243,12 @@ export function SampleNextOrder({
                 }
               }}
             >
-              {t("Clear saved choice")}
+              <ScrambleText
+                text={t("Clear saved choice")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
             </button>
           )}
         </div>

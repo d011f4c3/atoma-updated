@@ -1,0 +1,757 @@
+.frame {
+  --seven-panel-surface: color-mix(
+    in srgb,
+    var(--color-raised) 90%,
+    transparent
+  );
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+.frame[data-homepage] :global([data-new-hero7-description]) {
+  font-family: var(--font-atoma-mono-light), monospace;
+  font-weight: 300;
+}
+
+/* The adopted homepage keeps the selected proportions, with a quieter title. */
+@media (min-width: 761px) {
+  .frame[data-homepage] :global([data-new-hero7-hero]) h1 {
+    font-size: calc(clamp(2rem, 3.5vw, 3.4rem) + var(--locale-font-increment));
+  }
+}
+
+@media (min-width: 761px) and (max-height: 600px) {
+  .frame[data-homepage] :global([data-new-hero7-hero]) h1 {
+    font-size: calc(
+      clamp(1.75rem, 2.55vw, 2.375rem) + var(--locale-font-increment)
+    );
+  }
+}
+
+/* Entrance motion starts once the loading readout has cleared, not behind it. */
+.frame[data-hero-paused] :global([data-page-enter]),
+.frame[data-hero-paused] :global([data-new-hero7-material]) img {
+  animation-play-state: paused;
+}
+
+.experienceStage {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.experienceStage[data-home="true"] {
+  min-height: 100svh;
+}
+
+.experienceStage::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: 100%;
+  background: var(--color-background);
+  content: "";
+  pointer-events: none;
+}
+
+.experienceStage[data-home="true"]::before {
+  height: 100svh;
+}
+
+.experienceStage:not([data-home="true"]) {
+  --muted: color-mix(in srgb, var(--ink) 80%, var(--color-muted));
+}
+
+/* Supporting text keeps the hero's tone across the adopted selection views. */
+.frame[data-homepage] .experienceStage {
+  --muted: var(--color-muted);
+}
+
+.frame[data-tone="dark"] .experienceStage:not([data-home="true"])::before {
+  background:
+    linear-gradient(
+      color-mix(in srgb, var(--surface) 24%, transparent),
+      color-mix(in srgb, var(--surface) 24%, transparent)
+    ),
+    var(--color-background);
+}
+
+.experienceHeader {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.experienceStage[data-home="true"] .experienceHeader {
+  border-bottom: 0;
+}
+
+.experienceHeader :global([data-nav-action][aria-current="page"]) > span {
+  text-decoration: underline;
+  text-underline-offset: 0.4em;
+}
+
+.frame[data-homepage]
+  .experienceHeader
+  :global([data-nav-action][aria-current="page"])
+  > span {
+  text-decoration: none;
+}
+
+.experienceHome,
+.experienceHome > :global([data-seven-panel]:not([hidden])),
+.experienceHome :global([data-new-hero7-view="home"]) {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.experienceHome :global([data-new-hero7-first-view]) {
+  display: flex;
+  flex: 0 0 auto;
+  min-height: calc(
+    100svh - var(--seven-header-height, clamp(4rem, 9dvh, 5.5rem))
+  );
+  background: transparent;
+}
+
+.experienceHome :global([data-new-hero7-first-view])::before {
+  display: none;
+}
+
+.experienceHome :global([data-new-hero7-hero]) {
+  flex: 1;
+}
+
+.frame :global([data-seven-panel][hidden]) {
+  display: none;
+}
+
+.frame :global([data-seven-panel] h1:focus) {
+  outline: none;
+}
+
+.homeMain {
+  min-width: 0;
+}
+
+.homeSections {
+  --scroll-glow: #dfebe3;
+  --scroll-glow-soft: #e9f0e6;
+  --section-space: clamp(3rem, 6vw, 6rem);
+  position: relative;
+  isolation: isolate;
+  flex: 0 0 auto;
+  min-width: 0;
+  background:
+    radial-gradient(
+      ellipse 75% 22% at 90% 44%,
+      var(--scroll-glow),
+      transparent 85%
+    ),
+    radial-gradient(
+      ellipse 65% 20% at 0% 78%,
+      var(--scroll-glow-soft),
+      transparent 85%
+    ),
+    var(--surface);
+  overflow-wrap: anywhere;
+}
+
+.frame[data-tone="dark"] .homeSections {
+  --scroll-glow: #1c2934;
+  --scroll-glow-soft: #101822;
+}
+
+/* Continue the hero's final color row, then fade into the scroll surface. */
+.homeSections::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: 100svh;
+  background: var(--color-background);
+  transform: scaleY(-1);
+  mask-image: linear-gradient(to bottom, transparent 78%, #000);
+  pointer-events: none;
+  content: "";
+}
+
+/* Continue Blue hour's glow past its edge instead of reflecting a bright ridge. */
+@media (min-width: 761px) {
+  .frame[data-tone="dark"] .homeSections::before {
+    height: clamp(18rem, 44svh, 28rem);
+    background:
+      radial-gradient(
+        ellipse 80% 28svh at 72% 5svh,
+        rgb(144 170 186 / 48%),
+        transparent 85%
+      ),
+      linear-gradient(
+        to bottom,
+        #4b6273 0%,
+        #4e6575 10%,
+        #455c6c 26%,
+        #2c3f4e 50%,
+        #19232e 72%,
+        var(--surface) 100%
+      );
+    transform: none;
+    mask-image: linear-gradient(#000 72%, transparent);
+  }
+
+  .frame[data-tone="dark"]
+    .homeSections
+    :global([data-new-hero-section="samples"]) {
+    --muted: color-mix(in srgb, var(--ink) 80%, var(--color-muted));
+  }
+
+  /* The small eyebrow sits on the bright transition; the description is
+     farther down on the dark surface and can retain the hero's softer tone. */
+  .frame[data-homepage][data-tone="dark"]
+    .homeSections
+    :global([data-new-hero-section="samples"])
+    > div
+    > h2
+    + p {
+    color: var(--color-muted);
+  }
+}
+
+.homeSections :global([data-new-hero-section]) {
+  padding-block: var(--section-space);
+}
+
+.homeSections
+  :global([data-new-hero-section])
+  + :global([data-new-hero-section]) {
+  margin-top: 0;
+  border-top: 1px solid var(--line);
+}
+
+.homeSections :global([data-new-hero-section]) > header h2,
+.homeSections :global([data-new-hero-section="samples"]) > div > h2,
+.homeSections :global([data-new-hero-origin-content]) > h2 {
+  font-size: calc(clamp(1.5rem, 2vw, 2rem) + var(--locale-font-increment));
+}
+
+.homeSections :global([data-new-hero-section="samples"]) {
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.homeSections :global([data-new-hero-sample-visual]) {
+  height: clamp(18rem, 40svh, 22rem);
+  background: transparent;
+}
+
+.homeSections
+  :global([data-new-hero-sample-visual])
+  :global([data-pouch])
+  > span:first-child {
+  filter: drop-shadow(0 1rem 1.25rem rgb(0 0 0 / 18%));
+}
+
+.homeSections :global([data-new-hero-section="origin"]) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.75rem;
+}
+
+.homeSections :global([data-new-hero-section="origin"]) figure {
+  order: -1;
+}
+
+.homeSections :global([data-new-hero-section="origin"]) figure > div {
+  height: clamp(14rem, 30svh, 21rem);
+  aspect-ratio: auto;
+}
+
+.homeSections :global([data-new-hero-origin-content]) {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) repeat(2, minmax(0, 1fr));
+  gap: 1rem clamp(1.5rem, 3vw, 3rem);
+}
+
+.homeSections :global([data-new-hero-origin-content]) > p {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.homeSections :global([data-new-hero-origin-content]) > div {
+  margin: 0;
+}
+
+.homeSections
+  :global([data-new-hero-section="samples"])
+  a[href*="view=samples"] {
+  min-height: 3rem;
+  padding-block: 0.75rem;
+}
+
+.homeSections :is(a, button, select):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.homeSections a[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.homeSections :global([data-foil-trio]) button {
+  border-radius: var(--radius-button);
+}
+
+.homeSections :global([data-product-application-image]) > div,
+.homeSections :global([data-new-hero-section="origin"]) figure > div {
+  overflow: hidden;
+  border-radius: calc(2 * var(--radius-button));
+}
+
+.homeSections :global([data-product-application-image]) img,
+.homeSections :global([data-new-hero-section="origin"]) img {
+  border-radius: calc(2 * var(--radius-button));
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 0 var(--gutter) clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.childHeader {
+  border-bottom: 1px solid var(--line);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 4.5rem;
+  margin-bottom: 1rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+.main[data-selection-view] {
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.introduction {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1.5rem 4rem;
+  margin-bottom: 2rem;
+}
+
+.introduction > div {
+  min-width: 0;
+}
+
+.introduction h1 {
+  margin: 0;
+  max-width: 24ch;
+  font-size: calc(clamp(1.75rem, 3vw, 2.75rem) + var(--locale-font-increment));
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.7;
+  text-transform: uppercase;
+}
+
+.body {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: calc(1rem + var(--locale-font-increment));
+  line-height: 1.8;
+}
+
+.wholesale .introduction > .body {
+  max-width: 45ch;
+  margin: 0;
+}
+
+.reorder {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.repeatCard {
+  min-width: 0;
+  display: flex;
+}
+
+.repeatImage :global([data-product-application-image]) > div {
+  width: 100%;
+  height: clamp(10rem, 13vw, 12rem);
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: calc(2 * var(--radius-button));
+}
+
+.repeatImage img {
+  border-radius: inherit;
+}
+
+.repeatImage figcaption {
+  min-height: 2.8em;
+  margin: 0.625rem 0.75rem 0;
+  font-size: calc(0.625rem + var(--locale-font-increment));
+  line-height: 1.4;
+}
+
+.repeatLink {
+  --muted: var(--color-muted);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  padding: 0.625rem;
+  border: 1px solid var(--line);
+  border-radius: calc(2 * var(--radius-button));
+  background: var(--seven-panel-surface);
+  color: var(--ink);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  box-shadow: 0 0.75rem 2rem color-mix(in srgb, var(--ink) 4%, transparent);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.repeatLink:hover {
+  border-color: color-mix(in srgb, var(--ink) 35%, var(--line));
+  box-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.repeatContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1rem 0.75rem 0.75rem;
+}
+
+.repeatApplication,
+.repeatRecord {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.375rem 0.75rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.repeatContent h2 {
+  margin: 0.625rem 0 0.75rem;
+  font-size: calc(
+    clamp(1.25rem, 1.8vw, 1.625rem) + var(--locale-font-increment)
+  );
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.045em;
+}
+
+.repeatRecord > :last-child {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  color: var(--ink);
+  font-size: calc(0.8125rem + var(--locale-font-increment));
+  text-transform: none;
+}
+
+.repeatUsage {
+  margin: 1rem 0 1.5rem;
+  color: var(--muted);
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.7;
+}
+
+.repeatAction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  min-height: 3.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  background: color-mix(in srgb, var(--ink) 5%, var(--color-raised));
+  font-size: calc(0.8125rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+
+.repeatAction > span {
+  flex-shrink: 0;
+}
+
+.nextSteps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+
+.nextSteps h2 {
+  margin: 0;
+  font-size: calc(1.125rem + var(--locale-font-increment));
+  line-height: 1.5;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+.nextSteps .body {
+  margin-block: 0.75rem;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+}
+
+.nextStep {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: calc(2 * var(--radius-button));
+  background: color-mix(in srgb, var(--color-raised) 45%, transparent);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nextStep > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.nextStep:hover {
+  border-color: var(--ink);
+}
+
+.nextIndex {
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  padding-top: 0.25rem;
+  line-height: 1.6;
+}
+
+.nextAction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+
+.nextAction > span {
+  flex-shrink: 0;
+}
+
+.frame :is(.repeatLink, .nextStep):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.frame :is(.repeatLink, .nextStep)[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  padding: 1.25rem var(--gutter);
+  border-top: 1px solid var(--line);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.footerBrand {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footerBrand span {
+  color: var(--muted);
+}
+
+.footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.footer a:is(:hover, [aria-current="page"]) {
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+
+.footer :global([data-appearance-controls]) {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+@media (max-width: 900px) {
+  .introduction {
+    display: block;
+  }
+  .wholesale .introduction > .body {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .desktopHomeHero {
+    display: none;
+  }
+
+  .frame[data-homepage] .experienceStage[data-home="true"]::before {
+    display: none;
+  }
+
+  /* Keep the shared product dialog mounted without transposing its desktop
+     gallery and the other desktop sections into the mobile composition. */
+  .frame[data-homepage] .homeSections,
+  .frame[data-homepage] .homeSections > div {
+    display: contents;
+  }
+
+  .frame[data-homepage] .homeSections::before,
+  .frame[data-homepage]
+    .homeSections
+    :global([data-new-hero-section]):not(
+      :global([data-new-hero-section="applications"])
+    ) {
+    display: none;
+  }
+
+  .homeSections :global([data-new-hero-origin-content]) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .homeSections :global([data-new-hero-origin-content]) > p {
+    margin-bottom: -0.75rem;
+  }
+
+  .experienceHome :global([data-new-hero7-first-view]) {
+    min-height: calc(100svh - var(--seven-header-height, 4rem));
+  }
+  .childHeader :global(header[data-navigation-variant="default"]),
+  .experienceHeader :global(header[data-navigation-variant="default"]) {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 4rem;
+    height: auto;
+  }
+  .childHeader :global([data-nav-controls]),
+  .experienceHeader :global([data-nav-controls]) {
+    flex-wrap: wrap;
+    max-width: 100%;
+    margin-left: auto;
+  }
+  .breadcrumb {
+    min-height: 4rem;
+    margin-bottom: 0.75rem;
+    font-size: calc(0.8125rem + var(--locale-font-increment));
+  }
+  .repeatUsage,
+  .repeatAction,
+  .nextSteps .body,
+  .nextAction {
+    font-size: calc(1rem + var(--locale-font-increment));
+  }
+  .reorder,
+  .nextSteps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .reorder {
+    gap: 1.5rem;
+  }
+  .repeatImage figcaption {
+    min-height: 0;
+    font-size: calc(0.75rem + var(--locale-font-increment));
+    line-height: 1.5;
+  }
+  .repeatApplication,
+  .repeatRecord {
+    font-size: calc(0.8125rem + var(--locale-font-increment));
+  }
+  .nextStep {
+    padding: 1.25rem;
+  }
+  .nextIndex {
+    display: none;
+  }
+  .repeatImage :global([data-product-application-image]) > div {
+    height: 10rem;
+  }
+  .footer {
+    gap: 0.5rem 1.25rem;
+  }
+  .footer nav {
+    order: -1;
+    width: 100%;
+    gap: 0.25rem 1.25rem;
+    font-size: calc(0.875rem + var(--locale-font-increment));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .repeatLink {
+    transition: none;
+  }
+}

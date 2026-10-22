@@ -1,0 +1,291 @@
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100svh - 5rem);
+  max-width: 100rem;
+  margin: 0 auto;
+  padding: 1rem var(--gutter) 1.25rem;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.introduction {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.5;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.heading {
+  margin: 0;
+  font-weight: 400;
+  font-size: calc(
+    clamp(1.25rem, 1.8vw, 1.75rem) + var(--locale-font-increment)
+  );
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+.description {
+  margin: 0.75rem auto 0;
+  max-width: 58ch;
+  color: var(--muted);
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+.field {
+  position: relative;
+  width: 100%;
+  height: clamp(29rem, 57svh, 40rem);
+  margin: 0.75rem 0 0;
+  isolation: isolate;
+}
+.field::before {
+  position: absolute;
+  top: 48%;
+  left: 49%;
+  width: 54%;
+  height: 58%;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-24deg);
+  opacity: 0.7;
+  pointer-events: none;
+  content: "";
+}
+.powder {
+  position: absolute;
+  top: -8%;
+  left: 20%;
+  width: 60%;
+  height: 108%;
+  transform: rotate(58deg);
+  pointer-events: none;
+}
+.powder :global([data-photograph-failed="true"]) > p {
+  transform: rotate(-58deg);
+}
+.annotation {
+  position: absolute;
+  top: 45%;
+  left: 1%;
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment));
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.applications {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+}
+.applicationLink {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 48%;
+  min-height: 5rem;
+  padding: 0.75rem;
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 220ms ease;
+}
+.applicationLink[data-key="ceremonial"] {
+  top: 2%;
+  left: 2%;
+}
+.applicationLink[data-key="barista"] {
+  top: 31%;
+  right: 1%;
+}
+.applicationLink[data-key="culinary"] {
+  bottom: 2%;
+  left: 10%;
+}
+.applicationName {
+  position: relative;
+  display: block;
+  font-size: calc(clamp(2rem, 4.5vw, 4.5rem) + var(--locale-font-increment));
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.productName {
+  margin-top: 0.875rem;
+  color: var(--muted);
+  font-size: calc(0.8125rem + var(--locale-font-increment));
+  line-height: 1.5;
+}
+.code {
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.5;
+}
+.arrow {
+  position: absolute;
+  right: -0.875rem;
+  top: 1rem;
+  font-size: 1rem;
+}
+.applicationLink[data-preview="true"] .applicationName {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+.applicationLink[data-selected="true"] .code {
+  font-weight: 600;
+}
+.applicationLink:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.applicationLink[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: wait;
+}
+.sampleEntry {
+  position: relative;
+  z-index: 3;
+  align-self: center;
+  width: min(100%, 24rem);
+  margin: 0.5rem 0 0;
+}
+.reference {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 1.25rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment));
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+@media (max-width: 1000px) and (min-width: 761px) {
+  .field {
+    height: 30rem;
+  }
+  .applicationName {
+    font-size: calc(2.4rem + var(--locale-font-increment));
+  }
+  .applicationLink[data-key="barista"] {
+    top: 38%;
+  }
+  .applicationLink[data-key="culinary"] {
+    left: 5%;
+  }
+}
+@media (max-width: 760px) {
+  .hero {
+    min-height: 0;
+    padding-top: 0.75rem;
+    padding-bottom: 1rem;
+  }
+  .eyebrow {
+    margin-bottom: 0.625rem;
+  }
+  .heading {
+    max-width: 28ch;
+    margin: 0 auto;
+    font-size: calc(1.125rem + var(--locale-font-increment));
+  }
+  .description {
+    max-width: 35ch;
+    margin-top: 0.625rem;
+    font-size: calc(1rem + var(--locale-font-increment));
+    line-height: 1.5;
+  }
+  .field {
+    height: 23rem;
+    margin-top: 0.5rem;
+  }
+  .field::before {
+    top: 47%;
+    left: 42%;
+    width: 84%;
+    height: 41%;
+  }
+  .powder {
+    left: -12%;
+    top: 14%;
+    width: 92%;
+    height: 70%;
+    transform: rotate(58deg);
+  }
+  .annotation {
+    display: none;
+  }
+  .applicationLink {
+    max-width: 80%;
+    padding: 0.5rem 0;
+  }
+  .applicationLink[data-key="ceremonial"] {
+    top: 2%;
+    left: 0;
+  }
+  .applicationLink[data-key="barista"] {
+    top: 38%;
+    right: 1.25rem;
+  }
+  .applicationLink[data-key="culinary"] {
+    bottom: 0;
+    left: 0;
+    max-width: calc(100% - 1.5rem);
+  }
+  .applicationName {
+    font-size: calc(
+      clamp(1.75rem, 7.7vw, 2.5rem) + var(--locale-font-increment)
+    );
+  }
+  .productName {
+    margin-top: 0.5rem;
+    font-size: calc(0.75rem + var(--locale-font-increment));
+  }
+  .code {
+    font-size: calc(0.6875rem + var(--locale-font-increment));
+  }
+  .arrow {
+    right: -1.125rem;
+    top: 0.5rem;
+    font-size: 0.875rem;
+  }
+  .applicationLink[data-key="barista"] .arrow {
+    right: -1.125rem;
+  }
+  .sampleEntry {
+    max-width: none;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  .reference {
+    position: static;
+    margin: 0.625rem 0 0;
+    font-size: calc(0.6875rem + var(--locale-font-increment));
+    text-align: center;
+  }
+}
+@media (max-width: 380px) {
+  .powder {
+    left: -16%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .applicationLink {
+    transition: none;
+  }
+}

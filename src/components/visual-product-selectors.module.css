@@ -99,6 +99,10 @@
   gap: var(--section-gap);
 }
 
+.sections[data-purchase-label="Order"] {
+  grid-template-columns: 1fr 1.7fr 0.8fr 0.9fr;
+}
+
 .section {
   padding: 0.5rem 0.125rem;
   color: var(--muted);

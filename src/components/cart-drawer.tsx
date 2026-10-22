@@ -51,6 +51,7 @@ type CartContextValue = {
   itemCount: number;
   adding: boolean;
   busy: boolean;
+  navigationBusy: boolean;
   reviewRequired: boolean;
   error: string | null;
   isOpen: boolean;
@@ -692,6 +693,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       itemCount,
       adding: pendingAction === "add",
       busy,
+      // Read-only navigation does not need the initial destination lookup.
+      // Pending writes and checkout still retain the navigation lock.
+      navigationBusy: operationBusy,
       reviewRequired,
       error: error ? t(error) : null,
       isOpen,

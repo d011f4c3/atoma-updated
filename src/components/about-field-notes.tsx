@@ -15,6 +15,7 @@ import {
 } from "@/lib/about-photo-stories";
 import { useDialogDismiss, useDialogScrollLock } from "./use-dialog-dismiss";
 import { useStorefrontLocale } from "./storefront-locale-provider";
+import { ScrambleText } from "./scramble-text";
 import styles from "./about-field-notes.module.css";
 
 export type StoryPhotograph = {
@@ -161,7 +162,14 @@ function RecordNavigation({
           onClick={() => jumpTo(chapter.key)}
         >
           <span className={styles.chapterMarker} aria-hidden="true" />
-          <span>{t(chapter.label)}</span>
+          <span>
+            <ScrambleText
+              text={t(chapter.label)}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
+          </span>
         </button>
       ))}
     </div>
@@ -400,7 +408,7 @@ export function AboutFieldNotes({
     <header className={styles.heading}>
       <p className={styles.category}>{t(story.category)}</p>
       <h2 id={`${id}-title`} ref={title} tabIndex={-1}>
-        {t(story.title)}
+        <ScrambleText text={t(story.title)} wrap />
       </h2>
       <p id={`${id}-introduction`} className={styles.introduction}>
         {t(story.introduction)}
@@ -476,7 +484,13 @@ export function AboutFieldNotes({
                 )}
               </span>
               <button type="button" onClick={requestClose}>
-                {t("Back to About")} <span aria-hidden="true">×</span>
+                <ScrambleText
+                  text={t("Back to About")}
+                  interactive
+                  animateOnMount={false}
+                  wrap
+                />{" "}
+                <span aria-hidden="true">×</span>
               </button>
               {presentation === "field-record" && (
                 <span className={styles.readingProgress} aria-hidden="true" />

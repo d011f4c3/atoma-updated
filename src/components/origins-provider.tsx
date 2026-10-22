@@ -155,6 +155,7 @@ export function OriginsProvider({ children }: { children: ReactNode }) {
         ref={dialog}
         className={styles.dialog}
         data-origins-dialog
+        data-client-reading={regularStorefront || undefined}
         data-tone={tone}
         aria-label={t("ATOMA Origins")}
         onKeyDown={(event) => {

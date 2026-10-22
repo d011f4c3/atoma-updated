@@ -55,9 +55,8 @@
 
 .edition > a:hover,
 .storyNavigation a:hover {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.3em;
+  text-decoration: none;
+  box-shadow: inset 0 -1px 0 currentColor;
 }
 
 .heading {
@@ -278,7 +277,36 @@
   }
 
   .heading h1 {
-    font-size: clamp(1.25rem, 5.125vw, 1.5rem);
+    font-size: var(--mobile-type-title);
+    line-height: 1.35;
+  }
+
+  .observation h2 {
+    font-size: var(--mobile-type-section);
+    line-height: 1.4;
+  }
+
+  .introduction,
+  .observationText,
+  .recordNote p {
+    font-size: var(--mobile-type-body);
+    line-height: 1.7;
+  }
+
+  .edition,
+  .label {
+    font-size: var(--mobile-type-label);
+  }
+
+  .photograph figcaption {
+    font-size: var(--mobile-type-support);
+    line-height: 1.6;
+  }
+
+  .edition > a,
+  .storyNavigation a {
+    font-size: var(--mobile-type-action);
+    line-height: 1.5;
   }
 
   .introduction {

@@ -9,8 +9,6 @@ import type {
 } from "@/lib/catalog-types";
 import {
   initialSelection,
-  restoredSelection,
-  refreshedSelection,
   quantityCeiling,
   money,
   resolvePurchaseVariant,
@@ -19,7 +17,7 @@ import {
 import { useHomepageJourney } from "./homepage-journey-provider";
 import { matchaCatalogProducts } from "@/lib/sample-catalog";
 import { useCart } from "./cart-drawer";
-import { resolveOneKilogramVariant } from "@/lib/sample-journey";
+import { productEntrySelection } from "@/lib/product-entry-selection";
 
 export type ProductSelectionModel = {
   catalog: Catalog | null;
@@ -51,9 +49,10 @@ const EMPTY_SELECTION: Selection = {
 /** One selection owner can drive both an interactive object and normal controls. */
 export function useProductSelection(
   initialProductHandle?: string,
-  preserveJourney = false,
+  preserveJourney: boolean | "restore" = false,
   scope: "matcha" | "all" = "matcha",
   initialFormat?: "1kg",
+  selectionMemoryKey?: string,
 ): ProductSelectionModel {
   const {
     destinationRevision,
@@ -62,8 +61,17 @@ export function useProductSelection(
     destinationChanging,
     reviewRequired,
   } = useCart();
-  const { journey, rememberJourney } = useHomepageJourney();
-  const savedSelection = useRef(preserveJourney ? journey.selection : null);
+  const {
+    journey,
+    rememberJourney,
+    surfaceSelections,
+    rememberSurfaceSelection,
+  } = useHomepageJourney();
+  const savedSelection = useRef(
+    (selectionMemoryKey && initialProductHandle
+      ? surfaceSelections[selectionMemoryKey]?.[initialProductHandle]
+      : undefined) ?? (preserveJourney ? journey.selection : null),
+  );
   const [catalog, setCatalog] = useState<Catalog | null>(null);
   const [loading, setLoading] = useState(true);
   const [selection, setSelection] = useState(EMPTY_SELECTION);
@@ -73,6 +81,7 @@ export function useProductSelection(
     number | null
   >(null);
   const requestRef = useRef(0);
+  const appliedEntry = useRef<string | null>(null);
   const products = useMemo(
     () =>
       catalog?.status === "ready"
@@ -112,49 +121,22 @@ export function useProductSelection(
           scope === "all"
             ? value.products
             : matchaCatalogProducts(value.products);
-        const initialProduct =
-          selectableProducts.find(
-            (item) => item.handle === initialProductHandle,
-          ) ??
-          (!initialProductHandle
-            ? selectableProducts.find((item) => item.id === saved?.productId)
-            : undefined) ??
-          selectableProducts[0];
-        const requestedVariant =
-          initialFormat === "1kg"
-            ? resolveOneKilogramVariant(initialProduct)
-            : null;
-        setSelection((current) => {
-          const retained = current.productId ? current : saved;
-          if (
-            retained &&
-            (!initialProductHandle ||
-              selectableProducts.some(
-                (item) =>
-                  item.id === retained.productId &&
-                  item.handle === initialProductHandle,
-              ))
-          ) {
-            const currentProduct = selectableProducts.find(
-              (item) => item.id === retained.productId,
-            );
-            return currentProduct
-              ? refreshedSelection(currentProduct, retained)
-              : retained;
-          }
-          return initialProduct
-            ? initialFormat === "1kg"
-              ? {
-                  productId: initialProduct.id,
-                  variantId: requestedVariant?.id ?? "",
-                  ...(requestedVariant?.selectionId
-                    ? { variantSelectionId: requestedVariant.selectionId }
-                    : {}),
-                  quantity: requestedVariant?.minimum ?? 1,
-                }
-              : restoredSelection(initialProduct, saved)
-            : EMPTY_SELECTION;
-        });
+        const entryKey = JSON.stringify([
+          initialProductHandle ?? null,
+          initialFormat ?? null,
+          scope,
+        ]);
+        const retainLocalChoice = appliedEntry.current === entryKey;
+        appliedEntry.current = entryKey;
+        setSelection((current) =>
+          productEntrySelection({
+            products: selectableProducts,
+            current: retainLocalChoice ? current : null,
+            saved,
+            initialProductHandle,
+            initialFormat,
+          }),
+        );
       } catch {
         if (controller.signal.aborted || request !== requestRef.current) return;
         setFailedDestinationRevision(destinationRevision);
@@ -187,13 +169,39 @@ export function useProductSelection(
   ]);
 
   useEffect(() => {
-    if (preserveJourney && catalog?.status === "ready" && selection.productId) {
+    if (
+      preserveJourney === true &&
+      catalog?.status === "ready" &&
+      selection.productId
+    ) {
       savedSelection.current = selection;
       rememberJourney({ selection });
     }
   }, [preserveJourney, catalog, selection, rememberJourney]);
 
   const product = products.find((item) => item.id === selection.productId);
+  useEffect(() => {
+    if (
+      selectionMemoryKey &&
+      initialProductHandle &&
+      product?.handle === initialProductHandle
+    ) {
+      // Persist only the explicitly requested product, never a catalog fallback.
+      // The next entry still refreshes this UI intent against its current offer.
+      savedSelection.current = selection;
+      rememberSurfaceSelection(
+        selectionMemoryKey,
+        initialProductHandle,
+        selection,
+      );
+    }
+  }, [
+    selectionMemoryKey,
+    initialProductHandle,
+    product?.handle,
+    selection,
+    rememberSurfaceSelection,
+  ]);
   const variant = product?.variants.find(
     (item) => item.id === selection.variantId,
   );

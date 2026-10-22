@@ -1,0 +1,430 @@
+.catalog,
+.products,
+.product {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.product[hidden] {
+  display: none;
+}
+
+.body {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+.reader {
+  display: contents;
+}
+
+.media {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1 / -1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+.application,
+.swatch {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+
+.application[hidden],
+.swatch[hidden] {
+  display: none;
+}
+.swatch {
+  padding: 3rem 1.5rem 6rem;
+}
+.swatch img {
+  object-fit: cover;
+  mask-size: cover;
+}
+
+.mediaControls {
+  position: absolute;
+  z-index: 1;
+  bottom: 1.5rem;
+  left: 50%;
+  display: flex;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  padding: 0.25rem;
+  border: 1px solid rgb(255 255 255 / 25%);
+  border-radius: 6px;
+  background: rgb(9 15 18 / 78%);
+  backdrop-filter: blur(12px);
+  transform: translateX(-50%);
+}
+.mediaControls button {
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.875rem;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #e8eef1;
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.mediaControls button[aria-pressed="true"] {
+  background: #e8eef1;
+  color: #10161d;
+}
+
+.content {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 2.25rem 1.5rem 0.75rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.identity h2 {
+  margin: 0.625rem 0 0.75rem;
+  color: var(--ink);
+  font-size: calc(1.75rem + var(--locale-font-increment, 0px));
+  font-weight: 400;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+.code {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.usage {
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(0.9375rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+.reading {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.tabs button {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.tabs button[aria-selected="true"] {
+  color: var(--ink);
+}
+.tabs button[aria-selected="true"]::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: var(--ink);
+  content: "";
+}
+.panel {
+  padding-top: 0.75rem;
+}
+.panel[hidden] {
+  display: none;
+}
+.flavour {
+  margin: 0 0 1rem;
+  color: var(--ink);
+  font-size: calc(1rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+}
+.highlights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+  margin: 0;
+}
+.highlights dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+.highlights dd {
+  margin: 0.25rem 0 0;
+  color: var(--ink);
+  font-size: 0.875rem;
+}
+.preparation p {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+.order {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+}
+.body :is(a, button):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.mediaControls button:focus-visible {
+  outline-color: #e8eef1;
+}
+
+@media (min-width: 761px) {
+  .body {
+    flex: 0 1 auto;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    grid-template-rows: auto auto;
+  }
+  .media {
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background: transparent;
+  }
+  .application,
+  .swatch {
+    position: relative;
+    inset: auto;
+    flex: 0 0 auto;
+    width: 100%;
+    height: 14rem;
+    aspect-ratio: auto;
+    overflow: hidden;
+    border-radius: 6px;
+  }
+  .swatch {
+    padding: 1.5rem;
+  }
+  .swatch img {
+    object-fit: contain;
+    mask-size: contain;
+  }
+  .content {
+    padding: 2.75rem 1.5rem 1.5rem;
+    overflow: visible;
+  }
+  .identity h2 {
+    margin: 0.375rem 0 0.5rem;
+    font-size: calc(1.375rem + var(--locale-font-increment, 0px));
+  }
+  .code,
+  .highlights dt {
+    font-size: 0.6875rem;
+  }
+  .reading,
+  .usage,
+  .preparation p,
+  .highlights dd {
+    font-size: calc(0.8125rem + var(--locale-font-increment, 0px));
+  }
+  .tabs {
+    gap: 1.25rem;
+  }
+  .tabs button {
+    font-size: 0.75rem;
+  }
+  .panel {
+    padding-top: 0.625rem;
+  }
+  .flavour {
+    margin-bottom: 0.75rem;
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+  .highlights {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.625rem 0.875rem;
+  }
+  .mediaControls {
+    position: static;
+    align-self: center;
+    max-width: 100%;
+    transform: none;
+    border-color: var(--line);
+    background: transparent;
+    backdrop-filter: none;
+  }
+  .mediaControls button {
+    padding-inline: 0.75rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+  .mediaControls button[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--surface);
+  }
+  .mediaControls button:focus-visible {
+    outline-color: var(--ink);
+  }
+  .order {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .reader {
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  .media {
+    height: 13rem;
+    aspect-ratio: auto;
+  }
+  .application,
+  .swatch {
+    bottom: 3.5rem;
+  }
+  .mediaControls {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.125rem;
+  }
+  .mediaControls button {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.75rem;
+  }
+  .swatch {
+    padding: 0.5rem;
+  }
+  .swatch img {
+    object-fit: contain;
+    mask-size: contain;
+  }
+  .content {
+    padding: 1.125rem 1.25rem 0.5rem;
+    overflow: visible;
+  }
+  .identity h2 {
+    max-width: none;
+    margin: 0.5rem 0;
+    font-size: calc(1.25rem + var(--locale-font-increment, 0px));
+  }
+  .code {
+    font-size: 0.8125rem;
+  }
+  .usage {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+  .reading {
+    margin-top: 0.75rem;
+  }
+  .tabs button {
+    font-size: 0.875rem;
+  }
+  .panel {
+    padding-top: 0.75rem;
+  }
+  .flavour {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+  }
+  .highlights dt {
+    font-size: 0.8125rem;
+  }
+  .highlights dd,
+  .preparation p {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+  .order {
+    grid-column: 1;
+  }
+}
+
+@container application-popup (max-width: 15rem) {
+  .catalog,
+  .products,
+  .product,
+  .body,
+  .reader {
+    display: block;
+  }
+  .reader,
+  .content {
+    overflow: visible;
+  }
+  .highlights {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-height: 500px) {
+  .catalog,
+  .products,
+  .product,
+  .body,
+  .reader {
+    display: block;
+  }
+  .reader,
+  .content {
+    overflow: visible;
+  }
+  .media {
+    height: 10rem;
+  }
+  .content {
+    padding-top: 1.5rem;
+  }
+}
+
+@media (min-width: 761px) and (max-height: 500px) {
+  .media {
+    display: block;
+    padding: 0;
+  }
+  .application,
+  .swatch {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    aspect-ratio: auto;
+  }
+  .swatch {
+    padding: 0.5rem;
+  }
+  .mediaControls {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 1rem;
+    background: var(--surface);
+  }
+}

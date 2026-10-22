@@ -290,13 +290,23 @@
   background: transparent;
   color: var(--cart-muted);
   font-size: calc(0.625rem + var(--locale-font-increment, 0px));
-  text-decoration: underline;
-  text-underline-offset: 0.3em;
+  text-decoration: none;
   cursor: pointer;
 }
 
 .remove:hover:not(:disabled) {
   color: var(--cart-ink);
+}
+.remove > span {
+  position: relative;
+}
+.remove > span::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -0.3em;
+  height: 1px;
+  background: currentColor;
 }
 
 .message {
@@ -524,6 +534,69 @@
     z-index: 2;
     min-height: 4rem;
     background: var(--cart-surface);
+  }
+  .intro {
+    padding-block: 1rem;
+  }
+  .intro .eyebrow {
+    margin-bottom: 0.5rem;
+  }
+  .intro h2 br {
+    display: none;
+  }
+  .line {
+    grid-template-columns: 1rem minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+  .lineHeader {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+  }
+  .lineHeader h3,
+  .stepper output,
+  .message,
+  .empty p,
+  .checkoutNote {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+  .format,
+  .price,
+  .continue {
+    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  }
+  .topline,
+  .footer,
+  .remove {
+    font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  }
+  .lineControls {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .remove {
+    min-width: 2.75rem;
+  }
+  .footer {
+    position: static;
+    box-shadow: none;
+    padding-top: 1rem;
+  }
+  .content {
+    padding-bottom: 1.25rem;
+  }
+}
+
+/* A phone held sideways still needs a persistent way out of a tall cart. */
+@media (min-width: 761px) and (max-width: 1000px) and (max-height: 500px) {
+  .topline {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--cart-surface);
+  }
+  .footer {
+    position: static;
+    box-shadow: none;
   }
 }
 

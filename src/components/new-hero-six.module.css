@@ -1,0 +1,382 @@
+.content {
+  max-width: 88rem;
+  margin: 0 auto;
+  padding: clamp(3rem, 6vw, 5.5rem) var(--gutter) 0;
+  background: var(--surface);
+}
+
+.content h2 {
+  margin: 0;
+  max-width: 25ch;
+  font-size: calc(
+    clamp(1.5rem, 2.35vw, 2.25rem) + var(--locale-font-increment)
+  );
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.content :is(section, nav[id]) {
+  scroll-margin-top: 1.5rem;
+}
+
+.content :is(section, nav[id]):focus {
+  outline: none;
+}
+
+.content :is(section, nav[id]):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 6px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem 3rem;
+  margin-bottom: 2rem;
+}
+
+.sectionHeader > .textLink {
+  flex-shrink: 0;
+}
+
+.sectionHeader .body {
+  margin-bottom: 0;
+}
+
+.eyebrow {
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.7;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.body {
+  margin: 1.25rem 0;
+  color: var(--muted);
+  font-size: calc(1rem + var(--locale-font-increment));
+  line-height: 1.8;
+}
+
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 2.75rem;
+  max-width: 100%;
+  padding: 0.5rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.6;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.4em;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.textLink > :last-child {
+  flex-shrink: 0;
+}
+
+.applications {
+  min-width: 0;
+}
+
+.samples {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-areas: "visual introduction order";
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  margin: clamp(3rem, 6vw, 5.5rem) calc(-1 * var(--gutter)) 0;
+  padding: clamp(2.5rem, 4vw, 4rem) var(--gutter);
+  border-block: 1px solid var(--line);
+  background: var(--color-raised);
+}
+
+.sampleIntroduction {
+  grid-area: introduction;
+  min-width: 0;
+}
+
+.sampleIntroduction h2 {
+  max-width: 19ch;
+  font-size: calc(clamp(1.5rem, 2vw, 2rem) + var(--locale-font-increment));
+}
+
+.contents {
+  margin: 1.5rem 0 0;
+  padding: 1rem 0;
+  list-style: none;
+  border-block: 1px solid var(--line);
+}
+
+.contents li,
+.sampleSummary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+
+.contents li + li {
+  margin-top: 0.5rem;
+}
+
+.contentName {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.contents li > :last-child {
+  white-space: nowrap;
+}
+
+.sampleSummary {
+  margin: 0;
+  padding-top: 0.75rem;
+  color: var(--muted);
+}
+
+.sampleOrder {
+  grid-area: order;
+  min-width: 0;
+}
+
+.sampleOrder > .textLink {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.sampleOrder
+  :global([data-sample-purchase][data-presentation="entry"])
+  :is(p, label, select, summary, button, output) {
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.7;
+}
+
+.sampleVisual {
+  grid-area: visual;
+  min-width: 0;
+  height: 19rem;
+}
+
+.origin {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4rem);
+  padding-block: clamp(3.5rem, 6vw, 5.5rem);
+}
+
+.originFigure {
+  min-width: 0;
+  margin: 0;
+}
+
+.originImage {
+  position: relative;
+  aspect-ratio: 1.7;
+  overflow: hidden;
+  border-radius: calc(2 * var(--radius-button));
+  background: var(--color-raised);
+}
+
+.originImage img {
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.originFigure figcaption {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: calc(0.75rem + var(--locale-font-increment));
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.imageFallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 1.5rem;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.originNotes {
+  min-width: 0;
+}
+
+.proofPoint {
+  margin-top: 1.5rem;
+}
+
+.proofPoint .recordCode {
+  display: block;
+}
+
+.proofPoint .body {
+  margin-block: 0.75rem;
+}
+
+.recordCode {
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+
+.supply {
+  padding-block: clamp(2.5rem, 4vw, 3.5rem);
+  border-top: 1px solid var(--line);
+}
+
+.supplyIntroduction {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 0 clamp(2rem, 5vw, 4rem);
+  margin-bottom: 2rem;
+}
+
+.supplyIntroduction .eyebrow {
+  grid-column: 1 / -1;
+}
+
+.supplyIntroduction .body {
+  margin: 0;
+}
+
+.supply h2 {
+  max-width: 19ch;
+}
+
+.reorder {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  min-width: 0;
+}
+
+.reorder a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  min-height: 6.25rem;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  color: var(--ink);
+  font-size: calc(0.9375rem + var(--locale-font-increment));
+  line-height: 1.6;
+  text-decoration: none;
+  transition: border-color 160ms ease;
+}
+
+.reorder a:hover {
+  border-color: var(--ink);
+}
+
+.reorderIdentity {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.formatTag {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: calc(0.8125rem + var(--locale-font-increment));
+  white-space: nowrap;
+}
+
+.reorder a > :last-child {
+  justify-self: end;
+}
+
+@media (max-width: 1100px) and (min-width: 761px) {
+  .samples {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "introduction introduction" "visual order";
+  }
+  .sampleIntroduction {
+    max-width: 42rem;
+  }
+  .origin {
+    gap: 2rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .content {
+    padding-top: 2.5rem;
+  }
+  .sectionHeader {
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+  .sectionHeader > .textLink {
+    margin-top: 0.75rem;
+  }
+  .samples {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "introduction" "order" "visual";
+    gap: 1.75rem;
+    margin-top: 2.5rem;
+    padding-block: 2.5rem 1.5rem;
+  }
+  .sampleOrder {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .sampleOrder
+    :global([data-sample-purchase][data-presentation="entry"])
+    :is(p, label, select, summary, button, output),
+  .contents li,
+  .sampleSummary,
+  .textLink,
+  .reorder a {
+    font-size: calc(1rem + var(--locale-font-increment));
+  }
+  .sampleVisual {
+    height: 16rem;
+  }
+  .origin {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    padding-block: 3rem;
+  }
+  .originImage {
+    aspect-ratio: 1.5;
+  }
+  .supplyIntroduction {
+    display: block;
+  }
+  .supplyIntroduction .body {
+    margin-top: 1.25rem;
+  }
+  .reorder {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+}

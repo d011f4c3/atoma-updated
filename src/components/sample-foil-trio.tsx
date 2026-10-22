@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useId, useRef, useState, type PointerEvent } from "react";
 import { SAMPLE_SET_CONTENTS, type SampleSetContent } from "@/lib/sample-set";
 import { PouchSticker } from "./pouch-sticker";
+import { ScrambleText } from "./scramble-text";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { useDialogDismiss, useDialogScrollLock } from "./use-dialog-dismiss";
 import styles from "./sample-foil-trio.module.css";
@@ -29,7 +30,7 @@ function SampleSticker({
   );
 }
 
-function FoilPouch({ item }: { item: SampleSetContent }) {
+export function FoilPouch({ item }: { item: SampleSetContent }) {
   return (
     <span className={styles.pouch}>
       <Image
@@ -137,8 +138,22 @@ export function SampleFoilTrio({
             setInspected(SAMPLE_SET_CONTENTS[0] ?? null);
           }}
         >
-          <span className={styles.desktopHint}>{t("Inspect a label")}</span>
-          <span className={styles.mobileHint}>{t("Tap to see more")}</span>{" "}
+          <span className={styles.desktopHint}>
+            <ScrambleText
+              text={t("Inspect a label")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
+          </span>
+          <span className={styles.mobileHint}>
+            <ScrambleText
+              text={t("Tap to see more")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
+          </span>{" "}
           <span aria-hidden="true">↗</span>
         </button>
       </div>
@@ -160,8 +175,20 @@ export function SampleFoilTrio({
               <h2 id={`${id}-title`}>
                 <span>ATOMA /</span> <span>{t("Sample labels")}</span>
               </h2>
-              <button type="button" onClick={() => dialogRef.current?.close()}>
-                {t("Close label")} <span aria-hidden="true">×</span>
+              <button
+                type="button"
+                aria-label={t("Close label")}
+                onClick={() => dialogRef.current?.close()}
+              >
+                <span className={styles.closeLabel}>
+                  <ScrambleText
+                    text={t("Close label")}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />
+                </span>{" "}
+                <span aria-hidden="true">×</span>
               </button>
             </header>
             <div className={styles.inspection}>
@@ -174,7 +201,13 @@ export function SampleFoilTrio({
                   href={`/shop/${inspected.productHandle}`}
                   className={styles.productLink}
                 >
-                  {t("Explore this matcha")} <span aria-hidden="true">↗</span>
+                  <ScrambleText
+                    text={t("Explore this matcha")}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />{" "}
+                  <span aria-hidden="true">↗</span>
                 </Link>
               </div>
             </div>
@@ -192,7 +225,12 @@ export function SampleFoilTrio({
                     onClick={() => setInspected(item)}
                   >
                     <span>{item.productCode}</span>
-                    {t(item.name.replace(/ Matcha$/, ""))}
+                    <ScrambleText
+                      text={t(item.name.replace(/ Matcha$/, ""))}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />
                   </button>
                 ))}
               </div>

@@ -68,16 +68,13 @@ export function AddToCartButton({
     >
       <span className={buttonStyles.surface} aria-hidden="true" />
       <span className={buttonStyles.label}>
-        {treatment === "current" ? (
-          <ScrambleText
-            text={label}
-            interactive
-            paused={pending || updating || !available || disabled}
-            wrap
-          />
-        ) : (
-          label
-        )}
+        <ScrambleText
+          text={label}
+          interactive
+          animateOnMount={treatment === "current"}
+          paused={pending || updating || !available || disabled}
+          wrap
+        />
       </span>
       <span className={buttonStyles.action} aria-hidden="true">
         <span className={buttonStyles.plus}>{available ? "+" : "—"}</span>

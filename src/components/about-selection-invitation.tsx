@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ScrambleText } from "./scramble-text";
 import { ShopMaterialImage } from "./shop-material-image";
 import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
 import styles from "./about-selection-invitation.module.css";
@@ -33,7 +34,14 @@ export function AboutSelectionInvitation({
             if (busy) event.preventDefault();
           }}
         >
-          <span>{t("Explore the selection")}</span>
+          <span>
+            <ScrambleText
+              text={t("Explore the selection")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
+          </span>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M5 19 19 5M5 5h14v14" />
           </svg>
@@ -55,7 +63,13 @@ export function AboutSelectionInvitation({
       <div className={styles.foot}>
         <span>ATOMA</span>
         <a href="#about-top">
-          {t("About ATOMA")} <span aria-hidden="true">↑</span>
+          <ScrambleText
+            text={t("About ATOMA")}
+            interactive
+            animateOnMount={false}
+            wrap
+          />{" "}
+          <span aria-hidden="true">↑</span>
         </a>
       </div>
     </section>

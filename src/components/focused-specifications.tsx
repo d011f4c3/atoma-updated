@@ -15,11 +15,13 @@ export function FocusedSpecifications({
   tone = "dark",
   presentation = "index",
   productCodePlacement,
+  showProfileStatus = false,
 }: {
   product: CatalogProduct | undefined;
   tone?: "dark" | "light";
   presentation?: "index" | "homepage";
   productCodePlacement?: ProductCodePlacement;
+  showProfileStatus?: boolean;
 }) {
   const { locale, t } = useStorefrontLocale();
   const id = useId();
@@ -70,6 +72,11 @@ export function FocusedSpecifications({
         </h2>
         <p>{content.application}</p>
       </ProductCodeIdentity>
+      {showProfileStatus && (
+        <p className={styles.profileStatus}>
+          {t("Illustrative profiles · Final specifications pending")}
+        </p>
+      )}
       <ul
         className={styles.properties}
         aria-label={t("Material specifications")}

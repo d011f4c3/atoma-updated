@@ -7,6 +7,7 @@ import type { ReactNode, Ref } from "react";
 import { SHOPIFY_CUSTOMER_ACCOUNT_URL } from "@/lib/customer-account";
 import { useCart } from "./cart-drawer";
 import { useOrigins } from "./origins-provider";
+import { ScrambleText } from "./scramble-text";
 import styles from "./site-footer.module.css";
 import revealStyles from "./page-reveals.module.css";
 
@@ -25,7 +26,9 @@ export function SiteFooter({
   showSamples = false,
   showManageSubscriptions = false,
   originsReturnLabel,
+  shopLabel = "Shop matcha",
   pageReveals = false,
+  canonical = false,
 }: {
   direction: FooterDirection;
   tone: "light" | "dark";
@@ -38,11 +41,19 @@ export function SiteFooter({
   showSamples?: boolean;
   showManageSubscriptions?: boolean;
   originsReturnLabel?: string;
+  shopLabel?: string;
   pageReveals?: boolean;
+  canonical?: boolean;
 }) {
   const { t } = useStorefrontLocale();
   const { busy } = useCart();
   const { openOrigins } = useOrigins();
+  const actionLabel = (text: string) =>
+    canonical ? (
+      <ScrambleText text={text} interactive animateOnMount={false} wrap />
+    ) : (
+      text
+    );
   // Plain placeholders until real policy and contact destinations are supplied.
   const utilityLinks = (
     <div className={styles.utility} role="group" aria-label={t("Information")}>
@@ -63,7 +74,10 @@ export function SiteFooter({
             if (busy) event.preventDefault();
           }}
         >
-          {t("Manage subscriptions")} <span aria-hidden="true">↗</span>
+          <span className={styles.accountLabel}>
+            {actionLabel(t("Manage subscriptions"))}
+          </span>{" "}
+          <span aria-hidden="true">↗</span>
         </a>
       )}
     </div>
@@ -87,6 +101,7 @@ export function SiteFooter({
       ref={footerRef}
       className={`${styles.footer}${pageReveals ? ` ${revealStyles.scope}` : ""}`}
       data-site-footer
+      data-storefront-footer={canonical || undefined}
       data-footer-direction={direction}
       data-tone={tone}
       aria-label={t("ATOMA footer")}
@@ -113,7 +128,7 @@ export function SiteFooter({
               01
             </span>
             <span className={styles.linkCopy}>
-              <span>{t("Shop matcha")}</span>
+              <span>{actionLabel(t(shopLabel))}</span>
               <span className={styles.description}>
                 {t("Formats & selection")}
               </span>
@@ -135,7 +150,7 @@ export function SiteFooter({
                 02
               </span>
               <span className={styles.linkCopy}>
-                <span>{t("Sample Set")}</span>
+                <span>{actionLabel(t("Sample Set"))}</span>
                 <span className={styles.description}>
                   {t("Three matcha · 20 g each")}
                 </span>
@@ -157,7 +172,7 @@ export function SiteFooter({
               {showSamples ? "03" : "02"}
             </span>
             <span className={styles.linkCopy}>
-              <span>{t("Growing places")}</span>
+              <span>{actionLabel(t("Growing places"))}</span>
               <span className={styles.description}>
                 {t("Explore the origins")}
               </span>
@@ -179,7 +194,7 @@ export function SiteFooter({
                 {showSamples ? "04" : "03"}
               </span>
               <span className={styles.linkCopy}>
-                <span>{t("About ATOMA")}</span>
+                <span>{actionLabel(t("About ATOMA"))}</span>
                 <span className={styles.description}>
                   {t("A closer look at ATOMA")}
                 </span>
@@ -202,7 +217,7 @@ export function SiteFooter({
               )}
             </span>
             <span className={styles.linkCopy}>
-              <span>{t("Back to top")}</span>
+              <span>{actionLabel(t("Back to top"))}</span>
               <span className={styles.description}>
                 {t("Return to the beginning")}
               </span>

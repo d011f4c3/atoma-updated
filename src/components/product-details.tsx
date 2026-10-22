@@ -13,10 +13,14 @@ export function ProductDetails({
   product,
   tone,
   presentation = "disclosure",
+  includeFormats = true,
+  refreshing = false,
 }: {
   product: CatalogProduct;
   tone: "dark" | "light";
   presentation?: "disclosure" | "inline";
+  includeFormats?: boolean;
+  refreshing?: boolean;
 }) {
   const { locale, t } = useStorefrontLocale();
   const id = useId();
@@ -26,37 +30,43 @@ export function ProductDetails({
 
   const body = (
     <div className={styles.body}>
-      <section className={styles.section} aria-labelledby={`${id}-formats`}>
-        <h3 id={`${id}-formats`}>{t("Formats & availability")}</h3>
-        {formats.length > 0 ? (
-          <ul className={styles.formats}>
-            {formats.map((format) => (
-              <li key={format.id}>
-                <div className={styles.formatIdentity}>
-                  <span>{t(format.label)}</span>
-                  <span className={styles.options}>
-                    {money(format.priceMinor, format.currency)}
-                  </span>
-                  {format.options.length > 0 && (
+      {includeFormats && (
+        <section className={styles.section} aria-labelledby={`${id}-formats`}>
+          <h3 id={`${id}-formats`}>{t("Formats & availability")}</h3>
+          {refreshing ? (
+            <p role="status">{t("Updating prices…")}</p>
+          ) : formats.length > 0 ? (
+            <ul className={styles.formats}>
+              {formats.map((format) => (
+                <li key={format.id}>
+                  <div className={styles.formatIdentity}>
+                    <span>{t(format.label)}</span>
                     <span className={styles.options}>
-                      {format.options
-                        .map(
-                          (option) => `${t(option.name)}: ${t(option.value)}`,
-                        )
-                        .join(" · ")}
+                      {money(format.priceMinor, format.currency)}
                     </span>
-                  )}
-                </div>
-                <span className={styles.availability}>
-                  {t(format.available ? "Available" : "Currently unavailable")}
-                </span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>{t("No formats are currently published.")}</p>
-        )}
-      </section>
+                    {format.options.length > 0 && (
+                      <span className={styles.options}>
+                        {format.options
+                          .map(
+                            (option) => `${t(option.name)}: ${t(option.value)}`,
+                          )
+                          .join(" · ")}
+                      </span>
+                    )}
+                  </div>
+                  <span className={styles.availability}>
+                    {t(
+                      format.available ? "Available" : "Currently unavailable",
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>{t("No formats are currently published.")}</p>
+          )}
+        </section>
+      )}
 
       <section className={styles.section} aria-labelledby={`${id}-preparation`}>
         <h3 id={`${id}-preparation`}>{t("Application & preparation")}</h3>
@@ -64,13 +74,13 @@ export function ProductDetails({
         <p>{content.preparation}</p>
       </section>
 
-      <section
-        className={styles.section}
-        aria-labelledby={`${id}-record`}
-        data-product-record
-      >
-        <h3 id={`${id}-record`}>{t("Product record")}</h3>
-        {(facts.published.length > 0 || facts.placeholders.length > 0) && (
+      {facts.published.length > 0 && (
+        <section
+          className={styles.section}
+          aria-labelledby={`${id}-record`}
+          data-product-record
+        >
+          <h3 id={`${id}-record`}>{t("Product record")}</h3>
           <dl className={styles.facts}>
             {facts.published.map((fact) => (
               <div key={fact.key} data-published-fact>
@@ -78,18 +88,9 @@ export function ProductDetails({
                 <dd>{fact.value}</dd>
               </div>
             ))}
-            {facts.placeholders.map((placeholder) => (
-              <div key={placeholder.key} data-provisional-detail>
-                <dt>{placeholder.label}</dt>
-                <dd>
-                  {t("{value} (provisional)", { value: placeholder.value })}
-                </dd>
-              </div>
-            ))}
           </dl>
-        )}
-        {facts.unpublishedNote && <p>{facts.unpublishedNote}</p>}
-      </section>
+        </section>
+      )}
     </div>
   );
 

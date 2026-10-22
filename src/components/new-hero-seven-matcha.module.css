@@ -1,0 +1,711 @@
+.matcha {
+  container: hero-seven-matcha / inline-size;
+  min-width: 0;
+}
+
+.introduction {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.introduction > div {
+  min-width: 0;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.7;
+  text-transform: uppercase;
+}
+
+.introduction h1 {
+  margin: 0;
+  font-size: calc(clamp(1.75rem, 3vw, 2.75rem) + var(--locale-font-increment));
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.description {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: calc(1rem + var(--locale-font-increment));
+  line-height: 1.7;
+}
+
+:global([data-homepage]) .introduction .description {
+  font-family: var(--font-atoma-mono-light), monospace;
+  font-weight: 300;
+}
+
+:global([data-homepage]) .homeSection .usage {
+  color: var(--muted);
+}
+
+.sampleInvitation {
+  max-width: 24rem;
+  flex-shrink: 0;
+  padding-bottom: 0.125rem;
+  font-size: calc(0.8125rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+
+.sampleInvitation p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.sampleInvitation a {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 2.75rem;
+  padding-block: 0.5rem;
+  border-bottom: 1px solid var(--ink);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.sampleInvitation a > span {
+  margin-left: auto;
+}
+
+.applications {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.applications a {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: calc(2 * var(--radius-button));
+  color: var(--ink);
+  background: color-mix(in srgb, var(--color-raised) 55%, transparent);
+  text-decoration: none;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+.applications a:hover {
+  border-color: var(--ink);
+  background: var(--seven-panel-surface);
+}
+.cardImage :global([data-product-application-image]) > div {
+  width: 100%;
+  min-width: 0;
+  height: clamp(10rem, 24vh, 15rem);
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: calc(2 * var(--radius-button));
+}
+.cardImage figcaption {
+  min-height: 2.8em;
+  margin-top: 0.5rem;
+  font-size: calc(0.625rem + var(--locale-font-increment));
+  line-height: 1.4;
+}
+.cardBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0.875rem 0.5rem 0.25rem;
+}
+.applicationHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 0.5rem;
+  font-size: calc(1.375rem + var(--locale-font-increment));
+  line-height: 1.4;
+  letter-spacing: -0.04em;
+  overflow-wrap: anywhere;
+}
+.index {
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+}
+.productName {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.375rem 1rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(0.75rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+.productName > span {
+  white-space: nowrap;
+}
+.usage {
+  flex: 1;
+  margin: 0.75rem 0 1rem;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+.learnMore {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 2.75rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  font-size: calc(0.8125rem + var(--locale-font-increment));
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.learnMore > span[aria-hidden] {
+  font-size: 1.25rem;
+}
+.matcha :is(a, button):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+.matcha a[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.homeSection {
+  border-top: 1px solid var(--line);
+}
+
+.homeSection .introduction {
+  gap: 1.5rem 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.homeSection .introduction h2 {
+  margin: 0;
+  font-size: calc(clamp(1.5rem, 2vw, 2rem) + var(--locale-font-increment));
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.homeSection .introduction > .description {
+  max-width: 42ch;
+  margin: 0;
+}
+
+.homeSection .applications {
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.homeSection .applications a {
+  padding: 1.25rem 1.5rem 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.homeSection .applications a:first-child {
+  padding-left: 0;
+}
+
+.homeSection .applications a:last-child {
+  padding-right: 0;
+}
+
+.homeSection .applications a + a {
+  border-left: 1px solid var(--line);
+}
+
+.homeSection .applications a:hover {
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
+}
+
+.homeSection .cardImage :global([data-product-application-image]) > div {
+  height: clamp(12rem, 22vw, 15rem);
+}
+
+.homeSection .cardImage figcaption {
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+}
+
+.homeSection .cardBody {
+  padding: 1rem 0 0;
+}
+
+.homeSection .applicationHeading {
+  font-size: calc(1.125rem + var(--locale-font-increment));
+  font-weight: 400;
+}
+
+.homeSection .productName {
+  font-size: calc(0.8125rem + var(--locale-font-increment));
+}
+
+.homeSection .learnMore {
+  min-height: 3rem;
+  padding: 0.75rem 1.125rem;
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--surface);
+}
+
+.homeSection .learnMore > span[aria-hidden] {
+  line-height: 1;
+}
+
+.dialog {
+  --product-popup-content-height: calc(min(86dvh, 100dvh - 3rem) - 7rem);
+  container: application-popup / inline-size;
+  width: min(64rem, calc(100vw - 3rem));
+  max-width: none;
+  height: min(43rem, 86dvh, calc(100dvh - 3rem));
+  max-height: min(86dvh, calc(100dvh - 3rem));
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  background: var(--color-raised);
+  color: var(--ink);
+  font-family: inherit;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  overscroll-behavior: contain;
+  box-shadow: 0 2rem 6rem rgb(0 0 0 / 24%);
+}
+.dialog[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.dialog::backdrop {
+  background: rgb(8 12 17 / 55%);
+  backdrop-filter: blur(6px);
+}
+.dialogHeader {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--color-raised);
+  font-size: calc(0.8125rem + var(--locale-font-increment));
+  line-height: 1.5;
+}
+.dialogHeader button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.dialogHeader .dialogBack {
+  flex: 0 1 auto;
+  min-width: 0;
+  padding-inline: 0;
+  border-color: transparent;
+  text-align: left;
+}
+.dialogHeader button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.dialogIcon {
+  font-size: 1.25rem;
+}
+.backCompact {
+  display: none;
+}
+.dialogBody {
+  min-width: 0;
+  min-height: 0;
+  padding: 1.5rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+@container hero-seven-matcha (max-width: 54rem) {
+  .introduction {
+    align-items: start;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .sampleInvitation {
+    max-width: none;
+    font-size: calc(1rem + var(--locale-font-increment));
+  }
+  .applications {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+  .applications a {
+    padding: clamp(10px, 3vw, 16px);
+  }
+  .cardBody {
+    padding-inline: 4px;
+  }
+  .productName > span {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .learnMore {
+    gap: 0.5rem;
+    padding-inline: clamp(10px, 3vw, 16px);
+  }
+  .cardImage :global([data-product-application-image]) > div {
+    height: clamp(10rem, 42vw, 16rem);
+  }
+  .productName,
+  .usage,
+  .learnMore {
+    font-size: calc(1rem + var(--locale-font-increment));
+  }
+  .cardImage figcaption {
+    min-height: 0;
+    font-size: calc(0.75rem + var(--locale-font-increment));
+    line-height: 1.6;
+  }
+
+  .homeSection .applications {
+    width: 100%;
+  }
+
+  .homeSection .applications a {
+    padding: 1.25rem 0;
+  }
+
+  .homeSection .applications a + a {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .homeSection .cardImage :global([data-product-application-image]) > div {
+    height: clamp(12rem, 50vw, 18rem);
+  }
+
+  .homeSection .productName {
+    font-size: calc(1rem + var(--locale-font-increment));
+  }
+
+  .homeSection .learnMore {
+    padding-block: 0.6875rem;
+  }
+
+  .homeSection .cardImage figcaption {
+    font-size: calc(0.75rem + var(--locale-font-increment));
+  }
+}
+@media (max-width: 760px) {
+  /* Keep the native dialog in the top layer while the dedicated mobile hero
+     supplies the product entrances. Never hide its containing element. */
+  .homeSection[data-mobile-dialog-only] {
+    display: contents;
+  }
+  .homeSection[data-mobile-dialog-only] > .introduction,
+  .homeSection[data-mobile-dialog-only] > .applications {
+    display: none;
+  }
+  .dialog {
+    width: calc(100vw - 32px);
+    height: min(43rem, 82dvh, calc(100dvh - 32px));
+    max-height: min(82dvh, calc(100dvh - 32px));
+  }
+  .dialogHeader {
+    gap: 0.5rem;
+    padding: 0.5rem clamp(12px, 3vw, 20px);
+    font-size: calc(1rem + var(--locale-font-increment));
+  }
+  .dialogHeader button {
+    gap: 0.5rem;
+    padding-inline: 0.5rem;
+  }
+  .dialogBody {
+    padding: clamp(12px, 3vw, 20px);
+  }
+}
+@container application-popup (max-width: 20rem) {
+  .dialogHeader {
+    align-items: stretch;
+  }
+  .dialogHeader button {
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 0;
+    padding-inline: 0.25rem;
+  }
+  .dialogIcon,
+  .backFull {
+    display: none;
+  }
+  .backCompact {
+    display: inline;
+  }
+  :global([data-homepage]) .dialogHeader .dialogBack {
+    flex: 1 1 0;
+    min-width: 44px;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 760px) and (max-height: 650px) {
+  :global([data-homepage]) .dialog {
+    height: calc(100dvh - 32px);
+    max-height: calc(100dvh - 32px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .applications a {
+    transition: none;
+  }
+}
+
+/* Application directory: open columns, useful labels and no card surfaces. */
+.directory .introduction {
+  gap: 1.5rem 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.directory .introduction h1 {
+  font-size: calc(
+    clamp(1.75rem, 2.3vw, 2.125rem) + var(--locale-font-increment)
+  );
+}
+
+.directory .description {
+  margin-top: 0.75rem;
+  font-size: calc(0.875rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+
+.directory .applications {
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.directory .applications a {
+  padding: 1rem 1.5rem 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.directory .applications a:first-child {
+  padding-left: 0;
+}
+
+.directory .applications a:last-child {
+  padding-right: 0;
+}
+
+.directory .applications a + a {
+  border-left: 1px solid var(--line);
+}
+
+.directory .applications a:hover {
+  background: transparent;
+}
+
+.directoryHeading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-width: 0;
+  margin-bottom: 0.875rem;
+}
+
+.directoryHeading h2 {
+  min-width: 0;
+  margin: 0;
+  font-size: calc(clamp(1.25rem, 1.7vw, 1.5rem) + var(--locale-font-increment));
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.04em;
+  overflow-wrap: anywhere;
+}
+
+.directory .cardImage :global([data-product-application-image]) > div {
+  height: clamp(12rem, calc(100svh - 32rem), 18rem);
+  border-radius: var(--radius-button);
+}
+
+.directory .cardImage img {
+  border-radius: inherit;
+}
+
+.directory .cardBody {
+  padding: 1rem 0 0;
+}
+
+.directoryIdentity {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  min-width: 0;
+}
+
+.directoryIdentity h3 {
+  margin: 0;
+  font-size: calc(0.9375rem + var(--locale-font-increment));
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.directoryIdentity > span {
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment));
+  line-height: 1.6;
+}
+
+.directory .usage {
+  margin: 0.5rem 0 1rem;
+  color: var(--muted);
+}
+
+.directory .learnMore {
+  min-height: 3rem;
+  border-color: var(--line);
+  border-radius: var(--radius-button);
+}
+
+.directory .learnMore > span[aria-hidden] {
+  line-height: 1;
+}
+
+.directory .applications a:is(:hover, :focus-visible) .learnMore {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--surface);
+}
+
+@container hero-seven-matcha (max-width: 54rem) {
+  .directory .introduction {
+    gap: 1rem;
+  }
+
+  .directory .description,
+  .directoryIdentity h3 {
+    font-size: calc(1rem + var(--locale-font-increment));
+  }
+
+  .directory .applications {
+    width: 100%;
+  }
+
+  .directory .applications a {
+    padding: 1.25rem 0;
+  }
+
+  .directory .applications a + a {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .directory .cardImage :global([data-product-application-image]) > div {
+    height: clamp(12rem, 50vw, 18rem);
+  }
+
+  .directoryIdentity > span {
+    font-size: calc(0.75rem + var(--locale-font-increment));
+  }
+}
+
+/* Canonical purchase folio: image and reading have distinct, deliberate spaces. */
+.dialog[data-canonical-popup] {
+  width: min(56rem, calc(100vw - 2rem));
+  height: fit-content;
+  max-height: calc(100dvh - 2rem);
+  border-radius: 6px;
+}
+.dialog[data-canonical-popup][open] {
+  display: flex;
+  flex-direction: column;
+}
+.dialog[data-canonical-popup] .dialogHeader {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  z-index: 3;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+}
+.dialogContext {
+  display: none;
+}
+.dialog[data-canonical-popup] .dialogBody {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0;
+  overflow: auto;
+}
+.dialog[data-canonical-popup] .dialogHeader button {
+  flex: 0 0 auto;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.625rem;
+  border: 0;
+  background: var(--color-raised);
+  pointer-events: auto;
+}
+.dialog[data-canonical-popup] .dialogIcon {
+  display: inline;
+}
+@media (min-width: 761px) {
+  .dialog[data-canonical-popup] .dialogHeader button {
+    font-size: 0.75rem;
+  }
+}
+@media (max-width: 760px) {
+  .dialog[data-canonical-popup] {
+    width: calc(100vw - 1.5rem);
+    height: min(46rem, calc(100dvh - 1.5rem));
+    max-height: calc(100dvh - 1.5rem);
+  }
+  .dialog[data-canonical-popup] .dialogHeader {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+  .dialog[data-canonical-popup] .dialogHeader button {
+    background: rgb(9 15 18 / 85%);
+    color: #e8eef1;
+    backdrop-filter: blur(12px);
+  }
+}
+@container application-popup (max-width: 15rem) {
+  .dialog[data-canonical-popup] .dialogBody {
+    display: block;
+    overflow: auto;
+  }
+}
+@media (max-height: 500px) {
+  .dialog[data-canonical-popup] .dialogBody {
+    display: block;
+    overflow: auto;
+  }
+}

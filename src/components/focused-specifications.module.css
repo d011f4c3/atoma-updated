@@ -350,3 +350,10 @@
     animation: none;
   }
 }
+.profileStatus {
+  margin: 0 0 1rem;
+  color: var(--muted);
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+  text-transform: none;
+}

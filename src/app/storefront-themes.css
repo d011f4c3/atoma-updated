@@ -139,6 +139,23 @@ body:has([data-storefront-theme]) [data-origins-directory] {
   --directory-control: color-mix(in srgb, var(--color-ink) 5%, transparent);
 }
 
+/* Canonical storefront titles share the uppercase display language. Include
+   sibling dialogs, but leave saved concepts and their typography independent. */
+body:has(
+    [data-homepage],
+    [data-canonical-shop],
+    [data-samples-page],
+    [data-about-page],
+    [data-retail-product],
+    [data-field-note-page],
+    main[data-client-reading] > [data-origins-content]
+  )
+  :is(h1, h2, h3, h4, h5, h6),
+[data-homepage] [data-new-hero-product-profile] > summary,
+[data-homepage] [data-new-hero7-sample-preparation] > summary {
+  text-transform: uppercase;
+}
+
 @media (max-width: 760px) {
   :root {
     /* Shared phone roles, consumed by canonical page styles only. Keep rem
@@ -175,5 +192,80 @@ body:has([data-storefront-theme]) [data-origins-directory] {
         transparent 85%
       ),
       linear-gradient(#080b11, #080b11);
+  }
+}
+/* Authored text and imagery may enter, while navigation and purchase groups
+   remain visible before hydration and without JavaScript. */
+[data-client-reading]
+  :is([data-page-enter], [data-page-reveal]):is(
+    a[href],
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    label,
+    [role="button"],
+    [role="link"],
+    [role="tab"],
+    [role="radio"],
+    [role="checkbox"],
+    [role="switch"],
+    [role="combobox"],
+    [role="menuitem"],
+    [role="option"],
+    [contenteditable]:not([contenteditable="false"]),
+    :has(
+      a[href],
+      button,
+      input,
+      select,
+      textarea,
+      summary,
+      label,
+      [role="button"],
+      [role="link"],
+      [role="tab"],
+      [role="radio"],
+      [role="checkbox"],
+      [role="switch"],
+      [role="combobox"],
+      [role="menuitem"],
+      [role="option"],
+      [contenteditable]:not([contenteditable="false"])
+    )
+  ),
+[data-client-reading]
+  :is(
+    a[href],
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    label,
+    [role="button"],
+    [role="link"],
+    [role="tab"],
+    [role="radio"],
+    [role="checkbox"],
+    [role="switch"],
+    [role="combobox"],
+    [role="menuitem"],
+    [role="option"],
+    [contenteditable]:not([contenteditable="false"])
+  )
+  :is([data-page-enter], [data-page-reveal]) {
+  animation: none !important;
+  opacity: 1 !important;
+  translate: none !important;
+}
+
+@media (max-width: 760px) {
+  [data-client-reading] {
+    --mobile-type-body: calc(1rem + var(--locale-font-increment, 0px));
+    --mobile-type-support: calc(0.875rem + var(--locale-font-increment, 0px));
+    --mobile-type-label: calc(0.75rem + var(--locale-font-increment, 0px));
+    --mobile-type-action: calc(0.875rem + var(--locale-font-increment, 0px));
   }
 }

@@ -1,0 +1,290 @@
+[
+  {
+    "label": "1440-light-en",
+    "metrics": {
+      "header[data-brand-part=\"header\"]": {
+        "x": 57.59375,
+        "y": 0,
+        "width": 1324.8125,
+        "height": 81
+      },
+      "[data-new-hero7-first-view]": {
+        "x": 0,
+        "y": 81,
+        "width": 1440,
+        "height": 819
+      },
+      "[data-new-hero7-hero]": {
+        "x": 0,
+        "y": 81,
+        "width": 1440,
+        "height": 819
+      },
+      "h1": {
+        "x": 57.59375,
+        "y": 152.078125,
+        "width": 602.203125,
+        "height": 132.25
+      },
+      "[data-new-hero7-material]": {
+        "x": 57.59375,
+        "y": 308.328125,
+        "width": 1324.8125,
+        "height": 454.671875
+      },
+      "[data-new-hero7-jump=\"ceremonial\"]": {
+        "x": 57.59375,
+        "y": 764,
+        "width": 441.59375,
+        "height": 108
+      },
+      "[data-new-hero7-samples]": {
+        "x": 892.796875,
+        "y": 236.328125,
+        "width": 260.8125,
+        "height": 48
+      }
+    },
+    "errors": []
+  },
+  {
+    "label": "1440-dark-ja",
+    "metrics": {
+      "header[data-brand-part=\"header\"]": {
+        "x": 57.59375,
+        "y": 0,
+        "width": 1324.8125,
+        "height": 81
+      },
+      "[data-new-hero7-first-view]": {
+        "x": 0,
+        "y": 81,
+        "width": 1440,
+        "height": 819
+      },
+      "[data-new-hero7-hero]": {
+        "x": 0,
+        "y": 81,
+        "width": 1440,
+        "height": 819
+      },
+      "h1": {
+        "x": 57.59375,
+        "y": 153.78125,
+        "width": 612.40625,
+        "height": 134.5
+      },
+      "[data-new-hero7-material]": {
+        "x": 57.59375,
+        "y": 312.28125,
+        "width": 1324.8125,
+        "height": 450.71875
+      },
+      "[data-new-hero7-jump=\"ceremonial\"]": {
+        "x": 57.59375,
+        "y": 764,
+        "width": 441.59375,
+        "height": 108
+      },
+      "[data-new-hero7-samples]": {
+        "x": 892.796875,
+        "y": 240.28125,
+        "width": 234.40625,
+        "height": 48
+      }
+    },
+    "errors": []
+  },
+  {
+    "label": "390-light-en",
+    "metrics": {
+      "header[data-brand-part=\"header\"]": {
+        "x": 20,
+        "y": 0,
+        "width": 350,
+        "height": 64
+      },
+      "[data-new-hero7-first-view]": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 780
+      },
+      "[data-new-hero7-hero]": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 780
+      },
+      "h1": {
+        "x": 20,
+        "y": 118.6875,
+        "width": 350,
+        "height": 64.625
+      },
+      "[data-new-hero7-material]": {
+        "x": 20,
+        "y": 377.6875,
+        "width": 350,
+        "height": 345.3125
+      },
+      "[data-new-hero7-jump=\"ceremonial\"]": {
+        "x": 20,
+        "y": 724,
+        "width": 116.65625,
+        "height": 104
+      },
+      "[data-new-hero7-samples]": {
+        "x": 20,
+        "y": 269.6875,
+        "width": 350,
+        "height": 48
+      }
+    },
+    "errors": []
+  },
+  {
+    "label": "390-dark-ja",
+    "metrics": {
+      "header[data-brand-part=\"header\"]": {
+        "x": 20,
+        "y": 0,
+        "width": 350,
+        "height": 64
+      },
+      "[data-new-hero7-first-view]": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 780
+      },
+      "[data-new-hero7-hero]": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 780
+      },
+      "h1": {
+        "x": 20,
+        "y": 120.390625,
+        "width": 350,
+        "height": 66.875
+      },
+      "[data-new-hero7-material]": {
+        "x": 20,
+        "y": 385.046875,
+        "width": 350,
+        "height": 337.953125
+      },
+      "[data-new-hero7-jump=\"ceremonial\"]": {
+        "x": 20,
+        "y": 724,
+        "width": 116.65625,
+        "height": 104
+      },
+      "[data-new-hero7-samples]": {
+        "x": 20,
+        "y": 277.046875,
+        "width": 350,
+        "height": 48
+      }
+    },
+    "errors": []
+  },
+  {
+    "label": "320-light-en",
+    "metrics": {
+      "header[data-brand-part=\"header\"]": {
+        "x": 20,
+        "y": 0,
+        "width": 280,
+        "height": 64
+      },
+      "[data-new-hero7-first-view]": {
+        "x": 0,
+        "y": 64,
+        "width": 320,
+        "height": 676
+      },
+      "[data-new-hero7-hero]": {
+        "x": 0,
+        "y": 64,
+        "width": 320,
+        "height": 676
+      },
+      "h1": {
+        "x": 20,
+        "y": 118.6875,
+        "width": 280,
+        "height": 62.71875
+      },
+      "[data-new-hero7-material]": {
+        "x": 20,
+        "y": 402.96875,
+        "width": 280,
+        "height": 210.859375
+      },
+      "[data-new-hero7-jump=\"ceremonial\"]": {
+        "x": 20,
+        "y": 614.828125,
+        "width": 93.328125,
+        "height": 109.171875
+      },
+      "[data-new-hero7-samples]": {
+        "x": 20,
+        "y": 294.96875,
+        "width": 280,
+        "height": 48
+      }
+    },
+    "errors": []
+  },
+  {
+    "label": "1100-light-en",
+    "metrics": {
+      "header[data-brand-part=\"header\"]": {
+        "x": 44,
+        "y": 0,
+        "width": 1012,
+        "height": 81
+      },
+      "[data-new-hero7-first-view]": {
+        "x": 0,
+        "y": 81,
+        "width": 1100,
+        "height": 819
+      },
+      "[data-new-hero7-hero]": {
+        "x": 0,
+        "y": 81,
+        "width": 1100,
+        "height": 819
+      },
+      "h1": {
+        "x": 44,
+        "y": 188.765625,
+        "width": 460.015625,
+        "height": 101
+      },
+      "[data-new-hero7-material]": {
+        "x": 44,
+        "y": 313.765625,
+        "width": 1012,
+        "height": 449.234375
+      },
+      "[data-new-hero7-jump=\"ceremonial\"]": {
+        "x": 44,
+        "y": 764,
+        "width": 337.328125,
+        "height": 108
+      },
+      "[data-new-hero7-samples]": {
+        "x": 682,
+        "y": 187.765625,
+        "width": 260.8125,
+        "height": 48
+      }
+    },
+    "errors": []
+  }
+]

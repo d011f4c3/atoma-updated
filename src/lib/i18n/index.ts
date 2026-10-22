@@ -5,6 +5,11 @@ import { originTranslations } from "./origins.ts";
 import { aboutTranslations } from "./about.ts";
 import { sampleTranslations } from "./samples.ts";
 import { tastingTranslations } from "./tastings.ts";
+import { heroCxTranslations } from "./hero-cx.ts";
+import { applicationImageryTranslations } from "./application-imagery.ts";
+import { productClarityTranslations } from "./product-clarity.ts";
+import { productComparisonTranslations } from "./product-comparison.ts";
+import { newHeroTranslations } from "./new-hero.ts";
 import type { Locale, TranslationTable } from "./types.ts";
 
 export { locales, resolveLocale, type Locale } from "./types.ts";
@@ -16,6 +21,11 @@ export const translationTables = [
   aboutTranslations,
   sampleTranslations,
   tastingTranslations,
+  heroCxTranslations,
+  applicationImageryTranslations,
+  productClarityTranslations,
+  productComparisonTranslations,
+  newHeroTranslations,
 ];
 const messages: TranslationTable = Object.assign(
   Object.create(null),

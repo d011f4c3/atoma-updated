@@ -30,6 +30,7 @@ export function ShopCollection() {
 
   return (
     <Shop
+      productClarity
       sampleEntryDirection="connected"
       categoryFilter={{
         category,

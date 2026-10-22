@@ -1,0 +1,52 @@
+.root {
+  min-width: 0;
+  margin: 0;
+  text-transform: none;
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+
+.root[data-presentation="retail"] .frame {
+  aspect-ratio: 3 / 2;
+}
+
+.frame img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.caption {
+  margin-top: 0.625rem;
+  color: var(--muted);
+  font-size: calc(0.625rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 1.25rem;
+  color: var(--muted);
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  line-height: 1.7;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .caption {
+    font-size: var(--mobile-type-support);
+    line-height: 1.7;
+  }
+}

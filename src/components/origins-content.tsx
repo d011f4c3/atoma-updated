@@ -13,6 +13,9 @@ import { ORIGINS_GRAPH, getPlacePath } from "@/lib/origins-model";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { OriginsDirectory } from "./origins-directory";
 import { useProductSelection } from "./use-product-selection";
+import { ScrambleText } from "./scramble-text";
+import { usePageReveals } from "./use-page-reveals";
+import revealStyles from "./page-reveals.module.css";
 import styles from "./origins-content.module.css";
 
 type OriginsContentProps = {
@@ -63,6 +66,7 @@ function OriginsReader({
   );
   const { catalog, products, loading, retry } = useProductSelection();
   const entry = FIELD_ENTRIES.find((item) => item.slug === selectedSlug);
+  usePageReveals(root, Boolean(entry));
   const home = "/";
   const related = entry ? getRelatedMatchas(entry, products) : [];
   const entryPlaces = entry
@@ -138,7 +142,7 @@ function OriginsReader({
   return (
     <section
       ref={root}
-      className={styles.root}
+      className={`${styles.root} ${revealStyles.scope}`}
       data-tone={tone}
       data-origins-content
       data-origins-view={entry ? "entry" : "index"}
@@ -149,12 +153,22 @@ function OriginsReader({
         {onReturn ? (
           <button className={styles.back} type="button" onClick={onReturn}>
             <span aria-hidden="true">←</span>
-            {t(returnLabel)}
+            <ScrambleText
+              text={t(returnLabel)}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
           </button>
         ) : (
           <Link className={styles.back} href={home}>
             <span aria-hidden="true">←</span>
-            {t("Explore matcha")}
+            <ScrambleText
+              text={t("Explore matcha")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
           </Link>
         )}
         {entry ? (
@@ -163,9 +177,16 @@ function OriginsReader({
             type="button"
             onClick={returnToDirectory}
           >
-            {place
-              ? t("Back to {place}", { place: t(place.name) })
-              : t("All origins")}
+            <ScrambleText
+              text={
+                place
+                  ? t("Back to {place}", { place: t(place.name) })
+                  : t("All origins")
+              }
+              interactive
+              animateOnMount={false}
+              wrap
+            />
           </button>
         ) : place ? (
           <button
@@ -173,7 +194,12 @@ function OriginsReader({
             type="button"
             onClick={() => setSelectedPlace(null)}
           >
-            {t("All origins")}
+            <ScrambleText
+              text={t("All origins")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
           </button>
         ) : (
           <span className={styles.journalLabel}>{t("ATOMA / Origins")}</span>
@@ -182,11 +208,11 @@ function OriginsReader({
 
       {entry ? (
         <div className={styles.reader} data-origins-entry={entry.slug}>
-          <header className={styles.articleHeading}>
+          <header className={styles.articleHeading} data-page-enter="text">
             <div>
               <p className={styles.eyebrow}>{t(entry.region)}</p>
               <h1 ref={heading} id={`${id}-title`} tabIndex={-1}>
-                {t(entry.title)}
+                <ScrambleText text={t(entry.title)} wrap />
               </h1>
               {entry.dek && <p className={styles.dek}>{t(entry.dek)}</p>}
             </div>
@@ -202,7 +228,14 @@ function OriginsReader({
                     <span className={styles.chapterNumber}>
                       {section.label.match(/^\d+/)?.[0]}
                     </span>
-                    <span>{t(section.label.replace(/^\d+\s*\/\s*/, ""))}</span>
+                    <span>
+                      <ScrambleText
+                        text={t(section.label.replace(/^\d+\s*\/\s*/, ""))}
+                        interactive
+                        animateOnMount={false}
+                        wrap
+                      />
+                    </span>
                   </button>
                 ))}
               </nav>
@@ -245,7 +278,10 @@ function OriginsReader({
                   tabIndex={-1}
                 >
                   {photograph && (
-                    <figure className={styles.chapterFigure}>
+                    <figure
+                      className={styles.chapterFigure}
+                      data-page-reveal="fade"
+                    >
                       <div
                         className={
                           isLandscape ? styles.readerImage : styles.chapterImage
@@ -266,7 +302,9 @@ function OriginsReader({
                     </figure>
                   )}
                   <div className={styles.caption}>
-                    <h2 id={`${id}-${section.id}-title`}>{t(section.label)}</h2>
+                    <h2 id={`${id}-${section.id}-title`}>
+                      <ScrambleText text={t(section.label)} wrap visibleOnly />
+                    </h2>
                     {section.body.map((paragraph, paragraphIndex) => (
                       <p key={paragraphIndex} className={styles.prose}>
                         {t(paragraph)}
@@ -304,7 +342,13 @@ function OriginsReader({
                   type="button"
                   onClick={retryConnections}
                 >
-                  {t("Try again")} <span aria-hidden="true">↻</span>
+                  <ScrambleText
+                    text={t("Try again")}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />{" "}
+                  <span aria-hidden="true">↻</span>
                 </button>
               </div>
             ) : related.length > 0 ? (
@@ -352,7 +396,14 @@ function OriginsReader({
                       setSelectedSlug(null);
                     }}
                   >
-                    {t("All matcha from {place}", { place: t(place.name) })}{" "}
+                    <ScrambleText
+                      text={t("All matcha from {place}", {
+                        place: t(place.name),
+                      })}
+                      interactive
+                      animateOnMount={false}
+                      wrap
+                    />{" "}
                     <span aria-hidden="true">↗</span>
                   </button>
                 ))}

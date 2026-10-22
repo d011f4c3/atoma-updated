@@ -1,0 +1,44 @@
+.root {
+  container-type: size;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  place-items: center;
+}
+
+.crop {
+  position: relative;
+  width: min(100cqw, calc(100cqh * var(--crop-aspect)));
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: var(--crop-ratio);
+  overflow: hidden;
+}
+
+.crop img {
+  position: absolute;
+  top: var(--image-top);
+  left: var(--image-left);
+  width: var(--image-width);
+  max-width: none;
+  height: auto;
+  user-select: none;
+}
+
+.fallback {
+  max-width: 24ch;
+  margin: 0;
+  padding: 1rem;
+  color: var(--muted);
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .fallback {
+    font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+}

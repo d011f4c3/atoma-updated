@@ -182,6 +182,7 @@ export function ProductConfigurator({
   contextVisible?: boolean;
 }) {
   const { locale, t } = useStorefrontLocale();
+  const applicationNavigation = overviewStudyVariant === "application";
   const silverBag = materialObject === "silver-bag";
   const PackagingScene = packaging === "bag" ? BagScene : VesselScene;
   const Container = embedded ? "div" : "main";
@@ -1211,6 +1212,8 @@ export function ProductConfigurator({
                     variant={sectionSelectorVariant}
                     active={mode}
                     disabled={entryPending || cart.busy}
+                    purchaseLabel={applicationNavigation ? "Order" : "Shop"}
+                    plainLabels={applicationNavigation}
                     onSelect={(view) => {
                       setEditingReference(false);
                       setMode(view);
@@ -1235,7 +1238,15 @@ export function ProductConfigurator({
                             setMode(view.value);
                           }}
                         >
-                          <ScrambleText text={t(view.label)} interactive />
+                          {applicationNavigation ? (
+                            <span>
+                              {t(
+                                view.value === "builder" ? "Order" : view.label,
+                              )}
+                            </span>
+                          ) : (
+                            <ScrambleText text={t(view.label)} interactive />
+                          )}
                         </button>
                       ))
                     ) : (

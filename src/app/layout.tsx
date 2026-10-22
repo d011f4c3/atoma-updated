@@ -9,6 +9,7 @@ import { SmoothScrollProvider } from "@/components/smooth-scroll";
 import { StorefrontThemeProvider } from "@/components/storefront-theme-provider";
 import { StorefrontLocaleProvider } from "@/components/storefront-locale-provider";
 import { HomepageJourneyProvider } from "@/components/homepage-journey-provider";
+import { SampleTastingSessionProvider } from "@/components/sample-tasting-session-provider";
 import { readStorefrontLocale } from "@/lib/i18n/server";
 import { localizedMetadata } from "@/lib/i18n/metadata";
 import "lenis/dist/lenis.css";
@@ -58,6 +59,15 @@ const atomaMono = localFont({
   fallback: ["Courier New"],
 });
 
+const atomaMonoLight = localFont({
+  src: "../../public/fonts/ibm-plex-mono/IBMPlexMono-Light.woff2",
+  weight: "300",
+  style: "normal",
+  display: "swap",
+  variable: "--font-atoma-mono-light",
+  fallback: ["Courier New"],
+});
+
 const antroVectra = localFont({
   src: "../../public/fonts/antro-vectra/Antro_Vectra.otf",
   display: "swap",
@@ -92,7 +102,7 @@ export default async function RootLayout({
   return (
     <html
       lang={initialLocale}
-      className={`${fraktionSans.variable} ${fraktionMono.variable} ${atomaMono.variable} ${antroVectra.variable}`}
+      className={`${fraktionSans.variable} ${fraktionMono.variable} ${atomaMono.variable} ${atomaMonoLight.variable} ${antroVectra.variable}`}
     >
       <body>
         <FocusModality />
@@ -101,7 +111,9 @@ export default async function RootLayout({
             <StorefrontThemeProvider initialTone={initialTone}>
               <CartProvider>
                 <HomepageJourneyProvider>
-                  <OriginsProvider>{children}</OriginsProvider>
+                  <SampleTastingSessionProvider>
+                    <OriginsProvider>{children}</OriginsProvider>
+                  </SampleTastingSessionProvider>
                 </HomepageJourneyProvider>
               </CartProvider>
             </StorefrontThemeProvider>

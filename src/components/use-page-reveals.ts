@@ -1,12 +1,18 @@
 "use client";
 
 import { useEffect, type RefObject } from "react";
+import { usePathname } from "next/navigation";
+import {
+  motionControlSelector,
+  permitsPageReveal,
+} from "@/lib/canonical-motion-policy";
 
 /** One-shot entrances; existing product and scroll-linked photo motion stay independent. */
 export function usePageReveals(
   rootRef: RefObject<HTMLElement | null>,
   enabled = true,
 ) {
+  const pathname = usePathname();
   useEffect(() => {
     const root = rootRef.current;
     if (!root || !enabled) return;
@@ -22,6 +28,20 @@ export function usePageReveals(
     ).filter(owns);
     let observer: IntersectionObserver | null = null;
     let restorationFrame = 0;
+
+    function permitsGroup(node: HTMLElement) {
+      return permitsPageReveal(pathname, {
+        visualTreatment: node.matches(
+          '[data-page-enter="visual"], [data-page-reveal="fade"]',
+        ),
+        hasMedia: Boolean(node.querySelector("img, video, canvas, svg")),
+        hasText: Boolean(node.textContent?.trim()),
+        hasControl: Boolean(
+          node.closest(motionControlSelector) ||
+          node.querySelector(motionControlSelector),
+        ),
+      });
+    }
 
     function finish(node: HTMLElement) {
       if (node.hasAttribute("data-page-enter"))
@@ -63,6 +83,9 @@ export function usePageReveals(
     function setup() {
       observer?.disconnect();
       observer = null;
+      for (const node of [...heroes, ...sections]) {
+        if (!permitsGroup(node)) finish(node);
+      }
       if (!motion.matches || typeof IntersectionObserver === "undefined") {
         finishAll();
         return;
@@ -76,6 +99,10 @@ export function usePageReveals(
                 entry.isIntersecting &&
                 node.dataset.pageRevealState === "pending"
               ) {
+                if (!permitsGroup(node)) {
+                  finish(node);
+                  continue;
+                }
                 node.dataset.pageRevealState = "entering";
                 observer?.unobserve(node);
               }
@@ -88,6 +115,7 @@ export function usePageReveals(
         const positions = sections
           .filter(
             (node) =>
+              permitsGroup(node) &&
               node.getClientRects().length &&
               !node.closest("[hidden], [inert]"),
           )
@@ -139,6 +167,7 @@ export function usePageReveals(
       );
       if (
         group &&
+        permitsGroup(group) &&
         !group.closest('[data-page-reveal-state="pending"]') &&
         (group.hasAttribute("data-page-enter-done") ||
           group.dataset.pageRevealState === "complete")
@@ -212,5 +241,5 @@ export function usePageReveals(
       });
       root.removeAttribute("data-page-reveal-root");
     };
-  }, [rootRef, enabled]);
+  }, [rootRef, enabled, pathname]);
 }

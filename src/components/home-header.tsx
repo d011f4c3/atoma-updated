@@ -29,6 +29,14 @@ export type NavigationVariant =
   | "track";
 
 export type HomeHeaderProps = {
+  homeHref?: string;
+  onNavigate?: (href: string) => void;
+  links?: readonly {
+    key: string;
+    label: string;
+    href: string;
+    active?: boolean;
+  }[];
   tone?: "dark" | "light";
   onExplore?: () => void;
   exploring?: boolean;
@@ -39,9 +47,13 @@ export type HomeHeaderProps = {
   persistentTheme?: boolean;
   storefrontNavigation?: boolean;
   samplesEntry?: boolean;
+  initialMenuOpen?: boolean;
 };
 
 export function HomeHeader({
+  homeHref = "/",
+  onNavigate,
+  links,
   tone = "dark",
   onExplore,
   exploring = false,
@@ -52,10 +64,12 @@ export function HomeHeader({
   persistentTheme = false,
   storefrontNavigation = false,
   samplesEntry = false,
+  initialMenuOpen = true,
 }: HomeHeaderProps) {
   const { t } = useStorefrontLocale();
-  const { busy } = useCart();
+  const { busy: cartBusy, navigationBusy } = useCart();
   const siteNavigation = persistentTheme || storefrontNavigation;
+  const busy = siteNavigation || links ? navigationBusy : cartBusy;
   const id = useId();
   const { openOrigins } = useOrigins();
   const dialogId = `${id}-about`;
@@ -89,7 +103,8 @@ export function HomeHeader({
   const hasResponsiveMenu = navigationVariant === "default";
   const showSamples =
     siteNavigation || (samplesEntry && (!onExplore || exploring));
-  const homeHref = "/";
+  const customNavigation =
+    links !== undefined || homeHref !== "/" || onNavigate !== undefined;
 
   function closeIndex() {
     if (indexRef.current && indexTriggerRef.current?.getClientRects().length)
@@ -208,7 +223,41 @@ export function HomeHeader({
     </>
   );
 
-  const mainLinks = (
+  const mainLinks = links ? (
+    <>
+      {links.map((link, index) => (
+        <Link
+          key={link.key}
+          className={styles.control}
+          data-nav-action={link.key}
+          href={link.href}
+          prefetch={onNavigate ? false : undefined}
+          aria-current={link.active ? "page" : undefined}
+          aria-disabled={navigationBusy || undefined}
+          onClick={(event) => {
+            if (navigationBusy) event.preventDefault();
+            else closeIndex();
+          }}
+          onNavigate={(event) => {
+            if (navigationBusy || onNavigate) event.preventDefault();
+            if (!navigationBusy) onNavigate?.(link.href);
+          }}
+        >
+          <span className={styles.index} data-nav-index aria-hidden="true">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <ScrambleText
+            text={t(link.label)}
+            delay={150 + index * 35}
+            interactive
+          />
+          <span className={styles.shopMark} aria-hidden="true">
+            ↗
+          </span>
+        </Link>
+      ))}
+    </>
+  ) : (
     <>
       {onExplore ? (
         <button
@@ -246,7 +295,11 @@ export function HomeHeader({
         <span className={styles.index} data-nav-index aria-hidden="true">
           02
         </span>
-        <ScrambleText text={t("SHOP")} delay={220} interactive />
+        <ScrambleText
+          text={t(siteNavigation ? "Wholesale" : "SHOP")}
+          delay={220}
+          interactive
+        />
         <span className={styles.shopMark} aria-hidden="true">
           ↗
         </span>
@@ -350,6 +403,7 @@ export function HomeHeader({
     <header
       className={`${styles.header}${experimental ? ` ${experimentStyles.experiment}` : ""}`}
       data-brand-part="header"
+      data-storefront-navigation={siteNavigation || undefined}
       data-tone={tone}
       data-navigation-variant={navigationVariant}
       data-exploring={exploring}
@@ -359,7 +413,27 @@ export function HomeHeader({
         data-nav-brand
         data-brand-part="wordmark"
         href={homeHref}
+        prefetch={onNavigate ? false : undefined}
         aria-label={t("ATOMA home")}
+        aria-disabled={
+          customNavigation ? navigationBusy || undefined : undefined
+        }
+        onClick={
+          customNavigation
+            ? (event) => {
+                if (navigationBusy) event.preventDefault();
+                else closeIndex();
+              }
+            : undefined
+        }
+        onNavigate={
+          customNavigation
+            ? (event) => {
+                if (navigationBusy || onNavigate) event.preventDefault();
+                if (!navigationBusy) onNavigate?.(homeHref);
+              }
+            : undefined
+        }
       >
         <ScrambleText text="ATOMA" interactive />
       </Link>
@@ -398,7 +472,7 @@ export function HomeHeader({
             className={
               hasResponsiveMenu ? styles.responsiveMenu : styles.indexMenu
             }
-            open={hasResponsiveMenu || undefined}
+            open={(hasResponsiveMenu && initialMenuOpen) || undefined}
             data-navigation-index
             onBlur={(event) => {
               // Safari can blur the summary to no focused element during a

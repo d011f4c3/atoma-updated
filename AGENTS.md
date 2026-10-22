@@ -2,6 +2,200 @@
 
 ## Scope and authority
 
+- **Task 0258 refines origin photography and popup scale:** read
+  `docs/tasks/0258-origin-photographs-and-popup-scale.md`. Keep the origin layout,
+  use two field photographs on desktop and one taller photograph on mobile,
+  and refine canonical desktop popups with transparent hero objects, compact
+  type and a complete profile above the purchase row. Preserve controls, mobile
+  readability, product facts and saved studies. Commit before queued work.
+
+- **Task 0257 refreshes canonical hero food imagery:** read
+  `docs/tasks/0257-realistic-hero-applications.md`. Use natural, appetizing
+  application cutouts while retaining transparency, hero geometry, mobile
+  selection and saved studies. Match canonical application photographs and
+  product popups to the approved hero. Record generated provenance internally.
+
+- **Task 0256 redesigns the canonical product popup:** read
+  `docs/tasks/0256-product-popup-redesign.md`. Use compact product learning and
+  reachable purchase controls, clear unavailable states and reliable dismissal.
+  Preserve the homepage, studies, product facts and commerce behavior.
+
+- **Task 0255 creates a dedicated canonical mobile homepage:** read
+  `docs/tasks/0255-dedicated-mobile-homepage.md`. Use one large touch-selected
+  application, in-place product learning and compact mobile sections. Preserve
+  desktop/study layouts, themes, motion, product facts and commerce contracts.
+
+- **Task 0254 performs the full mobile visual pass:** read
+  `docs/tasks/0254-mobile-visual-pass.md`. Review and fix canonical pages,
+  homepage selection views/popups and shared navigation/cart/footer at phone
+  sizes. Preserve approved desktop/study geometry, palettes, content, motion,
+  selection and commerce contracts; verify with isolated browser fixtures.
+
+- **Task 0253 restores site-wide motion and the homepage entrance:** read
+  `docs/tasks/0253-restore-site-motion.md`. Restore authored text/menu glitches
+  and page reveals across storefront pages, superseding Task 0227's blanket
+  suppression. Restore the compact readiness loader and post-load hero reveal;
+  reduce the adopted desktop hero h1 and keep its text settled after entry.
+  Use uppercase storefront headings, consistent supporting type/colors and clean
+  customer-facing copy without reference/placeholder notes. Preserve reduced motion,
+  immediate controls, stable commerce data, routes and saved-study geometry.
+
+- **Task 0252 adopts the approved seventh hero on the main site:** read
+  `docs/tasks/0252-adopt-homepage-and-wholesale-menu.md`. Use the approved hero,
+  scroll sections and in-place selection at `/`, preserving `/new-hero7` as a
+  comparison. Label `/shop` as Wholesale in storefront menus. Keep canonical
+  Samples, Origins, About and product pages independent; preserve existing
+  deep links, footer actions and commerce state.
+
+- **Task 0251 revisits the Sample Set and application views:** read
+  `docs/tasks/0251-seventh-hero-selection-pages.md`. Rebuild these two latest
+  views with open ruled layouts, square structural surfaces, restrained rounding
+  and useful desktop fit. Use actual product/sample modals without page jumps,
+  preserving orders, scroll, focus, history and the approved Home presentation.
+  Keep Shop, Samples, Origins and About in the standard site navigation; the
+  study's selection views are additional hero CTA experiences, never replacements
+  for canonical pages. Remove the separate study Wholesale/Origins destinations.
+
+- **Task 0250 adds the original scroll sections to the seventh concept:** read
+  `docs/tasks/0250-seventh-hero-original-scroll-sections.md`. Reuse `/new-hero`'s
+  content under the unchanged latest hero, then follow the owner's refinement:
+  Sample Set → Applications → Origin → Ordering. Preserve the floating Sample
+  Set, use Home product popups, a wide Origin photograph and a concise ordering
+  sequence. Balance section padding and fit complete desktop purchase controls
+  inside product popups. Keep flowing palettes, measured scale, round
+  buttons/images and square section surfaces; preserve commerce, focus, scroll
+  and history.
+
+- **Task 0249 uses product popups and compacts desktop:** read
+  `docs/tasks/0249-seventh-hero-product-popups.md`. Keep application cards still,
+  open product learning/purchase in inset dialogs and show useful desktop
+  application/Sample Set content immediately, preserving order and scroll state.
+
+- **Task 0248 rebuilds Explore by Application:** read
+  `docs/tasks/0248-seventh-hero-application-redesign.md`. Replace simultaneous
+  product forms with an application selector and one focused product, retaining
+  URL/history, independent orders and the rest of the seventh concept.
+
+- **Task 0247 adds learning before the Sample Set purchase:** read
+  `docs/tasks/0247-seventh-hero-sample-learning.md`. Open each included matcha's
+  profile and preparation in place, with clear set-order and exact-product
+  actions. Preserve illustrative labels, all-three contents and purchase state.
+
+- **Task 0246 refines the seventh concept's cards and flow:** read
+  `docs/tasks/0246-seventh-hero-cards-and-flow.md`. Give secondary views stronger
+  product presentation and useful contextual next steps while preserving the
+  hero, shared gradient, earlier concepts and existing commerce/navigation.
+
+- **Task 0245 carries the hero lighting through `/new-hero7`:** read
+  `docs/tasks/0245-seventh-hero-visual-continuity.md`. Apply the approved gradient
+  to later views with readable text and subtle translucent surfaces, preserving
+  the hero and the in-place navigation/commerce flow.
+
+- **Task 0244 changes `/new-hero7` in place:** read
+  `docs/tasks/0244-seventh-hero-in-place.md`. Keep a persistent header and focused
+  views, with URL-owned in-page navigation, history and retained selections.
+  Preserve the dedicated route fallbacks, themes and canonical commerce.
+
+- **Task 0243 builds a multi-page `/new-hero7`:** read
+  `docs/tasks/0243-seventh-hero-multipage.md`. Keep the approved hero on a focused
+  homepage and move the range, Sample Set, origins and repeat orders to dedicated
+  routes. Preserve themes, canonical commerce and all earlier concepts.
+
+- **Task 0242 revises the rejected sixth-page layout:** read
+  `docs/tasks/0242-sixth-hero-compact-revision.md`. Return to compact application
+  cards, simplify the Sample Set, origin and repeat-order sections, and preserve
+  the approved hero, fifth page and existing buying journeys.
+
+- **Task 0241 creates `/new-hero6` with the approved fifth hero:** read
+  `docs/tasks/0241-sixth-hero-information-design.md`. Round the fifth page's
+  photographs and give the sixth page distinct, clear and polished lower
+  sections. Preserve the hero, themes, real controls and existing journeys.
+
+- **Task 0240 refines application cards in `/new-hero5`:** read
+  `docs/tasks/0240-fifth-hero-application-cards.md`. Preserve the approved hero,
+  make the application section more visual with cards, and match lower purchase
+  controls to the hero's button rounding. Keep existing journeys and prior pages.
+
+- **Task 0239 refines the scroll and journey below `/new-hero5`:** read
+  `docs/tasks/0239-fifth-hero-scroll-and-journey.md`. Preserve the approved hero,
+  combine stronger lower sections from earlier concepts, and make sample,
+  application, cart and origin actions continuous. Keep earlier routes intact.
+
+- **Task 0238 contains the gradient in `/new-hero5`:** read
+  `docs/tasks/0238-contained-gradient-fifth-hero.md`. Keep the approved gradient
+  inside the first view including the header, with solid surfaces below. Try a
+  clean application gallery and preserve clear shopping, both themes and all
+  earlier concepts.
+
+- **Task 0237 adds a stronger hero at `/new-hero4`:** read
+  `docs/tasks/0237-fourth-hero-poster.md`. Build a material poster with a sculptural
+  powder image and clear application entrances, retaining the third concept's
+  simple commerce flow, both palettes and earlier routes.
+
+- **Task 0236 adds a clean `/new-hero3`:** read
+  `docs/tasks/0236-clean-third-hero.md`. Make application comparison the entrance,
+  with compact imagery and obvious purchasing controls. Retain the Sample Set,
+  supported origin, named repeat orders, type and both palettes. Preserve earlier
+  routes and use the established commerce state.
+
+- **Task 0235 refines `/new-hero` and adds `/new-hero2`:** read
+  `docs/tasks/0235-new-hero-refinement-and-second-concept.md`. Keep Mist and Blue
+  hour, replace the first page's main image and reduce its display type slightly.
+  Build a distinct application-led second concept with existing commerce controls,
+  Sample Set, supported origin and exact repeat-order links. Preserve prior pages.
+
+- **Task 0234 builds `/new-hero` from the homepage feedback:** read
+  `docs/tasks/0234-new-hero-page.md`. Build the complete business-facing flow:
+  brand, application-led products, Sample Set, supported origin/quality and
+  wholesale/repeat orders. Use visible real commerce controls on mobile and
+  retain the established type and palettes. No study controls on this page.
+
+- **Task 0233 invents an application field for the CX hero:** read
+  `docs/tasks/0233-application-field-hero.md`. Make the application entrances
+  the composition around one changing powder field. Preserve direct product
+  links, immediate samples, canonical codes, themes and earlier studies.
+  This is a new independent structure, not another split introduction/object
+  layout or an adoption into the actual homepage.
+
+- **Task 0232 restores the brand language within the simpler CX study:** read
+  `docs/tasks/0232-brand-led-cx-hero.md`. Retain material/powder/silver,
+  restrained uppercase mono typography and specimen linework. Keep the
+  application choices and Sample Set immediately usable; application imagery
+  supports the entrance instead of becoming its entire aesthetic. Preserve
+  prior comparisons and the actual homepage.
+
+- **Task 0231 makes finished applications the CX hero:** read
+  `docs/tasks/0231-product-led-cx-hero.md`. The owner rejected the earlier studies
+  as insufficiently strong heroes and clarifies that pouches do not explain the
+  offer. Explore one continuous composition of finished tea, latte and baking
+  applications, prominent typography, sample entry and direct product links.
+  Preserve earlier comparisons and the actual homepage; avoid another
+  questionnaire or intermediate result screen.
+
+- **Task 0230 refines the preferred Guided CX study:** read
+  `docs/tasks/0230-guided-cx-second-pass.md`. Show applications and sample entry
+  immediately, replace the redundant intent question with two clear stages,
+  explain the all-three Sample Set and retain exact named 1 kg destinations.
+  Keep the canonical homepage independent and the other layouts available.
+
+- **Task 0229 compares complete CX layouts:** read
+  `docs/tasks/0229-clearer-hero-cx-study.md`. The owner explicitly released the
+  existing homepage geometry: compare Sample invitation, Application directory
+  and Guided decision as complete layouts, not interchangeable hero parts.
+  Keep brand typography/palettes, URL-owned choices, exact product handoffs and
+  labelled imagery. The study remains separate from the canonical homepage.
+
+- **Tasks 0223–0228 apply the October client-feedback pass:** read
+  `docs/tasks/0221-october-client-feedback-backlog.md` and the relevant bounded
+  task before further changes. Keep the application-led homepage entry, labelled
+  reference imagery, visible product comparison, exact named 1 kg links and
+  tasting/selection continuity. Canonical mobile body text is readable at 16 px;
+  controls and prose remain settled while suitable display headings may scramble.
+  Preserve IBM Plex Mono, palettes, codes, cart contracts and independent studies.
+  Commercial verification, analytics and operations have separate evidence and
+  release boundaries in Task 0228. The CX study remains a local comparison,
+  with no automatic adoption into the homepage.
+
 - **Task 0102 makes mobile overlays read as popups:** read
   `docs/tasks/0102-mobile-popups-and-origins.md`. Use inset mobile dialogs with
   outside-click/tap and Escape dismissal, preserve underlying selection and

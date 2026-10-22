@@ -278,27 +278,32 @@ export function VisualSectionSelectors({
   active,
   disabled,
   onSelect,
+  purchaseLabel = "Shop",
+  plainLabels = false,
 }: {
   variant: VisualSectionVariant;
   active: string;
   disabled: boolean;
   onSelect: (view: InformationView) => void;
+  purchaseLabel?: "Shop" | "Order";
+  plainLabels?: boolean;
 }) {
   const { t } = useStorefrontLocale();
+  const labelFor = (section: (typeof sections)[number]) =>
+    t(section.value === "builder" ? purchaseLabel : section.label);
+  const weights =
+    purchaseLabel === "Order" ? [1, 1.7, 0.8, 0.9] : sectionWeights;
   const activeIndex = Math.max(
     0,
     sections.findIndex((section) => section.value === active),
   );
-  const totalWeight = sectionWeights.reduce<number>(
-    (sum, weight) => sum + weight,
-    0,
-  );
-  const precedingWeight = sectionWeights
+  const totalWeight = weights.reduce<number>((sum, weight) => sum + weight, 0);
+  const precedingWeight = weights
     .slice(0, activeIndex)
     .reduce<number>((sum, weight) => sum + weight, 0);
   const trackFraction =
-    (precedingWeight + (sectionWeights[activeIndex] ?? 1) / 2) / totalWeight;
-  const trackPosition = `calc((100% - ${sectionWeights.length - 1} * var(--section-gap)) * ${trackFraction} + ${activeIndex} * var(--section-gap))`;
+    (precedingWeight + (weights[activeIndex] ?? 1) / 2) / totalWeight;
+  const trackPosition = `calc((100% - ${weights.length - 1} * var(--section-gap)) * ${trackFraction} + ${activeIndex} * var(--section-gap))`;
 
   return (
     <div
@@ -308,6 +313,8 @@ export function VisualSectionSelectors({
       data-shopping-mode
       data-visual-section-selectors={variant}
       data-variant={variant}
+      data-purchase-label={purchaseLabel}
+      data-plain-labels={plainLabels || undefined}
     >
       {variant === "menu" ? (
         <label className={styles.sectionMenu}>
@@ -326,7 +333,7 @@ export function VisualSectionSelectors({
           >
             {sections.map((section) => (
               <option key={section.value} value={section.value}>
-                {t(section.label)}
+                {labelFor(section)}
               </option>
             ))}
           </select>
@@ -343,11 +350,15 @@ export function VisualSectionSelectors({
               if (!disabled) onSelect(section.value);
             }}
           >
-            <ScrambleText
-              text={t(section.label)}
-              interactive
-              animateOnMount={false}
-            />
+            {plainLabels ? (
+              <span>{labelFor(section)}</span>
+            ) : (
+              <ScrambleText
+                text={labelFor(section)}
+                interactive
+                animateOnMount={false}
+              />
+            )}
           </button>
         ))
       )}
