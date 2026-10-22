@@ -2,6 +2,12 @@
 
 ## Scope and authority
 
+- **Task 0260 rebuilds the canonical mobile product popup:** read
+  `docs/tasks/0260-mobile-product-popup.md`. Use a compact name-and-image
+  introduction, one continuous scrolling body and persistent Close/Order
+  controls. Preserve readable profiles, purchase state, desktop popups,
+  saved studies and exact focus/scroll/history return.
+
 - **Task 0258 refines origin photography and popup scale:** read
   `docs/tasks/0258-origin-photographs-and-popup-scale.md`. Keep the origin layout,
   use two field photographs on desktop and one taller photograph on mobile,

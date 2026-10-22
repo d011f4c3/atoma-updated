@@ -503,6 +503,32 @@ export function NewHeroSevenMatcha({
               </span>
             </button>
           )}
+          {canonicalPopup && (
+            <button
+              type="button"
+              className={styles.dialogOrder}
+              disabled={cart.navigationBusy}
+              data-popup-order-jump
+              onClick={() => {
+                const purchase = dialog.current?.querySelector<HTMLElement>(
+                  `[data-new-hero-product="${selected}"] [data-popup-purchase]`,
+                );
+                purchase?.focus({ preventScroll: true });
+                purchase?.scrollIntoView({
+                  block: "start",
+                  behavior: "instant",
+                });
+              }}
+            >
+              <ScrambleText
+                text={t("Order")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
+              <span aria-hidden="true">↓</span>
+            </button>
+          )}
           <button
             ref={close}
             type="button"

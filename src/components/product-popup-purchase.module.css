@@ -368,7 +368,8 @@
 
 @media (max-width: 760px) {
   .purchase {
-    padding: 0.875rem 1.25rem;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--ink) 3%, transparent);
     font-size: calc(1rem + var(--locale-font-increment, 0px));
   }
 
@@ -379,6 +380,9 @@
   .note,
   .error {
     font-size: calc(1rem + var(--locale-font-increment, 0px));
+  }
+  .sampleAction {
+    justify-self: center;
   }
 }
 
@@ -437,5 +441,12 @@
 
   .total {
     justify-content: space-between;
+  }
+  .stepper {
+    grid-template-columns: minmax(44px, 1fr) minmax(0, 1fr) minmax(44px, 1fr);
+    width: 100%;
+  }
+  .stepper button {
+    min-width: 44px;
   }
 }

@@ -28,6 +28,8 @@ const close = (page) =>
   );
 const quantity = (page) => product(page).locator("[data-new-hero-quantity]");
 const add = (page) => product(page).locator("[data-new-hero-add] button");
+const scrollBody = (page) =>
+  dialog(page).locator("[data-new-hero7-product-scroll]");
 
 async function eventually(check, message) {
   const deadline = Date.now() + 15000;
@@ -107,6 +109,90 @@ async function withinDialog(locator, popup, message) {
   );
 }
 
+async function mobileReading(page) {
+  const popup = dialog(page);
+  const body = scrollBody(page);
+  const pageScroll = await page.evaluate(() => scrollY);
+  const nestedScrollers = await body.evaluate((node) =>
+    [...node.querySelectorAll("*")]
+      .filter((child) => {
+        const style = getComputedStyle(child);
+        return (
+          /auto|scroll/.test(style.overflowY) &&
+          child.scrollHeight > child.clientHeight + 1
+        );
+      })
+      .map((child) => child.getAttribute("class")),
+  );
+  assert.deepEqual(
+    nestedScrollers,
+    [],
+    "Mobile learning and ordering share one scroll area",
+  );
+  const fields = product(page).locator('[role="tabpanel"]:visible dl > div');
+  const purchase = await product(page)
+    .locator("[data-popup-purchase]")
+    .boundingBox();
+  const fieldBounds = await fields.evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const { x, y, width, height } = node.getBoundingClientRect();
+      return { x, y, width, height };
+    }),
+  );
+  for (const [index, field] of fieldBounds.entries()) {
+    assert.ok(
+      purchase && field.y + field.height <= purchase.y + 1,
+      "Every mobile profile field precedes the purchase area",
+    );
+    for (const next of fieldBounds.slice(index + 1)) {
+      const overlapWidth =
+        Math.min(field.x + field.width, next.x + next.width) -
+        Math.max(field.x, next.x);
+      const overlapHeight =
+        Math.min(field.y + field.height, next.y + next.height) -
+        Math.max(field.y, next.y);
+      assert.ok(
+        overlapWidth <= 1 || overlapHeight <= 1,
+        "Mobile profile fields never overlap",
+      );
+    }
+  }
+  const targets = await product(page)
+    .locator(
+      '[role="tabpanel"]:visible dl > div, [data-new-hero-add] button, [data-popup-sample-action]',
+    )
+    .all();
+  for (const target of targets) {
+    await target.scrollIntoViewIfNeeded();
+    await withinDialog(
+      target,
+      body,
+      "Mobile details and actions are reachable",
+    );
+    await withinDialog(close(page), popup, "Close stays visible while reading");
+    assert.equal(
+      await close(page).evaluate((node) => {
+        const box = node.getBoundingClientRect();
+        return node.contains(
+          document.elementFromPoint(
+            box.x + box.width / 2,
+            box.y + box.height / 2,
+          ),
+        );
+      }),
+      true,
+      "Scrolling content cannot cover the persistent Close control",
+    );
+  }
+  assert.ok(
+    Math.abs((await page.evaluate(() => scrollY)) - pageScroll) < 2,
+    "Reading and ordering scroll only the popup",
+  );
+  await body.evaluate((node) => {
+    node.scrollTop = 0;
+  });
+}
+
 async function inspect(page, label) {
   const popup = dialog(page);
   const geometry = await popup.evaluate((node) => ({
@@ -141,14 +227,17 @@ async function inspect(page, label) {
     }
   }
   await withinDialog(close(page), popup, "Close stays visible");
+  if (geometry.viewportWidth <= 760) await mobileReading(page);
   for (const target of await product(page)
     .locator("[data-new-hero-add] button, [data-popup-sample-action]")
     .all()) {
-    await withinDialog(
-      target,
-      popup,
-      "The purchase action is immediately visible",
-    );
+    if (geometry.viewportWidth > 760) {
+      await withinDialog(
+        target,
+        popup,
+        "The desktop purchase action is immediately visible",
+      );
+    }
     assert.ok((await target.boundingBox()).height >= 44);
   }
   await page.screenshot({ path: `${evidence}/${label}.png` });
@@ -366,6 +455,109 @@ try {
     await returned(test.page, entry);
   });
 
+  await run("small-phone-barista", 320, "light", "en", {}, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
+    await ready(page, "/?view=matcha&application=barista");
+    await dialog(page).waitFor();
+    await eventually(
+      () => add(page).isEnabled(),
+      "The Barista offer is ready before measuring the small phone layout",
+    );
+    const directEntry = {
+      trigger: page.locator('[data-new-hero7-application="barista"]'),
+      scroll: await page.evaluate(() => scrollY),
+    };
+    for (const selector of [
+      "[data-new-hero-product-code]",
+      "[data-new-hero-product-name]",
+      "[data-new-hero-product-overview]",
+      "[data-product-application-cutout]",
+    ]) {
+      await withinDialog(
+        product(page).locator(selector),
+        scrollBody(page),
+        "The small phone opens with a meaningful product introduction",
+      );
+    }
+    assert.equal(
+      await scrollBody(page).evaluate((node) => node.scrollTop),
+      0,
+      "Direct product links begin at the product introduction",
+    );
+    const order = product(page).locator("[data-popup-purchase]");
+    await dialog(page).locator("[data-popup-order-jump]").tap();
+    assert.equal(
+      await order.evaluate((node) => document.activeElement === node),
+      true,
+      "The mobile order shortcut moves keyboard focus into purchase controls",
+    );
+    await withinDialog(
+      order,
+      scrollBody(page),
+      "The order shortcut reveals purchase",
+    );
+    await withinDialog(
+      add(page),
+      scrollBody(page),
+      "Add to cart is reachable directly",
+    );
+    await withinDialog(
+      close(page),
+      dialog(page),
+      "Close remains visible at purchase",
+    );
+    assert.ok(
+      Math.abs((await page.evaluate(() => scrollY)) - directEntry.scroll) < 2,
+      "The order shortcut preserves the page underneath",
+    );
+    await scrollBody(page).evaluate((node) => {
+      node.scrollTop = 0;
+    });
+    await inspect(page, "small-phone-barista-direct");
+    await close(page).tap();
+    await returned(page, directEntry);
+
+    let entry = await choose(page, "barista");
+    await product(page)
+      .getByRole("button", { name: "Increase quantity" })
+      .tap();
+    await product(page)
+      .getByRole("button", { name: "Increase quantity" })
+      .tap();
+    assert.equal(await quantity(page).textContent(), "3");
+    await exploreProduct(page, true);
+    await inspect(page, "small-phone-barista-order");
+    await page.touchscreen.tap(3, 3);
+    await returned(page, entry);
+
+    entry = await choose(page, "ceremonial");
+    assert.equal(
+      await quantity(page).textContent(),
+      "1",
+      "Other products retain their independent quantity",
+    );
+    await page.keyboard.press("Escape");
+    await returned(page, entry);
+    entry = await choose(page, "barista");
+    assert.equal(await quantity(page).textContent(), "3");
+    assert.equal(
+      await scrollBody(page).evaluate((node) => node.scrollTop),
+      0,
+      "Reopening starts at the product identity without losing its order",
+    );
+    await page.goBack();
+    await returned(page, entry);
+    await page.goForward();
+    await dialog(page).waitFor();
+    assert.equal(await quantity(page).textContent(), "3");
+    assert.equal(
+      new URL(page.url()).searchParams.get("application"),
+      "barista",
+    );
+    await close(page).tap();
+    await returned(page, entry);
+  });
+
   await run(
     "mobile-formats",
     390,
@@ -557,6 +749,22 @@ try {
     await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
     await dialog(page).waitFor();
     const popup = dialog(page);
+    const bodySize = await scrollBody(page).evaluate((node) => ({
+      clientWidth: node.clientWidth,
+      scrollWidth: node.scrollWidth,
+    }));
+    assert.ok(
+      bodySize.scrollWidth <= bodySize.clientWidth + 1,
+      "Enlarged product content never needs sideways scrolling",
+    );
+    for (const name of ["数量を減らす", "数量を増やす"]) {
+      const button = product(page).getByRole("button", { name, exact: true });
+      const bounds = await button.boundingBox();
+      assert.ok(
+        bounds && bounds.width >= 44 && bounds.height >= 44,
+        "Enlarged quantity controls retain physical touch targets",
+      );
+    }
     for (const control of await popup
       .locator("button:visible, a:visible, summary:visible")
       .all()) {

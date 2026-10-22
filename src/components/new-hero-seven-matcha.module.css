@@ -676,31 +676,70 @@
 .dialog[data-canonical-popup] .dialogIcon {
   display: inline;
 }
+.dialog[data-canonical-popup] .dialogOrder {
+  display: none;
+}
 @media (min-width: 761px) {
   .dialog[data-canonical-popup] .dialogHeader button {
     font-size: 0.75rem;
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 760px), (max-width: 960px) and (max-height: 500px) {
   .dialog[data-canonical-popup] {
     width: calc(100vw - 1.5rem);
-    height: min(46rem, calc(100dvh - 1.5rem));
-    max-height: calc(100dvh - 1.5rem);
+    height: fit-content;
+    max-height: calc(
+      100dvh - 1.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)
+    );
+  }
+  .dialog[data-canonical-popup] .dialogBody {
+    display: block;
+    flex: 1 1 auto;
+    overflow: auto;
   }
   .dialog[data-canonical-popup] .dialogHeader {
-    top: 0.5rem;
-    right: 0.5rem;
+    position: relative;
+    inset: auto;
+    flex: 0 0 auto;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--color-raised);
+    pointer-events: auto;
+  }
+  .dialog[data-canonical-popup] .dialogContext {
+    display: none;
   }
   .dialog[data-canonical-popup] .dialogHeader button {
-    background: rgb(9 15 18 / 85%);
-    color: #e8eef1;
-    backdrop-filter: blur(12px);
+    background: transparent;
+    color: var(--ink);
+    font-size: 0.8125rem;
+    backdrop-filter: none;
+  }
+  .dialog[data-canonical-popup] .dialogOrder {
+    display: inline-flex;
+    margin-left: 0;
   }
 }
 @container application-popup (max-width: 15rem) {
   .dialog[data-canonical-popup] .dialogBody {
     display: block;
     overflow: auto;
+  }
+  .dialog[data-canonical-popup] .dialogContext {
+    display: none;
+  }
+  .dialog[data-canonical-popup] .dialogHeader {
+    gap: 4px;
+    padding: 6px 8px;
+  }
+  .dialog[data-canonical-popup] .dialogIcon {
+    display: none;
+  }
+  .dialog[data-canonical-popup] .dialogHeader button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 4px;
   }
 }
 @media (max-height: 500px) {

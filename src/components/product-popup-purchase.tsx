@@ -71,6 +71,9 @@ export function ProductPopupPurchase({
       data-popup-purchase
       data-order-visible={showOrder}
       data-unavailable={unavailable || undefined}
+      tabIndex={-1}
+      role="region"
+      aria-label={t("Purchase")}
     >
       {multipleFormats && (
         <fieldset className={styles.formats} disabled={locked}>
