@@ -556,3 +556,46 @@
     background: var(--surface);
   }
 }
+
+@media (max-width: 760px) {
+  :global([data-canonical-popup]) .reader {
+    padding: 0.9rem;
+    column-gap: 0.675rem;
+  }
+  :global([data-canonical-popup]) :is(.application, .swatch) {
+    height: 6.75rem;
+  }
+  :global([data-canonical-popup]) .identity h2 {
+    font-size: var(--mobile-type-section);
+  }
+  :global([data-canonical-popup])
+    :is(
+      .mobileSummary,
+      .mobileDetails,
+      .flavour,
+      .highlights dd,
+      .preparation p
+    ) {
+    font-size: var(--mobile-type-body);
+  }
+  :global([data-canonical-popup]) .mobileDetails {
+    padding-inline: 0.9rem;
+  }
+  :global([data-canonical-popup]) .mobileDetails summary {
+    min-height: max(44px, 2.925rem);
+    padding-block: 0.675rem;
+    font-size: var(--canonical-mobile-action);
+  }
+  :global([data-canonical-popup]) .mobileDetails :is(dl, p) {
+    padding-bottom: 1.125rem;
+  }
+}
+
+@media (max-width: 760px) and (max-height: 500px) {
+  :global([data-canonical-popup]) .reader {
+    padding-block: 0.675rem;
+  }
+  :global([data-canonical-popup]) :is(.application, .swatch) {
+    height: 5.4rem;
+  }
+}

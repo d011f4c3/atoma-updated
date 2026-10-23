@@ -11,9 +11,10 @@
     display: grid;
     grid-template-rows: auto auto auto;
     align-content: start;
-    gap: clamp(2rem, 4.2svh, 2.75rem);
-    min-height: calc(100svh - var(--seven-header-height, 4rem));
-    padding: clamp(2.5rem, 7svh, 4rem) var(--gutter) 2.5rem;
+    gap: clamp(1rem, 2.25svh, 1.5rem);
+    min-height: min(calc(100svh - var(--seven-header-height, 4rem)), 42rem);
+    padding: clamp(1rem, 2.5svh, 1.5rem) var(--gutter)
+      max(2rem, env(safe-area-inset-bottom, 0px));
   }
 
   .hero[data-tone="dark"] {
@@ -43,10 +44,27 @@
     margin-inline: auto;
   }
 
+  .audience {
+    display: flex;
+    align-items: baseline;
+    gap: 0.375rem;
+    margin: 0 0 0.75rem;
+    color: var(--muted);
+    font-size: calc(0.75rem + var(--locale-font-increment));
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .audience > span {
+    flex-shrink: 0;
+  }
+
   .introduction h1 {
     max-width: 19ch;
     margin: 0;
-    font-size: calc(clamp(1.75rem, 7.6vw, 2rem) + var(--locale-font-increment));
+    font-size: calc(
+      clamp(1.5rem, 6.1vw, 1.625rem) + var(--locale-font-increment)
+    );
     font-weight: 400;
     line-height: 1.1;
     letter-spacing: -0.055em;
@@ -57,18 +75,19 @@
   .hero:lang(ja) .introduction h1 {
     max-width: none;
     font-size: calc(
-      clamp(1.625rem, 7.2vw, 2.25rem) + var(--locale-font-increment)
+      clamp(1.375rem, 5.8vw, 1.6875rem) + var(--locale-font-increment)
     );
     letter-spacing: -0.035em;
   }
 
   .description {
-    margin: 0.75rem 0 0;
+    margin: 0.625rem 0 0;
     color: var(--muted);
     font-family: var(--font-atoma-mono-light), monospace;
-    font-size: calc(1rem + var(--locale-font-increment));
+    font-size: var(--mobile-type-body);
     font-weight: 300;
-    line-height: 1.55;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
   }
 
   .applications {
@@ -78,7 +97,7 @@
     grid-template-areas: "tea latte" "baking latte";
     align-content: center;
     align-items: center;
-    gap: clamp(1.75rem, calc(25svh - 9rem), 6rem) 1.75rem;
+    gap: clamp(1rem, 2.25svh, 1.5rem) 1.5rem;
   }
 
   .application {
@@ -106,12 +125,14 @@
   }
 
   .visual {
-    width: 88%;
+    width: 72%;
+    max-width: clamp(5.5rem, 15.3svh, 7.625rem);
     margin-inline: auto;
   }
 
   .application[data-mobile-hero-application="culinary"] .visual {
-    width: 92%;
+    width: 76%;
+    max-width: clamp(5.5rem, 16.2svh, 7.875rem);
   }
 
   .crop {
@@ -137,9 +158,9 @@
     justify-content: space-between;
     gap: 0.375rem;
     min-height: 2.75rem;
-    padding: 0.375rem 0;
+    padding: 0.25rem 0;
     border-bottom: 1px solid var(--line);
-    font-size: calc(1rem + var(--locale-font-increment));
+    font-size: var(--mobile-type-body);
     line-height: 1.4;
     color: inherit;
     text-decoration: none;
@@ -175,7 +196,6 @@
   .actions {
     display: grid;
     gap: 0.25rem;
-    padding-top: 0.5rem;
   }
 
   .primary,
@@ -184,10 +204,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    min-height: 3.25rem;
-    padding: 0.75rem 1rem;
+    min-height: 3rem;
+    padding: 0.625rem 0.875rem;
     color: var(--ink);
-    font-size: calc(1rem + var(--locale-font-increment));
+    font-size: var(--canonical-mobile-action);
     line-height: 1.5;
     text-decoration: none;
   }
@@ -238,6 +258,12 @@
 
 /* Enlarged text gets a readable vertical arrangement with whole objects. */
 @container mobile-hero (max-width: 13rem) {
+  .primary > :first-child,
+  .secondary > :first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
   .applications {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "tea" "latte" "baking";

@@ -140,7 +140,7 @@ async function inspectWhy(page) {
     );
     if (geometry.width <= 1000)
       assert.ok(
-        reason.fontSize >= 16,
+        reason.fontSize >= (geometry.width <= 760 ? 15 : 16),
         "Mobile reasons retain readable body text",
       );
     if (!index) continue;
@@ -214,6 +214,13 @@ async function openSearch(page) {
   if (!(await input.isVisible()))
     await page.locator("[data-wholesale-search-toggle]").click();
   await input.waitFor({ state: "visible" });
+  if (page.viewportSize().width <= 760)
+    assert.ok(
+      await input.evaluate(
+        (node) => parseFloat(getComputedStyle(node).fontSize) >= 16,
+      ),
+      "The mobile search field retains 16px type to avoid input zoom",
+    );
   return input;
 }
 
@@ -542,7 +549,8 @@ try {
                 .boundingBox();
               const order = await purchase(page, item.key).boundingBox();
               assert.ok(
-                image.width >= outer.width * 0.9 && image.height >= 160,
+                image.width >= outer.width * 0.9 &&
+                  image.height >= (width <= 760 ? 144 : 160),
                 "Mobile cards lead with a substantial image across their width",
               );
               assert.ok(

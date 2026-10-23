@@ -725,3 +725,74 @@
     padding-inline: min(0.75rem, 12px);
   }
 }
+
+/* A finer phone scale belongs to the live catalog, without changing studies. */
+@media (max-width: 760px) {
+  .page[data-new-wholesale] {
+    font-size: var(--mobile-type-body);
+  }
+  .page[data-new-wholesale] .introduction {
+    gap: 1.125rem;
+    padding-block: 1.125rem;
+  }
+  .page[data-new-wholesale] .introduction h1 {
+    font-size: calc(
+      clamp(1.575rem, 6.75vw, 1.9125rem) + var(--locale-font-increment, 0px)
+    );
+  }
+  .page[data-new-wholesale]
+    :is(.introCopy, .sampleTitle, .flavour, .whyIntroduction p, .whyReason p) {
+    font-size: var(--mobile-type-body);
+  }
+  .page[data-new-wholesale] .samples {
+    padding-block: 0.675rem;
+  }
+  .page[data-new-wholesale] .sampleImage {
+    flex-basis: min(3.6rem, 58px);
+  }
+  .page[data-new-wholesale] .collection {
+    gap: 0.9rem;
+    padding-top: 0.9rem;
+  }
+  .page[data-new-wholesale] .product {
+    --card-inset: min(0.9rem, 14.4px);
+    padding-block: 0.9rem;
+  }
+  .page[data-new-wholesale] .visual {
+    margin-top: -0.9rem;
+    margin-bottom: 0.675rem;
+  }
+  .page[data-new-wholesale] .material {
+    height: clamp(9rem, 41.4vw, 10.8rem);
+    padding-block: 0.675rem 1.125rem;
+  }
+  .page[data-new-wholesale] .identity h3 {
+    font-size: calc(1.0125rem + var(--locale-font-increment, 0px));
+  }
+  .page[data-new-wholesale] .purchaseRegion {
+    padding-top: 0.675rem;
+  }
+  .page[data-new-wholesale] .why {
+    margin-top: 2.7rem;
+    padding-top: 1.8rem;
+  }
+  .page[data-new-wholesale] .whyIntroduction h2 {
+    font-size: var(--mobile-type-title);
+  }
+  .page[data-new-wholesale] .whyReason h3 {
+    font-size: var(--mobile-type-heading);
+  }
+  .page[data-new-wholesale] .whyReasons {
+    gap: 1.575rem;
+    margin-block: 1.8rem;
+  }
+  .page[data-new-wholesale] .whyReason {
+    padding-top: 1.125rem;
+  }
+  .page[data-new-wholesale] .whyAction {
+    font-size: var(--canonical-mobile-action);
+  }
+  .page[data-new-wholesale] .search input {
+    font-size: var(--mobile-type-input);
+  }
+}

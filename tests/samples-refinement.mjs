@@ -24,12 +24,45 @@ const browser = await chromium.launch({ channel: "chrome", headless: true });
 const results = [];
 await mkdir(evidence, { recursive: true });
 
-const purchase = (page) => page.locator("[data-sample-purchase]");
-const quantity = (page) => purchase(page).locator("output").first();
+const purchase = (page) => page.locator("[data-sample-purchase]:visible");
+const quantity = (page) =>
+  purchase(page).locator('output[aria-label="Set quantity"]');
 const add = (page) => purchase(page).locator("button[data-available]");
 const tools = (page) => page.locator("[data-sample-tasting-tools]");
-const unitPrice = (page) => purchase(page).locator("[data-sample-unit-price]");
-const total = (page) => purchase(page).locator("[data-sample-total]");
+const orderPrice = (page) => purchase(page).locator("[data-sample-price]");
+
+function sampleCatalog(priceMinor, currency) {
+  return {
+    status: "ready",
+    shopUrl: "https://example.invalid",
+    products: [
+      {
+        id: "sample-set",
+        handle: SAMPLE_SET_OFFER.productHandle,
+        title: "Sample Set",
+        productCode: null,
+        description: "Isolated sample currency fixture.",
+        imageUrl: null,
+        imageAlt: "",
+        productUrl: null,
+        isFixture: true,
+        variants: [
+          {
+            id: `v1_${"s".repeat(43)}`,
+            title: "3 × 20 g",
+            available: true,
+            options: SAMPLE_SET_OFFER.variants[0].options,
+            priceMinor,
+            currency,
+            minimum: 1,
+            maximum: 4,
+            increment: 1,
+          },
+        ],
+      },
+    ],
+  };
+}
 
 async function eventually(check, message) {
   const deadline = Date.now() + 15000;
@@ -53,12 +86,13 @@ async function ready(page) {
 async function visiblyRendered(locator) {
   if (!(await locator.count())) return false;
   return locator.evaluate((node) => {
-    if (!node.checkVisibility()) return false;
-    for (let parent = node; parent; parent = parent.parentElement) {
-      const box = parent.getBoundingClientRect();
-      if (box.width <= 1 || box.height <= 1) return false;
-    }
-    return true;
+    if (!node.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }))
+      return false;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    return [...range.getClientRects()].some(
+      (box) => box.width > 1 && box.height > 1,
+    );
   });
 }
 
@@ -124,9 +158,22 @@ async function inspectPage(page, locale = "en") {
     );
     assert.ok(
       await credit.evaluate(
-        (node) => parseFloat(getComputedStyle(node).fontSize) >= 16,
+        (node) => parseFloat(getComputedStyle(node).fontSize) >= 15,
       ),
+      "The visible credit retains the mobile 15px prose floor",
     );
+    for (const field of await tools(page)
+      .locator(
+        'input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):visible, textarea:visible, select:visible',
+      )
+      .all()) {
+      assert.ok(
+        await field.evaluate(
+          (node) => parseFloat(getComputedStyle(node).fontSize) >= 16,
+        ),
+        "Editable tasting fields retain 16px type to avoid mobile input zoom",
+      );
+    }
   }
   assert.equal(await page.locator("#samples-contents").count(), 1);
   for (const item of SAMPLE_SET_CONTENTS) {
@@ -139,29 +186,72 @@ async function inspectPage(page, locale = "en") {
   await fit(page);
 }
 
+async function inspectSinglePrice(page, amount, currency, count) {
+  const visibleAmounts = await purchase(page)
+    .locator("[data-sample-order]")
+    .evaluate((order) => {
+      const walker = document.createTreeWalker(order, NodeFilter.SHOW_TEXT);
+      const amounts = [];
+      for (let text = walker.nextNode(); text; text = walker.nextNode()) {
+        if (
+          !text.parentElement?.checkVisibility({
+            checkOpacity: true,
+            checkVisibilityCSS: true,
+          })
+        )
+          continue;
+        const range = document.createRange();
+        range.selectNodeContents(text);
+        if (![...range.getClientRects()].some((box) => box.width && box.height))
+          continue;
+        amounts.push(
+          ...(text.textContent.match(/(?:USD|SGD)\s*[\d,]+\.\d{2}|¥[\d,]+/gu) ??
+            []),
+        );
+      }
+      return amounts;
+    });
+  assert.deepEqual(
+    visibleAmounts,
+    [money(amount, currency)],
+    "Exactly one rendered order amount reflects the selected quantity",
+  );
+  assert.equal(await quantity(page).textContent(), `${count}`);
+  if (count === 1) {
+    const label = purchase(page).getByText("Per set", { exact: true });
+    assert.equal(await label.isVisible(), true);
+    assert.ok(
+      (await label.evaluate((node) =>
+        parseFloat(getComputedStyle(node).fontSize),
+      )) <
+        (await orderPrice(page).evaluate((node) =>
+          parseFloat(getComputedStyle(node).fontSize),
+        )),
+      "Per set is a smaller label beside the single-set price",
+    );
+  } else {
+    assert.equal(
+      await purchase(page).getByText("Per set", { exact: true }).count(),
+      0,
+      "A multi-set total is not mislabelled as a per-set price",
+    );
+    assert.equal(
+      await purchase(page).getByText("Total", { exact: true }).isVisible(),
+      true,
+    );
+  }
+}
+
 async function inspectPrice(page, amount, currency) {
-  assert.ok(
-    (await unitPrice(page).innerText()).includes(money(amount, currency)),
-  );
-  assert.equal(
-    await visiblyRendered(total(page)),
-    false,
-    "A one-set order shows its published price once",
-  );
-  assert.equal(await quantity(page).textContent(), "1");
+  await inspectSinglePrice(page, amount, currency, 1);
   await purchase(page)
     .getByRole("button", { name: "Increase quantity", exact: true })
     .click();
-  assert.equal(await quantity(page).textContent(), "2");
-  assert.equal(await visiblyRendered(total(page)), true);
-  assert.ok(
-    (await total(page).innerText()).includes(money(amount * 2, currency)),
-    "A multiple-set order shows its exact total in the published currency",
-  );
+  await inspectSinglePrice(page, amount * 2, currency, 2);
   await purchase(page)
     .getByRole("button", { name: "Decrease quantity", exact: true })
     .click();
-  assert.equal(await visiblyRendered(total(page)), false);
+  await inspectSinglePrice(page, amount, currency, 1);
 }
 
 async function screenshot(page, name) {
@@ -226,15 +316,6 @@ try {
           await page.setViewportSize({ width, height });
           await ready(page);
           await inspectPage(page);
-          assert.ok(
-            await unitPrice(page).evaluate(
-              (node) =>
-                parseFloat(
-                  getComputedStyle(node.previousElementSibling).fontSize,
-                ) < parseFloat(getComputedStyle(node).fontSize),
-            ),
-            "The Per set label is smaller than its price",
-          );
           await inspectPrice(page, 6000, "JPY");
           for (const control of await purchase(page)
             .locator("button:visible")
@@ -304,13 +385,11 @@ try {
           exact: true,
         })
         .click();
-      const priceBox = await unitPrice(page).boundingBox();
-      const totalBox = await total(page).boundingBox();
-      for (const box of [priceBox, totalBox])
-        assert.ok(
-          box.x >= -1 && box.x + box.width <= 321,
-          "Enlarged prices remain inside the viewport",
-        );
+      const priceBox = await orderPrice(page).boundingBox();
+      assert.ok(
+        priceBox.x >= -1 && priceBox.x + priceBox.width <= 321,
+        "The enlarged order price remains inside the viewport",
+      );
       await fit(page);
       await screenshot(page, label);
     });
@@ -318,36 +397,7 @@ try {
   await run("usd-price", 390, "light", "en", {}, async ({ page, context }) => {
     await context.route("**/api/catalog", (route) =>
       route.fulfill({
-        json: {
-          status: "ready",
-          shopUrl: "https://example.invalid",
-          products: [
-            {
-              id: "sample-set",
-              handle: SAMPLE_SET_OFFER.productHandle,
-              title: "Sample Set",
-              productCode: null,
-              description: "Isolated sample currency fixture.",
-              imageUrl: null,
-              imageAlt: "",
-              productUrl: null,
-              isFixture: true,
-              variants: [
-                {
-                  id: `v1_${"s".repeat(43)}`,
-                  title: "3 × 20 g",
-                  available: true,
-                  options: SAMPLE_SET_OFFER.variants[0].options,
-                  priceMinor: 3456,
-                  currency: "USD",
-                  minimum: 1,
-                  maximum: 4,
-                  increment: 1,
-                },
-              ],
-            },
-          ],
-        },
+        json: sampleCatalog(3456, "USD"),
       }),
     );
     await context.route("**/api/destination", (route) =>
@@ -365,6 +415,108 @@ try {
     await inspectPrice(page, 3456, "USD");
   });
 
+  for (const [surface, path] of [
+    ["page", "/samples"],
+    ["home", "/?view=samples"],
+  ]) {
+    for (const width of [390, 1440]) {
+      const label = `single-price-${surface}-${width}`;
+      await run(label, width, "light", "en", {}, async ({ page, context }) => {
+        let reviewRequired = false;
+        await context.route("**/api/catalog", (route) =>
+          route.fulfill({ json: sampleCatalog(2900, "USD") }),
+        );
+        await context.route("**/api/destination", (route) =>
+          route.fulfill({
+            json: {
+              kind: "ready",
+              preference: { countryCode: "US", source: "default" },
+              destination: { countryCode: "US", currency: "USD" },
+              countries: ["US"],
+              reviewRequired,
+            },
+          }),
+        );
+        await page.goto(`${baseURL}${path}`);
+        await eventually(
+          () => add(page).isEnabled(),
+          "The USD sample offer is ready",
+        );
+        await page.evaluate(() => document.fonts.ready);
+        assert.equal(
+          await page
+            .getByRole("button", { name: /Tap to see more|Inspect a label/u })
+            .count(),
+          0,
+          "Canonical sample buying has no repeated inspection prompt",
+        );
+        assert.equal(
+          await page.locator("[data-pouch]:visible").count(),
+          3,
+          "All three pouches retain their direct inspection interaction",
+        );
+        if (surface === "home" && width <= 760)
+          assert.equal(
+            await page
+              .locator('[data-new-hero7-view="samples"]')
+              .getByText("Three matcha · 20 g each", { exact: true })
+              .isVisible(),
+            false,
+            "The mobile entry does not repeat its set-size label",
+          );
+        const credit = purchase(page).locator("[data-sample-credit-summary]");
+        assert.equal(await visiblyRendered(credit), true);
+        for (const text of ["4,500", "1 kg", "email"])
+          assert.ok(
+            (await credit.innerText()).includes(text),
+            "Both buying entrances show the credit and its key terms before disclosure",
+          );
+        for (const count of [1, 2]) {
+          if (count === 2)
+            await purchase(page)
+              .getByRole("button", { name: "Increase quantity", exact: true })
+              .click();
+          await inspectSinglePrice(page, 2900 * count, "USD", count);
+          for (const review of [true, false]) {
+            reviewRequired = review;
+            await page
+              .getByRole("button", { name: /^Open cart,/u })
+              .first()
+              .click();
+            await eventually(
+              async () => (await add(page).isDisabled()) === review,
+              "A read-only cart refresh reconciles destination confirmation",
+            );
+            const closeCart = page.getByRole("button", {
+              name: "Close cart",
+              exact: true,
+            });
+            await closeCart.click();
+            await closeCart.waitFor({ state: "hidden" });
+            await inspectSinglePrice(page, 2900 * count, "USD", count);
+            assert.equal(await add(page).isDisabled(), review);
+            if (review && surface === "home")
+              assert.equal(
+                await page
+                  .locator("[data-new-hero7-sample-purchase]")
+                  .getByRole("button", { name: "Confirm country", exact: true })
+                  .isVisible(),
+                true,
+                "The reproduced confirmation state keeps one accurate price",
+              );
+            if (review) {
+              await purchase(page).scrollIntoViewIfNeeded();
+              await page.screenshot({
+                path: `${evidence}/${label}-quantity-${count}-review.png`,
+                animations: "disabled",
+              });
+            }
+          }
+        }
+      });
+    }
+  }
+
   await run("unavailable", 320, "dark", "en", {}, async ({ page, context }) => {
     await context.route("**/api/catalog", (route) =>
       route.fulfill({
@@ -378,7 +530,7 @@ try {
     await page.goto(`${baseURL}/samples`);
     await page.locator("[data-sample-unavailable]").waitFor();
     assert.equal(await page.locator("[data-sample-order]").count(), 0);
-    assert.equal(await unitPrice(page).count(), 0);
+    assert.equal(await orderPrice(page).count(), 0);
     await inspectPage(page);
     await screenshot(page, "unavailable");
   });

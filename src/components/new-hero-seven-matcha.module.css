@@ -755,3 +755,41 @@
     display: none;
   }
 }
+
+@media (max-width: 760px) {
+  :global([data-homepage]) .directory .introduction {
+    gap: 0.9rem;
+    margin-bottom: 1.35rem;
+  }
+  :global([data-homepage]) .directory .introduction h1 {
+    font-size: calc(1.575rem + var(--locale-font-increment, 0px));
+  }
+  :global([data-homepage])
+    .directory
+    :is(.description, .directoryIdentity h3, .usage) {
+    font-size: var(--mobile-type-body);
+  }
+  :global([data-homepage]) .directory .sampleInvitation,
+  :global([data-homepage]) .directory .learnMore {
+    font-size: var(--canonical-mobile-action);
+  }
+  :global([data-homepage]) .directory .directoryHeading h2 {
+    font-size: var(--mobile-type-section);
+  }
+  :global([data-homepage]) .directory .applications a {
+    padding-block: 1.125rem;
+  }
+  :global([data-homepage])
+    .directory
+    .cardImage
+    :global([data-product-application-image])
+    > div {
+    height: clamp(10.8rem, 45vw, 16.2rem);
+  }
+  :global([data-homepage]) .directory .cardBody {
+    padding-top: 0.9rem;
+  }
+  :global([data-homepage]) .directory .learnMore {
+    min-height: 44px;
+  }
+}

@@ -64,6 +64,9 @@
   clip-path: inset(50%);
 }
 @media (max-width: 760px) {
+  .select {
+    font-size: var(--canonical-mobile-input, inherit);
+  }
   .root[data-compact] {
     gap: 0.375rem;
   }

@@ -102,7 +102,7 @@ export function NewHeroSevenMatcha({
     },
   } as const;
 
-  // The mobile hero opens this same product reader. Capture its actual link
+  // The mobile hero and directory open this same reader. Capture the actual link
   // before React updates the URL; tapping a link does not always focus it.
   useLayoutEffect(() => {
     if (!homeSection || !mobileDialogOnly || !active) return;
@@ -119,7 +119,9 @@ export function NewHeroSevenMatcha({
         return;
       const link =
         event.target instanceof Element
-          ? event.target.closest<HTMLAnchorElement>("a[data-mobile-hero-learn]")
+          ? event.target.closest<HTMLAnchorElement>(
+              "a[data-mobile-hero-learn], a[data-mobile-home-learn]",
+            )
           : null;
       if (!link || (link.target && link.target !== "_self")) return;
       const destination = heroSevenDestination(

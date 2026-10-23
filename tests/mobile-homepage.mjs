@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { oneKilogramProductUrl } from "../src/lib/sample-journey.ts";
 import { SAMPLE_SET_CONTENTS } from "../src/lib/sample-set.ts";
 import { createHeroStudyFixture } from "./hero-cx-fixtures.mjs";
 
@@ -33,6 +34,10 @@ async function ready(page, path = "/") {
 
 const application = (page, key) =>
   page.locator(`[data-mobile-hero-learn="${key}"]`);
+const section = (page, key) =>
+  page.locator(`[data-mobile-home-section="${key}"]`);
+const sectionApplication = (page, key) =>
+  page.locator(`[data-mobile-home-learn="${key}"]`);
 const popup = (page) => page.locator("[data-new-hero7-home-product-dialog]");
 const close = (page) => page.locator("[data-new-hero7-home-product-close]");
 const product = (page, key) =>
@@ -71,27 +76,46 @@ async function inspectPhone(page, label, firstViewport = false) {
   );
   assert.equal(
     await page.locator("[data-mobile-home-hero] p:not([role=status])").count(),
-    1,
-    `${label}: one concise introduction accompanies the hero`,
+    2,
+    `${label}: the audience and concise introduction accompany the hero`,
+  );
+  const audience = page.locator("[data-mobile-hero-audience]");
+  assert.equal(await audience.isVisible(), true);
+  assert.ok(
+    await audience.evaluate(
+      (node) => parseFloat(getComputedStyle(node).fontSize) >= 12,
+    ),
+    `${label}: the audience label retains its 12px reading floor`,
   );
   const introduction = page.locator("[data-mobile-home-hero] h1 + p");
   assert.equal(await introduction.isVisible(), true);
   assert.ok((await introduction.textContent()).trim().length > 0);
   assert.ok(
     await introduction.evaluate(
-      (node) => parseFloat(getComputedStyle(node).fontSize) >= 16,
+      (node) => parseFloat(getComputedStyle(node).fontSize) >= 15,
     ),
     `${label}: the restored introduction remains readable`,
   );
-  if ((await page.locator("html").getAttribute("lang"))?.startsWith("en"))
+  if ((await page.locator("html").getAttribute("lang"))?.startsWith("en")) {
     assert.equal(
       await introduction.textContent(),
       "Authentic Japanese matcha selected for tea service, lattes and recipes.",
     );
+    assert.equal(
+      (await audience.textContent()).replace("◇", "").trim(),
+      "For cafés, kitchens & food businesses",
+    );
+  }
   for (const item of SAMPLE_SET_CONTENTS) {
     const learn = application(page, item.key);
     const code = learn.getByText(`◇ ${item.productCode}`, { exact: true });
     assert.equal(await code.isVisible(), true);
+    assert.ok(
+      await code.evaluate(
+        (node) => parseFloat(getComputedStyle(node).fontSize) >= 12,
+      ),
+      `${label}: ${item.productCode} retains its 12px reading floor`,
+    );
     assert.ok(
       (await learn.getAttribute("aria-label")).includes(item.productCode),
     );
@@ -111,8 +135,8 @@ async function inspectPhone(page, label, firstViewport = false) {
       .evaluateAll((nodes) =>
         nodes.map((node) => node.getAttribute("data-mobile-home-section")),
       ),
-    ["origin"],
-    `${label}: one concise Origins feature follows the hero`,
+    ["samples", "applications", "origin", "supply"],
+    `${label}: mobile includes the complete desktop shopping journey`,
   );
   const geometry = await page.evaluate(() => {
     const hero = document.querySelector("[data-mobile-home-hero]");
@@ -127,6 +151,7 @@ async function inspectPhone(page, label, firstViewport = false) {
       ),
       scrollWidth: document.documentElement.scrollWidth,
       hero: rect(hero),
+      audience: rect(hero.querySelector("[data-mobile-hero-audience]")),
       heading: rect(hero.querySelector("h1")),
       description: rect(hero.querySelector("h1 + p")),
       preview: rect(hero.querySelector("[data-mobile-hero-preview]")),
@@ -150,12 +175,37 @@ async function inspectPhone(page, label, firstViewport = false) {
   });
   assert.ok(
     geometry.scrollWidth <= page.viewportSize().width + 1,
-    `${label}: no horizontal overflow`,
+    `${label}: no horizontal overflow (${geometry.scrollWidth}px content / ${page.viewportSize().width}px viewport)`,
   );
+  assert.ok(
+    geometry.heading.y >= geometry.audience.bottom - 1,
+    `${label}: the audience has its own space above the heading`,
+  );
+  for (const key of ["samples", "applications", "origin", "supply"]) {
+    const mobileSection = section(page, key);
+    const bounds = await mobileSection.boundingBox();
+    assert.ok(
+      bounds.x >= -1 && bounds.x + bounds.width <= geometry.viewport.width + 1,
+      `${label}: the ${key} section fits the phone`,
+    );
+    assert.equal(await mobileSection.locator("h2:visible").count(), 1);
+    for (const action of await mobileSection.locator("a, button").all()) {
+      const target = await action.boundingBox();
+      assert.ok(
+        target.width >= 44 && target.height >= 44,
+        `${label}: ${key} has comfortable touch targets`,
+      );
+      assert.ok(
+        target.x >= -1 &&
+          target.x + target.width <= geometry.viewport.width + 1,
+        `${label}: ${key} actions fit the phone`,
+      );
+    }
+  }
   if (firstViewport) {
     assert.ok(
-      geometry.hero.bottom >= geometry.viewport.height - 1,
-      `${label}: the hero fills the available first viewport beneath navigation`,
+      geometry.hero.bottom - geometry.secondary.bottom >= 23,
+      `${label}: the hero contains both actions with at least 24px of bottom space`,
     );
     assert.ok(
       geometry.primary.bottom <= geometry.viewport.height + 1,
@@ -183,7 +233,7 @@ async function inspectPhone(page, label, firstViewport = false) {
   );
   for (const item of geometry.applications) {
     assert.ok(
-      item.image.width >= 96 && item.image.height >= 56,
+      item.image.width >= 86 && item.image.height >= 50,
       `${label}: ${item.key} has a substantial visible object`,
     );
     assert.ok(
@@ -222,6 +272,7 @@ async function inspectPhone(page, label, firstViewport = false) {
   }
   const gaps = {
     headingFromHero: geometry.heading.y - geometry.hero.y,
+    introductionFromHero: geometry.audience.y - geometry.hero.y,
     introToFirstImage:
       Math.min(...geometry.applications.map((item) => item.image.y)) -
       geometry.description.bottom,
@@ -232,7 +283,11 @@ async function inspectPhone(page, label, firstViewport = false) {
   if (geometry.rootFontSize <= 16) {
     assert.ok(
       gaps.headingFromHero >= 24 && gaps.headingFromHero <= 64,
-      `${label}: the introduction starts close to navigation with a bounded top gap`,
+      `${label}: the introduction starts close to navigation with a bounded top gap (${gaps.headingFromHero}px)`,
+    );
+    assert.ok(
+      gaps.introductionFromHero >= 0 && gaps.introductionFromHero <= 32,
+      `${label}: the audience fits the reserved space above the heading`,
     );
     if (geometry.viewport.height < 800)
       assert.ok(
@@ -288,6 +343,172 @@ async function run(label, width, tone, locale, options, callback) {
 }
 
 try {
+  await run(
+    "mobile-desktop-content-parity",
+    390,
+    "light",
+    "en",
+    {},
+    async ({ page }) => {
+      await ready(page);
+      await inspectPhone(page, "390-light-complete-journey", true);
+      const initialURL = page.url();
+      const retainedHome = await page
+        .locator("[data-mobile-home-sections]")
+        .elementHandle();
+      const samples = section(page, "samples");
+      assert.equal(await samples.locator("ul li").count(), 3);
+      assert.equal(
+        await samples
+          .getByText("Three matcha · 20 g each", { exact: true })
+          .count(),
+        0,
+        "The mobile Sample Set lists each content once without a repeated summary",
+      );
+      assert.equal(
+        await page.locator("[data-mobile-home-sample-credit]").textContent(),
+        "¥4,500 credit toward your first eligible wholesale order of 1 kg or more.",
+        "The Sample Set credit is visible beside its mobile action",
+      );
+      assert.ok(
+        await page
+          .locator("[data-mobile-home-sample-credit]")
+          .evaluate(
+            (node) => parseFloat(getComputedStyle(node).fontSize) >= 15,
+          ),
+        "The visible credit retains the mobile 15px prose floor",
+      );
+      assert.equal(
+        await samples.locator("details").count(),
+        0,
+        "Sample contents and credit do not require opening details",
+      );
+      for (const [index, item] of SAMPLE_SET_CONTENTS.entries()) {
+        const included = samples
+          .locator("ul li")
+          .filter({ hasText: item.name });
+        assert.equal(await included.count(), 1);
+        assert.equal(
+          await included.getByText(`${item.grams} g`, { exact: true }).count(),
+          1,
+          "Each included matcha shows its exact 20 g quantity",
+        );
+        const learn = sectionApplication(page, item.key);
+        assert.equal(
+          await learn.getByText(item.name, { exact: true }).count(),
+          1,
+        );
+        assert.equal(
+          await learn
+            .getByText(`◇ ${item.productCode}`, { exact: true })
+            .count(),
+          1,
+        );
+        assert.equal(await learn.getAttribute("aria-haspopup"), "dialog");
+        assert.equal(
+          await learn.getAttribute("href"),
+          `/?application=${item.key}`,
+        );
+        const reorder = page.locator(
+          `[data-mobile-home-reorder="${item.key}"]`,
+        );
+        assert.equal(
+          await reorder.getAttribute("href"),
+          oneKilogramProductUrl(item.productHandle),
+          "Each mobile reorder action retains the exact named 1 kg destination",
+        );
+        assert.equal(
+          await reorder.getByText(item.name, { exact: true }).count(),
+          1,
+        );
+        assert.equal(
+          await reorder
+            .getByText(`◇ ${item.productCode}`, { exact: true })
+            .count(),
+          1,
+        );
+        assert.match(await reorder.textContent(), /1 kg/u);
+
+        await learn.scrollIntoViewIfNeeded();
+        const entryScroll = await page.evaluate(() => scrollY);
+        assert.ok(
+          entryScroll > 0,
+          "Lower product learning begins below the hero",
+        );
+        await learn.tap();
+        await popup(page).waitFor({ state: "visible" });
+        assert.equal(
+          new URL(page.url()).searchParams.get("application"),
+          item.key,
+        );
+        assert.equal(await product(page, item.key).count(), 1);
+        assert.equal(await page.evaluate(() => scrollY), entryScroll);
+        for (let count = 0; count <= index; count++)
+          await product(page, item.key)
+            .getByRole("button", { name: "Increase quantity", exact: true })
+            .click();
+        assert.equal(
+          await quantity(page, item.key).textContent(),
+          `${index + 2}`,
+        );
+        if (index === 0) await close(page).tap();
+        else if (index === 1) await page.keyboard.press("Escape");
+        else await page.goBack();
+        await popup(page).waitFor({ state: "hidden" });
+        assert.equal(page.url(), initialURL);
+        assert.equal(await page.evaluate(() => scrollY), entryScroll);
+        assert.equal(
+          await learn.evaluate((node) => node === document.activeElement),
+          true,
+          "Product dismissal restores the exact lower mobile trigger",
+        );
+      }
+
+      const sampleAction = page.locator("[data-mobile-home-samples]");
+      assert.equal(await sampleAction.getAttribute("href"), "/?view=samples");
+      await sampleAction.scrollIntoViewIfNeeded();
+      const sampleScroll = await page.evaluate(() => scrollY);
+      await sampleAction.tap();
+      await page.waitForFunction(
+        () =>
+          document
+            .querySelector("[data-homepage]")
+            ?.getAttribute("data-active-view") === "samples",
+      );
+      assert.equal(new URL(page.url()).searchParams.get("view"), "samples");
+      assert.equal(
+        await retainedHome.evaluate((node) => node.isConnected),
+        true,
+      );
+      await page.goBack();
+      await samples.waitFor({ state: "visible" });
+      assert.equal(page.url(), initialURL);
+      assert.ok(
+        Math.abs((await page.evaluate(() => scrollY)) - sampleScroll) < 2,
+        "Back from the Sample Set restores the lower homepage scroll",
+      );
+      for (const [index, item] of SAMPLE_SET_CONTENTS.entries()) {
+        const learn = sectionApplication(page, item.key);
+        await learn.scrollIntoViewIfNeeded();
+        const entryScroll = await page.evaluate(() => scrollY);
+        await learn.tap();
+        await popup(page).waitFor({ state: "visible" });
+        assert.equal(
+          await quantity(page, item.key).textContent(),
+          `${index + 2}`,
+          "Each exact order survives lower-page learning and Sample Set navigation",
+        );
+        await close(page).tap();
+        await popup(page).waitFor({ state: "hidden" });
+        assert.equal(await page.evaluate(() => scrollY), entryScroll);
+        assert.equal(
+          await learn.evaluate((node) => node === document.activeElement),
+          true,
+        );
+      }
+    },
+  );
+
   await run(
     "explore-application-navigation",
     390,
@@ -356,6 +577,17 @@ try {
         busyURL,
         "The restored action cannot interrupt pending commerce",
       );
+      for (const action of await page
+        .locator("[data-mobile-home-sections] a")
+        .all()) {
+        assert.equal(await action.getAttribute("aria-disabled"), "true");
+        await action.evaluate((node) => node.click());
+        assert.equal(
+          page.url(),
+          busyURL,
+          "Mobile section actions cannot interrupt pending commerce",
+        );
+      }
       fixture.releaseMutation();
       await page.waitForFunction(
         () =>
@@ -549,9 +781,43 @@ try {
     },
   );
 
+  for (const [width, height, tone] of [
+    [440, 780, "dark"],
+    [390, 700, "light"],
+    [375, 667, "dark"],
+  ]) {
+    const label = `browser-chrome-${width}x${height}-${tone}`;
+    await run(label, width, tone, "en", {}, async ({ page }) => {
+      await page.setViewportSize({ width, height });
+      await ready(page);
+      await inspectPhone(page, label, true);
+      const secondary = await page
+        .locator("[data-mobile-hero-explore]")
+        .boundingBox();
+      const clearance = height - secondary.y - secondary.height;
+      assert.ok(
+        clearance >= 23,
+        `${label}: both actions leave at least 24px below the hero controls (${clearance}px)`,
+      );
+      for (const action of await page
+        .locator("[data-mobile-home-hero] a")
+        .all()) {
+        assert.ok(
+          await action.evaluate(
+            (node) => parseFloat(getComputedStyle(node).fontSize) >= 15,
+          ),
+          `${label}: application labels and both actions retain readable 15px text`,
+        );
+      }
+      await page.screenshot({ path: `${evidence}/${label}-viewport.png` });
+    });
+  }
+
   for (const [width, height, tone, locale] of [
     [320, 568, "dark", "en"],
+    [320, 568, "light", "en"],
     [430, 932, "light", "ja"],
+    [430, 932, "dark", "en"],
     [440, 956, "light", "en"],
   ]) {
     await run(

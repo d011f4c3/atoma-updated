@@ -171,6 +171,31 @@
   color: var(--muted);
   font-size: 0.875rem;
 }
+.unitPrice .desktopUnitPrice,
+.unitPrice .mobileOrderPrice {
+  color: inherit;
+  font-size: inherit;
+}
+.mobileOrderPrice,
+.mobileFormat,
+.mobileImageToggle,
+.learningToggle {
+  display: none;
+}
+.optionsIndicator::after {
+  content: "+";
+}
+.purchaseOptions[open] .optionsIndicator::after {
+  content: "−";
+}
+.purchaseOptions:not([open]) > :not(summary) {
+  display: none;
+}
+.oneTimeNote {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
 .formats {
   min-width: 0;
   margin: 1rem 0 0;
@@ -585,5 +610,97 @@
   .page *::after {
     scroll-behavior: auto;
     transition: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .page[data-retail-product] {
+    font-size: var(--mobile-type-body);
+  }
+  .page[data-retail-product] .desktopUnitPrice,
+  .page[data-retail-product] .desktopFormat,
+  .page[data-retail-product] .total,
+  .page[data-retail-product] .imageControls {
+    display: none;
+  }
+  .page[data-retail-product] .mobileOrderPrice,
+  .page[data-retail-product] .mobileFormat {
+    display: inline;
+  }
+  .page[data-retail-product] .mobileImageToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    width: 100%;
+    padding: 0.25rem 0;
+    border: 0;
+    border-radius: var(--radius-button);
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: var(--mobile-type-label);
+    cursor: pointer;
+  }
+  .page[data-retail-product] .learningToggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    min-height: 48px;
+    padding: 0.625rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .page[data-retail-product] .learning:not([data-learning-open]) .learningBody {
+    display: none;
+  }
+  .page[data-retail-product] .learningBody {
+    padding-top: 1rem;
+  }
+  .page[data-retail-product] .productLayout {
+    grid-template-columns: 86px minmax(0, 1fr);
+    gap: 0.9rem;
+    padding-block: 0.9rem 1.8rem;
+  }
+  .page[data-retail-product] .identity h1 {
+    font-size: calc(
+      clamp(1.125rem, 4.95vw, 1.35rem) + var(--locale-font-increment, 0px)
+    );
+  }
+  .page[data-retail-product]
+    :is(.application, .quantityNote, .compare, .related h2) {
+    font-size: var(--mobile-type-body);
+  }
+  .page[data-retail-product] .galleryImage {
+    height: 95px;
+  }
+  .page[data-retail-product] .unitPrice {
+    font-size: var(--mobile-type-section);
+  }
+  .page[data-retail-product] .total strong {
+    font-size: calc(1.0125rem + var(--locale-font-increment, 0px));
+  }
+  .page[data-retail-product] :is(.formats button, .stepper output) {
+    font-size: var(--canonical-mobile-action);
+  }
+  .page[data-retail-product] .purchaseControls > button {
+    min-height: 3.15rem;
+    font-size: var(--mobile-type-action);
+  }
+  .page[data-retail-product] .orderLine {
+    margin-block: 0.7875rem;
+  }
+  .page[data-retail-product] .related {
+    padding-block: 1.8rem;
+  }
+  .page[data-retail-product] .relatedGrid {
+    gap: 0.675rem;
   }
 }

@@ -569,3 +569,47 @@
     padding: 12px 16px;
   }
 }
+
+@media (max-width: 760px) {
+  :global([data-homepage])
+    .dialog
+    :is(
+      .name,
+      .description,
+      .properties dd,
+      .preparation h3,
+      .preparation p,
+      .preparation li
+    ) {
+    font-size: var(--mobile-type-body);
+  }
+  :global([data-homepage])
+    .dialog
+    :is(.back, .read, .preparation summary, .order, .productLink) {
+    font-size: var(--canonical-mobile-action);
+  }
+  :global([data-homepage]) .choice {
+    min-height: 4.5rem;
+    padding-block: 0.7875rem;
+  }
+  :global([data-homepage]) .choice .name {
+    font-size: var(--mobile-type-body);
+  }
+  :global([data-homepage]) .choice .read {
+    font-size: var(--canonical-mobile-action);
+  }
+  :global([data-homepage]) .profileIdentity h2 {
+    font-size: var(--mobile-type-section);
+  }
+  :global([data-homepage]) .reader {
+    gap: 0.9rem;
+    padding: 0.9rem;
+  }
+  :global([data-homepage]) .profileImage {
+    width: min(100%, 10.8rem);
+    height: 8.1rem;
+  }
+  :global([data-homepage]) .actions {
+    padding: 0.675rem 0.9rem;
+  }
+}

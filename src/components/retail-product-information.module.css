@@ -324,3 +324,24 @@
     transition: none;
   }
 }
+
+@media (max-width: 760px) {
+  :global([data-retail-product]) .root,
+  :global([data-retail-product])
+    :is(.propertyValue, .explanation, .prose h3, .entryDescription) {
+    font-size: var(--mobile-type-body);
+  }
+  :global([data-retail-product]) :is(.tabs button, .action) {
+    font-size: var(--canonical-mobile-action);
+  }
+  :global([data-retail-product]) .property {
+    min-height: 4.05rem;
+  }
+  :global([data-retail-product]) .explanation,
+  :global([data-retail-product]) .panel {
+    padding-top: 0.9rem;
+  }
+  :global([data-retail-product]) .prose .placeName {
+    font-size: var(--mobile-type-section);
+  }
+}

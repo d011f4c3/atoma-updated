@@ -24,6 +24,7 @@ import styles from "./new-hero-seven-details.module.css";
 export function NewHeroSevenSamples() {
   const { t } = useStorefrontLocale();
   const navigation = useHeroSevenNavigation();
+  const canonical = navigation?.basePath === "/";
   const page = useRef<HTMLDivElement>(null);
   usePageReveals(page, !navigation || navigation.state.view === "samples");
   const {
@@ -33,7 +34,7 @@ export function NewHeroSevenSamples() {
     openCart,
   } = useCart();
   const samplePurchase = useSampleSetPurchase(
-    navigation?.basePath === "/" ? "homepage" : "new-hero7",
+    canonical ? "homepage" : "new-hero7",
   );
   const [reading, setReading] = useState<ProductKey | null>(null);
   const [contentsOpen, setContentsOpen] = useState(false);
@@ -97,7 +98,11 @@ export function NewHeroSevenSamples() {
 
       <div className={styles.sampleLayout}>
         <div className={styles.sampleVisual}>
-          <SampleFoilTrio contained disabled={navigationBusy} />
+          <SampleFoilTrio
+            contained
+            disabled={navigationBusy}
+            showInspectionPrompt={!canonical}
+          />
         </div>
         <div
           className={styles.sampleContents}
@@ -168,7 +173,8 @@ export function NewHeroSevenSamples() {
           <SampleSetPurchase
             purchase={samplePurchase}
             presentation="entry"
-            showValueNote={false}
+            canonical={canonical}
+            showValueNote={canonical}
             headingId="hero7-sample-order"
             className={styles.samplePurchase}
           />

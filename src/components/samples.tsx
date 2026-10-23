@@ -90,6 +90,7 @@ export function SampleSetPurchase({
   className,
   titleTreatment,
   presentation = "panel",
+  canonical = false,
   showValueNote = true,
   disabled = false,
   headingId = "samples-purchase",
@@ -98,6 +99,7 @@ export function SampleSetPurchase({
   className?: string;
   titleTreatment?: SampleTitleTreatment;
   presentation?: "panel" | "page" | "entry" | "study";
+  canonical?: boolean;
   showValueNote?: boolean;
   disabled?: boolean;
   headingId?: string;
@@ -155,6 +157,7 @@ export function SampleSetPurchase({
       className={[styles.purchase, className].filter(Boolean).join(" ")}
       data-sample-purchase
       data-presentation={presentation}
+      data-canonical-sample-purchase={canonical || undefined}
       aria-labelledby={headingId}
     >
       {presentation === "entry" || presentation === "study" ? (
@@ -183,7 +186,7 @@ export function SampleSetPurchase({
         </>
       )}
       {showValueNote &&
-        (presentation === "page" ? (
+        (canonical || presentation === "page" ? (
           <div className={styles.creditSummary} data-sample-credit-summary>
             <p className={styles.creditHeading}>
               {t("Taste first. Put ¥4,500 toward your first wholesale order.")}
@@ -298,15 +301,37 @@ export function SampleSetPurchase({
         >
           <div className={styles.price}>
             {presentation !== "panel" && (
-              <span className={styles.eyebrow}>{t("Per set")}</span>
+              <span className={styles.eyebrow}>
+                {t(canonical && model.quantity > 1 ? "Total" : "Per set")}
+              </span>
             )}
-            <span data-sample-unit-price>
-              {model.refreshing
-                ? t("Updating prices…")
-                : variant
-                  ? money(variant.priceMinor, variant.currency)
-                  : "—"}
-            </span>
+            {canonical ? (
+              <output
+                data-sample-price
+                aria-label={t(
+                  model.quantity > 1 ? "Sample set total" : "Per set",
+                )}
+                aria-live="polite"
+              >
+                {model.refreshing
+                  ? t("Updating prices…")
+                  : variant &&
+                      Number.isSafeInteger(variant.priceMinor * model.quantity)
+                    ? money(
+                        variant.priceMinor * model.quantity,
+                        variant.currency,
+                      )
+                    : "—"}
+              </output>
+            ) : (
+              <span data-sample-unit-price>
+                {model.refreshing
+                  ? t("Updating prices…")
+                  : variant
+                    ? money(variant.priceMinor, variant.currency)
+                    : "—"}
+              </span>
+            )}
           </div>
           {offer.variants.length > 1 || !variant ? (
             <label className={styles.format}>
@@ -362,15 +387,20 @@ export function SampleSetPurchase({
                 </button>
               </div>
             </div>
-            <div className={styles.total} data-sample-total>
-              <span>{t("Total")}</span>
-              <output aria-label={t("Sample set total")} aria-live="polite">
-                {variant &&
-                Number.isSafeInteger(variant.priceMinor * model.quantity)
-                  ? money(variant.priceMinor * model.quantity, variant.currency)
-                  : "—"}
-              </output>
-            </div>
+            {!canonical && (
+              <div className={styles.total} data-sample-total>
+                <span>{t("Total")}</span>
+                <output aria-label={t("Sample set total")} aria-live="polite">
+                  {variant &&
+                  Number.isSafeInteger(variant.priceMinor * model.quantity)
+                    ? money(
+                        variant.priceMinor * model.quantity,
+                        variant.currency,
+                      )
+                    : "—"}
+                </output>
+              </div>
+            )}
           </div>
           {variant && (variant.minimum > 1 || variant.increment > 1) && (
             <p className={styles.detail}>
@@ -504,7 +534,11 @@ export function Samples() {
                 <span>3 × 20 g</span>
                 <span>{t("60 g total")}</span>
               </div>
-              <SampleSetPurchase purchase={purchase} presentation="page" />
+              <SampleSetPurchase
+                purchase={purchase}
+                presentation="page"
+                canonical
+              />
             </aside>
           </section>
         </div>

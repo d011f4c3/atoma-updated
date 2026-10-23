@@ -379,6 +379,10 @@ async function capture(fixture, name) {
 async function checkQuantity(fixture, quantity) {
   const { page, t, sample } = fixture;
   const purchase = purchaseFor(page);
+  const canonicalPrice = purchase.locator("[data-sample-price]");
+  const amount = (await canonicalPrice.count())
+    ? canonicalPrice
+    : purchase.getByLabel(t("Sample set total"), { exact: true });
   assert.equal(
     (
       await purchase
@@ -388,11 +392,7 @@ async function checkQuantity(fixture, quantity) {
     String(quantity),
   );
   assert.equal(
-    (
-      await purchase
-        .getByLabel(t("Sample set total"), { exact: true })
-        .textContent()
-    ).trim(),
+    (await amount.textContent()).trim(),
     money(
       sample.variants[0].priceMinor * quantity,
       sample.variants[0].currency,

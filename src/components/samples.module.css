@@ -401,6 +401,28 @@
 .purchase[data-presentation="page"] .order[data-single-quantity] .total {
   display: none;
 }
+.purchase[data-canonical-sample-purchase] .price {
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+.purchase[data-canonical-sample-purchase] .price .eyebrow {
+  order: 1;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  text-transform: none;
+  letter-spacing: 0;
+}
+.purchase[data-canonical-sample-purchase] .price > output {
+  font: inherit;
+}
+.purchase[data-canonical-sample-purchase] .order .orderLine .quantity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 1rem;
+  margin-left: 0;
+}
 .creditSummary {
   margin-top: 1rem;
 }
@@ -804,5 +826,47 @@
     display: inline-flex;
     min-height: 2.75rem;
     align-items: center;
+  }
+}
+
+@media (max-width: 760px) {
+  .purchase[data-canonical-sample-purchase] .creditSummary {
+    margin-top: 0;
+  }
+  .page[data-samples-page] .setLayout {
+    row-gap: 0.9rem;
+    padding-block: 1.125rem 2.7rem;
+  }
+  .page[data-samples-page] .setVisual {
+    width: 90%;
+    margin-inline: auto;
+  }
+  .page[data-samples-page]
+    .setVisual
+    :global([data-foil-trio])
+    > div:first-child {
+    height: clamp(11.7rem, 52.2vw, 20.7rem);
+  }
+  .page[data-samples-page] .setDescription {
+    margin-top: 0.675rem;
+    line-height: 1.65;
+  }
+  .page[data-samples-page] .purchase[data-presentation="page"] {
+    padding-top: 0.9rem;
+  }
+  .page[data-samples-page] .purchase[data-presentation="page"] .orderLine {
+    gap: 0.675rem;
+    margin-top: 0.675rem;
+    padding-block: 0.9rem;
+  }
+  .page[data-samples-page] .purchase[data-presentation="page"] .order {
+    margin-top: 1.35rem;
+  }
+  .page[data-samples-page] .purchase button[data-available] {
+    min-height: 3.15rem;
+    font-size: var(--mobile-type-action);
+  }
+  .page[data-samples-page] .next {
+    padding-bottom: 2.7rem;
   }
 }

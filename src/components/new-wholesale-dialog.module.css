@@ -271,3 +271,24 @@
     grid-row: auto;
   }
 }
+
+@media (max-width: 760px) {
+  .dialog[data-wholesale-product-dialog] .profile {
+    padding: 0.9rem;
+  }
+  .dialog[data-wholesale-product-dialog] .identity h2 {
+    font-size: var(--mobile-type-section);
+  }
+  .dialog[data-wholesale-product-dialog]
+    :is(.identity > span, .flavour, .facts dd, .preparation) {
+    font-size: var(--mobile-type-body);
+  }
+  .dialog[data-wholesale-product-dialog] .image {
+    height: 6.3rem;
+  }
+  .dialog[data-wholesale-product-dialog] .facts {
+    gap: 1.125rem 0.9rem;
+    margin-block: 1.125rem;
+    padding-top: 1.125rem;
+  }
+}

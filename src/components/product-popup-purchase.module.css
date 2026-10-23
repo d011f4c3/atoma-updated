@@ -450,3 +450,27 @@
     min-width: 44px;
   }
 }
+
+@media (max-width: 760px) {
+  :global([data-canonical-popup]) .purchase {
+    padding: 0.9rem;
+    column-gap: 0.9rem;
+    font-size: var(--mobile-type-body);
+  }
+  :global([data-canonical-popup]) :is(.note, .error) {
+    font-size: var(--mobile-type-body);
+  }
+  :global([data-canonical-popup]) .price {
+    font-size: calc(1.0125rem + var(--locale-font-increment, 0px));
+  }
+  :global([data-canonical-popup])
+    :is(.stepper output, .total output, .formats button, .add > button) {
+    font-size: var(--canonical-mobile-action);
+  }
+}
+
+@media (max-width: 380px) {
+  :global([data-canonical-popup]) .price {
+    font-size: var(--mobile-type-heading);
+  }
+}

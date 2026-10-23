@@ -557,7 +557,10 @@
   .message,
   .empty p,
   .checkoutNote {
-    font-size: calc(1rem + var(--locale-font-increment, 0px));
+    font-size: var(
+      --canonical-mobile-body,
+      calc(1rem + var(--locale-font-increment, 0px))
+    );
   }
   .format,
   .price,

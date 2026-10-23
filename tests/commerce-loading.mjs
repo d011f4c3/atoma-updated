@@ -19,6 +19,13 @@ const baseURL =
 const origin = new URL(baseURL).origin;
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 
+async function sampleOrderAmount(purchase) {
+  const canonical = purchase.locator("[data-sample-price]");
+  return (await canonical.count())
+    ? canonical.innerText()
+    : purchase.getByLabel("Sample set total", { exact: true }).innerText();
+}
+
 function catalogFor(destination) {
   const singapore = destination.countryCode === "SG";
   const common = {
@@ -393,10 +400,7 @@ async function pendingFlow(fixture, path, width) {
     await purchase.getByLabel("Set quantity", { exact: true }).innerText(),
     "2",
   );
-  assert.equal(
-    await purchase.getByLabel("Sample set total", { exact: true }).innerText(),
-    money(7600, "SGD"),
-  );
+  assert.equal(await sampleOrderAmount(purchase), money(7600, "SGD"));
 
   hold("add");
   await add.click();
@@ -574,7 +578,7 @@ async function catalogFailureRecovery(fixture, afterCountryChange) {
     "Retry preserves the selected quantity",
   );
   assert.equal(
-    await purchase.getByLabel("Sample set total", { exact: true }).innerText(),
+    await sampleOrderAmount(purchase),
     money(
       (afterCountryChange ? 3800 : 2900) * quantity,
       afterCountryChange ? "SGD" : "USD",

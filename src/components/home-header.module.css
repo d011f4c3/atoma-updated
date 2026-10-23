@@ -767,7 +767,7 @@
 /* The current storefront keeps its desktop links and condenses only on mobile. */
 @media (max-width: 760px) {
   .header[data-navigation-variant="default"] {
-    height: 4rem;
+    height: var(--mobile-header-height, 4rem);
     grid-template-columns: auto minmax(0, 1fr);
     grid-template-rows: auto;
     align-content: normal;
@@ -877,7 +877,7 @@
   }
 
   .header[data-storefront-navigation] .responsivePanel .control {
-    min-height: 3rem;
+    min-height: var(--mobile-menu-row-height, 3rem);
     font-size: calc(0.875rem + var(--locale-font-increment, 0px));
   }
 
@@ -886,7 +886,10 @@
     :global([data-language-switcher]) {
     min-width: 0;
     max-width: 100%;
-    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+    font-size: var(
+      --canonical-mobile-input,
+      calc(0.875rem + var(--locale-font-increment, 0px))
+    );
   }
 
   .header[data-storefront-navigation]

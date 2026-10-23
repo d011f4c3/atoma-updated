@@ -40,6 +40,14 @@ export function MobileHomeHero({ onReady }: { onReady?: () => void }) {
       aria-labelledby={`${id}-heading`}
     >
       <div className={styles.introduction}>
+        <p
+          className={styles.audience}
+          data-mobile-hero-audience
+          data-page-enter="text"
+        >
+          <span aria-hidden="true">◇</span>
+          {t("For cafés, kitchens & food businesses")}
+        </p>
         <h1
           id={`${id}-heading`}
           data-page-enter="hero"

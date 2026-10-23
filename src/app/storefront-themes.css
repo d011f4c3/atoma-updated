@@ -320,8 +320,41 @@ body:has(
 }
 
 @media (max-width: 760px) {
+  /* Refine the live storefront without resizing browser inputs, tiny labels,
+     hit areas or the independent saved studies. */
+  body:has(
+    [data-homepage],
+    [data-new-wholesale],
+    [data-canonical-shop],
+    [data-samples-page],
+    [data-about-page],
+    [data-retail-product],
+    [data-field-note-page],
+    main[data-client-reading] > [data-origins-content]
+  ) {
+    --canonical-mobile-body: calc(
+      0.9375rem + var(--locale-font-increment, 0px)
+    );
+    --canonical-mobile-action: calc(
+      0.9375rem + var(--locale-font-increment, 0px)
+    );
+    --mobile-type-title: calc(1.375rem + var(--locale-font-increment, 0px));
+    --mobile-type-section: calc(1.125rem + var(--locale-font-increment, 0px));
+    --mobile-type-heading: var(--canonical-mobile-body);
+    --mobile-type-body: var(--canonical-mobile-body);
+    --mobile-type-support: calc(0.875rem + var(--locale-font-increment, 0px));
+    --mobile-type-label: calc(0.75rem + var(--locale-font-increment, 0px));
+    --mobile-type-action: calc(0.875rem + var(--locale-font-increment, 0px));
+    --canonical-mobile-input: var(--mobile-type-input);
+    --mobile-header-height: 3.625rem;
+    --mobile-menu-row-height: 2.75rem;
+  }
+
   [data-client-reading] {
-    --mobile-type-body: calc(1rem + var(--locale-font-increment, 0px));
+    --mobile-type-body: var(
+      --canonical-mobile-body,
+      calc(1rem + var(--locale-font-increment, 0px))
+    );
     --mobile-type-support: calc(0.875rem + var(--locale-font-increment, 0px));
     --mobile-type-label: calc(0.75rem + var(--locale-font-increment, 0px));
     --mobile-type-action: calc(0.875rem + var(--locale-font-increment, 0px));

@@ -12,9 +12,11 @@ import styles from "./purchase-options.module.css";
 export function PurchaseOptions({
   model,
   disabled = false,
+  settled = false,
 }: {
   model: ProductSelectionModel;
   disabled?: boolean;
+  settled?: boolean;
 }) {
   const { t } = useStorefrontLocale();
   const name = useId();
@@ -26,7 +28,12 @@ export function PurchaseOptions({
       disabled={disabled || model.refreshing}
     >
       <legend>
-        <ScrambleText text={t("Purchase")} periodic wrap />
+        <ScrambleText
+          text={t("Purchase")}
+          periodic={!settled}
+          animateOnMount={!settled}
+          wrap
+        />
       </legend>
       <div className={styles.choices}>
         <label
@@ -43,7 +50,12 @@ export function PurchaseOptions({
             aria-label={t("One-time purchase")}
           />
           <span>
-            <ScrambleText text={t("One-time")} periodic wrap />
+            <ScrambleText
+              text={t("One-time")}
+              periodic={!settled}
+              animateOnMount={!settled}
+              wrap
+            />
           </span>
           <span className={styles.mark} aria-hidden="true">
             {selected === null ? "●" : "○"}
@@ -66,7 +78,12 @@ export function PurchaseOptions({
                 aria-label={`${t("Subscribe")} · ${plan.name}`}
               />
               <span>
-                <ScrambleText text={t("Subscribe")} periodic wrap />
+                <ScrambleText
+                  text={t("Subscribe")}
+                  periodic={!settled}
+                  animateOnMount={!settled}
+                  wrap
+                />
                 <small>{t("Every 4 weeks")}</small>
                 {plans.length > 1 && <small>{plan.name}</small>}
               </span>
@@ -86,7 +103,12 @@ export function PurchaseOptions({
               aria-label={t("Subscribe — unavailable")}
             />
             <span>
-              <ScrambleText text={t("Subscribe")} periodic wrap />
+              <ScrambleText
+                text={t("Subscribe")}
+                periodic={!settled}
+                animateOnMount={!settled}
+                wrap
+              />
               <small>{t("Not available yet")}</small>
             </span>
             <span className={styles.mark} aria-hidden="true">

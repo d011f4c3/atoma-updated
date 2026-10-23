@@ -2,6 +2,32 @@
 
 ## Scope and authority
 
+- **Task 0281 corrects inconsistent purchase views:** read
+  `docs/tasks/0281-consistent-simple-purchasing.md`. Show one current price for
+  every quantity in both canonical Sample Set entry points, with visible credit
+  and no inspection prompt. Simplify mobile product buying to one price,
+  quantity and Add to cart, with optional product learning and purchase choices.
+  Preserve exact orders, verified plans, localization and return state.
+
+- **Task 0280 refines the overall mobile scale:** read
+  `docs/tasks/0280-refined-mobile-scale.md`. Reduce canonical mobile type,
+  imagery and generous spacing together. Use 15 px reading text, overriding
+  earlier 16 px prose guidance for this pass, with 16 px editable inputs and
+  at least 44 px controls. Preserve small labels, content, state, motion,
+  enlarged-text reflow, desktop and saved studies.
+
+- **Task 0279 refines mobile fit and visual shopping:** read
+  `docs/tasks/0279-mobile-hero-fit-and-visual-flow.md`. Fit the calmer hero to
+  usable browser height, lighten the Sample Set and make ordering more visual.
+  Preserve readable text, whole objects, both CTAs, credit, exact product links,
+  motion, state and desktop while retaining Task 0278's mobile sections.
+
+- **Task 0278 restores complete mobile homepage content:** read
+  `docs/tasks/0278-mobile-homepage-content-parity.md`. Create concise mobile
+  versions of the desktop Sample Set, application guidance, product/origin and
+  ordering sections, plus the hero audience line. Preserve balanced hero sizing,
+  motion, exact destinations, popup return, commerce state and desktop/studies.
+
 - **Task 0277 adds polished storefront motion:** read
   `docs/tasks/0277-hero-and-wholesale-motion.md`. Strengthen canonical hero
   loading and staggered entrances plus Wholesale catalog and scroll reveals.

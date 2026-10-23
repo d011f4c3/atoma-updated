@@ -710,7 +710,7 @@
   .experienceHeader :global(header[data-navigation-variant="default"]) {
     display: flex;
     flex-wrap: wrap;
-    min-height: 4rem;
+    min-height: var(--mobile-header-height, 4rem);
     height: auto;
   }
   .childHeader :global([data-nav-controls]),

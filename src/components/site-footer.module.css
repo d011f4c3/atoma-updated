@@ -511,8 +511,8 @@
   }
 
   .footer[data-storefront-footer][data-footer-direction="directory"] .body {
-    gap: 1.5rem;
-    padding-block: 2rem 1.5rem;
+    gap: 1.375rem;
+    padding-block: 1.75rem 1.375rem;
   }
 
   .footer[data-storefront-footer][data-footer-direction="directory"]
@@ -524,7 +524,7 @@
   .footer[data-storefront-footer][data-footer-direction="directory"]
     .destination {
     grid-template-columns: minmax(0, 1fr) auto;
-    min-height: 3rem;
+    min-height: 2.75rem;
     gap: 0.5rem;
     padding: 0.5rem 0;
   }
@@ -537,7 +537,7 @@
   .footer[data-storefront-footer] .appearance select {
     min-width: 0;
     max-width: 100%;
-    font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+    font-size: var(--mobile-type-input);
   }
 
   .footer[data-storefront-footer]
