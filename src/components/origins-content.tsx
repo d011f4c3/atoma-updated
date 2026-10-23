@@ -8,8 +8,9 @@ import {
   getRelatedMatchas,
   type FieldEntry,
 } from "@/lib/origins-content";
+import { originBrowsePlaces } from "@/lib/origins-browsing";
 import { productName } from "@/lib/product-name";
-import { ORIGINS_GRAPH, getPlacePath } from "@/lib/origins-model";
+import { getPlacePath } from "@/lib/origins-model";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { OriginsDirectory } from "./origins-directory";
 import { useProductSelection } from "./use-product-selection";
@@ -61,7 +62,7 @@ function OriginsReader({
       FIELD_ENTRIES.find((item) => item.slug === initialEntry)?.placeIds[0] ??
       null,
   );
-  const place = ORIGINS_GRAPH.places.find(
+  const place = originBrowsePlaces.find(
     (item) => item.id === selectedPlace && item.publication === "published",
   );
   const { catalog, products, loading, retry } = useProductSelection();

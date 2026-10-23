@@ -71,7 +71,11 @@ function Observation({
           <ScrambleText text={t(note.title)} wrap visibleOnly />
         </h2>
       )}
-      <p className={styles.observationText}>{t(note.text)}</p>
+      {note.paragraphs.map((paragraph) => (
+        <p className={styles.observationText} key={paragraph}>
+          {t(paragraph)}
+        </p>
+      ))}
     </div>
   );
 }
@@ -136,7 +140,7 @@ export function FieldNotePage({
               wrap
             />
           </Link>
-          <ThemeSwitcher />
+          <ThemeSwitcher showLanguage={false} />
         </div>
 
         <article aria-labelledby="field-note-title">
@@ -198,10 +202,17 @@ export function FieldNotePage({
               <div className={styles.closingPhotograph}>
                 <Photograph photograph={photographs.tools} wide />
               </div>
-              <div className={styles.viewpointPair}>
-                <Photograph photograph={photographs.pilot} />
-                <Photograph photograph={photographs.droneRows} />
-              </div>
+              <section
+                className={styles.chapter}
+                data-field-note="drones"
+                aria-label={t(aboutFieldNotes.drones.category)}
+              >
+                <Observation note={aboutFieldNotes.drones} />
+                <div className={styles.dronePhotographs}>
+                  <Photograph photograph={photographs.pilot} />
+                  <Photograph photograph={photographs.droneRows} />
+                </div>
+              </section>
               <div className={styles.closingPhotograph}>
                 <Photograph photograph={photographs.droneComposite} wide />
               </div>
@@ -209,10 +220,10 @@ export function FieldNotePage({
           )}
 
           <aside className={styles.recordNote}>
-            <span className={styles.label}>{t("An ongoing record")}</span>
+            <span className={styles.label}>{t("Product origin")}</span>
             <p>
               {t(
-                "Our time in the community is one story. The origin of each matcha is recorded with the product.",
+                "Origin information for each matcha is listed on its product page.",
               )}
             </p>
           </aside>

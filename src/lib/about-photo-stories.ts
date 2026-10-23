@@ -9,7 +9,7 @@ export const aboutFarmPhotographs = {
   contours: {
     src: "/images/about/wazuka/field-contours.webp",
     alt: "Rows of tea following the contours of a hillside in Wazuka.",
-    caption: "The shape of the fields",
+    caption: "Tea fields in Wazuka",
     width: 2400,
     height: 1600,
   },
@@ -23,7 +23,7 @@ export const aboutFarmPhotographs = {
   hillside: {
     src: "/images/about/wazuka/tea-hillside.webp",
     alt: "Rows of tea following the contours of a hillside in Wazuka.",
-    caption: "The shape of the fields",
+    caption: "Tea fields in Wazuka",
     width: 1067,
     height: 1600,
   },
@@ -37,7 +37,7 @@ export const aboutFarmPhotographs = {
   bags: {
     src: "/images/about/wazuka/harvest-bags.webp",
     alt: "Filled collection bags resting along the tea rows during the harvest.",
-    caption: "Gathered from the field",
+    caption: "Harvest collection bags",
     width: 1600,
     height: 1067,
   },
@@ -58,7 +58,7 @@ export const aboutFarmPhotographs = {
   tools: {
     src: "/images/about/wazuka/harvesting-tools.webp",
     alt: "A close view of two people handling a tea harvester; one wears a powersuit around the waist and legs.",
-    caption: "People & tools / At work",
+    caption: "Tea harvester and powersuit",
     width: 2000,
     height: 1333,
   },
@@ -72,7 +72,7 @@ export const aboutFarmPhotographs = {
   drone: {
     src: "/images/about/wazuka/drone-above-the-field.webp",
     alt: "A small drone in flight against a clear blue sky above the field.",
-    caption: "A different viewpoint",
+    caption: "Drone in flight",
     width: 1600,
     height: 1067,
   },
@@ -128,7 +128,7 @@ export const aboutFarmPhotographs = {
   droneComposite: {
     src: "/images/about/wazuka/drone-pilot-composite.webp",
     alt: "Composite image of an FPV pilot and a drone above tea fields.",
-    caption: "A different viewpoint / Composite image",
+    caption: "FPV pilot and drone / Composite image",
     width: 1536,
     height: 1024,
   },
@@ -142,7 +142,7 @@ export const aboutFarmPhotographs = {
   fpvLandscape: {
     src: "/images/about/wazuka/fpv-in-the-fields.webp",
     alt: "A person wearing FPV goggles beside collection bags, with rows of tea across the hillside.",
-    caption: "A viewpoint from the field",
+    caption: "FPV pilot beside the tea fields",
     width: 2000,
     height: 1333,
   },
@@ -150,24 +150,43 @@ export const aboutFarmPhotographs = {
 
 const photographs = aboutFarmPhotographs;
 
-// Observations supported by the photographs. These are not interview quotes,
-// an invented visit timeline, or claims about how the equipment performs.
+// Owner-supplied harvest and technology subjects, with general cultivation and
+// field-management context sourced in Task 0287. No invented interviews,
+// equipment specifications, measured outcomes or product-origin assertions.
 export const aboutFieldNotes = {
   place: {
     category: "01 / The hillside",
-    text: "From a distance, the tea fields read as continuous lines. Closer in, those lines become rows, paths and the spaces where people work.",
+    title: "Farming the hillside",
+    paragraphs: [
+      "Tea rows follow the hillsides of Wazuka. For the farmers working them, the slopes set the conditions of the harvest. Equipment has to be carried into position, footing checked and each pass made along the shape of the row.",
+      "Two farmers work on opposite sides of a tea row, holding the harvester between them. They move together, keeping the machine level as the cut leaves collect in a bag. There is little room between the rows, and both people have to keep pace.",
+    ],
   },
   harvest: {
     category: "02 / The harvest",
-    title: "The work, shared.",
-    text: "At either end of the harvester, a person guides its movement along the row. The collection bag follows behind. Filled bags rest on the tea plants, ready to be carried away.",
+    title: "Gathering the leaves",
+    paragraphs: [
+      "As the bag fills, its weight becomes another part of the work. Full bags are lifted clear and moved out of the way before harvesting continues. The machine cuts the leaves, while the farmers guide it, handle the crop and prepare for the next pass.",
+      "For tea destined to become matcha, preparation begins before harvest. The plants are shaded while the new leaves develop. Harvesting gathers those leaves for the next stage, when they are steamed and dried without rolling to make tencha, the tea that is milled into matcha.",
+    ],
     record: "Harvest photo record",
   },
   technology: {
-    category: "People & tools / At work",
-    title: "Closer to the task.",
-    text: "The view tightens: gloved hands on the handles, a powersuit around the waist and legs. The tools make more sense beside the person using them. At the edge of the field, an FPV pilot looks through a headset.",
+    category: "01 / Supporting the body",
+    title: "A powersuit at harvest",
+    paragraphs: [
+      "For an older farmer, years of familiarity with the tea fields do not make the physical work lighter. Holding a harvester, bending and moving between rows place repeated demands on the body. In Wazuka, a grower wears a powersuit around the waist and legs to support that work.",
+      "The suit is worn while the grower handles the harvester alongside another farmer. Its purpose is practical: to support an aging body during the harvest. Decisions about where to cut and how to move through the row remain with the people holding the handles.",
+    ],
     record: "People & tools photo record",
+  },
+  drones: {
+    category: "02 / Managing the fields",
+    title: "Checking the fields from above",
+    paragraphs: [
+      "Field management brings a different problem: getting a useful view of tea planted across a hillside. From the paths, the view is broken up by the rows and the slope. A drone can bring several rows into view, helping farmers check the condition of the field.",
+      "Aerial images can also help farmers follow work in progress and look for damage after bad weather. The next step is a closer inspection on foot, using what they have seen from above to decide where to go.",
+    ],
   },
 } as const;
 
@@ -176,12 +195,12 @@ export const aboutPhotoStories = [
     id: "harvest",
     slug: "wazuka-harvest",
     category: "01 / The harvest",
-    title: "Harvest in Wazuka, Uji tea region, Kyoto.",
+    title: "The tea harvest in Wazuka",
     introduction:
-      "In Wazuka, within the Uji tea-growing region of Kyoto Prefecture, we follow the harvest and the people doing the work.",
+      "In Wazuka, in Kyoto Prefecture’s Uji tea-growing region, the tea harvest is shared work: guiding the harvester, gathering the leaves and carrying the crop out of the rows.",
     paragraphs: [
-      "Wazuka is the first chapter in our field record. A closer look at the landscape, the harvest and the work between the rows.",
-      "This is a record of our time in the community. The origin of each matcha is recorded separately with the product.",
+      ...aboutFieldNotes.place.paragraphs,
+      ...aboutFieldNotes.harvest.paragraphs,
     ],
     photographs: [
       photographs.harvestCover,
@@ -197,11 +216,12 @@ export const aboutPhotoStories = [
     id: "technology",
     slug: "people-and-tools",
     category: "02 / People & technology",
-    title: "New tools. Experienced hands.",
+    title: "Powersuits and drones on the farm",
     introduction:
-      "The harvester, the powersuit and the people using them in Wazuka, part of Kyoto Prefecture’s Uji tea-growing region.",
+      "On tea farms, powersuits offer physical support for older growers, while drones give farmers another way to inspect and manage their fields.",
     paragraphs: [
-      "A closer view of the harvest: hands on the machine, a powersuit worn between the rows, and an FPV pilot beside the field. The people and the task remain at the centre of the photographs.",
+      ...aboutFieldNotes.technology.paragraphs,
+      ...aboutFieldNotes.drones.paragraphs,
     ],
     photographs: [
       photographs.droneCloseUp,

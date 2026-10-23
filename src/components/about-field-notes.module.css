@@ -456,7 +456,21 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
   gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+.droneSpread {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(2rem, 5vw, 4rem);
   margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+@media (max-width: 760px) {
+  .droneSpread {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
 }
 
 .recordNote {

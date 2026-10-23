@@ -196,14 +196,14 @@ async function assertProfile(scope, product, locale) {
   const profile = scope.locator("[data-visible-product-profile]");
   await profile.waitFor();
   const content = getProductContent(product, locale);
-  const interactive = profile.locator("[data-retail-profile-property]");
-  if (await interactive.count()) {
-    const values = await interactive.evaluateAll((nodes) =>
+  const properties = profile.locator("[data-retail-profile-property]");
+  if (await properties.count()) {
+    const values = await properties.evaluateAll((nodes) =>
       nodes
         .map((node) => ({
           index: Number(node.dataset.retailProfileProperty),
-          label: node.firstElementChild?.textContent?.trim(),
-          value: node.lastElementChild?.textContent?.trim(),
+          label: node.querySelector("dt")?.textContent?.trim(),
+          value: node.querySelector("dd")?.textContent?.trim(),
         }))
         .sort((first, second) => first.index - second.index),
     );
@@ -216,6 +216,37 @@ async function assertProfile(scope, product, locale) {
       values.map((item) => item.value),
       content.materialProfile.map((item) => item.value),
     );
+    assert.equal(await properties.locator("button").count(), 0);
+    const flavour = profile.getByText(content.materialProfile[1].explanation, {
+      exact: true,
+    });
+    assert.equal(await flavour.count(), 1);
+    assert.equal(await flavour.isVisible(), true);
+    const details = profile.locator("[data-retail-profile-details]");
+    assert.equal(await details.count(), 1);
+    assert.equal(await details.evaluate((node) => node.open), false);
+    assert.equal(
+      (await details.locator("summary").textContent()).trim(),
+      translate(locale, "Profile details"),
+    );
+    assert.deepEqual(
+      (await details.locator("dt").allTextContents()).map((text) =>
+        text.trim(),
+      ),
+      content.materialProfile
+        .filter((_, index) => index !== 1)
+        .map((item) => item.label),
+    );
+    assert.deepEqual(
+      (await details.locator("dd").allTextContents()).map((text) =>
+        text.trim(),
+      ),
+      content.materialProfile
+        .filter((_, index) => index !== 1)
+        .map((item) => item.explanation),
+    );
+    for (const explanation of await details.locator("dd").all())
+      assert.equal(await explanation.isVisible(), false);
   } else {
     assert.equal(await profile.locator("dl > div").count(), 7);
     assert.deepEqual(

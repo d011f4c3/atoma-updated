@@ -40,7 +40,7 @@
   overflow-wrap: anywhere;
 }
 .content {
-  max-width: 90rem;
+  max-width: 78rem;
   margin: auto;
   padding-inline: var(--gutter);
 }
@@ -67,20 +67,25 @@
 }
 .productLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(21rem, 0.8fr);
-  grid-template-areas: "gallery purchase" "learning purchase";
+  grid-template-columns: minmax(0, 1fr) minmax(21rem, 1fr);
+  grid-template-areas: "gallery purchase" "gallery learning";
   align-items: start;
-  gap: 1.5rem clamp(2.5rem, 6vw, 6rem);
+  gap: 1.75rem clamp(2rem, 4vw, 3.5rem);
   padding: 0.75rem 0 3rem;
 }
 .gallery {
   grid-area: gallery;
+  position: sticky;
+  top: 1.5rem;
   min-width: 0;
   margin: 0;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--ink) 2.5%, transparent);
 }
 .galleryImage {
   position: relative;
-  height: clamp(12rem, 29vh, 18rem);
+  height: clamp(18rem, 30vw, 23rem);
   max-width: 27rem;
   margin-inline: auto;
 }
@@ -112,8 +117,6 @@
 }
 .productBody {
   grid-area: purchase;
-  position: sticky;
-  top: 1.25rem;
   min-width: 0;
 }
 .purchase {
@@ -161,9 +164,12 @@
 .purchaseControls {
   container: retail-order / inline-size;
   min-width: 0;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
 }
 .unitPrice {
-  margin: 1.25rem 0 0;
+  margin: 0;
   font-size: calc(1.375rem + var(--locale-font-increment, 0px));
   line-height: 1.5;
 }
@@ -171,13 +177,10 @@
   color: var(--muted);
   font-size: 0.875rem;
 }
-.unitPrice .desktopUnitPrice,
-.unitPrice .mobileOrderPrice {
+.unitPrice .orderPrice {
   color: inherit;
   font-size: inherit;
 }
-.mobileOrderPrice,
-.mobileFormat,
 .mobileImageToggle,
 .learningToggle {
   display: none;
@@ -190,11 +193,6 @@
 }
 .purchaseOptions:not([open]) > :not(summary) {
   display: none;
-}
-.oneTimeNote {
-  margin: 0.75rem 0 0;
-  color: var(--muted);
-  font-size: 0.75rem;
 }
 .formats {
   min-width: 0;
@@ -259,17 +257,19 @@
   cursor: default;
 }
 .orderLine {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: end;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 1rem 0;
+  gap: 0.875rem;
+  margin: 1rem 0 0;
+}
+.orderLine > button {
+  min-height: 3.375rem;
 }
 .quantityGroup {
   flex: 0 0 auto;
 }
-.quantityGroup > span,
-.total > span {
+.quantityGroup > span {
   display: block;
   margin-bottom: 0.375rem;
   color: var(--muted);
@@ -277,6 +277,7 @@
 }
 .stepper {
   display: flex;
+  min-height: 3.375rem;
   align-items: center;
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -294,19 +295,6 @@
   padding: 0.25rem;
   text-align: center;
   font-size: 1rem;
-}
-.total {
-  min-width: 0;
-  text-align: right;
-}
-.total strong {
-  display: flex;
-  min-height: 44px;
-  align-items: center;
-  justify-content: end;
-  font-size: 1.125rem;
-  font-weight: 400;
-  line-height: 1.5;
 }
 .quantityNote {
   margin: 0.5rem 0;
@@ -341,6 +329,7 @@
 .learning {
   grid-area: learning;
   min-width: 0;
+  padding-top: 0.5rem;
 }
 .compare {
   display: flex;
@@ -516,7 +505,11 @@
     font-size: 0.875rem;
   }
   .gallery {
+    position: static;
     align-self: start;
+    padding: 0;
+    border: 0;
+    background: transparent;
   }
   .galleryImage {
     height: 106px;
@@ -532,6 +525,9 @@
   }
   .purchaseControls {
     grid-area: order;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
   }
   .unitPrice {
     margin-top: 0;
@@ -543,12 +539,8 @@
   .orderLine {
     margin-block: 0.875rem;
   }
-  .quantityGroup > span,
-  .total > span {
+  .quantityGroup > span {
     font-size: 0.875rem;
-  }
-  .total strong {
-    font-size: 1.125rem;
   }
   .quantityNote,
   .formats button {
@@ -582,26 +574,12 @@
     display: none;
   }
 }
-@container retail-order (max-width: 18rem) {
+@container retail-order (max-width: 20rem) {
   .orderLine {
-    flex-wrap: wrap;
-  }
-  .quantityGroup {
-    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
   }
   .stepper {
-    justify-content: space-between;
-  }
-  .total {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    text-align: left;
-  }
-  .total > span {
-    margin-bottom: 0;
+    width: fit-content;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -617,15 +595,8 @@
   .page[data-retail-product] {
     font-size: var(--mobile-type-body);
   }
-  .page[data-retail-product] .desktopUnitPrice,
-  .page[data-retail-product] .desktopFormat,
-  .page[data-retail-product] .total,
   .page[data-retail-product] .imageControls {
     display: none;
-  }
-  .page[data-retail-product] .mobileOrderPrice,
-  .page[data-retail-product] .mobileFormat {
-    display: inline;
   }
   .page[data-retail-product] .mobileImageToggle {
     display: flex;
@@ -684,13 +655,10 @@
   .page[data-retail-product] .unitPrice {
     font-size: var(--mobile-type-section);
   }
-  .page[data-retail-product] .total strong {
-    font-size: calc(1.0125rem + var(--locale-font-increment, 0px));
-  }
   .page[data-retail-product] :is(.formats button, .stepper output) {
     font-size: var(--canonical-mobile-action);
   }
-  .page[data-retail-product] .purchaseControls > button {
+  .page[data-retail-product] .orderLine > button {
     min-height: 3.15rem;
     font-size: var(--mobile-type-action);
   }

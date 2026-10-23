@@ -133,7 +133,7 @@ export function AboutFlow({
             </span>{" "}
             <span aria-hidden="true">↓</span>
           </a>
-          <ThemeSwitcher />
+          <ThemeSwitcher showLanguage={preview} />
         </div>
 
         <div className={styles.coverTrack} data-about-cover>

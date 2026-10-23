@@ -57,7 +57,7 @@ function recordChapters(story: AboutPhotoStory) {
     : [
         { key: "tools", label: aboutFarmPhotographs.droneCloseUp.caption },
         { key: "technology", label: aboutFieldNotes.technology.title },
-        { key: "closing", label: aboutFarmPhotographs.drone.caption },
+        { key: "closing", label: aboutFieldNotes.drones.title },
       ];
 }
 
@@ -211,7 +211,11 @@ function RecordObservation({
     <div className={styles.observation}>
       <p className={styles.category}>{t(note.category)}</p>
       {"title" in note && <h3>{t(note.title)}</h3>}
-      <p className={styles.observationText}>{t(note.text)}</p>
+      {note.paragraphs.map((paragraph) => (
+        <p className={styles.observationText} key={paragraph}>
+          {t(paragraph)}
+        </p>
+      ))}
     </div>
   );
 }
@@ -286,9 +290,12 @@ function FieldRecord({
       )}
       <section id={`${id}-chapter-closing`} data-record-chapter="closing">
         {story.id === "technology" && (
-          <div className={styles.viewpointPair}>
-            <RecordPhotograph photograph={photographs.pilot} t={t} />
-            <RecordPhotograph photograph={photographs.droneRows} t={t} />
+          <div className={styles.droneSpread} data-field-note="drones">
+            <RecordObservation note={aboutFieldNotes.drones} t={t} />
+            <div className={styles.viewpointPair}>
+              <RecordPhotograph photograph={photographs.pilot} t={t} />
+              <RecordPhotograph photograph={photographs.droneRows} t={t} />
+            </div>
           </div>
         )}
         <div className={styles.recordClosingImage}>
@@ -302,10 +309,10 @@ function FieldRecord({
           />
         </div>
         <aside className={styles.recordNote}>
-          <span className={styles.category}>{t("An ongoing record")}</span>
+          <span className={styles.category}>{t("Product origin")}</span>
           <p>
             {t(
-              "Our time in the community is one story. The origin of each matcha is recorded with the product.",
+              "Origin information for each matcha is listed on its product page.",
             )}
           </p>
         </aside>

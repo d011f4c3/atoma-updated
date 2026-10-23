@@ -31,7 +31,7 @@ export function OriginsPage() {
           />{" "}
           <span aria-hidden="true">↗</span>
         </Link>
-        <ThemeSwitcher />
+        <ThemeSwitcher showLanguage={false} />
       </footer>
     </main>
   );

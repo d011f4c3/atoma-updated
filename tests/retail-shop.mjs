@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { getProductContent } from "../src/lib/product-content.ts";
 
 const { chromium } = await import(
   process.env.PLAYWRIGHT_MODULE
@@ -567,7 +568,7 @@ for (const tone of ["dark", "light"]) {
             nodes
               .map((node) => ({
                 index: Number(node.dataset.retailProfileProperty),
-                label: node.firstElementChild?.textContent?.trim(),
+                label: node.querySelector("dt")?.textContent?.trim(),
               }))
               .sort((first, second) => first.index - second.index)
               .map((item) => item.label),
@@ -582,18 +583,61 @@ for (const tone of ["dark", "light"]) {
             "Finish",
           ],
         );
-        const firstProperty = specifications.locator(
-          '[data-retail-profile-property="0"]',
+        const expectedProfile = getProductContent(products[0]).materialProfile;
+        assert.deepEqual(
+          await properties.evaluateAll((nodes) =>
+            nodes
+              .map((node) => ({
+                index: Number(node.dataset.retailProfileProperty),
+                value: node.querySelector("dd")?.textContent?.trim(),
+              }))
+              .sort((first, second) => first.index - second.index)
+              .map((item) => item.value),
+          ),
+          expectedProfile.map((item) => item.value),
         );
-        const explanation = specifications.locator('[aria-live="polite"]');
-        const initialExplanation = await explanation.textContent();
-        await firstProperty.focus();
-        await page.keyboard.press("Enter");
-        assert.equal(await firstProperty.getAttribute("aria-pressed"), "true");
-        assert.notEqual(await explanation.textContent(), initialExplanation);
-        assert.equal(await explanation.isVisible(), true);
+        assert.equal(await properties.locator("button").count(), 0);
         assert.equal(
-          await firstProperty.evaluate(
+          await specifications
+            .getByText(expectedProfile[1].explanation, { exact: true })
+            .isVisible(),
+          true,
+          "The flavour explanation is readable before opening profile details",
+        );
+        const profileDetails = specifications.locator(
+          "[data-retail-profile-details]",
+        );
+        const profileSummary = profileDetails.locator("summary");
+        assert.equal(
+          await profileDetails.evaluate((element) => element.open),
+          false,
+        );
+        await profileSummary.focus();
+        await page.keyboard.press("Enter");
+        assert.equal(
+          await profileDetails.evaluate((element) => element.open),
+          true,
+        );
+        assert.deepEqual(
+          (await profileDetails.locator("dt").allTextContents()).map((text) =>
+            text.trim(),
+          ),
+          expectedProfile
+            .filter((_, index) => index !== 1)
+            .map((item) => item.label),
+        );
+        assert.deepEqual(
+          (await profileDetails.locator("dd").allTextContents()).map((text) =>
+            text.trim(),
+          ),
+          expectedProfile
+            .filter((_, index) => index !== 1)
+            .map((item) => item.explanation),
+        );
+        for (const explanation of await profileDetails.locator("dd").all())
+          assert.equal(await explanation.isVisible(), true);
+        assert.equal(
+          await profileSummary.evaluate(
             (element) => element === document.activeElement,
           ),
           true,
@@ -635,9 +679,9 @@ for (const tone of ["dark", "light"]) {
           true,
         );
         assert.equal(
-          await firstProperty.getAttribute("aria-pressed"),
-          "true",
-          "Learning panels retain the chosen property while hidden",
+          await profileDetails.evaluate((element) => element.open),
+          true,
+          "Learning panels retain the open profile details while hidden",
         );
         assert.equal(
           await main.locator("[data-product-details]").count(),
@@ -711,9 +755,9 @@ for (const tone of ["dark", "light"]) {
         assert.equal(Number(await quantity.textContent()), 10);
         assert.equal(await bundle.getAttribute("aria-pressed"), "true");
         assert.equal(
-          await firstProperty.getAttribute("aria-pressed"),
-          "true",
-          "Appearance and Origins return retain the selected profile property",
+          await profileDetails.evaluate((element) => element.open),
+          true,
+          "Appearance and Origins return retain the open profile details",
         );
         assert.equal(await originSection.isVisible(), true);
         assert.equal(await originTab.getAttribute("aria-selected"), "true");

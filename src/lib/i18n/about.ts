@@ -1,6 +1,214 @@
 import type { TranslationTable } from "./types.ts";
 
 export const aboutTranslations = {
+  "For an older farmer, years of familiarity with the tea fields do not make the physical work lighter. Holding a harvester, bending and moving between rows place repeated demands on the body. In Wazuka, a grower wears a powersuit around the waist and legs to support that work.":
+    {
+      "zh-Hans":
+        "对年长茶农来说，即使多年熟悉茶园，体力劳动也不会因此变轻。握持采茶机、弯腰和在茶垄间移动，都会反复给身体带来负担。在和束，一位茶农在腰部和腿部穿戴助力服，为这些作业提供支撑。",
+      "zh-Hant":
+        "對年長茶農來說，即使多年熟悉茶園，體力勞動也不會因此變輕。握持採茶機、彎腰和在茶壟間移動，都會反覆給身體帶來負擔。在和束，一位茶農在腰部和腿部穿戴助力服，為這些作業提供支撐。",
+      ja: "高齢の農家にとって、長年茶畑に親しんでいても、身体を使う仕事の重さは変わりません。摘採機を持ち、腰を曲げ、畝の間を移動する動作は、繰り返し身体に負担をかけます。和束では、そうした作業を支えるため、腰と脚にパワースーツを装着する茶農家がいます。",
+    },
+  "The suit is worn while the grower handles the harvester alongside another farmer. Its purpose is practical: to support an aging body during the harvest. Decisions about where to cut and how to move through the row remain with the people holding the handles.":
+    {
+      "zh-Hans":
+        "这位茶农穿着助力服，与另一位茶农一起操作采茶机。它的用途很实际：在采收时支撑逐渐年长的身体。在哪里下剪、怎样沿茶垄移动，仍由握持机器的人决定。",
+      "zh-Hant":
+        "這位茶農穿著助力服，與另一位茶農一起操作採茶機。它的用途很實際：在採收時支撐逐漸年長的身體。在哪裡下剪、怎樣沿茶壟移動，仍由握持機器的人決定。",
+      ja: "パワースーツを着用した農家は、もう一人と一緒に摘採機を扱います。目的は、収穫中に年齢を重ねた身体を支えることです。どこを刈り、畝に沿ってどう進むかを判断するのは、ハンドルを握る人たちです。",
+    },
+  "Field management brings a different problem: getting a useful view of tea planted across a hillside. From the paths, the view is broken up by the rows and the slope. A drone can bring several rows into view, helping farmers check the condition of the field.":
+    {
+      "zh-Hans":
+        "茶园管理还有另一项难题：如何看清山坡上茶树的整体情况。从小路望去，茶垄和坡度会遮挡部分视线。无人机可以同时呈现多条茶垄，帮助茶农查看茶园状况。",
+      "zh-Hant":
+        "茶園管理還有另一項難題：如何看清山坡上茶樹的整體情況。從小路望去，茶壟和坡度會遮擋部分視線。無人機可以同時呈現多條茶壟，幫助茶農查看茶園狀況。",
+      ja: "茶畑の管理には、斜面に植えられた茶の状態を見渡すという別の課題があります。通路からでは、畝や傾斜に遮られて全体を確認しにくくなります。ドローンなら複数の畝を一度に捉え、畑の状態を確認するのに役立てられます。",
+    },
+  "Aerial images can also help farmers follow work in progress and look for damage after bad weather. The next step is a closer inspection on foot, using what they have seen from above to decide where to go.":
+    {
+      "zh-Hans":
+        "航拍影像也能帮助茶农跟进作业进度，检查恶劣天气后的损伤。接下来，他们根据空中看到的情况，确定需要前往的区域，再步行到现场仔细检查。",
+      "zh-Hant":
+        "航拍影像也能幫助茶農跟進作業進度，檢查惡劣天氣後的損傷。接下來，他們根據空中看到的情況，確定需要前往的區域，再步行到現場仔細檢查。",
+      ja: "空撮画像は、作業の進み具合や悪天候の後の被害を確認するのにも役立ちます。次は、上空から見た様子をもとに点検する場所を決め、歩いて現地へ向かい、詳しく調べます。",
+    },
+  "Tea rows follow the hillsides of Wazuka. For the farmers working them, the slopes set the conditions of the harvest. Equipment has to be carried into position, footing checked and each pass made along the shape of the row.":
+    {
+      "zh-Hans":
+        "和束的茶垄沿山坡延伸。对在这里作业的茶农来说，坡地决定了采收时的作业条件。他们需要将设备搬到作业位置，确认脚下稳妥，再沿着每条茶垄的形状逐次采收。",
+      "zh-Hant":
+        "和束的茶壟沿山坡延伸。對在這裡作業的茶農來說，坡地決定了採收時的作業條件。他們需要將設備搬到作業位置，確認腳下穩妥，再沿著每條茶壟的形狀逐次採收。",
+      ja: "和束の斜面には茶畝が連なっています。そこで働く農家にとって、傾斜は収穫作業の条件を決めるものです。機材を作業位置まで運び、足元を確かめ、一列ずつ畝の形に沿って摘採を進めます。",
+    },
+  "Two farmers work on opposite sides of a tea row, holding the harvester between them. They move together, keeping the machine level as the cut leaves collect in a bag. There is little room between the rows, and both people have to keep pace.":
+    {
+      "zh-Hans":
+        "两位茶农分别站在茶垄两侧，共同握持采茶机。他们同步移动，保持机器平稳，让剪下的茶叶落入集叶袋。茶垄之间空间狭窄，两人必须保持相同的步调。",
+      "zh-Hant":
+        "兩位茶農分別站在茶壟兩側，共同握持採茶機。他們同步移動，保持機器平穩，讓剪下的茶葉落入集葉袋。茶壟之間空間狹窄，兩人必須保持相同的步調。",
+      ja: "二人の農家が茶畝の両側に立ち、間に摘採機を持って作業します。刈り取った葉が袋に集まる間、機械を水平に保ちながら一緒に進みます。畝の間は狭く、二人で歩調を合わせる必要があります。",
+    },
+  "As the bag fills, its weight becomes another part of the work. Full bags are lifted clear and moved out of the way before harvesting continues. The machine cuts the leaves, while the farmers guide it, handle the crop and prepare for the next pass.":
+    {
+      "zh-Hans":
+        "随着集叶袋逐渐装满，搬运的重量也成了作业的一部分。满袋需要抬起移开，才能继续采收。机器负责剪下茶叶，茶农则负责控制机器、搬运茶叶，并为下一次采收做好准备。",
+      "zh-Hant":
+        "隨著集葉袋逐漸裝滿，搬運的重量也成了作業的一部分。滿袋需要抬起移開，才能繼續採收。機器負責剪下茶葉，茶農則負責控制機器、搬運茶葉，並為下一次採收做好準備。",
+      ja: "葉が袋にたまるにつれて、その重さへの対応も作業に加わります。満杯になった袋を持ち上げて邪魔にならない場所へ移してから、摘採を続けます。機械が葉を刈り取り、農家は機械を動かし、収穫した葉を扱い、次の作業に備えます。",
+    },
+  "For tea destined to become matcha, preparation begins before harvest. The plants are shaded while the new leaves develop. Harvesting gathers those leaves for the next stage, when they are steamed and dried without rolling to make tencha, the tea that is milled into matcha.":
+    {
+      "zh-Hans":
+        "用于制作抹茶的茶叶，在采收前就需要准备。新叶生长时，茶树会被遮阴。采下的茶叶随后经过蒸制，不经揉捻直接干燥，制成碾茶，再研磨成为抹茶。",
+      "zh-Hant":
+        "用於製作抹茶的茶葉，在採收前就需要準備。新葉生長時，茶樹會被遮陰。採下的茶葉隨後經過蒸製，不經揉捻直接乾燥，製成碾茶，再研磨成為抹茶。",
+      ja: "抹茶になる茶葉の準備は、収穫前から始まります。新しい葉が育つ間、茶の木を覆って日光を遮ります。収穫した葉は次の工程で蒸し、揉まずに乾燥させて碾茶にします。この碾茶を挽いたものが抹茶です。",
+    },
+  "Farming the hillside": {
+    "zh-Hans": "山坡上的茶园作业",
+    "zh-Hant": "山坡上的茶園作業",
+    ja: "斜面の茶畑での作業",
+  },
+  "Gathering the leaves": {
+    "zh-Hans": "收集茶叶",
+    "zh-Hant": "收集茶葉",
+    ja: "茶葉を集める",
+  },
+  "01 / Supporting the body": {
+    "zh-Hans": "01 / 支撑身体",
+    "zh-Hant": "01 / 支撐身體",
+    ja: "01 / 身体を支える",
+  },
+  "A powersuit at harvest": {
+    "zh-Hans": "采收时使用的助力服",
+    "zh-Hant": "採收時使用的助力服",
+    ja: "収穫時のパワースーツ",
+  },
+  "02 / Managing the fields": {
+    "zh-Hans": "02 / 茶园管理",
+    "zh-Hant": "02 / 茶園管理",
+    ja: "02 / 茶畑の管理",
+  },
+  "Checking the fields from above": {
+    "zh-Hans": "从空中查看茶园",
+    "zh-Hant": "從空中查看茶園",
+    ja: "上空から茶畑を確認する",
+  },
+  "The tea harvest in Wazuka": {
+    "zh-Hans": "和束的茶叶采收",
+    "zh-Hant": "和束的茶葉採收",
+    ja: "和束の茶葉の収穫",
+  },
+  "Powersuits and drones on the farm": {
+    "zh-Hans": "茶园里的助力服与无人机",
+    "zh-Hant": "茶園裡的助力服與無人機",
+    ja: "茶畑のパワースーツとドローン",
+  },
+  "In Wazuka, in Kyoto Prefecture’s Uji tea-growing region, the tea harvest is shared work: guiding the harvester, gathering the leaves and carrying the crop out of the rows.":
+    {
+      "zh-Hans":
+        "在京都府宇治茶产区的和束，采茶需要共同作业：操作采茶机、收集茶叶，再将采下的茶叶运出茶垄。",
+      "zh-Hant":
+        "在京都府宇治茶產區的和束，採茶需要共同作業：操作採茶機、收集茶葉，再將採下的茶葉運出茶壟。",
+      ja: "京都府の宇治茶の産地、和束。摘採機を動かし、茶葉を集め、畝の間から運び出す収穫作業を、農家の人々が協力して進めます。",
+    },
+  "On tea farms, powersuits offer physical support for older growers, while drones give farmers another way to inspect and manage their fields.":
+    {
+      "zh-Hans":
+        "在茶园里，助力服为年长茶农提供身体支撑，无人机则为茶农检查和管理茶园提供另一种方式。",
+      "zh-Hant":
+        "在茶園裡，助力服為年長茶農提供身體支撐，無人機則為茶農檢查和管理茶園提供另一種方式。",
+      ja: "茶畑では、パワースーツが高齢の茶農家の身体を支え、ドローンが畑の点検や管理に新たな方法をもたらしています。",
+    },
+  "Tea fields in Wazuka": {
+    "zh-Hans": "和束的茶园",
+    "zh-Hant": "和束的茶園",
+    ja: "和束の茶畑",
+  },
+  "Harvest collection bags": {
+    "zh-Hans": "采收集叶袋",
+    "zh-Hant": "採收集葉袋",
+    ja: "収穫用の集葉袋",
+  },
+  "Tea harvester and powersuit": {
+    "zh-Hans": "采茶机与助力服",
+    "zh-Hant": "採茶機與助力服",
+    ja: "摘採機とパワースーツ",
+  },
+  "Drone in flight": {
+    "zh-Hans": "飞行中的无人机",
+    "zh-Hant": "飛行中的無人機",
+    ja: "飛行中のドローン",
+  },
+  "FPV pilot and drone / Composite image": {
+    "zh-Hans": "FPV 飞手与无人机 / 合成图像",
+    "zh-Hant": "FPV 飛手與無人機 / 合成影像",
+    ja: "FPV操縦者とドローン / 合成画像",
+  },
+  "FPV pilot beside the tea fields": {
+    "zh-Hans": "茶园旁的 FPV 飞手",
+    "zh-Hant": "茶園旁的 FPV 飛手",
+    ja: "茶畑のそばのFPV操縦者",
+  },
+  "Tea rows follow the hillsides of Wazuka, in Kyoto Prefecture’s Uji tea-growing region.":
+    {
+      "zh-Hans": "在京都府宇治茶产区的和束，茶垄沿山坡排列。",
+      "zh-Hant": "在京都府宇治茶產區的和束，茶壟沿山坡排列。",
+      ja: "京都府の宇治茶の産地、和束では、斜面に沿って茶畝が並んでいます。",
+    },
+  "Harvesting the tea": {
+    "zh-Hans": "采收茶叶",
+    "zh-Hant": "採收茶葉",
+    ja: "茶葉の収穫",
+  },
+  "Workers guide a tea harvester along the rows and collect the leaves in bags.":
+    {
+      "zh-Hans": "作业人员沿茶垄操作采茶机，将茶叶收集到袋中。",
+      "zh-Hant": "作業人員沿茶壟操作採茶機，將茶葉收集到袋中。",
+      ja: "作業者が茶畝に沿って摘採機を動かし、茶葉を袋に集めます。",
+    },
+  "Tea harvesting": {
+    "zh-Hans": "茶叶采收",
+    "zh-Hant": "茶葉採收",
+    ja: "茶葉の収穫",
+  },
+  "The harvester and powersuit": {
+    "zh-Hans": "采茶机与助力服",
+    "zh-Hant": "採茶機與助力服",
+    ja: "摘採機とパワースーツ",
+  },
+  "Two people guide the harvester along a tea row. One operator wears a powersuit around the waist and legs.":
+    {
+      "zh-Hans": "两人沿茶垄操作采茶机。其中一人在腰部和腿部穿戴着助力服。",
+      "zh-Hant": "兩人沿茶壟操作採茶機。其中一人在腰部和腿部穿戴著助力服。",
+      ja: "二人で茶畝に沿って摘採機を動かしています。一人は腰と脚にパワースーツを装着しています。",
+    },
+  "Tea harvesting in Wazuka, in Kyoto Prefecture’s Uji tea-growing region.": {
+    "zh-Hans": "京都府宇治茶产区和束的茶叶采收。",
+    "zh-Hant": "京都府宇治茶產區和束的茶葉採收。",
+    ja: "京都府の宇治茶の産地、和束での茶葉の収穫。",
+  },
+  "Tools in the tea fields": {
+    "zh-Hans": "茶园中的工具",
+    "zh-Hant": "茶園中的工具",
+    ja: "茶畑で使う道具",
+  },
+  "A grower in Wazuka uses a powersuit for support during the tea harvest.": {
+    "zh-Hans": "和束的一位茶农在采茶时使用助力服支撑身体。",
+    "zh-Hant": "和束的一位茶農在採茶時使用助力服支撐身體。",
+    ja: "和束の茶農家が、茶葉の収穫時に身体を支えるパワースーツを使っています。",
+  },
+  "An FPV pilot uses goggles and a controller beside the tea fields.": {
+    "zh-Hans": "一名 FPV 飞手在茶园旁使用飞行眼镜和遥控器。",
+    "zh-Hant": "一名 FPV 飛手在茶園旁使用飛行眼鏡和遙控器。",
+    ja: "茶畑のそばで、FPV操縦者がゴーグルとコントローラーを使っています。",
+  },
+  "Origin information for each matcha is listed on its product page.": {
+    "zh-Hans": "各款抹茶的产地信息均列于其产品页面。",
+    "zh-Hant": "各款抹茶的產地資訊均列於其產品頁面。",
+    ja: "各抹茶の産地情報は、商品ページに記載しています。",
+  },
   "Harvest in Wazuka, Uji tea region, Kyoto.": {
     "zh-Hans": "京都府宇治茶产区，和束的采收。",
     "zh-Hant": "京都府宇治茶產區，和束的採收。",

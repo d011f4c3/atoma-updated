@@ -7,20 +7,23 @@ import type { CatalogProduct } from "@/lib/catalog-types";
 import {
   FIELD_ENTRIES,
   getFieldEntryPhotograph,
-  getFieldEntriesForPlace,
   type FieldEntry,
 } from "@/lib/origins-content";
 import {
   ORIGINS_GRAPH,
-  getDirectoryMatchasForPlace,
   getMatchaTypesForProduct,
-  getPlaceDescendants,
-  getPlacePath,
   getPlacesForMatcha,
   getTeaDesignations,
   getProductDesignations,
   type Place,
 } from "@/lib/origins-model";
+import {
+  originBrowsePlaces,
+  getOriginBrowsePath,
+  getOriginBrowseDescendants,
+  getOriginBrowseEntries,
+  getOriginBrowseMatchas,
+} from "@/lib/origins-browsing";
 import { getProductContent } from "@/lib/product-content";
 import { productName } from "@/lib/product-name";
 import { useStorefrontLocale } from "./storefront-locale-provider";
@@ -67,7 +70,7 @@ const INITIAL_BROWSE_STATE: BrowseState = {
 };
 
 function countryForPlace(place: Place) {
-  return getPlacePath(place.id).find((part) => part.kind === "country");
+  return getOriginBrowsePath(place.id).find((part) => part.kind === "country");
 }
 
 function searchable(value: string) {
@@ -76,8 +79,8 @@ function searchable(value: string) {
 
 function photographForPlace(place: Place) {
   const entry =
-    getFieldEntriesForPlace(place.id)[0] ??
-    getPlacePath(place.id)
+    getOriginBrowseEntries(place.id)[0] ??
+    getOriginBrowsePath(place.id)
       .slice(0, -1)
       .reverse()
       .flatMap((ancestor) =>
@@ -125,8 +128,8 @@ export function OriginsDirectory({
     visibleChildCount,
   } = browseByPlace[browseKey] ?? INITIAL_BROWSE_STATE;
   const home = "/";
-  const publishedPlaces = ORIGINS_GRAPH.places.filter(
-    (place) => getPlacePath(place.id).length > 0,
+  const publishedPlaces = originBrowsePlaces.filter(
+    (place) => getOriginBrowsePath(place.id).length > 0,
   );
   const place = publishedPlaces.find((item) => item.id === placeId);
   // A city's editorial context can introduce a tea designation. Its associated
@@ -144,31 +147,32 @@ export function OriginsDirectory({
     ).includes(search);
   const places = publishedPlaces
     .filter(
-      (item) => item.kind !== "country" || !getPlaceDescendants(item.id).length,
+      (item) =>
+        item.kind !== "country" || !getOriginBrowseDescendants(item.id).length,
     )
     .filter((item) => !countryId || countryForPlace(item)?.id === countryId)
     .filter(
       (item) =>
         search ||
-        getPlacePath(item.id).filter((part) => part.kind !== "country")
+        getOriginBrowsePath(item.id).filter((part) => part.kind !== "country")
           .length <= 1,
     )
     .filter(
       (item) =>
         !search ||
         searchable(
-          `${getPlacePath(item.id)
+          `${getOriginBrowsePath(item.id)
             .flatMap((part) => [part.name, t(part.name)])
             .join(" ")} ${item.description} ${t(item.description)}`,
         ).includes(search) ||
-        getFieldEntriesForPlace(item.id).some(matchesSearch),
+        getOriginBrowseEntries(item.id).some(matchesSearch),
     )
     .sort((a, b) =>
-      getPlacePath(a.id)
+      getOriginBrowsePath(a.id)
         .map((part) => t(part.name))
         .join(" / ")
         .localeCompare(
-          getPlacePath(b.id)
+          getOriginBrowsePath(b.id)
             .map((part) => t(part.name))
             .join(" / "),
         ),
@@ -187,7 +191,7 @@ export function OriginsDirectory({
         (entry) =>
           matchesSearch(entry) &&
           entry.placeIds.some((entryPlaceId) => {
-            const path = getPlacePath(entryPlaceId);
+            const path = getOriginBrowsePath(entryPlaceId);
             return (
               path.length > 0 &&
               (!countryId || path.some((part) => part.id === countryId))
@@ -195,11 +199,13 @@ export function OriginsDirectory({
           }),
       )
     : [];
-  const path = place ? getPlacePath(place.id) : [];
+  const path = place ? getOriginBrowsePath(place.id) : [];
   const children = place
-    ? getPlaceDescendants(place.id).filter((item) => item.parentId === place.id)
+    ? getOriginBrowseDescendants(place.id).filter(
+        (item) => item.parentId === place.id,
+      )
     : [];
-  const placeEntries = place ? getFieldEntriesForPlace(place.id) : [];
+  const placeEntries = place ? getOriginBrowseEntries(place.id) : [];
   const contextPlace = placeEntries.length
     ? undefined
     : path
@@ -215,11 +221,9 @@ export function OriginsDirectory({
   const featuredPhotograph = featuredEntry
     ? getFieldEntryPhotograph(featuredEntry, place?.id)
     : undefined;
-  const matchas = place ? getDirectoryMatchasForPlace(place.id, products) : [];
+  const matchas = place ? getOriginBrowseMatchas(place.id, products) : [];
   const matchasForType = (typeId: string) =>
-    place
-      ? getDirectoryMatchasForPlace(place.id, products, ORIGINS_GRAPH, typeId)
-      : [];
+    place ? getOriginBrowseMatchas(place.id, products, typeId) : [];
   const types = ORIGINS_GRAPH.types.filter(
     (type) =>
       place &&
@@ -332,9 +336,9 @@ export function OriginsDirectory({
 
   function placeRow(item: Place) {
     const photograph = photographForPlace(item);
-    const matchaCount = getDirectoryMatchasForPlace(item.id, products).length;
-    const parentPath = getPlacePath(item.id).slice(0, -1);
-    const subplaces = getPlaceDescendants(item.id).filter(
+    const matchaCount = getOriginBrowseMatchas(item.id, products).length;
+    const parentPath = getOriginBrowsePath(item.id).slice(0, -1);
+    const subplaces = getOriginBrowseDescendants(item.id).filter(
       (child) => child.parentId === item.id,
     );
     return (
@@ -773,8 +777,8 @@ export function OriginsDirectory({
                       const growingPlaces = getPlacesForMatcha(product.handle);
                       const originLabel = [
                         ...growingPlaces.map((origin) => t(origin.name)),
-                        ...getProductDesignations(product.handle).map(
-                          (item) => `${t(item.name)} tea designation`,
+                        ...getProductDesignations(product.handle).map((item) =>
+                          t("{name} tea designation", { name: t(item.name) }),
                         ),
                       ].join(" + ");
                       return (

@@ -1,6 +1,16 @@
 import type { TranslationTable } from "./types.ts";
 
 export const originTranslations = {
+  "Kyoto Prefecture": {
+    "zh-Hans": "京都府",
+    "zh-Hant": "京都府",
+    ja: "京都府",
+  },
+  "Uji tea-growing region": {
+    "zh-Hans": "宇治茶产区",
+    "zh-Hant": "宇治茶產區",
+    ja: "宇治茶の産地",
+  },
   "Kyoto Prefecture → Uji tea-growing region → Wazuka": {
     "zh-Hans": "京都府 → 宇治茶产区 → 和束",
     "zh-Hant": "京都府 → 宇治茶產區 → 和束",

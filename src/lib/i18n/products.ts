@@ -2,6 +2,11 @@ import type { TranslationTable } from "./types.ts";
 
 /** Editorial translations preserve the existing sample profiles and factual limits. */
 export const productTranslations = {
+  "Profile details": {
+    "zh-Hans": "风味详情",
+    "zh-Hant": "風味詳情",
+    ja: "味わいの詳細",
+  },
   "Ceremonial Matcha": {
     "zh-Hans": "纯饮用抹茶",
     "zh-Hant": "純飲用抹茶",

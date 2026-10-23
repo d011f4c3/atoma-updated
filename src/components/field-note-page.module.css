@@ -175,13 +175,11 @@
   margin-left: auto;
 }
 
-.viewpointPair {
+.dronePhotographs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
   gap: clamp(2rem, 5vw, 5rem);
-  width: 83%;
-  margin: 3.5rem auto 0;
 }
 
 .closingPhotograph {
@@ -244,15 +242,14 @@
 
 @media (max-width: 760px) {
   .portraitPhotograph,
-  .viewpointPair,
+  .dronePhotographs,
   .closingPhotograph {
     width: 100%;
   }
 
-  .viewpointPair {
+  .dronePhotographs {
     grid-template-columns: 1fr;
     gap: 1.5rem;
-    margin-top: 1.5rem;
   }
 
   .closingPhotograph {

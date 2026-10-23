@@ -417,7 +417,7 @@ export function Shop({
             <span aria-hidden="true">{tone === "dark" ? "◐" : "◑"}</span>
           </button>
         ) : (
-          <ThemeSwitcher />
+          <ThemeSwitcher showLanguage={false} />
         )}
       </footer>
     </main>

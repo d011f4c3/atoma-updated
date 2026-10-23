@@ -2,6 +2,26 @@
 
 ## Scope and authority
 
+- **Task 0289 improves the product-page buying flow:** read
+  `docs/tasks/0289-product-page-ux.md`. Pair the gallery with a compact buyer,
+  show one updating price and place readable product learning directly below
+  purchasing. Preserve exact orders, availability, plans and mobile access.
+
+- **Task 0288 aligns the sample comparison dropdowns:** read
+  `docs/tasks/0288-comparison-dropdown-alignment.md`. Match the dropdown
+  chevron inset to adjacent action controls, retaining native select behavior.
+
+- **Task 0287 writes complete Community stories:** read
+  `docs/tasks/0287-community-story-copy.md`. Tell the harvest story through the
+  farmers' work, and explain powersuits supporting aging bodies and drones for
+  field management. Use full prose with translations, without invented quotes,
+  identities, equipment specifications or measured outcomes.
+
+- **Task 0286 makes the requested Origins hierarchy browseable:** read
+  `docs/tasks/0286-origins-browsing-hierarchy.md`. Show Kyoto Prefecture →
+  Uji tea-growing region → Wazuka in the directory and breadcrumbs. Keep the
+  editorial region distinct from Uji City and actual product provenance.
+
 - **Task 0285 makes language selection global in navigation:** read
   `docs/tasks/0285-global-navigation-language.md`. Show the shared language
   selector in desktop navigation and mobile menus on all canonical pages.

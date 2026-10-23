@@ -13,7 +13,6 @@ import { useCart } from "./cart-drawer";
 import { useProductSelection } from "./use-product-selection";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { useStorefrontTheme } from "./storefront-theme-provider";
-import { ThemeSwitcher } from "./theme-switcher";
 import { SamplesGallery } from "./samples-gallery";
 import { SamplesRange } from "./samples-range";
 import { SampleNextOrder } from "./sample-next-order";
@@ -503,7 +502,6 @@ export function Samples() {
             <span aria-hidden="true">/</span>
             <span aria-current="page">{t("Samples")}</span>
           </nav>
-          <ThemeSwitcher />
         </div>
 
         <div className={styles.coverTrack} data-samples-cover>

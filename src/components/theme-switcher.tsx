@@ -10,7 +10,13 @@ const subscribe = () => () => {};
 const clientReady = () => true;
 const serverReady = () => false;
 
-export function ThemeSwitcher({ label = "Dark mode" }: { label?: string }) {
+export function ThemeSwitcher({
+  label = "Dark mode",
+  showLanguage = true,
+}: {
+  label?: string;
+  showLanguage?: boolean;
+}) {
   const { t } = useStorefrontLocale();
   const { tone, setTone } = useStorefrontTheme();
   const ready = useSyncExternalStore(subscribe, clientReady, serverReady);
@@ -18,7 +24,7 @@ export function ThemeSwitcher({ label = "Dark mode" }: { label?: string }) {
 
   return (
     <span className={styles.controls} data-appearance-controls>
-      <LanguageSwitcher />
+      {showLanguage && <LanguageSwitcher />}
       <button
         className={styles.switcher}
         type="button"

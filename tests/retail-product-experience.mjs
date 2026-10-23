@@ -33,8 +33,8 @@ const learning = (page) =>
   main(page).locator("[data-retail-product-information]");
 const learningToggle = (page) =>
   main(page).locator("[data-retail-learning-toggle]");
-const mobilePrice = (page) =>
-  controls(page).locator("[data-retail-mobile-price]");
+const orderPrice = (page) =>
+  controls(page).locator("[data-retail-order-price]");
 const tab = (page, name) =>
   learning(page).locator(`[data-retail-learning-tab="${name}"]`);
 const panel = (page, name) =>
@@ -174,12 +174,12 @@ async function openLearning(page) {
   assert.equal(await learning(page).isVisible(), true);
 }
 
-async function singleMobilePrice(page, expected, count = 1) {
-  assert.equal(await mobilePrice(page).innerText(), expected);
+async function singleOrderPrice(page, expected, count = 1) {
+  assert.equal(await orderPrice(page).innerText(), expected);
   assert.equal(
     await controls(page).locator("[data-retail-secondary-total]").isVisible(),
     false,
-    "Mobile ordering has no second Total price",
+    "Ordering has no second Total price",
   );
   assert.equal(
     (await controls(page).innerText()).match(/¥/g)?.length,
@@ -298,6 +298,11 @@ try {
     await run(label, width, height, tone, "en", {}, async ({ page }) => {
       await ready(page);
       await firstView(page, label);
+      await singleOrderPrice(page, "¥8,000");
+      await purchase(page)
+        .getByRole("button", { name: "Increase quantity", exact: true })
+        .click();
+      await singleOrderPrice(page, "¥16,000", 2);
       assert.equal(await main(page).getAttribute("data-tone"), tone);
       await openLearning(page);
       assert.equal(await learning(page).getByRole("tablist").count(), 1);
@@ -330,7 +335,7 @@ try {
     async ({ page }) => {
       await ready(page, `${route}?format=1kg`);
       await firstView(page, "mobile-simple-purchase-dark");
-      await singleMobilePrice(page, "¥8,000");
+      await singleOrderPrice(page, "¥8,000");
       assert.equal(
         await controls(page).locator("details").count(),
         0,
@@ -357,7 +362,7 @@ try {
       await purchase(page)
         .getByRole("button", { name: "Increase quantity", exact: true })
         .click();
-      await singleMobilePrice(page, "¥16,000", 2);
+      await singleOrderPrice(page, "¥16,000", 2);
       await openLearning(page);
       await tab(page, "preparation").click();
       await learningToggle(page).click();
@@ -370,7 +375,7 @@ try {
       );
       await learningToggle(page).click();
       assert.equal(await quantity(page).textContent(), "2");
-      await singleMobilePrice(page, "¥16,000", 2);
+      await singleOrderPrice(page, "¥16,000", 2);
       await page.evaluate(() => scrollTo(0, 0));
       await capture(page, "mobile-simple-purchase-quantity-two");
     },
@@ -430,11 +435,11 @@ try {
         "Collapsed purchase options hide their cards and subscription terms",
       );
       assert.equal(await glyph(), "+");
-      await singleMobilePrice(page, "¥7,200");
+      await singleOrderPrice(page, "¥7,200");
       await purchase(page)
         .getByRole("button", { name: "Increase quantity", exact: true })
         .click();
-      await singleMobilePrice(page, "¥14,400", 2);
+      await singleOrderPrice(page, "¥14,400", 2);
       await summary.click();
       assert.equal(
         await recurring.isChecked(),
@@ -467,10 +472,14 @@ try {
       const property = panel(page, "profile").locator(
         '[data-retail-profile-property="0"]',
       );
-      await property.click();
-      assert.equal(await property.getAttribute("aria-pressed"), "true");
-      const target = await property.getAttribute("aria-controls");
-      assert.equal(await page.locator(`[id="${target}"]`).isVisible(), true);
+      assert.equal(await property.locator("dt").isVisible(), true);
+      assert.equal(await property.locator("dd").isVisible(), true);
+      assert.equal(await property.getAttribute("aria-pressed"), null);
+      const details = panel(page, "profile").locator(
+        "[data-retail-profile-details]",
+      );
+      await details.locator("summary").click();
+      assert.equal(await details.locator("dd:visible").count(), 6);
       assert.ok(
         Math.abs((await page.evaluate(() => scrollY)) - scroll) < 2,
         "Reading a property does not jump the page",
@@ -527,9 +536,9 @@ try {
       );
       await tab(page, "profile").click();
       assert.equal(
-        await property.getAttribute("aria-pressed"),
-        "true",
-        "Learning choices survive an Origins visit",
+        await details.evaluate((node) => node.open),
+        true,
+        "Expanded profile details survive an Origins visit",
       );
       await capture(page, "learning-profile");
     },
@@ -548,11 +557,16 @@ try {
       const property = panel(page, "profile").locator(
         '[data-retail-profile-property="6"]',
       );
-      await property.tap();
-      assert.equal(await property.getAttribute("aria-pressed"), "true");
+      assert.equal(await property.locator("dt").isVisible(), true);
+      assert.equal(await property.locator("dd").isVisible(), true);
+      const details = panel(page, "profile").locator(
+        "[data-retail-profile-details]",
+      );
+      await details.locator("summary").tap();
+      assert.equal(await details.locator("dd:visible").count(), 6);
       assert.ok(
         Math.abs((await page.evaluate(() => scrollY)) - scroll) < 2,
-        "Touching a profile value retains the mobile reading position",
+        "Opening profile explanations retains the mobile reading position",
       );
       for (const name of ["preparation", "origin", "profile"]) {
         await tab(page, name).tap();
@@ -698,7 +712,7 @@ try {
       await noOverflow(page);
       await inspectControls(page, purchase(page));
       assert.ok(
-        await mobilePrice(page).evaluate((node) => {
+        await orderPrice(page).evaluate((node) => {
           const range = document.createRange();
           range.selectNodeContents(node);
           return (

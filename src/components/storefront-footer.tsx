@@ -49,7 +49,9 @@ export function StorefrontFooter({ year }: { year: number }) {
               : undefined
       }
       onBackToTop={backToTop}
-      themeControl={<ThemeSwitcher label="Dark mode in footer" />}
+      themeControl={
+        <ThemeSwitcher label="Dark mode in footer" showLanguage={false} />
+      }
       destinationControl={<DestinationSelector />}
     />
   );

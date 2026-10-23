@@ -681,22 +681,34 @@ export function SampleTastingTools() {
           {pair.map((key, index) => (
             <label key={index}>
               <span>{t(index === 0 ? "First matcha" : "Second matcha")}</span>
-              <select
-                value={key}
-                data-tasting-compare-slot={index}
-                onChange={(event) =>
-                  selectCompared(
-                    index as 0 | 1,
-                    event.target.value as ProductKey,
-                  )
-                }
-              >
-                {SAMPLE_SET_CONTENTS.map((tea) => (
-                  <option key={tea.key} value={tea.key}>
-                    {t(tea.name.replace(/ Matcha$/, ""))}
-                  </option>
-                ))}
-              </select>
+              <span className={styles.compareSelect}>
+                <select
+                  value={key}
+                  data-tasting-compare-slot={index}
+                  onChange={(event) =>
+                    selectCompared(
+                      index as 0 | 1,
+                      event.target.value as ProductKey,
+                    )
+                  }
+                >
+                  {SAMPLE_SET_CONTENTS.map((tea) => (
+                    <option key={tea.key} value={tea.key}>
+                      {t(tea.name.replace(/ Matcha$/, ""))}
+                    </option>
+                  ))}
+                </select>
+                <svg
+                  viewBox="0 0 12 8"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path d="m1 1 5 5 5-5" />
+                </svg>
+              </span>
             </label>
           ))}
         </div>

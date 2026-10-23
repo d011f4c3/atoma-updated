@@ -182,7 +182,7 @@ export function RetailProduct({
                       disabled={cart.navigationBusy}
                       onClick={() => setImagery(view)}
                     >
-                      {t(view === "application" ? "In use" : "Matcha")}
+                      {t(view === "application" ? "Application" : "Powder")}
                     </button>
                   ))}
                 </div>
@@ -242,25 +242,9 @@ export function RetailProduct({
                     data-retail-purchase-controls
                   >
                     <p className={styles.unitPrice}>
-                      <span className={styles.desktopUnitPrice}>
-                        {model.refreshing
-                          ? t("Updating prices…")
-                          : purchaseVariant
-                            ? money(
-                                purchaseVariant.priceMinor,
-                                purchaseVariant.currency,
-                              )
-                            : t(
-                                requestedFormatUnavailable
-                                  ? "1 kg selection unavailable"
-                                  : model.selectedSellingPlanKey
-                                    ? "Selected subscription unavailable"
-                                    : "No published format",
-                              )}
-                      </span>
                       <span
-                        className={styles.mobileOrderPrice}
-                        data-retail-mobile-price
+                        className={styles.orderPrice}
+                        data-retail-order-price
                         aria-live="polite"
                       >
                         {model.refreshing
@@ -277,21 +261,12 @@ export function RetailProduct({
                       </span>
                       {variant && (
                         <span className={styles.priceContext}>
-                          <span className={styles.desktopFormat}>
-                            {" "}
-                            /{" "}
-                            {variant.title === "Default Title"
-                              ? t("Standard")
-                              : variant.title}
-                          </span>
-                          <span className={styles.mobileFormat}>
-                            {quantity > 1
-                              ? ` ${t("Total")} · ${quantity} × `
-                              : " / "}
-                            {variant.title === "Default Title"
-                              ? t("Standard")
-                              : variant.title}
-                          </span>
+                          {quantity > 1
+                            ? ` ${t("Total")} · ${quantity} × `
+                            : " / "}
+                          {variant.title === "Default Title"
+                            ? t("Standard")
+                            : variant.title}
                         </span>
                       )}
                     </p>
@@ -372,10 +347,13 @@ export function RetailProduct({
                           </button>
                         </div>
                       </div>
-                      <div className={styles.total} data-retail-secondary-total>
-                        <span>{t("Total")}</span>
-                        <strong aria-live="polite">{total}</strong>
-                      </div>
+                      <AddToCartButton
+                        updating={model.refreshing}
+                        available={available}
+                        pending={pending}
+                        disabled={locked || !purchasable}
+                        onAdd={() => void addToCart()}
+                      />
                     </div>
                     {variant &&
                       (variant.minimum > 1 || variant.increment > 1) && (
@@ -386,13 +364,6 @@ export function RetailProduct({
                           })}
                         </p>
                       )}
-                    <AddToCartButton
-                      updating={model.refreshing}
-                      available={available}
-                      pending={pending}
-                      disabled={locked || !purchasable}
-                      onAdd={() => void addToCart()}
-                    />
                     {cart.error && (
                       <p className={styles.error} role="alert">
                         {cart.error}
@@ -429,11 +400,7 @@ export function RetailProduct({
                           settled
                         />
                       </details>
-                    ) : (
-                      <p className={styles.oneTimeNote}>
-                        {t("One-time purchase")}
-                      </p>
-                    )}
+                    ) : null}
                   </div>
                 </section>
               </div>
@@ -547,7 +514,7 @@ export function RetailProduct({
       </div>
       <footer className={styles.footer}>
         <Link href={collectionHref}>{t("ATOMA / MATCHA")}</Link>
-        <ThemeSwitcher />
+        <ThemeSwitcher showLanguage={false} />
       </footer>
     </main>
   );

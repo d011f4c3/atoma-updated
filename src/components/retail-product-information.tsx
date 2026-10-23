@@ -45,12 +45,11 @@ export function RetailProductInformation({
   const { busy } = useCart();
   const { openOrigins } = useOrigins();
   const [view, setView] = useState<LearningView>("profile");
-  const [propertyIndex, setPropertyIndex] = useState(1);
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
   const id = useId();
   const content = getProductContent(product, locale);
   const facts = getProductFacts(product.handle, undefined, locale);
-  const property = content.materialProfile[propertyIndex];
+  const flavour = content.materialProfile[1];
   // The flavour leads the same seven authored properties; there is no score or
   // inferred measurement. Their source order remains stable across locales.
   const profileOrder = [
@@ -159,7 +158,10 @@ export function RetailProductInformation({
         data-retail-learning-profile
         data-visible-product-profile
       >
-        <ul
+        {flavour && (
+          <p className={styles.profileSummary}>{flavour.explanation}</p>
+        )}
+        <dl
           className={styles.properties}
           aria-label={t("Material specifications")}
         >
@@ -167,30 +169,40 @@ export function RetailProductInformation({
             const item = content.materialProfile[index];
             if (!item) return null;
             return (
-              <li key={item.label} data-flavour={index === 1 || undefined}>
-                <button
-                  type="button"
-                  className={styles.property}
-                  aria-pressed={propertyIndex === index}
-                  aria-controls={`${id}-explanation`}
-                  data-retail-profile-property={index}
-                  onClick={() => setPropertyIndex(index)}
-                >
-                  <span className={styles.propertyLabel}>{item.label}</span>
-                  <span className={styles.propertyValue}>{item.value}</span>
-                </button>
-              </li>
+              <div
+                key={item.label}
+                className={styles.property}
+                data-flavour={index === 1 || undefined}
+                data-retail-profile-property={index}
+              >
+                <dt className={styles.propertyLabel}>{item.label}</dt>
+                <dd className={styles.propertyValue}>{item.value}</dd>
+              </div>
             );
           })}
-        </ul>
-        <div
-          className={styles.explanation}
-          id={`${id}-explanation`}
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {property && <p>{property.explanation}</p>}
-        </div>
+        </dl>
+        <details className={styles.guidance} data-retail-profile-details>
+          <summary>
+            <span>{t("Profile details")}</span>
+            <span aria-hidden="true" />
+          </summary>
+          <div>
+            <dl className={styles.profileExplanations}>
+              {profileOrder
+                .filter((index) => index !== 1)
+                .map((index) => {
+                  const item = content.materialProfile[index];
+                  if (!item) return null;
+                  return (
+                    <div key={item.label}>
+                      <dt>{item.label}</dt>
+                      <dd>{item.explanation}</dd>
+                    </div>
+                  );
+                })}
+            </dl>
+          </div>
+        </details>
       </div>
 
       <div
