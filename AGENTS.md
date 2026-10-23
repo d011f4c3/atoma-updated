@@ -2,6 +2,12 @@
 
 ## Scope and authority
 
+- **Task 0284 defaults to dark and unifies homepage sample links:** read
+  `docs/tasks/0284-dark-default-and-sample-links.md`. Default missing or invalid
+  theme preferences to Blue hour dark while honoring saved choices. Send every
+  canonical homepage Sample Set action to `/samples`, preserving application
+  navigation, purchase guards, layout and independent study destinations.
+
 - **Task 0283 centers the mobile hero composition:** read
   `docs/tasks/0283-mobile-hero-centering.md`. Balance the complete content group
   vertically with equal block padding and align the application-card edges.

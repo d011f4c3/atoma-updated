@@ -209,7 +209,7 @@ export function ProductPopupPurchase({
         </p>
       )}
       <HeroSevenLink
-        href="/?view=samples"
+        href="/samples"
         className={styles.sampleAction}
         data-popup-sample-action
         aria-disabled={cart.navigationBusy || undefined}

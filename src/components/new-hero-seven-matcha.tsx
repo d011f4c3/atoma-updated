@@ -337,9 +337,11 @@ export function NewHeroSevenMatcha({
             <p>{t("Not sure yet? Try all three.")}</p>
             <HeroSevenLink
               href={
-                navigation
-                  ? heroSevenHref({ view: "samples" }, basePath)
-                  : "/new-hero7/samples"
+                basePath === "/"
+                  ? "/samples"
+                  : navigation
+                    ? heroSevenHref({ view: "samples" }, basePath)
+                    : "/new-hero7/samples"
               }
               data-new-hero7-next="samples"
               {...guard}

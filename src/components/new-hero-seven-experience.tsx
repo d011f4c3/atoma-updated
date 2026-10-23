@@ -127,8 +127,10 @@ export function NewHeroSevenExperience({
   );
 
   useEffect(() => {
+    // Canonical links need native route Back/Forward restoration. The saved
+    // study retains its manual restoration for its in-place views.
     const restoration = window.history.scrollRestoration;
-    window.history.scrollRestoration = "manual";
+    if (basePath !== "/") window.history.scrollRestoration = "manual";
     const rememberScroll = () =>
       positions.current.set(current.current, window.scrollY);
     const traverse = () => {
@@ -147,7 +149,7 @@ export function NewHeroSevenExperience({
     window.addEventListener("scroll", rememberScroll, { passive: true });
     window.addEventListener("popstate", traverse);
     return () => {
-      window.history.scrollRestoration = restoration;
+      if (basePath !== "/") window.history.scrollRestoration = restoration;
       window.removeEventListener("scroll", rememberScroll);
       window.removeEventListener("popstate", traverse);
     };

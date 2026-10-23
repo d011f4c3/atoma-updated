@@ -377,9 +377,6 @@ try {
       await ready(page);
       await inspectPhone(page, "390-light-complete-journey", true);
       const initialURL = page.url();
-      const retainedHome = await page
-        .locator("[data-mobile-home-sections]")
-        .elementHandle();
       const samples = section(page, "samples");
       assert.equal(await samples.locator("ul li").count(), 3);
       assert.equal(
@@ -489,21 +486,12 @@ try {
       }
 
       const sampleAction = page.locator("[data-mobile-home-samples]");
-      assert.equal(await sampleAction.getAttribute("href"), "/?view=samples");
+      assert.equal(await sampleAction.getAttribute("href"), "/samples");
       await sampleAction.scrollIntoViewIfNeeded();
       const sampleScroll = await page.evaluate(() => scrollY);
       await sampleAction.tap();
-      await page.waitForFunction(
-        () =>
-          document
-            .querySelector("[data-homepage]")
-            ?.getAttribute("data-active-view") === "samples",
-      );
-      assert.equal(new URL(page.url()).searchParams.get("view"), "samples");
-      assert.equal(
-        await retainedHome.evaluate((node) => node.isConnected),
-        true,
-      );
+      await page.locator("[data-samples-page]").waitFor({ state: "visible" });
+      assert.equal(new URL(page.url()).pathname, "/samples");
       await page.goBack();
       await samples.waitFor({ state: "visible" });
       assert.equal(page.url(), initialURL);

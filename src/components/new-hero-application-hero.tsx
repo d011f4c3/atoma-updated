@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState, type CSSProperties, type ReactNode } from "react";
 import type { ProductKey } from "@/lib/product-codes";
 import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
 import { useCart } from "./cart-drawer";
 import { HomeHeader } from "./home-header";
+import { HeroSevenLink as Link } from "./new-hero-seven-navigation";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { useStorefrontTheme } from "./storefront-theme-provider";
 import styles from "./new-hero-five.module.css";
@@ -15,14 +15,12 @@ export function NewHeroApplicationHero({
   idPrefix,
   header,
   destinations,
-  onNavigate,
   motion = false,
   onReady,
   applicationImageSrc = "/images/hero/matcha-applications-cutout-v1.webp",
 }: {
   idPrefix: "new-hero5" | "new-hero6" | "new-hero7";
   header?: ReactNode;
-  onNavigate?: (href: string) => void;
   motion?: boolean;
   onReady?: () => void;
   applicationImageSrc?: string;
@@ -42,22 +40,11 @@ export function NewHeroApplicationHero({
   function guardNavigation(event: { preventDefault(): void }) {
     if (navigationBusy) event.preventDefault();
   }
-  const HeroLink = destinations || onNavigate ? Link : "a";
-  function linkGuard(href: string) {
-    return {
-      "aria-disabled": navigationBusy || undefined,
-      onClick: guardNavigation,
-      ...(destinations || onNavigate
-        ? {
-            prefetch: onNavigate ? false : undefined,
-            onNavigate: (event: { preventDefault(): void }) => {
-              if (navigationBusy || onNavigate) event.preventDefault();
-              if (!navigationBusy) onNavigate?.(href);
-            },
-          }
-        : {}),
-    } as const;
-  }
+  const HeroLink = destinations ? Link : "a";
+  const linkGuard = {
+    "aria-disabled": navigationBusy || undefined,
+    onClick: guardNavigation,
+  } as const;
   const samplesHref = destinations?.samples ?? `#${sectionPrefix}-samples`;
   const applicationsHref =
     destinations?.applications ?? `#${sectionPrefix}-applications`;
@@ -110,7 +97,7 @@ export function NewHeroApplicationHero({
                 href={samplesHref}
                 className={styles.primary}
                 {...{ [`data-${idPrefix}-samples`]: true }}
-                {...linkGuard(samplesHref)}
+                {...linkGuard}
               >
                 <span>{t("Start with the Sample Set")}</span>
                 <span aria-hidden="true">{destinations ? "↗" : "↓"}</span>
@@ -119,7 +106,7 @@ export function NewHeroApplicationHero({
                 href={applicationsHref}
                 className={styles.secondary}
                 {...{ [`data-${idPrefix}-explore`]: true }}
-                {...linkGuard(applicationsHref)}
+                {...linkGuard}
               >
                 <span>{t("Explore by Application")}</span>
                 <span aria-hidden="true">{destinations ? "↗" : "↓"}</span>
@@ -190,9 +177,7 @@ export function NewHeroApplicationHero({
                   ? ({ "--hero-order": index } as CSSProperties)
                   : undefined
               }
-              {...linkGuard(
-                destinations?.products[item.key] ?? `#${idPrefix}-${item.key}`,
-              )}
+              {...linkGuard}
             >
               <span className={styles.applicationIndex} aria-hidden="true">
                 0{index + 1}

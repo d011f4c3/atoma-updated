@@ -5,7 +5,7 @@ import {
   useHeroSevenNavigation,
 } from "./new-hero-seven-navigation";
 import { heroSevenHref } from "@/lib/new-hero-seven-view";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState, type MouseEvent, type ReactNode } from "react";
 import type { ProductKey } from "@/lib/product-codes";
 import { useCart } from "./cart-drawer";
@@ -143,6 +143,7 @@ export function NewHeroSevenHome({
 }) {
   const navigationState = useHeroSevenNavigation();
   const basePath = navigationState?.basePath ?? root;
+  const router = useRouter();
   const { navigationBusy } = useCart();
   const [readingSample, setReadingSample] = useState<ProductKey | null>(null);
   const home = useRef<HTMLDivElement>(null);
@@ -152,7 +153,11 @@ export function NewHeroSevenHome({
     : undefined;
   usePageReveals(home, motion && !motionPaused);
   const destination = (view: "matcha" | "samples") =>
-    navigationState ? heroSevenHref({ view }, basePath) : `${root}/${view}`;
+    basePath === "/" && view === "samples"
+      ? "/samples"
+      : navigationState
+        ? heroSevenHref({ view }, basePath)
+        : `${root}/${view}`;
   const application = (key: "ceremonial" | "barista" | "culinary") =>
     navigationState
       ? heroSevenHref({ view: "matcha", application: key }, basePath)
@@ -169,7 +174,6 @@ export function NewHeroSevenHome({
         <NewHeroApplicationHero
           idPrefix="new-hero7"
           header={contained ? false : <NewHeroSevenHeader />}
-          onNavigate={navigationState?.navigate}
           motion={motion}
           onReady={onHeroReady}
           applicationImageSrc={applicationImageSrc}
@@ -197,9 +201,9 @@ export function NewHeroSevenHome({
                   homeSection
                   selected={readingSample}
                   onSelect={setReadingSample}
-                  onOrder={() =>
-                    navigationState?.navigate(destination("samples"))
-                  }
+                  onOrder={() => {
+                    if (!navigationBusy) router.push("/samples");
+                  }}
                   disabled={navigationBusy}
                 />
               ) : undefined

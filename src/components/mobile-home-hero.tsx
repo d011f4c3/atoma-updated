@@ -154,7 +154,7 @@ export function MobileHomeHero({ onReady }: { onReady?: () => void }) {
           </p>
         )}
         <HeroSevenLink
-          href="/?view=samples"
+          href="/samples"
           className={styles.primary}
           data-mobile-hero-samples
           {...guard}

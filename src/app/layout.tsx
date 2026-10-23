@@ -97,7 +97,7 @@ export default async function RootLayout({
   children: ReactNode;
 }) {
   const preference = (await cookies()).get("atoma-theme")?.value;
-  const initialTone = preference === "dark" ? "dark" : "light";
+  const initialTone = preference === "light" ? "light" : "dark";
   const initialLocale = await readStorefrontLocale();
   return (
     <html

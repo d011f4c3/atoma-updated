@@ -71,7 +71,7 @@ export function MobileHomeSections() {
             )}
           </p>
           <Link
-            href="/?view=samples"
+            href="/samples"
             className={styles.primary}
             data-mobile-home-samples
             {...guard}
@@ -188,7 +188,7 @@ export function MobileHomeSections() {
         <ol className={styles.steps}>
           <li data-page-reveal="fade" data-page-motion="composed">
             <Link
-              href="/?view=samples"
+              href="/samples"
               className={styles.stepAction}
               aria-label={t("Sample Set")}
               {...guard}
