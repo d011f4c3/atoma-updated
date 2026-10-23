@@ -16,6 +16,10 @@
 
 /* Keep the adopted hero's type and whole-object imagery at a quieter scale. */
 @media (min-width: 761px) {
+  .frame[data-homepage] :global([data-new-hero7-description]) {
+    font-size: calc(0.875rem + var(--locale-font-increment));
+  }
+
   .frame[data-homepage] :global([data-new-hero7-hero]) h1 {
     font-size: calc(
       clamp(1.875rem, 2.9vw, 2.875rem) + var(--locale-font-increment)

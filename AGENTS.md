@@ -2,6 +2,11 @@
 
 ## Scope and authority
 
+- **Task 0282 reduces the desktop hero supporting copy:** read
+  `docs/tasks/0282-desktop-hero-description-scale.md`. Set the canonical desktop
+  hero description to 14 px while retaining locale adjustment, mobile sizing,
+  heading, imagery, motion and saved-study typography.
+
 - **Task 0281 corrects inconsistent purchase views:** read
   `docs/tasks/0281-consistent-simple-purchasing.md`. Show one current price for
   every quantity in both canonical Sample Set entry points, with visible credit
