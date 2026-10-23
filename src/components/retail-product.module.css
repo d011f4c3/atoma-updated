@@ -89,9 +89,6 @@
   max-width: 27rem;
   margin-inline: auto;
 }
-.galleryImage[data-retail-imagery="material"] {
-  max-width: 14rem;
-}
 .imageControls {
   display: flex;
   justify-content: center;
@@ -160,6 +157,54 @@
 .availability[data-available="false"] > span {
   border: 1px solid currentColor;
   background: transparent;
+}
+.originContext {
+  grid-area: origin;
+  margin-top: 0.25rem;
+}
+.originLink {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.originText {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  min-width: 0;
+}
+.originLink > span:last-child {
+  flex: none;
+  font-size: 0.75rem;
+}
+.originLabel {
+  color: var(--muted);
+  font-size: 0.6875rem;
+}
+.originName {
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--line);
+}
+.originLink:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+@media (hover: hover) and (pointer: fine) {
+  .originLink:hover:not(:disabled) .originName {
+    text-decoration-color: currentColor;
+  }
 }
 .purchaseControls {
   container: retail-order / inline-size;
@@ -476,6 +521,9 @@
     padding-top: 1rem;
     padding-bottom: 2rem;
   }
+  .productLayout[data-has-origin] {
+    grid-template-areas: "gallery identity" "origin origin" "order order" "learning learning";
+  }
   .productBody,
   .purchase {
     display: contents;
@@ -528,6 +576,15 @@
     margin-top: 0;
     padding-top: 0;
     border-top: 0;
+  }
+  .originContext {
+    margin-top: 0;
+  }
+  .originLabel {
+    font-size: var(--mobile-type-label);
+  }
+  .originName {
+    font-size: var(--mobile-type-action);
   }
   .unitPrice {
     margin-top: 0;

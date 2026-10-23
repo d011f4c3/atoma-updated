@@ -160,6 +160,24 @@
 .places section + section {
   margin-top: 1.5rem;
 }
+.originPhotograph {
+  margin: 0 0 1.25rem;
+}
+.originImage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 6px;
+}
+.originImage img {
+  object-fit: cover;
+}
+.originPhotograph figcaption {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: calc(0.6875rem + var(--locale-font-increment, 0px));
+  line-height: 1.6;
+}
 .prose .caption {
   color: var(--muted);
   font-size: calc(0.6875rem + var(--locale-font-increment, 0px));

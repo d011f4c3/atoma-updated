@@ -15,6 +15,7 @@ type ShopMaterialImageProps = {
   src: string;
   alt: string;
   showWhilePreparing?: boolean;
+  framing?: "source" | "powder";
 };
 
 /** A static material photograph, sized by its surrounding product card. */
@@ -22,12 +23,14 @@ export function ShopMaterialImage({
   src,
   alt,
   showWhilePreparing = false,
+  framing = "source",
 }: ShopMaterialImageProps) {
   const [mask, setMask] = useState<{
     source: string;
     url: string | null;
   } | null>(null);
   const canMask = powderPhotographs.has(src);
+  const framePowder = framing === "powder" && canMask;
   const currentMask = mask?.source === src ? mask.url : null;
   const pending = canMask && mask?.source !== src;
 
@@ -42,30 +45,39 @@ export function ShopMaterialImage({
     };
   }, [src]);
 
+  const photograph = (
+    <Image
+      src={src}
+      alt={alt}
+      {...(framePowder ? { width: 1200, height: 900 } : { fill: true })}
+      unoptimized
+      sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
+      className={styles.image}
+      style={
+        currentMask
+          ? {
+              maskImage: `url("${currentMask}")`,
+              WebkitMaskImage: `url("${currentMask}")`,
+            }
+          : undefined
+      }
+      draggable={false}
+    />
+  );
+
   return (
     <div
       className={styles.root}
       data-masked={Boolean(currentMask)}
       data-pending={pending}
       data-show-while-preparing={showWhilePreparing || undefined}
+      data-framing={framePowder ? "powder" : undefined}
     >
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        unoptimized
-        sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
-        className={styles.image}
-        style={
-          currentMask
-            ? {
-                maskImage: `url("${currentMask}")`,
-                WebkitMaskImage: `url("${currentMask}")`,
-              }
-            : undefined
-        }
-        draggable={false}
-      />
+      {framePowder ? (
+        <div className={styles.powderFrame}>{photograph}</div>
+      ) : (
+        photograph
+      )}
     </div>
   );
 }

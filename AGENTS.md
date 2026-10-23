@@ -2,6 +2,16 @@
 
 ## Scope and authority
 
+- **Task 0291 refines product-page imagery:** read
+  `docs/tasks/0291-product-origin-photo-and-powder-scale.md`. Show place
+  photography inside the Origin tab, with a compact designation link above
+  buying. Retain the owner's accepted powder scale and other image uses.
+
+- **Task 0290 makes product origin visible beside buying:** read
+  `docs/tasks/0290-product-origin-connection.md`. Link the product introduction
+  to its confirmed growing place or tea designation, preserving the distinction
+  between Wazuka provenance and UJI context and retaining the chosen order.
+
 - **Task 0289 improves the product-page buying flow:** read
   `docs/tasks/0289-product-page-ux.md`. Pair the gallery with a compact buyer,
   show one updating price and place readable product learning directly below

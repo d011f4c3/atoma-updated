@@ -12,6 +12,10 @@ import { HomeHeader } from "./home-header";
 import { ShopMaterialImage } from "./shop-material-image";
 import { ProductApplicationCutout } from "./product-application-cutout";
 import { getProductCode, getProductKey } from "@/lib/product-codes";
+import {
+  getProductDesignations,
+  getProductPlaceRecords,
+} from "@/lib/origins-model";
 import { useProductSelection } from "./use-product-selection";
 import { useCart } from "./cart-drawer";
 import { useOrigins } from "./origins-provider";
@@ -35,7 +39,7 @@ export function RetailProduct({
   const { tone } = useStorefrontTheme();
   const model = useProductSelection(handle, "restore", "matcha", initialFormat);
   const cart = useCart();
-  const { setSelectedMatcha } = useOrigins();
+  const { setSelectedMatcha, openOrigins } = useOrigins();
   const [pending, setPending] = useState(false);
   const [learningOpen, setLearningOpen] = useState(false);
   const learningId = useId();
@@ -69,6 +73,28 @@ export function RetailProduct({
   const productHref = (nextHandle: string) =>
     `/shop/${encodeURIComponent(nextHandle)}`;
   const related = model.products.filter((item) => item.handle !== handle);
+  const originLinks = product
+    ? [
+        ...getProductPlaceRecords(product.handle)
+          .filter(
+            (record) =>
+              record.role === "grown" &&
+              record.subjects.some((subject) => subject.kind === "material"),
+          )
+          .map((record) => ({
+            id: record.place.id,
+            label: t("Grown in"),
+            name: t(record.place.name),
+            placeId: record.place.id,
+          })),
+        ...getProductDesignations(product.handle).map((designation) => ({
+          id: designation.id,
+          label: t("Tea designation"),
+          name: t(designation.name),
+          placeId: designation.contextPlaceId,
+        })),
+      ]
+    : [];
 
   useEffect(() => {
     setSelectedMatcha(product?.title ?? null, product?.handle);
@@ -152,7 +178,10 @@ export function RetailProduct({
           </div>
         ) : (
           <>
-            <div className={styles.productLayout}>
+            <div
+              className={styles.productLayout}
+              data-has-origin={originLinks.length > 0 || undefined}
+            >
               <div className={styles.gallery} data-page-enter="visual">
                 <div
                   className={styles.galleryImage}
@@ -167,6 +196,7 @@ export function RetailProduct({
                     <ShopMaterialImage
                       src={content.materialImage}
                       alt={content.materialImageAlt}
+                      framing="powder"
                     />
                   )}
                 </div>
@@ -237,6 +267,42 @@ export function RetailProduct({
                           : t("Currently unavailable")}
                     </p>
                   </div>
+                  {originLinks.length > 0 && (
+                    <div
+                      className={styles.originContext}
+                      data-retail-origin-context
+                    >
+                      {originLinks.map((origin) => (
+                        <button
+                          key={origin.id}
+                          type="button"
+                          className={styles.originLink}
+                          aria-haspopup="dialog"
+                          disabled={locked || cart.navigationBusy}
+                          onClick={() =>
+                            openOrigins({
+                              tone,
+                              placeId: origin.placeId,
+                              returnProduct: {
+                                title: product.title,
+                                handle: product.handle,
+                              },
+                            })
+                          }
+                        >
+                          <span className={styles.originText}>
+                            <span className={styles.originLabel}>
+                              {origin.label}
+                            </span>
+                            <span className={styles.originName}>
+                              {origin.name}
+                            </span>
+                          </span>
+                          <span aria-hidden="true">↗</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   <div
                     className={styles.purchaseControls}
                     data-retail-purchase-controls

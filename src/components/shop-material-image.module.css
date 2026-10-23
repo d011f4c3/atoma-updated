@@ -27,6 +27,35 @@
   transition: opacity 180ms ease;
 }
 
+/* The three 1200 × 900 photographs share an empty-margin window. This frame
+   includes every pixel retained by the existing pigment mask, with room around
+   the loose powder. The photograph and mask use the same source coordinates. */
+.root[data-framing="powder"] {
+  container-type: size;
+  display: grid;
+  place-items: center;
+}
+
+.powderFrame {
+  position: relative;
+  width: min(100cqw, calc(100cqh * 420 / 900));
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 420 / 900;
+  overflow: hidden;
+}
+
+.powderFrame .image {
+  position: absolute;
+  top: 0;
+  left: calc(-380 / 420 * 100%);
+  width: calc(1200 / 420 * 100%);
+  max-width: none;
+  height: 100%;
+  object-fit: fill;
+  mask-size: 100% 100%;
+}
+
 .root[data-pending="true"]:not([data-show-while-preparing="true"]) .image {
   opacity: 0;
 }

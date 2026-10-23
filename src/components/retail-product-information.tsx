@@ -1,15 +1,17 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import Image from "next/image";
 import type { CatalogProduct } from "@/lib/catalog-types";
 import { getProductContent } from "@/lib/product-content";
 import { getProductFacts } from "@/lib/product-details";
 import { getProductFieldEntries } from "@/lib/origins-content";
 import {
-  getPlacePath,
   getProductPlaceRecords,
   getProductDesignations,
 } from "@/lib/origins-model";
+import { getOriginBrowsePath } from "@/lib/origins-browsing";
+import { getOriginPreview } from "@/lib/origin-preview";
 import { useCart } from "./cart-drawer";
 import { useOrigins } from "./origins-provider";
 import { ScrambleText } from "./scramble-text";
@@ -63,12 +65,13 @@ export function RetailProductInformation({
   const originRecords = getProductPlaceRecords(product.handle).filter(
     (record) => record.subjects.some((subject) => subject.kind === "material"),
   );
+  const originPreview = getOriginPreview(product, undefined, undefined, locale);
   const originContexts = [
     ...originRecords.map((record) => ({
       id: `${record.role}-${record.place.id}`,
       label: t(originRoles[record.role]),
       name: t(record.place.name),
-      path: getPlacePath(record.place.id)
+      path: getOriginBrowsePath(record.place.id)
         .slice(0, -1)
         .reverse()
         .map((place) => t(place.name))
@@ -76,6 +79,9 @@ export function RetailProductInformation({
       paragraphs: [t(record.place.description)],
       placeId: record.place.id,
       action: t("Explore {place}", { place: t(record.place.name) }),
+      photograph: originPreview.places.find(
+        (place) => place.id === record.place.id,
+      )?.photograph,
     })),
     ...getProductDesignations(product.handle).map((designation) => ({
       id: designation.id,
@@ -85,6 +91,9 @@ export function RetailProductInformation({
       paragraphs: [t(designation.summary), t(designation.productNote)],
       placeId: designation.contextPlaceId,
       action: t("About Uji"),
+      photograph: originPreview.designations.find(
+        (place) => place.id === designation.id,
+      )?.photograph,
     })),
   ];
   const fieldEntries = getProductFieldEntries(product.handle);
@@ -256,6 +265,19 @@ export function RetailProductInformation({
           <div className={styles.places}>
             {originContexts.map((record) => (
               <section key={record.id}>
+                {record.photograph && (
+                  <figure className={styles.originPhotograph}>
+                    <div className={styles.originImage}>
+                      <Image
+                        src={record.photograph.image}
+                        alt={record.photograph.imageAlt}
+                        fill
+                        sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1280px) 45vw, 560px"
+                      />
+                    </div>
+                    <figcaption>{record.photograph.imageCaption}</figcaption>
+                  </figure>
+                )}
                 <p className={styles.caption}>{record.label}</p>
                 <h3 className={styles.placeName}>{record.name}</h3>
                 <p className={styles.placePath}>{record.path}</p>
