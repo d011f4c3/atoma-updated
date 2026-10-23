@@ -186,7 +186,8 @@ async function run(name, action) {
 async function assertNoOverflow(page) {
   assert.equal(
     await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth + 1,
+      (width) => document.documentElement.scrollWidth <= width + 1,
+      page.viewportSize().width,
     ),
     true,
     "The document does not overflow horizontally",
@@ -299,6 +300,13 @@ async function chooseTea(fixture, key) {
       .getAttribute("aria-pressed"),
     "true",
   );
+  const item = SAMPLE_SET_CONTENTS.find((tea) => tea.key === key);
+  assert.ok(
+    (
+      await scopeOf(fixture).locator("[data-tasting-current]").innerText()
+    ).includes(item.productCode),
+    "The focused editor identifies the selected matcha",
+  );
 }
 
 async function fillCard(fixture, key, draft = tastingFixtures[key]) {
@@ -339,6 +347,11 @@ async function saveCard(fixture, key, draft = tastingFixtures[key]) {
   assert.deepEqual(
     (await readSaved(fixture.page)).records[key],
     savedRecord(draft),
+  );
+  assert.equal(
+    await scopeOf(fixture).locator("[data-tasting-progress]").textContent(),
+    `${Object.keys((await readSaved(fixture.page)).records).length} / 3`,
+    "Saved progress reflects the records actually stored on this device",
   );
 }
 
@@ -427,7 +440,7 @@ async function mobileGeometry(fixture) {
     };
     const overflow = [
       ...scope.querySelectorAll(
-        "input, select, textarea, button, summary, table, th, td, form, article, p, label",
+        "input, select, textarea, button, summary, table, th, td, form, article, h3, p, label",
       ),
     ]
       .filter(visible)
@@ -545,7 +558,7 @@ async function comparisonSemantics(fixture) {
       }),
     );
   assert.ok(
-    associations.length === 4 && associations.every(Boolean),
+    associations.length === 2 && associations.every(Boolean),
     "Every comparison value retains its row and tea column associations",
   );
   return table;
@@ -561,7 +574,20 @@ async function mobileComparisonGeometry(fixture) {
     second.y >= first.y + first.height,
     "Tea selectors occupy distinct labeled rows",
   );
-  for (const label of ["Application", "Sample size", "Recipe"]) {
+  for (const header of await table.getByRole("columnheader").all()) {
+    const text = await header.innerText();
+    assert.ok(
+      text.includes("20 g"),
+      "Comparison headings retain each included sample size",
+    );
+    assert.ok(
+      SAMPLE_SET_CONTENTS.some((item) =>
+        text.includes(fixture.t(item.application)),
+      ),
+      "Comparison headings include the application context",
+    );
+  }
+  for (const label of ["Recipe"]) {
     const row = comparisonRow(fixture, label);
     const heading = await row.getByRole("rowheader").boundingBox();
     const cells = await row.getByRole("cell").all();
@@ -683,6 +709,25 @@ try {
           null,
           "Editing does not save",
         );
+        await scopeOf(fixture)
+          .locator('[data-tasting-next="culinary"]')
+          .click();
+        assert.equal(
+          await scopeOf(fixture).getAttribute("data-tasting-selected"),
+          "culinary",
+        );
+        assert.equal(
+          await scopeOf(fixture).locator('[name="notes"]').inputValue(),
+          "",
+        );
+        assert.equal(
+          await scopeOf(fixture)
+            .locator("[data-tasting-progress]")
+            .textContent(),
+          "0 / 3",
+          "Next matcha changes the editor without silently saving a draft",
+        );
+        await assertDraft(fixture, "barista");
         await chooseTea(fixture, "ceremonial");
         await assertDraft(fixture, "barista");
         for (const { key } of SAMPLE_SET_CONTENTS) await saveCard(fixture, key);

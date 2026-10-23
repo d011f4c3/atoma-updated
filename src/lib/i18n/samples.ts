@@ -1,6 +1,29 @@
 import type { TranslationTable } from "./types.ts";
 
 export const sampleTranslations = {
+  "Taste first. Put ¥4,500 toward your first wholesale order.": {
+    ja: "まずは試飲。初回の卸売注文に¥4,500を充当できます。",
+    "zh-Hans": "先品尝，首次批发订单可抵扣 ¥4,500。",
+    "zh-Hant": "先品嚐，首次批發訂單可折抵 ¥4,500。",
+  },
+  "For your first eligible order of 1 kg or more. Your credit code arrives by email after purchase.":
+    {
+      ja: "対象は初回の1 kg以上の卸売注文です。購入後、クレジットのコードをメールでお送りします。",
+      "zh-Hans":
+        "适用于首次符合条件的 1 kg 及以上订单。抵扣码将在购买后通过邮件发送。",
+      "zh-Hant":
+        "適用於首次符合條件的 1 kg 及以上訂單。折抵碼將在購買後透過郵件寄送。",
+    },
+  "Ready for 1 kg?": {
+    ja: "1 kgのご注文へ",
+    "zh-Hans": "准备订购 1 kg？",
+    "zh-Hant": "準備訂購 1 kg？",
+  },
+  "Choose the matcha you want to serve.": {
+    ja: "お店で提供したい抹茶をお選びください。",
+    "zh-Hans": "选择您想供应的抹茶。",
+    "zh-Hant": "選擇您想供應的抹茶。",
+  },
   "Close order": {
     ja: "注文を閉じる",
     "zh-Hans": "收起订购",

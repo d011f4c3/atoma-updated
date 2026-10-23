@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useId, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { SampleTitleTreatment } from "@/lib/sample-title-treatments";
 import { SamplePanelTitle } from "./sample-panel-title";
 import { SAMPLE_SET_OFFER, resolveSampleSetOffer } from "@/lib/sample-set";
@@ -116,8 +116,6 @@ export function SampleSetPurchase({
     addSet,
   } = purchase;
   const locked = purchaseLocked || disabled;
-  const [valueOpen, setValueOpen] = useState(false);
-  const valueId = useId();
   const [creditAction = "", creditAmount] = t(
     "First wholesale order credit · approx. US$29",
   ).split(" · ");
@@ -152,47 +150,6 @@ export function SampleSetPurchase({
       <span aria-hidden="true"> ↗</span>
     </Link>
   );
-  const valueDetails = (mobile = false) => (
-    <div
-      className={styles.valueDisclosure}
-      data-sample-value-disclosure
-      data-mobile-value={mobile || undefined}
-      data-page-value={presentation === "page" || undefined}
-      data-open={valueOpen || undefined}
-    >
-      {presentation === "page" && (
-        <button
-          type="button"
-          className={styles.valueToggle}
-          aria-expanded={valueOpen}
-          aria-controls={`${valueId}-${mobile ? "mobile" : "main"}`}
-          onClick={() => setValueOpen((open) => !open)}
-        >
-          <ScrambleText
-            text={t("Sample Set details")}
-            interactive
-            animateOnMount={false}
-            wrap
-          />
-          <span aria-hidden="true">{valueOpen ? "−" : "+"}</span>
-        </button>
-      )}
-      <p
-        id={`${valueId}-${mobile ? "mobile" : "main"}`}
-        className={`${styles.detail} ${styles.valueNote}`}
-        data-sample-value
-      >
-        {mobile && (
-          <span className={styles.mobileSetFact}>
-            3 × 20 g · {t("60 g total")}
-          </span>
-        )}
-        {t(
-          "Compare flavour, texture and performance in your own recipes before committing to 1 kg. Your Sample Set includes ¥4,500 credit toward your first eligible wholesale order of 1 kg or more. Taste first, then put the value of your samples toward your chosen matcha using the code emailed after purchase.",
-        )}
-      </p>
-    </div>
-  );
   return (
     <section
       className={[styles.purchase, className].filter(Boolean).join(" ")}
@@ -225,7 +182,28 @@ export function SampleSetPurchase({
           </p>
         </>
       )}
-      {showValueNote && valueDetails()}
+      {showValueNote &&
+        (presentation === "page" ? (
+          <div className={styles.creditSummary} data-sample-credit-summary>
+            <p className={styles.creditHeading}>
+              {t("Taste first. Put ¥4,500 toward your first wholesale order.")}
+            </p>
+            <p className={styles.detail}>
+              {t(
+                "For your first eligible order of 1 kg or more. Your credit code arrives by email after purchase.",
+              )}
+            </p>
+          </div>
+        ) : (
+          <p
+            className={`${styles.detail} ${styles.valueNote}`}
+            data-sample-value
+          >
+            {t(
+              "Compare flavour, texture and performance in your own recipes before committing to 1 kg. Your Sample Set includes ¥4,500 credit toward your first eligible wholesale order of 1 kg or more. Taste first, then put the value of your samples toward your chosen matcha using the code emailed after purchase.",
+            )}
+          </p>
+        ))}
       {model.loading ? (
         <div className={styles.status} role="status">
           {t("Opening the sample set…")}
@@ -313,16 +291,22 @@ export function SampleSetPurchase({
           )}
         </div>
       ) : (
-        <div className={styles.order} data-sample-order>
+        <div
+          className={styles.order}
+          data-sample-order
+          data-single-quantity={model.quantity === 1 || undefined}
+        >
           <div className={styles.price}>
             {presentation !== "panel" && (
               <span className={styles.eyebrow}>{t("Per set")}</span>
             )}
-            {model.refreshing
-              ? t("Updating prices…")
-              : variant
-                ? money(variant.priceMinor, variant.currency)
-                : "—"}
+            <span data-sample-unit-price>
+              {model.refreshing
+                ? t("Updating prices…")
+                : variant
+                  ? money(variant.priceMinor, variant.currency)
+                  : "—"}
+            </span>
           </div>
           {offer.variants.length > 1 || !variant ? (
             <label className={styles.format}>
@@ -378,7 +362,7 @@ export function SampleSetPurchase({
                 </button>
               </div>
             </div>
-            <div className={styles.total}>
+            <div className={styles.total} data-sample-total>
               <span>{t("Total")}</span>
               <output aria-label={t("Sample set total")} aria-live="polite">
                 {variant &&
@@ -443,7 +427,6 @@ export function SampleSetPurchase({
           </details>
         </div>
       )}
-      {showValueNote && presentation === "page" && valueDetails(true)}
     </section>
   );
 }
@@ -454,8 +437,6 @@ export function Samples() {
   const purchase = useSampleSetPurchase();
   const { locked } = purchase;
   const pageRef = useRef<HTMLElement>(null);
-  const tastingId = useId();
-  const [tastingOpen, setTastingOpen] = useState(false);
   useSamplesMotion(pageRef);
   usePageReveals(pageRef);
 
@@ -510,7 +491,7 @@ export function Samples() {
             </header>
 
             <div className={styles.setVisual} data-page-enter="visual">
-              <SamplesGallery />
+              <SamplesGallery disabled={locked} />
             </div>
 
             <aside
@@ -531,24 +512,8 @@ export function Samples() {
         <div className={styles.journey}>
           <SamplesRange disabled={locked} />
 
-          <div
-            className={styles.tastingDisclosure}
-            data-sample-tasting-disclosure
-            data-open={tastingOpen || undefined}
-          >
-            <button
-              type="button"
-              className={styles.tastingToggle}
-              aria-expanded={tastingOpen}
-              aria-controls={tastingId}
-              onClick={() => setTastingOpen((open) => !open)}
-            >
-              <span>{t("Tasting tools")}</span>
-              <span aria-hidden="true">{tastingOpen ? "−" : "+"}</span>
-            </button>
-            <div className={styles.tastingContent} id={tastingId}>
-              <SampleTastingTools />
-            </div>
+          <div id="samples-tasting">
+            <SampleTastingTools />
           </div>
 
           <section className={styles.next} aria-labelledby="samples-next">
@@ -591,7 +556,7 @@ export function Samples() {
           </div>
         </div>
         <noscript>
-          <style>{`[data-samples-cover] { min-height: auto !important; margin-bottom: 0 !important; padding-bottom: 0 !important; } [data-samples-cover] > section { position: relative !important; height: auto !important; } [data-samples-page] [data-sample-value] { display: block !important; } [data-samples-page] [data-sample-value-disclosure] > button { display: none !important; } [data-sample-tasting-disclosure] > button { display: none !important; } [data-sample-tasting-disclosure] > div { display: contents !important; }`}</style>
+          <style>{`[data-samples-cover] { min-height: auto !important; margin-bottom: 0 !important; padding-bottom: 0 !important; } [data-samples-cover] > section { position: relative !important; height: auto !important; }`}</style>
         </noscript>
       </main>
     </div>

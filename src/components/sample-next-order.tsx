@@ -66,11 +66,11 @@ export function SampleNextOrder({
         <span className={styles.progression}>
           {t("Try 20 g → Choose 1 kg → Reorder")}
         </span>
-        <h2 id="samples-next">{t("Choose your next matcha")}</h2>
+        <h2 id="samples-next" tabIndex={-1}>
+          {t("Ready for 1 kg?")}
+        </h2>
         <p className={styles.purpose}>
-          {t(
-            "Try the samples first. Come back when you're ready to choose your matcha for a 1 kg order.",
-          )}
+          {t("Choose the matcha you want to serve.")}
         </p>
         <details className={styles.guidance}>
           <summary>

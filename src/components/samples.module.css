@@ -53,20 +53,6 @@
   border-top: 1px solid var(--line);
   padding-top: 1rem;
 }
-.valueDisclosure[data-mobile-value] {
-  display: none;
-}
-.mobileSetFact {
-  display: block;
-  margin-bottom: 0.75rem;
-}
-.tastingDisclosure,
-.tastingContent {
-  display: contents;
-}
-.tastingToggle {
-  display: none;
-}
 .eyebrow {
   font-size: 0.625rem;
   line-height: 1.6;
@@ -135,12 +121,6 @@
 .purchase .valueNote {
   max-width: 44ch;
   margin: 0.75rem 0 0;
-}
-.valueDisclosure {
-  display: contents;
-}
-.valueToggle {
-  display: none;
 }
 .price {
   font-size: 1.5rem;
@@ -408,9 +388,30 @@
 .purchase[data-presentation="page"] .price {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   font-size: 1.25rem;
+}
+.purchase[data-presentation="page"] .price .eyebrow {
+  order: 1;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.purchase[data-presentation="page"] .order[data-single-quantity] .total {
+  display: none;
+}
+.creditSummary {
+  margin-top: 1rem;
+}
+.creditHeading {
+  max-width: 34ch;
+  margin: 0;
+  font-size: calc(0.875rem + var(--locale-font-increment, 0px));
+  line-height: 1.7;
+}
+.creditSummary .detail {
+  margin: 0.5rem 0 0;
 }
 .contentsLink,
 .nextAction,
@@ -663,42 +664,9 @@
   .page[data-samples-page] .topline nav a {
     min-width: 2.75rem;
   }
-  .page[data-samples-page] .valueDisclosure {
-    display: block;
-    margin-top: 0.75rem;
-    border-bottom: 1px solid var(--line);
-  }
-  .page[data-samples-page] .valueToggle {
-    display: flex;
-    width: 100%;
-    min-height: 2.75rem;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.5rem 0;
-    border: 0;
-    background: transparent;
-    color: var(--ink);
-    font: inherit;
-    font-size: var(--mobile-type-action);
-    text-align: left;
-    cursor: pointer;
-  }
-  .page[data-samples-page] .valueToggle > span:last-child {
-    flex: none;
-  }
-  .page[data-samples-page] .valueDisclosure .valueNote {
-    display: none;
-    margin: 0.5rem 0 1rem;
-  }
-  .page[data-samples-page] .valueDisclosure[data-open] .valueNote {
-    display: block;
-  }
   .page[data-samples-page] .topline > :global([data-appearance-controls]),
   .page[data-samples-page] .orderSummary,
-  .page[data-samples-page] :global([data-sample-gallery-caption]),
-  .page[data-samples-page]
-    .valueDisclosure[data-page-value]:not([data-mobile-value]) {
+  .page[data-samples-page] :global([data-sample-gallery-caption]) {
     display: none;
   }
   .page[data-samples-page] .purchase[data-presentation="page"] > h2 {
@@ -711,63 +679,51 @@
     clip-path: inset(50%);
     white-space: nowrap;
   }
-  .page[data-samples-page] .valueDisclosure[data-mobile-value] {
-    margin-top: 0;
-    border-top: 1px solid var(--line);
-    border-bottom: 0;
-  }
   .page[data-samples-page] .setPurchase {
     padding-block: 0;
   }
   .page[data-samples-page] .setLayout {
     row-gap: 1rem;
   }
-  .page[data-samples-page]
-    .setVisual
-    :global([data-foil-trio])
-    > div:has(> span + button) {
-    justify-content: flex-end;
-  }
-  .page[data-samples-page]
-    .setVisual
-    :global([data-foil-trio])
-    > div:has(> span + button)
-    > span {
+  .page[data-samples-page] .preparationImage,
+  .page[data-samples-page] .returnLine {
     display: none;
   }
-  .page[data-samples-page] .tastingDisclosure {
-    display: block;
-    margin-inline: var(--gutter);
-    margin-bottom: 2rem;
-    border-block: 1px solid var(--line);
+  .page[data-samples-page] .next {
+    padding-block: 0 3rem;
   }
-  .page[data-samples-page] .tastingToggle {
+  .page[data-samples-page] .creditSummary {
+    margin-top: 0;
+  }
+  .page[data-samples-page] .creditHeading {
+    font-size: var(--mobile-type-body);
+  }
+  .page[data-samples-page] .purchase[data-presentation="page"] .orderLine {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    padding-block: 1rem;
+  }
+  .page[data-samples-page] .purchase[data-presentation="page"] .quantity,
+  .page[data-samples-page] .purchase[data-presentation="page"] .total {
     display: flex;
-    width: 100%;
-    min-height: 3.5rem;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.5rem 0;
-    border: 0;
-    background: transparent;
-    color: var(--ink);
-    font: inherit;
-    font-size: var(--mobile-type-action);
-    text-align: left;
-    cursor: pointer;
   }
-  .page[data-samples-page] .tastingContent {
+  .page[data-samples-page]
+    .purchase[data-presentation="page"]
+    .order[data-single-quantity]
+    .total {
     display: none;
   }
-  .page[data-samples-page] .tastingDisclosure[data-open] .tastingContent {
-    display: block;
-    margin-inline: calc(-1 * var(--gutter));
+  .page[data-samples-page] .purchase[data-presentation="page"] .stepper {
+    flex: none;
   }
-  .page[data-samples-page] .preparationImage {
-    height: auto;
-    min-height: 0;
-    aspect-ratio: 3 / 2;
+  .page[data-samples-page] .purchase[data-presentation="page"] .stepper button {
+    width: 44px;
+    min-height: 44px;
   }
   .page .purchase[data-presentation="page"] h2 {
     font-size: var(--mobile-type-section);

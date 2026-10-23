@@ -2,6 +2,34 @@
 
 ## Scope and authority
 
+- **Task 0275 makes the three matchas available:** read
+  `docs/tasks/0275-matcha-inventory.md`. The owner authorizes setting available
+  stock to 100 units for each existing 1 kg matcha in the connected Shopify
+  backend. Preserve committed inventory, the Sample Set and stock policies.
+
+- **Task 0274 names the homepage navigation Home:** read
+  `docs/tasks/0274-home-navigation-label.md`. Rename the homepage link from
+  Matcha to Home in shared desktop and mobile navigation, including localized
+  and accessible labels. Preserve destinations and actual matcha-selection
+  controls.
+
+- **Task 0273 adds a compact Wholesale image toggle:** read
+  `docs/tasks/0273-wholesale-image-toggle.md`. Let buyers switch Application and
+  Powder imagery in the collection toolbar, retaining the application default,
+  exact orders, search, navigation guards, themes and localized labels.
+
+- **Task 0272 restores the mobile hero's secondary CTA:** read
+  `docs/tasks/0272-mobile-hero-secondary-cta.md`. Add Explore by Application
+  beneath the Sample Set action, using the existing in-place destination and
+  navigation guard. Preserve desktop, localization, imagery and mobile balance.
+
+- **Task 0271 clarifies Samples and its tasting tools:** read
+  `docs/tasks/0271-samples-tasting-and-credit.md`. Show the sample credit plainly
+  beside buying, keep one price with a small per-set label, and make tasting
+  tools visible and easy to use on mobile and desktop. Simplify the mobile
+  next-order handoff and remove its bottom set-order callout. Preserve Inside
+  the set, factual terms, exact orders, saved notes, exports and commerce guards.
+
 - **Task 0270 explains Why ATOMA beneath Wholesale:** read
   `docs/tasks/0270-wholesale-why-atoma.md`. Add a concise customer-facing section
   below the catalog about application-led selection, sampling and useful product

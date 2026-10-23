@@ -62,8 +62,12 @@ async function inspectPhone(page, label, firstViewport = false) {
     await page
       .locator("[data-mobile-home-hero] a, [data-mobile-home-hero] button")
       .count(),
-    4,
-    `${label}: the hero presents three products and one Sample Set action`,
+    5,
+    `${label}: the hero presents three products, the Sample Set and application exploration`,
+  );
+  assert.equal(
+    await page.locator("[data-mobile-hero-explore]").getAttribute("href"),
+    "/?view=matcha",
   );
   assert.equal(
     await page.locator("[data-mobile-home-hero] p:not([role=status])").count(),
@@ -127,6 +131,7 @@ async function inspectPhone(page, label, firstViewport = false) {
       description: rect(hero.querySelector("h1 + p")),
       preview: rect(hero.querySelector("[data-mobile-hero-preview]")),
       primary: rect(hero.querySelector("[data-mobile-hero-samples]")),
+      secondary: rect(hero.querySelector("[data-mobile-hero-explore]")),
       actions: Array.from(hero.querySelectorAll("a,button")).map((node) => ({
         role: node.getAttribute("role") ?? node.tagName.toLowerCase(),
         label: node.getAttribute("data-mobile-hero-learn") ?? node.textContent,
@@ -144,7 +149,7 @@ async function inspectPhone(page, label, firstViewport = false) {
     };
   });
   assert.ok(
-    geometry.scrollWidth <= geometry.viewport.width + 1,
+    geometry.scrollWidth <= page.viewportSize().width + 1,
     `${label}: no horizontal overflow`,
   );
   if (firstViewport) {
@@ -155,6 +160,10 @@ async function inspectPhone(page, label, firstViewport = false) {
     assert.ok(
       geometry.primary.bottom <= geometry.viewport.height + 1,
       `${label}: the Sample Set action stays visible within the full-height hero`,
+    );
+    assert.ok(
+      geometry.secondary.bottom <= geometry.viewport.height + 1,
+      `${label}: Explore by Application stays visible beneath the primary action`,
     );
   }
   for (const action of geometry.actions) {
@@ -279,6 +288,93 @@ async function run(label, width, tone, locale, options, callback) {
 }
 
 try {
+  await run(
+    "explore-application-navigation",
+    390,
+    "dark",
+    "en",
+    { holdMutation: true },
+    async (fixture) => {
+      const { page } = fixture;
+      await ready(page);
+      await inspectPhone(page, "390-dark-explore", true);
+      await application(page, "barista").tap();
+      await popup(page).waitFor({ state: "visible" });
+      await product(page, "barista")
+        .getByRole("button", { name: "Increase quantity", exact: true })
+        .click();
+      await close(page).tap();
+      await popup(page).waitFor({ state: "hidden" });
+      const home = await page
+        .locator("[data-mobile-home-hero]")
+        .elementHandle();
+      const entryScroll = await page.evaluate(() => scrollY);
+      const explore = page.locator("[data-mobile-hero-explore]");
+      await explore.tap();
+      await page.waitForFunction(
+        () =>
+          document
+            .querySelector("[data-homepage]")
+            ?.getAttribute("data-active-view") === "matcha",
+      );
+      assert.equal(new URL(page.url()).searchParams.get("view"), "matcha");
+      assert.equal(
+        await home.evaluate((node) => node.isConnected),
+        true,
+        "Exploration changes the retained homepage view in place",
+      );
+      await page.goBack();
+      await page
+        .locator("[data-mobile-home-hero]")
+        .waitFor({ state: "visible" });
+      assert.ok(
+        Math.abs((await page.evaluate(() => scrollY)) - entryScroll) < 2,
+        "Back restores the hero scroll position",
+      );
+      await application(page, "barista").tap();
+      await popup(page).waitFor({ state: "visible" });
+      assert.equal(
+        await quantity(page, "barista").textContent(),
+        "2",
+        "The existing order survives application exploration and Back",
+      );
+      const add = product(page, "barista").locator(
+        "[data-new-hero-add] button",
+      );
+      await add.click();
+      await page.waitForFunction(
+        () =>
+          document
+            .querySelector("[data-mobile-hero-explore]")
+            ?.getAttribute("aria-disabled") === "true",
+      );
+      assert.equal(fixture.simulatedWrites.length, 1);
+      const busyURL = page.url();
+      await explore.evaluate((node) => node.click());
+      assert.equal(
+        page.url(),
+        busyURL,
+        "The restored action cannot interrupt pending commerce",
+      );
+      fixture.releaseMutation();
+      await page.waitForFunction(
+        () =>
+          document
+            .querySelector("[data-mobile-hero-explore]")
+            ?.getAttribute("aria-disabled") !== "true",
+      );
+      await close(page).tap();
+      await popup(page).waitFor({ state: "hidden" });
+      await explore.tap();
+      await page.waitForFunction(
+        () =>
+          document
+            .querySelector("[data-homepage]")
+            ?.getAttribute("data-active-view") === "matcha",
+      );
+    },
+  );
+
   await run(
     "390-dark-interactions",
     390,

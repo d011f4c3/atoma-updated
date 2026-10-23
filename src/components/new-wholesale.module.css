@@ -120,6 +120,49 @@
   padding-inline: 0.5rem;
   color: var(--muted);
 }
+.imageModes {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex-shrink: 0;
+  max-width: 100%;
+  gap: 2px;
+  padding-inline: 2px;
+}
+.imageModes::before {
+  position: absolute;
+  z-index: -1;
+  inset: 6px 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  content: "";
+}
+.imageModes button {
+  position: relative;
+  isolation: isolate;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: calc(0.75rem + var(--locale-font-increment, 0px));
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.imageModes button[aria-pressed="true"] {
+  color: var(--ink);
+}
+.imageModes button[aria-pressed="true"]::before {
+  position: absolute;
+  z-index: -1;
+  inset: 8px 0;
+  border-radius: 2px;
+  background: var(--color-hover);
+  content: "";
+}
 .search {
   display: flex;
   align-items: center;
@@ -413,6 +456,7 @@
   }
   .introduction {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.25rem;
     padding: 1.25rem 0;
   }
@@ -430,11 +474,11 @@
     font-size: 1rem;
   }
   .samples {
-    gap: 1.25rem;
-    padding: 0.75rem 1rem;
+    gap: min(1.25rem, 20px);
+    padding: 0.75rem min(1rem, 16px);
   }
   .sampleImage {
-    flex-basis: 4rem;
+    flex-basis: min(4rem, 64px);
   }
   .sampleCopy {
     flex: 1;
@@ -452,10 +496,15 @@
     gap: 0.5rem;
     padding: 0.375rem 0;
   }
+  .toolbar h2 {
+    flex-basis: 100%;
+    padding-top: 0.375rem;
+  }
   .searchToggle {
     display: flex;
     align-items: center;
     gap: 0.375rem;
+    margin-left: auto;
     min-height: 2.75rem;
     padding: 0.5rem 0 0.5rem 0.5rem;
     border: 0;
@@ -537,7 +586,7 @@
 }
 @media (max-width: 360px) {
   .samples {
-    gap: 1rem;
-    padding-inline: 0.75rem;
+    gap: min(1rem, 16px);
+    padding-inline: min(0.75rem, 12px);
   }
 }

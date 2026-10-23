@@ -94,6 +94,11 @@ export const wholesaleTranslations = {
     "zh-Hant": "產品圖片",
     ja: "商品画像",
   },
+  Powder: {
+    "zh-Hans": "抹茶粉",
+    "zh-Hant": "抹茶粉",
+    ja: "抹茶パウダー",
+  },
   "In use": {
     "zh-Hans": "应用示例",
     "zh-Hant": "應用示例",

@@ -55,6 +55,7 @@ export function NewWholesale() {
   const productDialog = useWholesaleDialog();
   const params = useSearchParams();
   const query = params.get("q") ?? "";
+  const imageMode = params.get("image") === "powder" ? "powder" : "application";
   const [searchOpen, setSearchOpen] = useState(false);
   const searchToggle = useRef<HTMLButtonElement>(null);
   const searchId = useId();
@@ -74,11 +75,11 @@ export function NewWholesale() {
     !cart.reviewRequired;
   const searchVisible = searchOpen || Boolean(query);
 
-  function updateSearch(value: string) {
+  function updateLibraryParam(key: "q" | "image", value: string) {
     if (cart.navigationBusy) return;
     const url = new URL(window.location.href);
-    if (value) url.searchParams.set("q", value);
-    else url.searchParams.delete("q");
+    if (value) url.searchParams.set(key, value);
+    else url.searchParams.delete(key);
     window.history.replaceState(
       window.history.state?.atomaWholesaleDialog
         ? { atomaWholesaleDialog: window.history.state.atomaWholesaleDialog }
@@ -86,6 +87,10 @@ export function NewWholesale() {
       "",
       `${url.pathname}${url.search}${url.hash}`,
     );
+  }
+
+  function updateSearch(value: string) {
+    updateLibraryParam("q", value);
   }
 
   function clearSearch() {
@@ -168,6 +173,27 @@ export function NewWholesale() {
               {model.loading ? "—" : String(results.length).padStart(2, "0")}
             </span>
           </h2>
+          <div
+            className={styles.imageModes}
+            role="group"
+            aria-label={t("Product imagery")}
+            data-wholesale-image-toggle
+          >
+            {(["application", "powder"] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                aria-pressed={imageMode === mode}
+                disabled={cart.navigationBusy}
+                data-wholesale-image-mode={mode}
+                onClick={() =>
+                  updateLibraryParam("image", mode === "powder" ? mode : "")
+                }
+              >
+                {t(mode === "application" ? "Application" : "Powder")}
+              </button>
+            ))}
+          </div>
           <button
             type="button"
             className={styles.searchToggle}
@@ -296,7 +322,7 @@ export function NewWholesale() {
                           href={entry.href ?? "#"}
                           className={styles.material}
                           data-wholesale-image={
-                            entry.productKey ? "application" : "material"
+                            entry.productKey ? imageMode : "material"
                           }
                           data-wholesale-direct-link="image"
                           aria-label={t("View {name}", { name: entry.name })}
@@ -309,7 +335,7 @@ export function NewWholesale() {
                             else rememberProduct(entry);
                           }}
                         >
-                          {entry.productKey ? (
+                          {entry.productKey && imageMode === "application" ? (
                             <ProductApplicationCutout
                               productKey={entry.productKey}
                             />

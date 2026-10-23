@@ -55,10 +55,12 @@ export function SampleFoilTrio({
   disabled = false,
   contained = false,
   compact = false,
+  showInspectionPrompt = true,
 }: {
   disabled?: boolean;
   contained?: boolean;
   compact?: boolean;
+  showInspectionPrompt?: boolean;
 }) {
   const { t } = useStorefrontLocale();
   const id = useId();
@@ -127,36 +129,38 @@ export function SampleFoilTrio({
           ))}
         </ul>
       )}
-      <div className={styles.legend}>
-        <span>{t("Three matcha · 20 g each")}</span>
-        <button
-          type="button"
-          disabled={disabled}
-          aria-haspopup="dialog"
-          onClick={(event) => {
-            openerRef.current = event.currentTarget;
-            setInspected(SAMPLE_SET_CONTENTS[0] ?? null);
-          }}
-        >
-          <span className={styles.desktopHint}>
-            <ScrambleText
-              text={t("Inspect a label")}
-              interactive
-              animateOnMount={false}
-              wrap
-            />
-          </span>
-          <span className={styles.mobileHint}>
-            <ScrambleText
-              text={t("Tap to see more")}
-              interactive
-              animateOnMount={false}
-              wrap
-            />
-          </span>{" "}
-          <span aria-hidden="true">↗</span>
-        </button>
-      </div>
+      {showInspectionPrompt && (
+        <div className={styles.legend}>
+          <span>{t("Three matcha · 20 g each")}</span>
+          <button
+            type="button"
+            disabled={disabled}
+            aria-haspopup="dialog"
+            onClick={(event) => {
+              openerRef.current = event.currentTarget;
+              setInspected(SAMPLE_SET_CONTENTS[0] ?? null);
+            }}
+          >
+            <span className={styles.desktopHint}>
+              <ScrambleText
+                text={t("Inspect a label")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
+            </span>
+            <span className={styles.mobileHint}>
+              <ScrambleText
+                text={t("Tap to see more")}
+                interactive
+                animateOnMount={false}
+                wrap
+              />
+            </span>{" "}
+            <span aria-hidden="true">↗</span>
+          </button>
+        </div>
+      )}
       <dialog
         ref={dialogRef}
         className={styles.dialog}

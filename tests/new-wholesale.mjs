@@ -44,6 +44,47 @@ const add = (page, key = "barista") =>
   purchase(page, key).locator("[data-wholesale-add] button");
 const why = (page) => page.locator("[data-wholesale-why]");
 const whyAction = (page) => page.locator("[data-wholesale-why-action]");
+const imageMode = (page, mode) =>
+  page.locator(`[data-wholesale-image-mode="${mode}"]`);
+
+async function setImageMode(page, mode) {
+  await imageMode(page, mode).click();
+  await eventually(
+    async () =>
+      (await imageMode(page, mode).getAttribute("aria-pressed")) === "true" &&
+      (new URL(page.url()).searchParams.get("image") ?? "application") === mode,
+    "The chosen image mode is reflected in the control and URL",
+  );
+}
+
+async function inspectImageToggle(page) {
+  const width = page.viewportSize().width;
+  const boxes = [];
+  for (const mode of ["application", "powder"]) {
+    const button = imageMode(page, mode);
+    assert.ok(await button.getAttribute("aria-pressed"));
+    const box = await button.boundingBox();
+    assert.ok(
+      box && box.width >= 44 && box.height >= 44,
+      "Image choices retain comfortable touch targets",
+    );
+    assert.ok(
+      box.x >= -1 && box.x + box.width <= width + 1,
+      "Both image choices fit the configured viewport",
+    );
+    assert.ok(
+      await button.evaluate((node) => node.scrollWidth <= node.clientWidth + 1),
+      "The complete image-choice label remains readable",
+    );
+    boxes.push(box);
+  }
+  assert.ok(
+    boxes[1].x >= boxes[0].x + boxes[0].width - 1 ||
+      boxes[1].y >= boxes[0].y + boxes[0].height - 1,
+    "Image-choice touch targets do not overlap",
+  );
+  await noOverflow(page);
+}
 
 async function inspectWhy(page) {
   assert.equal(await why(page).isVisible(), true);
@@ -236,12 +277,11 @@ async function returned(page, entry) {
 }
 
 async function noOverflow(page) {
-  const geometry = await page.evaluate(() => ({
-    width: innerWidth,
-    scrollWidth: document.documentElement.scrollWidth,
-  }));
+  const scrollWidth = await page.evaluate(
+    () => document.documentElement.scrollWidth,
+  );
   assert.ok(
-    geometry.scrollWidth <= geometry.width + 1,
+    scrollWidth <= page.viewportSize().width + 1,
     "The collection does not overflow horizontally",
   );
 }
@@ -534,7 +574,7 @@ try {
               .locator('[data-wholesale-image="application"]')
               .count(),
             3,
-            "Known matchas show their application without an extra image choice",
+            "Known matchas show their application by default",
           );
           await inspectOrder(page);
           if (width < 760) {
@@ -549,6 +589,171 @@ try {
       );
     }
   }
+
+  for (const tone of ["light", "dark"]) {
+    for (const width of [1440, 390]) {
+      await run(
+        `image-toggle-${width}-${tone}`,
+        width,
+        tone,
+        "en",
+        {},
+        async ({ page }) => {
+          await ready(page);
+          await eventually(
+            () => add(page).isEnabled(),
+            "The catalog is ready for ordering",
+          );
+          assert.equal(
+            await imageMode(page, "application").getAttribute("aria-pressed"),
+            "true",
+          );
+          await inspectImageToggle(page);
+          await snapshot(page, `images-${width}-${tone}-application`);
+          await setImageMode(page, "powder");
+          assert.equal(
+            await cards(page)
+              .locator('[data-wholesale-image="powder"]')
+              .count(),
+            3,
+          );
+          for (const [key, photograph] of Object.entries({
+            culinary: "culinary",
+            barista: "latte",
+            ceremonial: "tea-service",
+          }))
+            assert.equal(
+              await card(page, key)
+                .locator('[data-wholesale-image="powder"] img')
+                .getAttribute("src"),
+              `/images/matcha/${photograph}.jpg`,
+              "Powder mode uses each product's approved photograph",
+            );
+          await eventually(
+            async () =>
+              (await cards(page)
+                .locator(
+                  '[data-wholesale-image="powder"] [data-pending="true"]',
+                )
+                .count()) === 0,
+            "The approved powder photographs finish preparing",
+          );
+          await snapshot(page, `images-${width}-${tone}-powder`);
+
+          await purchase(page)
+            .getByRole("button", { name: "Increase quantity" })
+            .click();
+          await query(page, "barista", 1);
+          const buyer = await purchase(page).elementHandle();
+          await setImageMode(page, "application");
+          await setImageMode(page, "powder");
+          assert.equal(await quantity(page).textContent(), "2");
+          assert.equal(await (await openSearch(page)).inputValue(), "barista");
+          assert.equal(new URL(page.url()).searchParams.get("q"), "barista");
+          assert.equal(
+            await buyer.evaluate((node) => node.isConnected),
+            true,
+            "Changing imagery retains the mounted buyer and its selection",
+          );
+          for (const target of ["image", "name"])
+            assert.equal(
+              await card(page, "barista")
+                .locator(`[data-wholesale-direct-link="${target}"]`)
+                .getAttribute("href"),
+              `/shop/${handle("barista")}`,
+            );
+
+          const entry = await choose(page, "barista");
+          assert.equal(new URL(page.url()).searchParams.get("image"), "powder");
+          await close(page).click();
+          await returned(page, entry);
+          assert.equal(
+            await imageMode(page, "powder").getAttribute("aria-pressed"),
+            "true",
+          );
+          if (width === 390 && tone === "dark") {
+            await card(page, "barista")
+              .locator('[data-wholesale-direct-link="name"]')
+              .click();
+            await page.waitForURL(`${baseURL}/shop/${handle("barista")}`);
+            await page.goBack();
+            await collection(page).waitFor();
+            await eventually(
+              async () => (await quantity(page).textContent()) === "2",
+              "Product-page Back restores the exact wholesale order",
+            );
+            assert.equal(
+              await imageMode(page, "powder").getAttribute("aria-pressed"),
+              "true",
+            );
+            assert.equal(new URL(page.url()).searchParams.get("q"), "barista");
+          }
+          await query(page, "", 3);
+          assert.equal(
+            await cards(page)
+              .locator('[data-wholesale-image="powder"]')
+              .count(),
+            3,
+          );
+          await setImageMode(page, "application");
+          assert.equal(
+            await cards(page)
+              .locator('[data-wholesale-image="application"]')
+              .count(),
+            3,
+          );
+          assert.equal(await quantity(page).textContent(), "2");
+          await inspectImageToggle(page);
+        },
+      );
+    }
+  }
+
+  await run(
+    "image-toggle-enlarged",
+    320,
+    "dark",
+    "ja",
+    {},
+    async ({ page }) => {
+      await page.setViewportSize({ width: 320, height: 568 });
+      await ready(page, "/wholesale?q=UJI-00&image=powder", 1);
+      await page.addStyleTag({
+        content: "html { font-size: 200% !important; }",
+      });
+      const invitation = collection(page).locator(
+        'header[data-page-enter="text"] a[href="/samples"]',
+      );
+      const invitationBox = await invitation.boundingBox();
+      assert.ok(
+        invitationBox.x >= 0 &&
+          invitationBox.x + invitationBox.width <= page.viewportSize().width &&
+          (await invitation.evaluate(
+            (node) => node.scrollWidth <= node.clientWidth + 1,
+          )),
+        "The enlarged Sample Set invitation fits its mobile column",
+      );
+      await invitation.screenshot({
+        path: `${evidence}/images-320-dark-ja-enlarged-samples.png`,
+        animations: "disabled",
+      });
+      assert.equal(
+        await imageMode(page, "powder").getAttribute("aria-pressed"),
+        "true",
+        "A shared URL restores powder imagery directly",
+      );
+      await inspectImageToggle(page);
+      await page
+        .locator("[data-wholesale-image-toggle]")
+        .scrollIntoViewIfNeeded();
+      await snapshot(page, "images-320-dark-ja-enlarged-powder");
+      await setImageMode(page, "application");
+      assert.equal(new URL(page.url()).searchParams.get("q"), "UJI-00");
+      assert.equal(await cards(page).count(), 1);
+      await inspectImageToggle(page);
+      await snapshot(page, "images-320-dark-ja-enlarged-application");
+    },
+  );
 
   await run("legacy-route", 1440, "light", "en", {}, async ({ page }) => {
     await ready(page, "/new-wholesale?q=latte&matcha=barista", 1);
@@ -1310,12 +1515,30 @@ try {
         await page.locator("[data-wholesale-search-toggle]").isDisabled(),
         true,
       );
+      for (const mode of ["application", "powder"])
+        assert.equal(await imageMode(page, mode).isDisabled(), true);
+      await imageMode(page, "powder").evaluate((node) => node.click());
+      assert.equal(
+        page.url(),
+        current,
+        "Pending commerce keeps the imagery selection settled",
+      );
+      assert.equal(
+        await imageMode(page, "application").getAttribute("aria-pressed"),
+        "true",
+      );
       test.releaseMutation();
       await eventually(
         () => add(page).isEnabled(),
         "A settled attempt releases the order guard",
       );
       assert.equal(await quantity(page).textContent(), "2");
+      await setImageMode(page, "powder");
+      assert.equal(
+        await quantity(page).textContent(),
+        "2",
+        "Settled commerce releases the image toggle without resetting the order",
+      );
       assert.equal(
         await purchase(page).locator("[data-wholesale-purchase-error]").count(),
         1,

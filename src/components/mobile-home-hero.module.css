@@ -178,7 +178,8 @@
     padding-top: 0.5rem;
   }
 
-  .primary {
+  .primary,
+  .secondary {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -195,6 +196,16 @@
     border-radius: var(--radius-button);
     background: var(--ink);
     color: var(--surface);
+  }
+
+  .secondary {
+    min-height: 2.75rem;
+    padding-block: 0.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .secondary > :last-child {
+    flex-shrink: 0;
   }
 
   .fallback {

@@ -18,6 +18,7 @@ import { useSampleTastingSession } from "./sample-tasting-session-provider";
 import { useCart } from "./cart-drawer";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { ScrambleText } from "./scramble-text";
+import { ProductApplicationCutout } from "./product-application-cutout";
 import styles from "./sample-tasting-tools.module.css";
 
 const preparations = { hot: "Hot", iced: "Iced", recipe: "Recipe" } as const;
@@ -49,6 +50,15 @@ export function SampleTastingTools() {
   const [exporting, setExporting] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const item = SAMPLE_SET_CONTENTS.find((tea) => tea.key === selected)!;
+  const selectedIndex = SAMPLE_SET_CONTENTS.findIndex(
+    (tea) => tea.key === selected,
+  );
+  const nextItem =
+    SAMPLE_SET_CONTENTS[(selectedIndex + 1) % SAMPLE_SET_CONTENTS.length] ??
+    item;
+  const savedCount = SAMPLE_SET_CONTENTS.filter(
+    (tea) => saved.records[tea.key],
+  ).length;
   const draft = drafts[selected] ?? tastingToDraft(saved.records[selected]);
   const record = parseTastingDraft(draft);
   const dirty = Boolean(drafts[selected]);
@@ -312,84 +322,102 @@ export function SampleTastingTools() {
         <div>
           <span className={styles.eyebrow}>{t("Tasting tools")}</span>
           <h2 id={`${id}-title`}>{t("Compare your samples")}</h2>
+          <p>
+            {t("Keep a recipe, note what you taste, and compare two matcha.")}
+          </p>
         </div>
-        <p>
-          {t("Keep a recipe, note what you taste, and compare two matcha.")}
-        </p>
+        <div
+          className={styles.views}
+          role="group"
+          aria-label={t("Tasting tools")}
+        >
+          <button
+            type="button"
+            aria-pressed={view === "card"}
+            disabled={!saved.ready}
+            onClick={() => setView("card")}
+          >
+            <ScrambleText
+              text={t("Tasting card")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
+          </button>
+          <button
+            type="button"
+            aria-pressed={view === "compare"}
+            disabled={!saved.ready}
+            onClick={() => setView("compare")}
+          >
+            <ScrambleText
+              text={t("Compare samples")}
+              interactive
+              animateOnMount={false}
+              wrap
+            />
+          </button>
+        </div>
       </header>
-      <div
-        className={styles.views}
-        role="group"
-        aria-label={t("Tasting tools")}
-        data-page-reveal="fade"
-      >
-        <button
-          type="button"
-          aria-pressed={view === "card"}
-          disabled={!saved.ready}
-          onClick={() => setView("card")}
-        >
-          <ScrambleText
-            text={t("Tasting card")}
-            interactive
-            animateOnMount={false}
-            wrap
-          />
-        </button>
-        <button
-          type="button"
-          aria-pressed={view === "compare"}
-          disabled={!saved.ready}
-          onClick={() => setView("compare")}
-        >
-          <ScrambleText
-            text={t("Compare samples")}
-            interactive
-            animateOnMount={false}
-            wrap
-          />
-        </button>
-      </div>
       <noscript>
         <p>{t("Enable JavaScript to save and compare your tasting cards.")}</p>
       </noscript>
 
-      <div hidden={view !== "card"} data-tasting-editor>
-        <div
-          className={styles.teaChoices}
-          role="group"
-          aria-label={t("Choose a matcha")}
-          data-page-reveal="rise"
-        >
-          {SAMPLE_SET_CONTENTS.map((tea, index) => (
-            <button
-              key={tea.key}
-              type="button"
-              data-tasting-tea={tea.key}
-              aria-pressed={selected === tea.key}
-              disabled={!saved.ready}
-              onClick={() => edit(tea.key)}
-            >
-              <span className={styles.teaNumber}>0{index + 1}</span>
-              <span>
-                <ScrambleText
-                  text={t(tea.name.replace(/ Matcha$/, ""))}
-                  interactive
-                  animateOnMount={false}
-                  wrap
-                />
-              </span>
-              {saved.records[tea.key] && (
-                <span
-                  className={styles.savedMark}
-                  aria-label={t("Saved on this device.")}
-                >
-                  ✓
+      <div
+        className={styles.editor}
+        hidden={view !== "card"}
+        data-tasting-editor
+      >
+        <aside className={styles.chooser}>
+          <div className={styles.choiceHeading}>
+            <span>{t("Choose a matcha")}</span>
+          </div>
+          <div
+            className={styles.teaChoices}
+            role="group"
+            aria-label={t("Choose a matcha")}
+            data-page-reveal="rise"
+          >
+            {SAMPLE_SET_CONTENTS.map((tea, index) => (
+              <button
+                key={tea.key}
+                type="button"
+                data-tasting-tea={tea.key}
+                aria-pressed={selected === tea.key}
+                disabled={!saved.ready}
+                onClick={() => edit(tea.key)}
+              >
+                <span className={styles.teaNumber}>0{index + 1}</span>
+                <span>
+                  <ScrambleText
+                    text={t(tea.name.replace(/ Matcha$/, ""))}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />
                 </span>
-              )}
-            </button>
-          ))}
-        </div>
+                {saved.records[tea.key] && (
+                  <span
+                    className={styles.savedMark}
+                    aria-label={t("Saved on this device.")}
+                  >
+                    ✓
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+          <p className={styles.progressNote}>
+            <span>{t("Your saved tasting")}</span>
+            <output
+              data-tasting-progress
+              aria-label={t("Your saved tasting")}
+              aria-live="polite"
+            >
+              {savedCount} / {SAMPLE_SET_CONTENTS.length}
+            </output>
+          </p>
+        </aside>
         <div className={styles.workspace}>
           <form
             className={styles.form}
@@ -398,6 +426,16 @@ export function SampleTastingTools() {
             data-page-reveal="rise"
           >
             <fieldset disabled={!saved.ready}>
+              <div className={styles.activeTea} data-tasting-current>
+                <div className={styles.activeImage} aria-hidden="true">
+                  <ProductApplicationCutout productKey={selected} />
+                </div>
+                <div>
+                  <span className={styles.eyebrow}>◇ {item.productCode}</span>
+                  <h3>{t(item.name)}</h3>
+                  <p>{t(item.application)}</p>
+                </div>
+              </div>
               <label className={styles.notes}>
                 <span>{t("Your notes")}</span>
                 <textarea
@@ -411,15 +449,17 @@ export function SampleTastingTools() {
               </label>
               <div className={styles.noteMeta}>
                 <span>
-                  {t(
-                    dirty
-                      ? "Unsaved changes."
-                      : saved.records[selected]
-                        ? "Saved on this device."
-                        : "Add a note or recipe to make your first card.",
-                  )}
+                  {dirty
+                    ? t("Unsaved changes.")
+                    : saved.records[selected]
+                      ? t("Saved on this device.")
+                      : null}
                 </span>
-                <span>
+                <span
+                  className={
+                    draft.notes.length < 480 ? styles.srOnly : undefined
+                  }
+                >
                   {draft.notes.length} / {TASTING_NOTES_LIMIT}
                 </span>
               </div>
@@ -487,7 +527,27 @@ export function SampleTastingTools() {
                     animateOnMount={false}
                     wrap
                   />
-                  <span aria-hidden="true">↗</span>
+                </button>
+                <button
+                  className={styles.nextButton}
+                  type="button"
+                  data-tasting-next={nextItem.key}
+                  onClick={() => {
+                    edit(nextItem.key);
+                    requestAnimationFrame(() =>
+                      root.current
+                        ?.querySelector<HTMLTextAreaElement>('[name="notes"]')
+                        ?.focus({ preventScroll: true }),
+                    );
+                  }}
+                >
+                  <ScrambleText
+                    text={t("Next matcha")}
+                    interactive
+                    animateOnMount={false}
+                    wrap
+                  />
+                  <span aria-hidden="true">→</span>
                 </button>
                 {saved.records[selected] && (
                   <button
@@ -523,9 +583,6 @@ export function SampleTastingTools() {
             >
               {feedbackArea === "editor" && feedback ? t(feedback) : ""}
             </p>
-            <div className={styles.editorOrder}>
-              {orderLink(selected, "editor")}
-            </div>
           </form>
 
           <details
@@ -608,6 +665,9 @@ export function SampleTastingTools() {
               </label>
             )}
           </details>
+          <div className={styles.editorOrder}>
+            {orderLink(selected, "editor")}
+          </div>
         </div>
       </div>
 
@@ -647,59 +707,31 @@ export function SampleTastingTools() {
           <thead role="rowgroup">
             <tr role="row">
               <td className={styles.corner} role="cell" />
-              <th scope="col" role="columnheader" id={`${id}-first-tea`}>
-                {t(
-                  SAMPLE_SET_CONTENTS.find(
-                    (tea) => tea.key === pair[0],
-                  )!.name.replace(/ Matcha$/, ""),
-                )}
-              </th>
-              <th scope="col" role="columnheader" id={`${id}-second-tea`}>
-                {t(
-                  SAMPLE_SET_CONTENTS.find(
-                    (tea) => tea.key === pair[1],
-                  )!.name.replace(/ Matcha$/, ""),
-                )}
-              </th>
+              {pair.map((key, index) => {
+                const tea = SAMPLE_SET_CONTENTS.find((tea) => tea.key === key)!;
+                return (
+                  <th
+                    key={key}
+                    scope="col"
+                    role="columnheader"
+                    id={`${id}-${index === 0 ? "first" : "second"}-tea`}
+                  >
+                    {t(tea.name.replace(/ Matcha$/, ""))}
+                    <span className={styles.comparedApplication}>
+                      {t(tea.application)}
+                    </span>
+                    <span className={styles.comparedSize}>
+                      <span className={styles.srOnly}>
+                        {t("Sample size")}:{" "}
+                      </span>
+                      {tea.grams} g
+                    </span>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody role="rowgroup">
-            <tr className={styles.groupRow} role="row">
-              <th colSpan={3} role="rowheader">
-                {t("Product details")}
-              </th>
-            </tr>
-            <tr role="row">
-              <th scope="row" role="rowheader" id={`${id}-application`}>
-                {t("Application")}
-              </th>
-              {pair.map((key, index) => (
-                <td
-                  key={key}
-                  role="cell"
-                  headers={`${id}-${index === 0 ? "first" : "second"}-tea ${id}-application`}
-                >
-                  {t(
-                    SAMPLE_SET_CONTENTS.find((tea) => tea.key === key)!
-                      .application,
-                  )}
-                </td>
-              ))}
-            </tr>
-            <tr role="row">
-              <th scope="row" role="rowheader" id={`${id}-size`}>
-                {t("Sample size")}
-              </th>
-              {pair.map((key, index) => (
-                <td
-                  key={key}
-                  role="cell"
-                  headers={`${id}-${index === 0 ? "first" : "second"}-tea ${id}-size`}
-                >
-                  {SAMPLE_SET_CONTENTS.find((tea) => tea.key === key)!.grams} g
-                </td>
-              ))}
-            </tr>
             <tr className={styles.groupRow} role="row">
               <th colSpan={3} role="rowheader">
                 {t("Your saved tasting")}

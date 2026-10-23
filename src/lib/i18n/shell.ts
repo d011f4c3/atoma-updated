@@ -16,6 +16,11 @@ export const shellTranslations = {
     "zh-Hant": "抹茶",
     ja: "抹茶",
   },
+  Home: {
+    "zh-Hans": "首页",
+    "zh-Hant": "首頁",
+    ja: "ホーム",
+  },
   Shop: {
     "zh-Hans": "选购",
     "zh-Hant": "選購",

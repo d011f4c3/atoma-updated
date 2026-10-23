@@ -152,6 +152,21 @@ export function MobileHomeHero({
           />
           <span aria-hidden="true">↗</span>
         </HeroSevenLink>
+        <HeroSevenLink
+          href="/?view=matcha"
+          className={styles.secondary}
+          data-mobile-hero-explore
+          {...guard}
+        >
+          <ScrambleText
+            text={t("Explore by Application")}
+            interactive
+            animateOnMount={false}
+            wrap
+            paused={motionPaused}
+          />
+          <span aria-hidden="true">↗</span>
+        </HeroSevenLink>
       </div>
     </section>
   );

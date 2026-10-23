@@ -167,12 +167,16 @@ export function HomeHeader({
       document.removeEventListener("keydown", escape);
     };
   }, [hasIndex, hasResponsiveMenu, navigationVariant]);
-  const matchaLabel = (
+  const homeLabel = (
     <>
       <span className={styles.index} data-nav-index aria-hidden="true">
         01
       </span>
-      <ScrambleText text={t("MATCHA")} delay={150} interactive />
+      <ScrambleText
+        text={t(onExplore ? "MATCHA" : "HOME")}
+        delay={150}
+        interactive
+      />
       <span className={styles.sectionMark} aria-hidden="true" />
       {hasDescriptions && (
         <span
@@ -272,17 +276,17 @@ export function HomeHeader({
             onExplore();
           }}
         >
-          {matchaLabel}
+          {homeLabel}
         </button>
       ) : (
         <Link
           className={styles.control}
           data-nav-action="matcha"
           href={homeHref}
-          aria-label={t("Explore matcha")}
+          aria-label={t("Home")}
           onClick={closeIndex}
         >
-          {matchaLabel}
+          {homeLabel}
         </Link>
       )}
       <Link
