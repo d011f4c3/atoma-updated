@@ -259,6 +259,12 @@
   color: inherit;
   text-decoration: none;
 }
+.productImage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 85%;
+}
 .powder {
   position: relative;
   width: 100%;
@@ -428,6 +434,110 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+/* Choreograph the existing composition without moving its layout or waiting
+   to enable a buying control. Shared reveals settle on keyboard focus. */
+@media (prefers-reduced-motion: no-preference) {
+  .page .eyebrow[data-page-enter] {
+    --page-enter-delay: 30ms;
+  }
+  .page .introduction h1[data-page-enter] {
+    --page-enter-delay: 100ms;
+    --page-reveal-distance: 30px;
+    animation-duration: 1100ms;
+  }
+  .page .introCopy[data-page-enter] {
+    --page-enter-delay: 200ms;
+    --page-reveal-distance: 22px;
+    animation-duration: 1000ms;
+  }
+  .page .samples[data-page-enter] {
+    --page-enter-delay: 230ms;
+    --page-reveal-distance: 0px;
+    animation-name: wholesale-control-in;
+    animation-duration: 1100ms;
+  }
+  .page .toolbar[data-page-enter] {
+    --page-enter-delay: 300ms;
+    --page-reveal-distance: 0px;
+    animation-name: wholesale-control-in;
+    animation-duration: 900ms;
+  }
+  .page [data-page-motion="composed"][data-page-reveal-state="pending"] {
+    translate: none;
+  }
+  .page .product[data-page-reveal-state="entering"] {
+    --page-reveal-distance: 0px;
+    animation-name: wholesale-control-in;
+    animation-duration: 1050ms;
+  }
+  .page .whyAction[data-page-reveal-state="entering"] {
+    --page-reveal-distance: 0px;
+    animation-name: wholesale-control-in;
+  }
+  .page :is(.whyIntroduction, .whyReason)[data-page-reveal-state="entering"] {
+    --page-reveal-distance: 26px;
+    animation-duration: 1000ms;
+  }
+  .productImage {
+    animation: wholesale-object-in 1100ms var(--page-reveal-delay, 0ms)
+      var(--page-motion-ease) both;
+  }
+  .samples:not([data-page-enter-done]) .sampleImage {
+    animation: wholesale-object-in 1100ms 230ms var(--page-motion-ease) both;
+  }
+  .product[data-page-reveal-state="pending"] .productImage {
+    animation-play-state: paused;
+  }
+  .productImage[data-wholesale-image-settled],
+  .material:focus-visible .productImage,
+  .product:focus-within .productImage {
+    animation: none;
+  }
+  .samples:focus-visible .sampleImage {
+    animation: none;
+  }
+  .samples,
+  .quickView {
+    transition:
+      background-color 280ms ease,
+      border-color 280ms ease,
+      color 280ms ease;
+  }
+  .sampleImage > span,
+  .sampleAction > span,
+  .whyAction > span,
+  .quickView > span,
+  .productImage > * {
+    transition: transform 550ms var(--page-motion-ease);
+  }
+  .search,
+  .imageModes button {
+    transition:
+      color 220ms ease,
+      border-color 220ms ease;
+  }
+  .search:focus-within {
+    border-color: var(--ink);
+  }
+}
+@keyframes wholesale-control-in {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes wholesale-object-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 @media (hover: hover) and (pointer: fine) {
   .identity a:hover,
   .samples:hover .sampleAction,
@@ -438,6 +548,31 @@
   .quickView:hover {
     background: var(--ink);
     color: var(--surface);
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .material:not([aria-disabled="true"]):hover .productImage > * {
+    transform: translateY(-5px) scale(1.035);
+  }
+  .samples:not([aria-disabled="true"]):hover {
+    background: color-mix(in srgb, var(--surface) 44%, transparent);
+    border-color: var(--muted);
+  }
+  .samples:not([aria-disabled="true"]):hover .sampleImage > span:first-child {
+    transform: translate(-2px, -2px) rotate(-14deg);
+  }
+  .samples:not([aria-disabled="true"]):hover .sampleImage > span:nth-child(2) {
+    transform: translateY(-0.5rem);
+  }
+  .samples:not([aria-disabled="true"]):hover .sampleImage > span:nth-child(3) {
+    transform: translate(2px, -2px) rotate(14deg);
+  }
+  .samples:not([aria-disabled="true"]):hover .sampleAction > span,
+  .whyAction:not([aria-disabled="true"]):hover > span {
+    transform: translate(3px, -3px);
+  }
+  .quickView:not([aria-disabled="true"]):hover > span {
+    transform: rotate(90deg);
   }
 }
 @media (min-width: 1700px) {

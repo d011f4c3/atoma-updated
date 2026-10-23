@@ -25,6 +25,7 @@ import revealStyles from "./page-reveals.module.css";
 import heroStyles from "./new-hero-five.module.css";
 import sectionStyles from "./new-hero.module.css";
 import styles from "./new-hero-seven.module.css";
+import motionStyles from "./homepage-motion.module.css";
 
 const root = "/new-hero7";
 export const newHeroSevenSiteNavigation = [
@@ -159,7 +160,9 @@ export function NewHeroSevenHome({
   return (
     <div
       ref={home}
-      className={motion ? revealStyles.scope : undefined}
+      className={
+        motion ? `${revealStyles.scope} ${motionStyles.scope}` : undefined
+      }
       data-new-hero7-view="home"
     >
       <div className={motion ? styles.desktopHomeHero : undefined}>
@@ -168,7 +171,6 @@ export function NewHeroSevenHome({
           header={contained ? false : <NewHeroSevenHeader />}
           onNavigate={navigationState?.navigate}
           motion={motion}
-          motionPaused={motionPaused}
           onReady={onHeroReady}
           applicationImageSrc={applicationImageSrc}
           destinations={{
@@ -182,13 +184,12 @@ export function NewHeroSevenHome({
           }}
         />
       </div>
-      {motion && (
-        <MobileHomeHero motionPaused={motionPaused} onReady={onHeroReady} />
-      )}
+      {motion && <MobileHomeHero onReady={onHeroReady} />}
       <div className={styles.homeSections} data-new-hero7-home-sections>
         <div className={sectionStyles.main}>
           <NewHeroSections
             idPrefix="new-hero7-home"
+            motion={motion}
             samplesFirst
             sampleContents={
               motion ? (

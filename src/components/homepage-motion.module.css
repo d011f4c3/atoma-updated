@@ -1,0 +1,136 @@
+.scope {
+  --hero-motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Only the adopted homepage opts into this sequence. Its readiness layer resets
+   the entrances, then releases them together; layout and hit areas stay fixed. */
+@media (prefers-reduced-motion: no-preference) {
+  .scope :global([data-hero-stage="heading"]:not([data-page-enter-done])) {
+    animation: heading-arrive 1150ms var(--hero-motion-ease) both;
+  }
+
+  .scope :global([data-hero-stage="description"]:not([data-page-enter-done])) {
+    animation: copy-arrive 900ms 120ms var(--hero-motion-ease) both;
+  }
+
+  .scope :global([data-hero-stage="object"]:not([data-page-enter-done])) {
+    animation: object-uncover 1350ms calc(180ms + var(--hero-order, 0) * 110ms)
+      cubic-bezier(0.65, 0, 0.15, 1) both;
+  }
+
+  /* The photographs hold still while the mask passes across them. */
+  .scope
+    :global([data-new-hero7-material])
+    img:not(:global([data-page-image-arriving])) {
+    animation: none;
+  }
+
+  .scope :global([data-hero-stage="actions"]:not([data-page-enter-done])) {
+    animation: captions-arrive 800ms 280ms var(--hero-motion-ease) both;
+  }
+
+  .scope :global([data-hero-stage="caption"]:not([data-page-enter-done])) {
+    animation: captions-arrive 850ms calc(560ms + var(--hero-order, 0) * 110ms)
+      var(--hero-motion-ease) both;
+  }
+
+  .scope :global([data-hero-stage="rule"]),
+  .scope :global([data-mobile-hero-learn]) {
+    background-image: linear-gradient(var(--line), var(--line));
+    background-repeat: no-repeat;
+    background-size: 100% 1px;
+  }
+
+  .scope :global([data-hero-stage="rule"]) {
+    border-top-color: transparent;
+    background-position: left top;
+  }
+
+  .scope :global([data-mobile-hero-learn]) {
+    border-bottom-color: transparent;
+    background-position: left bottom;
+  }
+
+  .scope :global([data-hero-stage="rule"]:not([data-page-enter-done])) {
+    animation: rule-draw 1100ms 280ms var(--hero-motion-ease) both;
+  }
+
+  .scope :global([data-hero-stage="caption"] > :last-child),
+  .scope :global([data-hero-stage="actions"] a > :last-child) {
+    transition: transform 350ms var(--hero-motion-ease);
+  }
+
+  .scope
+    :global(
+      [data-hero-stage="caption"]:is(:hover, :focus-visible) > :last-child
+    ),
+  .scope
+    :global(
+      [data-hero-stage="actions"] a:is(:hover, :focus-visible) > :last-child
+    ) {
+    transform: translate(3px, -3px);
+  }
+
+  .scope :global([data-hero-stage]:focus-within) {
+    animation: none;
+    opacity: 1;
+    translate: none;
+    clip-path: none;
+    background-size: 100% 1px;
+  }
+
+  .scope :global([data-page-reveal-state="entering"]) {
+    --page-reveal-distance: 24px;
+  }
+}
+
+@keyframes heading-arrive {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    clip-path: inset(0);
+  }
+}
+
+@keyframes copy-arrive {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes object-uncover {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes captions-arrive {
+  from {
+    opacity: 0.5;
+    background-size: 0% 1px;
+  }
+  to {
+    opacity: 1;
+    background-size: 100% 1px;
+  }
+}
+
+@keyframes rule-draw {
+  from {
+    background-size: 0% 1px;
+  }
+  to {
+    background-size: 100% 1px;
+  }
+}

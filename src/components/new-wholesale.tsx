@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useId, useRef, useState } from "react";
+import { useId, useRef, useState, type CSSProperties } from "react";
 import {
   createWholesaleLibrary,
   searchWholesaleLibrary,
@@ -122,19 +122,28 @@ export function NewWholesale() {
     >
       <HomeHeader persistentTheme tone={tone} activePage="shop" />
       <div className={styles.content}>
-        <header className={styles.introduction} data-page-enter="text">
+        <header className={styles.introduction}>
           <div>
-            <p className={styles.eyebrow}>{t("Wholesale")}</p>
-            <h1 ref={heading} tabIndex={-1} data-wholesale-collection-heading>
+            <p className={styles.eyebrow} data-page-enter="text">
+              {t("Wholesale")}
+            </p>
+            <h1
+              ref={heading}
+              tabIndex={-1}
+              data-wholesale-collection-heading
+              data-page-enter="hero"
+            >
               <ScrambleText text={t("Matcha for your menu.")} wrap />
             </h1>
-            <p className={styles.introCopy}>
+            <p className={styles.introCopy} data-page-enter="text">
               {t("For lattes, tea service and recipes.")}
             </p>
           </div>
           <Link
             className={styles.samples}
             href="/samples"
+            data-page-enter="text"
+            data-page-motion="composed"
             aria-disabled={cart.navigationBusy || undefined}
             onClick={(event) => {
               if (cart.navigationBusy) event.preventDefault();
@@ -166,7 +175,12 @@ export function NewWholesale() {
 
         {/* A permanent library toolbar. Verified future facets can join search
             here without changing product identity, layout or purchase state. */}
-        <div className={styles.toolbar} data-wholesale-library-tools>
+        <div
+          className={styles.toolbar}
+          data-wholesale-library-tools
+          data-page-enter="text"
+          data-page-motion="composed"
+        >
           <h2>
             {t("The collection")} <span aria-hidden="true">/</span>{" "}
             <span data-wholesale-count aria-live="polite">
@@ -310,6 +324,19 @@ export function NewWholesale() {
                       hidden={!visibleEntries.has(entry)}
                       data-wholesale-product={entry.product.handle}
                       data-known={Boolean(entry.productKey) || undefined}
+                      data-page-reveal="rise"
+                      data-page-reveal-initial
+                      data-page-motion="composed"
+                      onFocusCapture={(event) => {
+                        event.currentTarget
+                          .querySelector("[data-wholesale-image-motion]")
+                          ?.setAttribute("data-wholesale-image-settled", "");
+                      }}
+                      style={
+                        {
+                          "--page-reveal-delay": `${(index % 3) * 100}ms`,
+                        } as CSSProperties
+                      }
                     >
                       <div className={styles.visual}>
                         <div className={styles.productCaption}>
@@ -335,27 +362,40 @@ export function NewWholesale() {
                             else rememberProduct(entry);
                           }}
                         >
-                          {entry.productKey && imageMode === "application" ? (
-                            <ProductApplicationCutout
-                              productKey={entry.productKey}
-                            />
-                          ) : entry.materialImage ? (
-                            <div
-                              className={styles.powder}
-                              data-known={
-                                Boolean(entry.productKey) || undefined
-                              }
-                            >
-                              <ShopMaterialImage
-                                src={entry.materialImage}
-                                alt={entry.materialAlt}
+                          <div
+                            key={entry.productKey ? imageMode : "material"}
+                            className={styles.productImage}
+                            data-wholesale-image-motion
+                            onAnimationEnd={(event) => {
+                              if (event.target === event.currentTarget)
+                                event.currentTarget.setAttribute(
+                                  "data-wholesale-image-settled",
+                                  "",
+                                );
+                            }}
+                          >
+                            {entry.productKey && imageMode === "application" ? (
+                              <ProductApplicationCutout
+                                productKey={entry.productKey}
                               />
-                            </div>
-                          ) : (
-                            <span className={styles.materialFallback}>
-                              {entry.code ?? t("Matcha")}
-                            </span>
-                          )}
+                            ) : entry.materialImage ? (
+                              <div
+                                className={styles.powder}
+                                data-known={
+                                  Boolean(entry.productKey) || undefined
+                                }
+                              >
+                                <ShopMaterialImage
+                                  src={entry.materialImage}
+                                  alt={entry.materialAlt}
+                                />
+                              </div>
+                            ) : (
+                              <span className={styles.materialFallback}>
+                                {entry.code ?? t("Matcha")}
+                              </span>
+                            )}
+                          </div>
                         </Link>
                         {entry.productKey && (
                           <Link
@@ -459,18 +499,26 @@ export function NewWholesale() {
           className={styles.why}
           aria-labelledby={`${searchId}-why`}
           data-wholesale-why
-          data-page-reveal="rise"
         >
-          <div className={styles.whyIntroduction}>
+          <div
+            className={styles.whyIntroduction}
+            data-page-reveal="rise"
+            data-page-reveal-initial
+          >
             <h2 id={`${searchId}-why`}>{t("Why ATOMA")}</h2>
             <p>{t("Japanese matcha, selected for the way you work.")}</p>
           </div>
           <div className={styles.whyReasons}>
-            {wholesaleReasons.map((reason) => (
+            {wholesaleReasons.map((reason, index) => (
               <div
                 key={reason.title}
                 className={styles.whyReason}
                 data-wholesale-why-reason
+                data-page-reveal="rise"
+                data-page-reveal-initial
+                style={
+                  { "--page-reveal-delay": `${index * 100}ms` } as CSSProperties
+                }
               >
                 <h3>{t(reason.title)}</h3>
                 <p>{t(reason.description)}</p>
@@ -481,6 +529,9 @@ export function NewWholesale() {
             href="/samples"
             className={styles.whyAction}
             data-wholesale-why-action
+            data-page-reveal="rise"
+            data-page-reveal-initial
+            data-page-motion="composed"
             aria-disabled={cart.navigationBusy || undefined}
             onClick={(event) => {
               if (cart.navigationBusy) event.preventDefault();

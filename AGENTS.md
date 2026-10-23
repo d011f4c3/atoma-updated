@@ -2,6 +2,18 @@
 
 ## Scope and authority
 
+- **Task 0277 adds polished storefront motion:** read
+  `docs/tasks/0277-hero-and-wholesale-motion.md`. Strengthen canonical hero
+  loading and staggered entrances plus Wholesale catalog and scroll reveals.
+  Keep hero images stationary with mask reveals and hero labels free of scrambling.
+  Preserve responsive layouts, immediate controls, reduced-motion/no-script
+  fallbacks, readiness, exact commerce state and saved studies.
+
+- **Task 0276 puts About before Origins:** read
+  `docs/tasks/0276-navigation-order.md`. Use Home, Wholesale, Samples, About,
+  Origins in shared desktop and mobile navigation while preserving destinations,
+  active states, localization and navigation guards.
+
 - **Task 0275 makes the three matchas available:** read
   `docs/tasks/0275-matcha-inventory.md`. The owner authorizes setting available
   stock to 100 units for each existing 1 kg matcha in the connected Shopify

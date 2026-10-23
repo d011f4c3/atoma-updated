@@ -30,6 +30,9 @@ export function usePageReveals(
     let restorationFrame = 0;
 
     function permitsGroup(node: HTMLElement) {
+      // Explicitly authored compositions can include immediately usable links.
+      // Focus/anchor entry always finishes their reveal before interaction.
+      if (node.dataset.pageMotion === "composed") return true;
       return permitsPageReveal(pathname, {
         visualTreatment: node.matches(
           '[data-page-enter="visual"], [data-page-reveal="fade"]',
@@ -123,10 +126,14 @@ export function usePageReveals(
         for (const { node, top } of positions) {
           if (
             node.dataset.pageRevealState === "complete" ||
-            top < window.innerHeight ||
+            node.dataset.pageRevealState === "entering" ||
             node.contains(document.activeElement)
           ) {
             finish(node);
+          } else if (top < window.innerHeight) {
+            if (node.hasAttribute("data-page-reveal-initial") && top >= 0)
+              node.dataset.pageRevealState = "entering";
+            else finish(node);
           } else {
             node.dataset.pageRevealState = "pending";
             observer.observe(node);

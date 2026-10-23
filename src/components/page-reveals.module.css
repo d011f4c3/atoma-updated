@@ -38,6 +38,18 @@
     animation: page-fade 900ms var(--page-reveal-delay, 0ms) ease-out both;
   }
 
+  /* A focus interruption must never move a link or purchase button between
+     pointerdown and pointerup. Composed groups fade at their final geometry. */
+  .scope
+    :global([data-page-motion="composed"][data-page-reveal-state="pending"]) {
+    translate: none;
+  }
+
+  .scope
+    :global([data-page-motion="composed"][data-page-reveal-state="entering"]) {
+    animation-name: page-fade;
+  }
+
   .scope :global([data-page-image-arriving]) {
     animation: page-fade 700ms ease-out both;
   }

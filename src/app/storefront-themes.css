@@ -251,7 +251,9 @@ body:has(
 /* Authored text and imagery may enter, while navigation and purchase groups
    remain visible before hydration and without JavaScript. */
 [data-client-reading]
-  :is([data-page-enter], [data-page-reveal]):is(
+  :is([data-page-enter], [data-page-reveal]):not(
+    [data-page-motion="composed"]
+  ):is(
     a[href],
     button,
     input,
@@ -309,7 +311,9 @@ body:has(
     [role="option"],
     [contenteditable]:not([contenteditable="false"])
   )
-  :is([data-page-enter], [data-page-reveal]) {
+  :is([data-page-enter], [data-page-reveal]):not(
+    [data-page-motion="composed"]
+  ) {
   animation: none !important;
   opacity: 1 !important;
   translate: none !important;

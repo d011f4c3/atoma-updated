@@ -30,7 +30,7 @@ export function MobileHomeSections() {
         <h2 id="mobile-home-origin-heading" data-page-reveal="rise">
           <ScrambleText text={t("In the fields.")} wrap visibleOnly periodic />
         </h2>
-        <p className={styles.body}>
+        <p className={styles.body} data-page-reveal="rise">
           {t(
             "Our Ceremonial matcha is grown in Wazuka Town, Kyoto Prefecture, Japan.",
           )}
@@ -38,6 +38,8 @@ export function MobileHomeSections() {
         <Link
           href="/origins"
           className={styles.textAction}
+          data-page-reveal="rise"
+          data-page-motion="composed"
           aria-disabled={navigationBusy || undefined}
           onClick={(event) => {
             if (navigationBusy) event.preventDefault();

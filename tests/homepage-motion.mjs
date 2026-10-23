@@ -142,6 +142,7 @@ async function installProbe(page) {
           loader: loader?.getAttribute("data-state") ?? null,
           headingOpacity: opacity(heading),
           materialOpacity: opacity(material),
+          materialClip: getComputedStyle(material).clipPath,
           loaderOpacity: loader ? opacity(loader) : null,
           headingAnimation: getComputedStyle(heading).animationName,
           materialAnimation: getComputedStyle(material).animationName,
@@ -592,10 +593,12 @@ try {
           frames.some(
             (item) =>
               item.loader === null &&
-              item.materialOpacity > 0 &&
-              item.materialOpacity < 1,
+              ((item.materialOpacity > 0 && item.materialOpacity < 1) ||
+                Array.from(item.materialClip.matchAll(/([\d.]+)%/g)).some(
+                  (match) => Number(match[1]) > 0 && Number(match[1]) < 100,
+                )),
           ),
-          "The material reveals after the loader clears",
+          "The material fades or uncovers after the loader clears",
         );
         await settled(hero(page));
         await page.screenshot({

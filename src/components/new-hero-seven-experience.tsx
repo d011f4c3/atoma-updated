@@ -263,7 +263,12 @@ export function NewHeroSevenExperience({
         )}
       </div>
       {intro.phase !== "done" && (
-        <HeroLoader progress={intro.progress} phase={intro.phase} tone={tone} />
+        <HeroLoader
+          progress={intro.progress}
+          phase={intro.phase}
+          tone={tone}
+          storefront={basePath === "/"}
+        />
       )}
       {basePath === "/" && (
         <noscript>

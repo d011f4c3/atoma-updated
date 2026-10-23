@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import type { ProductKey } from "@/lib/product-codes";
 import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
 import { useCart } from "./cart-drawer";
 import { HomeHeader } from "./home-header";
-import { ScrambleText } from "./scramble-text";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { useStorefrontTheme } from "./storefront-theme-provider";
 import styles from "./new-hero-five.module.css";
@@ -18,7 +17,6 @@ export function NewHeroApplicationHero({
   destinations,
   onNavigate,
   motion = false,
-  motionPaused = false,
   onReady,
   applicationImageSrc = "/images/hero/matcha-applications-cutout-v1.webp",
 }: {
@@ -26,7 +24,6 @@ export function NewHeroApplicationHero({
   header?: ReactNode;
   onNavigate?: (href: string) => void;
   motion?: boolean;
-  motionPaused?: boolean;
   onReady?: () => void;
   applicationImageSrc?: string;
   destinations?: {
@@ -82,6 +79,7 @@ export function NewHeroApplicationHero({
           <div
             className={styles.headingGroup}
             data-page-enter={motion ? "hero" : undefined}
+            data-hero-stage={motion ? "heading" : undefined}
           >
             <p className={styles.eyebrow}>
               <span aria-hidden="true">◇</span>
@@ -96,28 +94,25 @@ export function NewHeroApplicationHero({
               className={styles.description}
               {...{ [`data-${idPrefix}-description`]: true }}
               data-page-enter={motion ? "text" : undefined}
+              data-hero-stage={motion ? "description" : undefined}
             >
               {t(
                 "Authentic Japanese matcha selected for tea service, lattes and recipes.",
               )}
             </p>
-            <div className={styles.actions}>
+            <div
+              className={styles.actions}
+              data-page-enter={motion ? "text" : undefined}
+              data-page-motion={motion ? "composed" : undefined}
+              data-hero-stage={motion ? "actions" : undefined}
+            >
               <HeroLink
                 href={samplesHref}
                 className={styles.primary}
                 {...{ [`data-${idPrefix}-samples`]: true }}
                 {...linkGuard(samplesHref)}
               >
-                {motion ? (
-                  <ScrambleText
-                    text={t("Start with the Sample Set")}
-                    interactive
-                    wrap
-                    paused={motionPaused}
-                  />
-                ) : (
-                  t("Start with the Sample Set")
-                )}
+                <span>{t("Start with the Sample Set")}</span>
                 <span aria-hidden="true">{destinations ? "↗" : "↓"}</span>
               </HeroLink>
               <HeroLink
@@ -126,16 +121,7 @@ export function NewHeroApplicationHero({
                 {...{ [`data-${idPrefix}-explore`]: true }}
                 {...linkGuard(applicationsHref)}
               >
-                {motion ? (
-                  <ScrambleText
-                    text={t("Explore by Application")}
-                    interactive
-                    wrap
-                    paused={motionPaused}
-                  />
-                ) : (
-                  t("Explore by Application")
-                )}
+                <span>{t("Explore by Application")}</span>
                 <span aria-hidden="true">{destinations ? "↗" : "↓"}</span>
               </HeroLink>
             </div>
@@ -149,6 +135,7 @@ export function NewHeroApplicationHero({
           <div
             className={styles.materialImage}
             data-page-enter={motion ? "visual" : undefined}
+            data-hero-stage={motion ? "object" : undefined}
           >
             {materialState === "failed" ? (
               <p
@@ -184,6 +171,9 @@ export function NewHeroApplicationHero({
         <nav
           className={styles.applicationRail}
           aria-label={t("Explore the three matcha")}
+          data-page-enter={motion ? "text" : undefined}
+          data-page-motion={motion ? "composed" : undefined}
+          data-hero-stage={motion ? "rule" : undefined}
         >
           {SAMPLE_SET_CONTENTS.map((item, index) => (
             <HeroLink
@@ -192,6 +182,14 @@ export function NewHeroApplicationHero({
                 destinations?.products[item.key] ?? `#${idPrefix}-${item.key}`
               }
               {...{ [`data-${idPrefix}-jump`]: item.key }}
+              data-page-enter={motion ? "text" : undefined}
+              data-page-motion={motion ? "composed" : undefined}
+              data-hero-stage={motion ? "caption" : undefined}
+              style={
+                motion
+                  ? ({ "--hero-order": index } as CSSProperties)
+                  : undefined
+              }
               {...linkGuard(
                 destinations?.products[item.key] ?? `#${idPrefix}-${item.key}`,
               )}

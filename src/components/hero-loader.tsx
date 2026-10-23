@@ -76,10 +76,12 @@ export function HeroLoader({
   progress,
   phase,
   tone,
+  storefront = false,
 }: {
   progress: number;
   phase: "loading" | "complete" | "leaving";
   tone: "light" | "dark";
+  storefront?: boolean;
 }) {
   const { t } = useStorefrontLocale();
   const value = Math.min(100, Math.max(0, Math.round(progress)));
@@ -88,6 +90,7 @@ export function HeroLoader({
     <div
       className={styles.loader}
       data-hero-loader
+      data-storefront-loader={storefront || undefined}
       data-state={phase}
       data-tone={tone}
       role="progressbar"

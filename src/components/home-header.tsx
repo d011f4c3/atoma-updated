@@ -204,11 +204,11 @@ export function HomeHeader({
       <span className={styles.index} data-nav-index aria-hidden="true">
         {navigationVariant === "default" || navigationVariant === "quiet"
           ? showSamples
-            ? "05"
-            : "04"
+            ? "04"
+            : "03"
           : "03"}
       </span>
-      <ScrambleText text={t("ABOUT")} delay={290} interactive />
+      <ScrambleText text={t("ABOUT")} delay={260} interactive />
       <span
         className={siteNavigation ? styles.shopMark : styles.plus}
         aria-hidden="true"
@@ -338,38 +338,6 @@ export function HomeHeader({
           </span>
         </Link>
       )}
-      {(navigationVariant === "default" || navigationVariant === "quiet") && (
-        <Link
-          className={styles.control}
-          data-nav-action="origins"
-          href="/origins"
-          aria-current={activePage === "origins" ? "page" : undefined}
-          onNavigate={(event) => {
-            if (activePage === "origins") return;
-            event.preventDefault();
-            closeIndex();
-            focusIndexTrigger();
-            openOrigins({
-              tone,
-              returnLabel:
-                originsReturnLabel ??
-                (activePage === "about"
-                  ? "Back to About"
-                  : activePage === "samples"
-                    ? "Back to samples"
-                    : undefined),
-            });
-          }}
-        >
-          <span className={styles.index} data-nav-index aria-hidden="true">
-            {showSamples ? "04" : "03"}
-          </span>
-          <ScrambleText text={t("ORIGINS")} delay={260} interactive />
-          <span className={styles.shopMark} aria-hidden="true">
-            ↗
-          </span>
-        </Link>
-      )}
       {siteNavigation ? (
         <Link
           className={styles.control}
@@ -399,6 +367,38 @@ export function HomeHeader({
         >
           {aboutLabel}
         </button>
+      )}
+      {(navigationVariant === "default" || navigationVariant === "quiet") && (
+        <Link
+          className={styles.control}
+          data-nav-action="origins"
+          href="/origins"
+          aria-current={activePage === "origins" ? "page" : undefined}
+          onNavigate={(event) => {
+            if (activePage === "origins") return;
+            event.preventDefault();
+            closeIndex();
+            focusIndexTrigger();
+            openOrigins({
+              tone,
+              returnLabel:
+                originsReturnLabel ??
+                (activePage === "about"
+                  ? "Back to About"
+                  : activePage === "samples"
+                    ? "Back to samples"
+                    : undefined),
+            });
+          }}
+        >
+          <span className={styles.index} data-nav-index aria-hidden="true">
+            {showSamples ? "05" : "04"}
+          </span>
+          <ScrambleText text={t("ORIGINS")} delay={290} interactive />
+          <span className={styles.shopMark} aria-hidden="true">
+            ↗
+          </span>
+        </Link>
       )}
     </>
   );

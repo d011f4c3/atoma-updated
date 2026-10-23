@@ -5,7 +5,6 @@ import { useId, useState, type CSSProperties } from "react";
 import { SAMPLE_SET_CONTENTS } from "@/lib/sample-set";
 import { useCart } from "./cart-drawer";
 import { HeroSevenLink } from "./new-hero-seven-navigation";
-import { ScrambleText } from "./scramble-text";
 import { useStorefrontLocale } from "./storefront-locale-provider";
 import { useStorefrontTheme } from "./storefront-theme-provider";
 import styles from "./mobile-home-hero.module.css";
@@ -18,13 +17,7 @@ const applications = {
   culinary: { label: "Recipes", x: 1370, y: 240, width: 802, height: 484 },
 } as const;
 
-export function MobileHomeHero({
-  motionPaused = false,
-  onReady,
-}: {
-  motionPaused?: boolean;
-  onReady?: () => void;
-}) {
+export function MobileHomeHero({ onReady }: { onReady?: () => void }) {
   const { t, locale } = useStorefrontLocale();
   const { tone } = useStorefrontTheme();
   const { navigationBusy } = useCart();
@@ -46,8 +39,12 @@ export function MobileHomeHero({
       data-tone={tone}
       aria-labelledby={`${id}-heading`}
     >
-      <div className={styles.introduction} data-page-enter="hero">
-        <h1 id={`${id}-heading`}>
+      <div className={styles.introduction}>
+        <h1
+          id={`${id}-heading`}
+          data-page-enter="hero"
+          data-hero-stage="heading"
+        >
           {titleBreak ? (
             <>
               {title.slice(0, titleBreak)}
@@ -58,7 +55,11 @@ export function MobileHomeHero({
             title
           )}
         </h1>
-        <p className={styles.description}>
+        <p
+          className={styles.description}
+          data-page-enter="text"
+          data-hero-stage="description"
+        >
           {t(
             "Authentic Japanese matcha selected for tea service, lattes and recipes.",
           )}
@@ -66,7 +67,7 @@ export function MobileHomeHero({
       </div>
 
       <div className={styles.applications} data-mobile-hero-preview="all">
-        {SAMPLE_SET_CONTENTS.map((item) => {
+        {SAMPLE_SET_CONTENTS.map((item, index) => {
           const application = applications[item.key];
           const crop = {
             "--crop-ratio": `${application.width} / ${application.height}`,
@@ -79,8 +80,13 @@ export function MobileHomeHero({
               key={item.key}
               className={styles.application}
               data-mobile-hero-application={item.key}
+              style={{ "--hero-order": index } as CSSProperties}
             >
-              <div className={styles.visual} data-page-enter="visual">
+              <div
+                className={styles.visual}
+                data-page-enter="visual"
+                data-hero-stage="object"
+              >
                 <div className={styles.crop} style={crop}>
                   {failed ? (
                     <span className={styles.fallback} aria-hidden="true">
@@ -110,18 +116,15 @@ export function MobileHomeHero({
                 className={styles.caption}
                 href={`/?application=${item.key}`}
                 data-mobile-hero-learn={item.key}
+                data-page-enter="text"
+                data-page-motion="composed"
+                data-hero-stage="caption"
                 aria-label={`${t(application.label)} — ${t(item.name)} · ${item.productCode}`}
                 aria-haspopup="dialog"
                 {...guard}
               >
                 <span className={styles.captionIdentity}>
-                  <ScrambleText
-                    text={t(application.label)}
-                    interactive
-                    animateOnMount={false}
-                    wrap
-                    paused={motionPaused}
-                  />
+                  <span>{t(application.label)}</span>
                   <span className={styles.code}>◇ {item.productCode}</span>
                 </span>
                 <span aria-hidden="true">+</span>
@@ -131,7 +134,12 @@ export function MobileHomeHero({
         })}
       </div>
 
-      <div className={styles.actions}>
+      <div
+        className={styles.actions}
+        data-page-enter="text"
+        data-page-motion="composed"
+        data-hero-stage="actions"
+      >
         {failed && (
           <p className={styles.imageNotice} role="status">
             {t("Application image unavailable.")}
@@ -143,13 +151,7 @@ export function MobileHomeHero({
           data-mobile-hero-samples
           {...guard}
         >
-          <ScrambleText
-            text={t("Start with the Sample Set")}
-            interactive
-            animateOnMount={false}
-            wrap
-            paused={motionPaused}
-          />
+          <span>{t("Start with the Sample Set")}</span>
           <span aria-hidden="true">↗</span>
         </HeroSevenLink>
         <HeroSevenLink
@@ -158,13 +160,7 @@ export function MobileHomeHero({
           data-mobile-hero-explore
           {...guard}
         >
-          <ScrambleText
-            text={t("Explore by Application")}
-            interactive
-            animateOnMount={false}
-            wrap
-            paused={motionPaused}
-          />
+          <span>{t("Explore by Application")}</span>
           <span aria-hidden="true">↗</span>
         </HeroSevenLink>
       </div>

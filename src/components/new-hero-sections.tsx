@@ -54,6 +54,7 @@ export function NewHeroSections({
   supplySection,
   originImageSizes,
   originPhotoPair = false,
+  motion = false,
 }: {
   idPrefix?: string;
   destinations?: {
@@ -69,6 +70,7 @@ export function NewHeroSections({
   supplySection?: ReactNode;
   originImageSizes?: string;
   originPhotoPair?: boolean;
+  motion?: boolean;
 }) {
   const { t } = useStorefrontLocale();
   const { navigationBusy } = useCart();
@@ -139,7 +141,10 @@ export function NewHeroSections({
             visibleOnly
           />
         </h2>
-        <p className={styles.body}>
+        <p
+          className={styles.body}
+          data-page-reveal={motion ? "rise" : undefined}
+        >
           {t(
             "Compare the three matcha in your own drinks and recipes before choosing a larger format.",
           )}
@@ -163,7 +168,12 @@ export function NewHeroSections({
           <span aria-hidden="true">↗</span>
         </Link>
       </div>
-      <div className={styles.sampleVisual} data-new-hero-sample-visual>
+      <div
+        className={styles.sampleVisual}
+        data-new-hero-sample-visual
+        data-page-reveal={motion ? "rise" : undefined}
+        data-page-motion={motion ? "composed" : undefined}
+      >
         <SampleFoilTrio contained disabled={navigationBusy} />
       </div>
     </section>
@@ -198,7 +208,11 @@ export function NewHeroSections({
               visibleOnly
             />
           </h2>
-          <div className={styles.proofPoint}>
+          <div
+            className={styles.proofPoint}
+            data-page-reveal={motion ? "rise" : undefined}
+            data-page-motion={motion ? "composed" : undefined}
+          >
             <h3>{t("Preparation & profile")}</h3>
             <p>
               {t(
@@ -216,7 +230,11 @@ export function NewHeroSections({
               </span>
             </ApplicationLink>
           </div>
-          <div className={styles.proofPoint}>
+          <div
+            className={styles.proofPoint}
+            data-page-reveal={motion ? "rise" : undefined}
+            data-page-motion={motion ? "composed" : undefined}
+          >
             <h3>{t("Growing origin")}</h3>
             <p>
               {t(
