@@ -764,8 +764,8 @@
   }
 }
 
-/* The current storefront keeps its desktop links and condenses only on mobile. */
-@media (max-width: 760px) {
+/* Keep the full preference group accessible when the desktop links cannot fit. */
+@media (max-width: 1023px) {
   .header[data-navigation-variant="default"] {
     height: var(--mobile-header-height, 4rem);
     grid-template-columns: auto minmax(0, 1fr);
@@ -856,18 +856,6 @@
   .header[data-tone="light"] .responsivePanel .control[aria-current="page"] {
     border-color: var(--ink);
   }
-  .dialog {
-    width: min(42rem, calc(100vw - 2rem));
-    max-height: 82svh;
-    max-height: 82dvh;
-    border-radius: 8px;
-    box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 32%);
-    scrollbar-width: thin;
-  }
-  .dialogHeader {
-    padding: 0.625rem 0.875rem;
-  }
-
   .header[data-storefront-navigation] .responsivePanel {
     max-height: calc(100svh - 100% - 1rem);
     max-height: calc(100dvh - 100% - 1rem);
@@ -903,8 +891,22 @@
   }
 }
 
+@media (max-width: 760px) {
+  .dialog {
+    width: min(42rem, calc(100vw - 2rem));
+    max-height: 82svh;
+    max-height: 82dvh;
+    border-radius: 8px;
+    box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 32%);
+    scrollbar-width: thin;
+  }
+  .dialogHeader {
+    padding: 0.625rem 0.875rem;
+  }
+}
+
 /* Plain text is the chosen navigation; button surfaces appear on interaction. */
-@media (min-width: 761px) {
+@media (min-width: 1024px) {
   .header[data-navigation-variant="default"] {
     grid-template-columns: auto minmax(0, 1fr);
     gap: clamp(0.75rem, 2.5vw, 2.5rem);
@@ -990,12 +992,7 @@
   align-items: center;
   gap: 0.5rem;
 }
-@media (min-width: 761px) {
-  .destination :global([data-language-switcher]) {
-    display: none;
-  }
-}
-@media (max-width: 760px) {
+@media (max-width: 1023px) {
   .destination {
     flex-wrap: wrap;
     justify-content: space-between;

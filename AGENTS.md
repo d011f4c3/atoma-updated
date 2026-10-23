@@ -2,6 +2,12 @@
 
 ## Scope and authority
 
+- **Task 0285 makes language selection global in navigation:** read
+  `docs/tasks/0285-global-navigation-language.md`. Show the shared language
+  selector in desktop navigation and mobile menus on all canonical pages.
+  Translate each page in place and retain the chosen language across routes
+  and reloads, preserving destination, theme and commerce state.
+
 - **Task 0284 defaults to dark and unifies homepage sample links:** read
   `docs/tasks/0284-dark-default-and-sample-links.md`. Default missing or invalid
   theme preferences to Blue hour dark while honoring saved choices. Send every

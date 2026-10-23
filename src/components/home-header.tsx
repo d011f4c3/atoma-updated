@@ -119,7 +119,7 @@ export function HomeHeader({
 
   useEffect(() => {
     if (!hasIndex && !hasResponsiveMenu) return;
-    const mobile = window.matchMedia("(max-width: 760px)");
+    const mobile = window.matchMedia("(max-width: 1023px)");
     function syncResponsiveMenu() {
       const index = indexRef.current;
       const trigger = indexTriggerRef.current;

@@ -1,7 +1,7 @@
 # Task 0284 — Dark default and homepage Sample Set links
 
 Date: 2026-10-23
-Status: In progress
+Status: Complete
 
 ## Owner direction
 
@@ -25,3 +25,18 @@ Check missing, invalid and explicit theme preferences, switching and reload;
 desktop/mobile sample destinations and actual page transitions; application
 navigation, sample-reader dismissal/order, saved-study destinations and purchase
 guards with isolated browser fixtures. Run `pnpm validate` and review the diff.
+
+## Result
+
+- Missing/invalid preferences now start dark; explicit light and dark preferences
+  remain respected, including switching and reload.
+- All ten homepage Sample Set links use `/samples`, including the responsive
+  compositions and product popups. The sample reader's order action also opens
+  the canonical page after closing its dialog.
+- Canonical navigation retains native Back/Forward scroll restoration. Verified
+  lower-page return, retained product quantities and pending-purchase guards.
+- Desktop 1440 px and mobile 390 px browser flows and both focused mobile
+  regressions pass. All four server theme cases pass. `pnpm validate` passes
+  formatting, lint, types, 256 unit tests and production build.
+
+Evidence: `.local/defaults-0284/`. No deployment or live commerce writes.
