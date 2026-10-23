@@ -10,11 +10,10 @@
     container: mobile-hero / inline-size;
     display: grid;
     grid-template-rows: auto auto auto;
-    align-content: start;
+    align-content: safe center;
     gap: clamp(1rem, 2.25svh, 1.5rem);
     min-height: min(calc(100svh - var(--seven-header-height, 4rem)), 42rem);
-    padding: clamp(1rem, 2.5svh, 1.5rem) var(--gutter)
-      max(2rem, env(safe-area-inset-bottom, 0px));
+    padding: max(1.5rem, env(safe-area-inset-bottom, 0px)) var(--gutter);
   }
 
   .hero[data-tone="dark"] {
@@ -121,7 +120,6 @@
 
   .application[data-mobile-hero-application="culinary"] {
     grid-area: baking;
-    margin-left: 0.375rem;
   }
 
   .visual {

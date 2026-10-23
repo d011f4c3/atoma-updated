@@ -256,6 +256,28 @@ async function inspectPhone(page, label, firstViewport = false) {
         `${label}: ${item.key} and its label are visible in the first viewport`,
       );
   }
+  const tea = geometry.applications.find(
+    (item) => item.key === "ceremonial",
+  ).caption;
+  const latte = geometry.applications.find(
+    (item) => item.key === "barista",
+  ).caption;
+  const recipes = geometry.applications.find(
+    (item) => item.key === "culinary",
+  ).caption;
+  assert.ok(
+    Math.abs(tea.x - geometry.preview.x) <= 1 &&
+      Math.abs(recipes.x - tea.x) <= 1 &&
+      Math.abs(
+        latte.x + latte.width - geometry.preview.x - geometry.preview.width,
+      ) <= 1,
+    `${label}: the captions align with the outer edges of their columns`,
+  );
+  assert.ok(
+    Math.abs(tea.width - latte.width) <= 1 &&
+      Math.abs(tea.width - recipes.width) <= 1,
+    `${label}: all three caption rules have consistent column widths`,
+  );
   for (let index = 0; index < geometry.applications.length; index++) {
     const item = geometry.applications[index];
     for (const other of geometry.applications.slice(index + 1)) {
@@ -273,6 +295,7 @@ async function inspectPhone(page, label, firstViewport = false) {
   const gaps = {
     headingFromHero: geometry.heading.y - geometry.hero.y,
     introductionFromHero: geometry.audience.y - geometry.hero.y,
+    afterActions: geometry.hero.bottom - geometry.secondary.bottom,
     introToFirstImage:
       Math.min(...geometry.applications.map((item) => item.image.y)) -
       geometry.description.bottom,
@@ -280,15 +303,16 @@ async function inspectPhone(page, label, firstViewport = false) {
       geometry.primary.y -
       Math.max(...geometry.applications.map((item) => item.bottom)),
   };
+  assert.ok(
+    gaps.introductionFromHero >= 0 && gaps.afterActions >= 0,
+    `${label}: the complete introduction and actions remain inside the hero`,
+  );
   if (geometry.rootFontSize <= 16) {
-    assert.ok(
-      gaps.headingFromHero >= 24 && gaps.headingFromHero <= 64,
-      `${label}: the introduction starts close to navigation with a bounded top gap (${gaps.headingFromHero}px)`,
-    );
-    assert.ok(
-      gaps.introductionFromHero >= 0 && gaps.introductionFromHero <= 32,
-      `${label}: the audience fits the reserved space above the heading`,
-    );
+    if (geometry.hero.bottom <= geometry.viewport.height + 1)
+      assert.ok(
+        Math.abs(gaps.introductionFromHero - gaps.afterActions) <= 1,
+        `${label}: the hero balances outer space above and below its content (${gaps.introductionFromHero}px / ${gaps.afterActions}px)`,
+      );
     if (geometry.viewport.height < 800)
       assert.ok(
         geometry.primary.bottom <= geometry.viewport.height + 200,

@@ -2,6 +2,12 @@
 
 ## Scope and authority
 
+- **Task 0283 centers the mobile hero composition:** read
+  `docs/tasks/0283-mobile-hero-centering.md`. Balance the complete content group
+  vertically with equal block padding and align the application-card edges.
+  Retain current scale, whole imagery, both CTAs, natural enlarged-text scrolling,
+  desktop geometry, motion and commerce state.
+
 - **Task 0282 reduces the desktop hero supporting copy:** read
   `docs/tasks/0282-desktop-hero-description-scale.md`. Set the canonical desktop
   hero description to 14 px while retaining locale adjustment, mobile sizing,
